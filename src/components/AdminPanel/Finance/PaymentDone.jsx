@@ -1187,6 +1187,10 @@ export default function PaymentDone() {
     }
   };
 
+  const handleRowSelectionModelChange = (rowIds) => {
+    setRowSelectionModel(rowIds);
+  };
+
   const handleDownloadInvoices = async () => {
     const zip = new JSZip();
 
@@ -1194,10 +1198,23 @@ export default function PaymentDone() {
     await Promise.all(
       rowSelectionModel.map(async (rowId) => {
         const rowData = filterData[rowId]; // Access the row data using rowId
+        console.log(rowData, "RD-------------");
         if (rowData) {
           const pdf = new jsPDF();
-          // Customize your PDF content here using rowData
-          pdf.text(`PDF content for ${rowData}`, 10, 10); // Example of how to use rowData
+
+          const keys = Object.keys(rowData);
+          const values = Object.values(rowData);
+
+          // Convert data to table format
+          const tableData = keys.map((key, index) => [key, values[index]]);
+
+          // Add table to PDF
+          pdf.autoTable({
+            startY: 10,
+            head: [["Key", "Value"]],
+            body: tableData,
+          });
+
           zip.file(`invoice_${rowId}.pdf`, pdf.output());
         }
       })
@@ -1209,6 +1226,34 @@ export default function PaymentDone() {
     // Save the zip file
     saveAs(zipBlob, "invoices.zip");
   };
+  // csv download----
+  // const handleDownloadInvoices = async () => {
+  //   // Prepare CSV content
+  //   let csvContent = ""; // Initialize CSV content
+
+  //   // Generate headers row
+  //   const headers = Object.keys(filterData[rowSelectionModel[0]]);
+  //   csvContent += headers.join(",") + "\n";
+
+  //   // Generate CSV content for each row
+  //   rowSelectionModel.forEach((rowId) => {
+  //     const rowData = filterData[rowId]; // Access the row data using rowId
+  //     console.log(rowData, "RD-------------");
+  //     if (rowData) {
+  //       const values = Object.values(rowData);
+
+  //       // Construct CSV row
+  //       const rowContent = values.map((value) => `"${value}"`).join(",");
+  //       csvContent += `${rowContent}\n`;
+  //     }
+  //   });
+
+  //   // Create Blob containing the CSV data
+  //   const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8" });
+
+  //   // Trigger download
+  //   saveAs(blob, "invoices.csv");
+  // };
 
   function CustomColumnMenu(props) {
     return (

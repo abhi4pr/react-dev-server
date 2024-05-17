@@ -25,6 +25,7 @@ import moment from "moment";
 import jsPDF from "jspdf";
 import JSZip from "jszip";
 import { saveAs } from "file-saver";
+import TableData from "./TableData";
 
 export default function Discard() {
   const token = sessionStorage.getItem("token");
@@ -63,6 +64,7 @@ export default function Discard() {
   const [userName, setUserName] = useState("");
   const [dateFilter, setDateFilter] = useState("");
   const [rowSelectionModel, setRowSelectionModel] = useState([]);
+  const [columnsData, setColumnsData] = useState([]);
 
   const callApi = () => {
     axios.get(baseUrl + "phpvendorpaymentrequest").then((res) => {
@@ -83,8 +85,14 @@ export default function Discard() {
           let u = res.data.body.filter((item) => {
             return y.some((item2) => item.request_id == item2.request_id);
           });
+
+          const initialColumns = u.length
+            ? ["s_no", "name", "vendor_name", "page_name", "total_paid"]
+            : ["s_no", "vendor_name", "page_name", "total_paid"];
+
           setData(u);
           setFilterData(u);
+          setColumnsData(initialColumns);
           setDiscardCount(u.length);
           const uniqueVendors = new Set(u.map((item) => item.vendor_name));
           setUniqueVendorCount(uniqueVendors.size);
@@ -380,7 +388,7 @@ export default function Discard() {
       // Vender Name Filter
       const vendorNameFilterPassed =
         !vendorName ||
-        item.vendor_name.toLowerCase().includes(vendorName.toLowerCase());
+        item.vendor_name?.toLowerCase().includes(vendorName.toLowerCase());
 
       // Priority Filter
       const priorityFilterPassed =
@@ -966,10 +974,26 @@ export default function Discard() {
     // Generate PDFs and add them to the zip
     await Promise.all(
       rowSelectionModel.map(async (rowId) => {
-        const pdf = new jsPDF();
-        // Customize your PDF content here
-        pdf.text(`PDF content for row ${rowId}`, 10, 10);
-        zip.file(`invoice_${rowId}.pdf`, pdf.output());
+        const rowData = filterData[rowId]; // Access the row data using rowId
+        console.log(rowData, "RD-------------");
+        if (rowData) {
+          const pdf = new jsPDF();
+
+          const keys = Object.keys(rowData);
+          const values = Object.values(rowData);
+
+          // Convert data to table format
+          const tableData = keys.map((key, index) => [key, values[index]]);
+
+          // Add table to PDF
+          pdf.autoTable({
+            startY: 10,
+            head: [["Key", "Value"]],
+            body: tableData,
+          });
+
+          zip.file(`invoice_${rowId}.pdf`, pdf.output());
+        }
       })
     );
 
@@ -979,6 +1003,35 @@ export default function Discard() {
     // Save the zip file
     saveAs(zipBlob, "invoices.zip");
   };
+  // csv download----
+  // const handleDownloadInvoices = async () => {
+  //   // Prepare CSV content
+  //   let csvContent = ""; // Initialize CSV content
+
+  //   // Generate headers row
+  //   const headers = Object.keys(filterData[rowSelectionModel[0]]);
+  //   csvContent += headers.join(",") + "\n";
+
+  //   // Generate CSV content for each row
+  //   rowSelectionModel.forEach((rowId) => {
+  //     const rowData = filterData[rowId]; // Access the row data using rowId
+  //     console.log(rowData, "RD-------------");
+  //     if (rowData) {
+  //       const values = Object.values(rowData);
+
+  //       // Construct CSV row
+  //       const rowContent = values.map((value) => `"${value}"`).join(",");
+  //       csvContent += `${rowContent}\n`;
+  //     }
+  //   });
+
+  //   // Create Blob containing the CSV data
+  //   const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8" });
+
+  //   // Trigger download
+  //   saveAs(blob, "invoices.csv");
+  // };
+
   function CustomColumnMenu(props) {
     return (
       <GridColumnMenu
@@ -1127,7 +1180,9 @@ export default function Discard() {
                       value={vendorName}
                       onChange={(event, newValue) => setVendorName(newValue)}
                       options={Array.from(
-                        new Set(data.map((option) => option.vendor_name))
+                        new Set(
+                          data?.map((option) => option?.vendor_name || [])
+                        )
                       )}
                       renderInput={(params) => (
                         <TextField
@@ -1281,6 +1336,11 @@ export default function Discard() {
                 }}
                 rowSelectionModel={rowSelectionModel}
               />
+              {/* <TableData
+                setColumnsData={setColumnsData}
+                columnsData={columnsData}
+                filterData={filterData}
+              /> */}
               {openImageDialog && (
                 <ImageView
                   viewImgSrc={viewImgSrc}

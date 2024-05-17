@@ -17,6 +17,20 @@ const PaymentModePaymentDetails = () => {
   const handleAddPaymentDetails = async (e) => {
     e.preventDefault();
 
+    if (!title) {
+      toastError("Please Fill Title");
+      return;
+    } else if (!type) {
+      toastError("Please Fill Type");
+      return;
+    } else if (!details) {
+      toastError("Please Fill Details");
+      return;
+    } else if (!gstBanks) {
+      toastError("Please Fill GST Banks");
+      return;
+    }
+
     const paymentDetails = {
       title: title,
       payment_type: type,
@@ -36,6 +50,7 @@ const PaymentModePaymentDetails = () => {
     e.preventDefault();
     navigate(-1);
   };
+
   return (
     <div>
       <FormContainer
@@ -46,7 +61,10 @@ const PaymentModePaymentDetails = () => {
       <div className="card-body pb4">
         <div className="row thm_form">
           <div className="form-group">
-            <label>Title</label>
+            <label>
+              Title {""}
+              <sup style={{ color: "red" }}>*</sup>
+            </label>
             <input
               // value={requestedAmountField}
               type="text"
@@ -58,7 +76,9 @@ const PaymentModePaymentDetails = () => {
             />
           </div>
           <div className="form-group">
-            <label>Type</label>
+            <label>
+              Type {""} <sup style={{ color: "red" }}>*</sup>
+            </label>
             <select
               className="form-control"
               type="text"
@@ -72,7 +92,9 @@ const PaymentModePaymentDetails = () => {
             </select>
           </div>
           <div className="form-group">
-            <label>Details</label>
+            <label>
+              Details {""} <sup style={{ color: "red" }}>*</sup>
+            </label>
             <input
               type="text"
               placeholder="Request Amount"
@@ -83,7 +105,9 @@ const PaymentModePaymentDetails = () => {
             />
           </div>
           <div className="form-group">
-            <label>GST Banks</label>
+            <label>
+              GST Banks {""} <sup style={{ color: "red" }}>*</sup>
+            </label>
             <select
               className="form-control"
               type="number"

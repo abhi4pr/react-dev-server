@@ -45,6 +45,9 @@ const BalanceTransactionList = () => {
 
     return `${day}/${month}/${year}`;
   };
+
+  console.log(transactionData, "transaction data >>>");
+
   const columns = [
     {
       width: 70,

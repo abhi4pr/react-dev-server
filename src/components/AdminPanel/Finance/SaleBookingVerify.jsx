@@ -19,7 +19,17 @@ import {
 import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
 
-const SaleBookingVerify = ({ onHandleOpenUniqueSalesExecutiveChange, onHandleOpenUniqueCustomerClickChange, setAbouttoclosecount, setButtonaccess, setclosecount, setOpencount, setUniquecustomerCount, setBaseamountTotal, setUniquesalesexecutiveCount }) => {
+const SaleBookingVerify = ({
+  onHandleOpenUniqueSalesExecutiveChange,
+  onHandleOpenUniqueCustomerClickChange,
+  setAbouttoclosecount,
+  setButtonaccess,
+  setclosecount,
+  setOpencount,
+  setUniquecustomerCount,
+  setBaseamountTotal,
+  setUniquesalesexecutiveCount,
+}) => {
   const { toastAlert, toastError } = useGlobalContext();
   const [isFormSubmitted, setIsFormSubmitted] = useState(false);
   const [datas, setData] = useState([]);
@@ -93,7 +103,9 @@ const SaleBookingVerify = ({ onHandleOpenUniqueSalesExecutiveChange, onHandleOpe
   function getData() {
     axios
       .post(baseUrl + "add_php_sale_booking_tds_verification_data_in_node")
-      .then(() => { });
+      .then((res) => {
+        console.log(res, "RES--------------");
+      });
     let formData = new FormData();
     formData.append("loggedin_user_id", 36);
     axios
@@ -107,9 +119,9 @@ const SaleBookingVerify = ({ onHandleOpenUniqueSalesExecutiveChange, onHandleOpe
         }
       )
       .then((res) => {
-        setFilterData(res.data.boby);
-        setData(res.data.body);
-        const custData = res.data.body;
+        setFilterData(res?.data?.boby);
+        setData(res?.data?.body);
+        const custData = res?.data?.body;
         const uniqueCustomers = new Set(custData.map((item) => item.cust_name));
         setUniqueCustomerCount(uniqueCustomers.size);
         setUniquecustomerCount(uniqueCustomers.size);
@@ -146,10 +158,12 @@ const SaleBookingVerify = ({ onHandleOpenUniqueSalesExecutiveChange, onHandleOpe
 
   useEffect(() => {
     getData();
-    setButtonaccess(contextData &&
-      contextData[2] &&
-      contextData[2].insert_value === 1 &&
-      false);
+    setButtonaccess(
+      contextData &&
+        contextData[2] &&
+        contextData[2].insert_value === 1 &&
+        false
+    );
   }, []);
 
   useEffect(() => {
@@ -260,7 +274,9 @@ const SaleBookingVerify = ({ onHandleOpenUniqueSalesExecutiveChange, onHandleOpe
     setSameSalesExecutiveDialog(false);
   };
   useEffect(() => {
-    onHandleOpenUniqueSalesExecutiveChange(() => handleOpenUniqueSalesExecutive);
+    onHandleOpenUniqueSalesExecutiveChange(
+      () => handleOpenUniqueSalesExecutive
+    );
     onHandleOpenUniqueCustomerClickChange(() => handleOpenUniqueCustomerClick);
   }, []);
 
@@ -773,104 +789,120 @@ const SaleBookingVerify = ({ onHandleOpenUniqueSalesExecutiveChange, onHandleOpe
   ];
   const columns = [
     {
-      name: "S.No",
-      cell: (row, index) => <div>{index + 1}</div>,
-      width: "80px",
+      field: "S.No",
+      width: 80,
+
+      renderCell: (params, index) => (
+        <div>{[...filterData].indexOf(params.row) + 1}</div>
+      ),
       sortable: true,
     },
     {
-      name: "Customer Name",
-      selector: (row) => row.cust_name,
-      width: "10%",
+      field: "sale_booking_id",
+      headerName: "Booking Id",
+      renderCell: (params) => {
+        return <div>{params.row.sale_booking_id}</div>;
+      },
+      width: 150,
     },
     {
-      name: "Sales Executive Name",
-      selector: (row) => row.sales_exe_name,
-      width: "10%",
+      field: "cust_name",
+      headerName: "Customer Name",
+      renderCell: (params) => params.row.cust_name,
+      width: 150,
     },
     {
-      name: "Booking Date",
-      // selector: (row) => row.sale_booking_date,
-      cell: (row) => convertDateToDDMMYYYY(row.sale_booking_date),
-      width: "6%",
+      field: "sales_exe_name",
+      headerName: "Sales Executive Name",
+      renderCell: (params) => params.row.sales_exe_name,
+      width: 150,
     },
     {
-      name: "Campaign Amount",
-      selector: (row) => row.campaign_amount,
-      width: "9%",
+      field: "sale_booking_date",
+      headerName: "Booking Date",
+      renderCell: (params) =>
+        convertDateToDDMMYYYY(params.row.sale_booking_date),
+      width: 150,
     },
     {
-      name: "Base Amount",
-      selector: (row) => row.base_amount,
-      width: "6%",
+      field: "campaign_amount",
+      headerName: "Campaign Amount",
+      renderCell: (params) => params.row.campaign_amount,
+      width: 150,
     },
     {
-      name: "GST Amount",
-      selector: (row) => row.gst_amount,
-      width: "7%",
+      field: "base_amount",
+      headerName: "Base Amount",
+      renderCell: (params) => params.row.base_amount,
+      width: 150,
     },
     {
-      name: "Net Amount",
-      selector: (row) => row.net_amount,
-      width: "7%",
+      field: "tds_amount",
+      headerName: "TDS Amount",
+      width: 150,
+      renderCell: (params) => (
+        <div>{params.row.tds_amount !== "" ? params.row.tds_amount : 0}</div>
+      ),
     },
     {
-      name: "Paid Amount",
-      selector: (row) => row.total_paid_amount,
-      width: "7%",
+      field: "gst_amount",
+      headerName: "GST Amount",
+      renderCell: (params) => params.row.gst_amount,
+      width: 150,
     },
     {
-      name: "Refund Amount",
-      selector: (row) => row.total_refund_amount,
-      width: "7%",
+      field: "net_amount",
+      headerName: "Net Amount",
+      renderCell: (params) => params.row.net_amount,
+      width: 150,
     },
     {
-      name: "Refund Balance Amount",
+      field: "total_paid_amount",
+      headerName: "Paid Amount",
+      renderCell: (params) => params.row.total_paid_amount,
+      width: 150,
+    },
+    {
+      field: "total_refund_amount",
+      headerName: "Refund Amount",
+      renderCell: (params) => params.row.total_refund_amount,
+      width: 150,
+    },
+    {
+      field: "balance_refund_amount",
+      headerName: "Refund Balance Amount",
 
-      cell: (row) => {
-        return row.balance_refund_amount;
+      renderCell: (params) => {
+        return params.row.balance_refund_amount;
       },
-      width: "9%",
+      width: 150,
     },
     {
-      name: "Balance Amount",
-      cell: (row) => {
-        return row.campaign_amount - row.total_paid_amount;
+      field: "Balance Amount",
+      headerName: "Balance Amount",
+      renderCell: (params) => {
+        return params.row.campaign_amount - params.row.total_paid_amount;
       },
-      width: "7%",
+      width: 150,
     },
     {
-      name: "Net Bal Cust to pay Amt",
-      selector: (row) => row.net_balance_amount_to_pay,
-      width: "9%",
+      field: "net_balance_amount_to_pay",
+      headerName: "Net Bal Cust to pay Amt",
+      renderCell: (params) => params.row.net_balance_amount_to_pay,
+      width: 150,
     },
     {
-      name: "Net Bal Cust to pay Amt (%)",
-      selector: (row) => row.net_balance_amount_to_pay_percentage,
-      width: "12%",
+      field: "net_balance_amount_to_pay_percentage",
+      headerName: "Net Bal Cust to pay Amt (%)",
+      renderCell: (params) => params.row.net_balance_amount_to_pay_percentage,
+      width: 150,
     },
     {
-      name: "Booking Created Date",
-      cell: (row) => convertDateToDDMMYYYY(row.creation_date),
-      width: "9%",
+      field: "creation_date",
+      headerName: "Booking Created Date",
+      renderCell: (params) => convertDateToDDMMYYYY(params.row.creation_date),
+      width: 150,
     },
-    // {
-    //   name: "Action",
-    //   selector: (row) => (
-    //     <>
-    //       {row.tds_status == 2 ? (
-    //         <span>Verified</span>
-    //       ) : (
-    //         <button
-    //           className="btn cmnbtn btn_sm btn-outline-primary mr4"
-    //           onClick={() => handleImageClick(row)}
-    //         >
-    //           Verify
-    //         </button>
-    //       )}
-    //     </>
-    //   ),
-    // },
   ];
 
   return (
@@ -1041,7 +1073,6 @@ const SaleBookingVerify = ({ onHandleOpenUniqueSalesExecutiveChange, onHandleOpe
           dividers={true}
           sx={{ maxHeight: "80vh", overflowY: "auto" }}
         >
-
           <div className="thm_table fx-head">
             <DataGrid
               rows={sameCustomerData}
@@ -1104,8 +1135,6 @@ const SaleBookingVerify = ({ onHandleOpenUniqueSalesExecutiveChange, onHandleOpe
           sx={{ maxHeight: "80vh", overflowY: "auto" }}
         >
           <div className="thm_table fx-head">
-
-
             <DataGrid
               rows={uniqueCustomerData}
               columns={uniqueCustomercolumn}
@@ -1136,7 +1165,6 @@ const SaleBookingVerify = ({ onHandleOpenUniqueSalesExecutiveChange, onHandleOpe
           </div>
         </DialogContent>
       </Dialog>
-
 
       <div className="card">
         <div className="card-header">
@@ -1182,12 +1210,8 @@ const SaleBookingVerify = ({ onHandleOpenUniqueSalesExecutiveChange, onHandleOpe
                 <label>Sales Executive Name</label>
                 <Autocomplete
                   value={salesExecutive}
-                  onChange={(event, newValue) =>
-                    setSalesExecutive(newValue)
-                  }
-                  options={datas.map(
-                    (option) => option.sales_exe_name || ""
-                  )}
+                  onChange={(event, newValue) => setSalesExecutive(newValue)}
+                  options={datas.map((option) => option.sales_exe_name || "")}
                   renderInput={(params) => (
                     <TextField
                       {...params}
@@ -1287,10 +1311,6 @@ const SaleBookingVerify = ({ onHandleOpenUniqueSalesExecutiveChange, onHandleOpe
         </div>
       </div>
 
-
-
-
-
       <div className="card">
         <div className="card-header sb">
           <h5 className="card-title">Sale Booking Verify</h5>
@@ -1303,19 +1323,31 @@ const SaleBookingVerify = ({ onHandleOpenUniqueSalesExecutiveChange, onHandleOpe
           />
         </div>
         <div className="card-body thm_table">
-          <DataTable
+          {/* <DataTable
             columns={columns}
             data={filterData}
             fixedHeader
             fixedHeaderScrollHeight="64vh"
             highlightOnHover
             pagination
-
+          /> */}
+          <DataGrid
+            rows={filterData || []}
+            columns={columns}
+            pageSize={5}
+            rowsPerPageOptions={[5]}
+            disableSelectionOnClick
+            autoHeight
+            slots={{ toolbar: GridToolbar }}
+            slotProps={{
+              toolbar: {
+                showQuickFilter: true,
+              },
+            }}
+            getRowId={(row) => filterData?.indexOf(row)}
           />
         </div>
       </div>
-
-
 
       <Modal
         isOpen={ImageModalOpen}

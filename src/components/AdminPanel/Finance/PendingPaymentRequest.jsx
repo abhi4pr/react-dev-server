@@ -36,6 +36,7 @@ import jsPDF from "jspdf";
 import JSZip from "jszip";
 import { saveAs } from "file-saver";
 import Overview from "./Overview";
+import Loader from "./Loader/Loader";
 
 export default function PendingPaymentRequest() {
   const whatsappApi = WhatsappAPI();
@@ -105,6 +106,7 @@ export default function PendingPaymentRequest() {
   const [preview, setPreview] = useState("");
   const [openDialog, setOpenDialog] = useState(false);
   const [overviewDialog, setOverviewDialog] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const accordionButtons = ["All", "Partial", "Instant"];
 
@@ -348,6 +350,11 @@ export default function PendingPaymentRequest() {
     (total, item) => total + parseFloat(item?.request_amount),
     0
   );
+
+  const totalBalanceAmount = filterData?.reduce(
+    (total, item) => total + parseFloat(item?.balance_amount),
+    0
+  );
   const handlePayVendorClick = () => {
     // displayRazorpay(paymentAmout);
     // return;
@@ -571,7 +578,6 @@ export default function PendingPaymentRequest() {
   };
 
   const handlePayClick = (e, row) => {
-    console.log(row, "ROW>>>");
     e.preventDefault();
     let x = phpRemainderData.filter(
       (item) => item.request_id == row.request_id
@@ -586,8 +592,16 @@ export default function PendingPaymentRequest() {
     setRowData(row);
     setPaymentAmount(row.balance_amount);
     setBaseAmount(row.base_amount != 0 ? row.base_amount : row.request_amount);
+    setLoading(true);
     setPayDialog(true);
   };
+
+  useEffect(() => {
+    if (loading == false) return;
+    setTimeout(() => {
+      setLoading(false);
+    }, 1000);
+  }, [loading]);
 
   const handleOpenUniqueVendorClick = () => {
     setUniqueVenderDialog(true);
@@ -932,8 +946,9 @@ export default function PendingPaymentRequest() {
       },
     },
     {
+      field: "Action",
       headerName: "Action",
-      width: 150,
+      width: 250,
       renderCell: (params) => {
         return (
           <div className="flexCenter colGap8">
@@ -1025,6 +1040,8 @@ export default function PendingPaymentRequest() {
       },
     },
   ];
+
+  console.log(filterData, "FDFDFDF------------------------");
   const columns = [
     {
       field: "S.NO",
@@ -1083,6 +1100,25 @@ export default function PendingPaymentRequest() {
       },
       width: 250,
     },
+    {
+      field: "invc_no",
+      headerName: "Invoice Number",
+      width: 150,
+      renderCell: (params) => {
+        return <div>{params.row.invc_no}</div>;
+      },
+    },
+    {
+      field: "invc_Date",
+      headerName: "Invoice Date",
+      width: 150,
+      renderCell: (params) => {
+        new Date(params.row.invc_Date).toLocaleDateString("en-IN") +
+          " " +
+          new Date(params.row.invc_Date).toLocaleTimeString("en-IN");
+      },
+    },
+
     {
       field: "request_date",
       headerName: "Requested Date",
@@ -1515,6 +1551,10 @@ export default function PendingPaymentRequest() {
     (total, item) => total + parseFloat(item.request_amount),
     0
   );
+  const balanceAmountPartial = partialData?.reduce(
+    (total, item) => total + parseFloat(item.balance_amount),
+    0
+  );
   const nonGstPartialCount = partialData?.filter((gst) => gst.gstHold === "0");
 
   const withInvcPartialImage = partialData?.filter(
@@ -1530,6 +1570,10 @@ export default function PendingPaymentRequest() {
     instantData?.map((item) => item.vendor_name)
   );
   const pendingAmountInstant = instantData?.reduce(
+    (total, item) => total + parseFloat(item.request_amount),
+    0
+  );
+  const balanceAmountInstant = instantData?.reduce(
     (total, item) => total + parseFloat(item.request_amount),
     0
   );
@@ -1573,6 +1617,7 @@ export default function PendingPaymentRequest() {
   }, [data]);
 
   const handleRowSelectionModelChange = async (rowIds) => {
+    console.log(rowIds, "-----------------");
     setRowSelectionModel(rowIds);
   };
 
@@ -1582,10 +1627,26 @@ export default function PendingPaymentRequest() {
     // Generate PDFs and add them to the zip
     await Promise.all(
       rowSelectionModel.map(async (rowId) => {
-        const pdf = new jsPDF();
-        // Customize your PDF content here
-        pdf.text(`PDF content for row ${rowId}`, 10, 10);
-        zip.file(`invoice_${rowId}.pdf`, pdf.output());
+        const rowData = filterData[rowId]; // Access the row data using rowId
+        console.log(rowData, "RD-------------");
+        if (rowData) {
+          const pdf = new jsPDF();
+
+          const keys = Object.keys(rowData);
+          const values = Object.values(rowData);
+
+          // Convert data to table format
+          const tableData = keys.map((key, index) => [key, values[index]]);
+
+          // Add table to PDF
+          pdf.autoTable({
+            startY: 10,
+            head: [["Key", "Value"]],
+            body: tableData,
+          });
+
+          zip.file(`invoice_${rowId}.pdf`, pdf.output());
+        }
       })
     );
 
@@ -1595,6 +1656,34 @@ export default function PendingPaymentRequest() {
     // Save the zip file
     saveAs(zipBlob, "invoices.zip");
   };
+  // csv download----
+  // const handleDownloadInvoices = async () => {
+  //   // Prepare CSV content
+  //   let csvContent = ""; // Initialize CSV content
+
+  //   // Generate headers row
+  //   const headers = Object.keys(filterData[rowSelectionModel[0]]);
+  //   csvContent += headers.join(",") + "\n";
+
+  //   // Generate CSV content for each row
+  //   rowSelectionModel.forEach((rowId) => {
+  //     const rowData = filterData[rowId]; // Access the row data using rowId
+  //     console.log(rowData, "RD-------------");
+  //     if (rowData) {
+  //       const values = Object.values(rowData);
+
+  //       // Construct CSV row
+  //       const rowContent = values.map((value) => `"${value}"`).join(",");
+  //       csvContent += `${rowContent}\n`;
+  //     }
+  //   });
+
+  //   // Create Blob containing the CSV data
+  //   const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8" });
+
+  //   // Trigger download
+  //   saveAs(blob, "invoices.csv");
+  // };
 
   function CustomColumnMenu(props) {
     return (
@@ -1616,36 +1705,20 @@ export default function PendingPaymentRequest() {
   const openImgDialog = () => {
     setOpenDialog(true);
   };
-  console.log(
-    paymentAmout,
-    "payment amount ",
-    adjustAmount,
-    "adjustment amout??"
-  );
+
   const handleAdjustmentAmount = (e) => {
     setAdjustAmount(e.target.value);
   };
-  // float value increment decrement----------------
-  const handleIncrement = () => {
-    setAdjustAmount(parseFloat(adjustAmount) + 1);
-  };
 
-  const handleDecrement = () => {
-    setAdjustAmount(parseFloat(adjustAmount) - 1);
-  };
-  // ------------------------------------------------
-
-  console.log(
-    rowData?.request_amount - TDSValue || "",
-    "RA------------",
-    TDSValue,
-    "TDS Value------------------"
-  );
-
+  // useEffect(() => {
+  //   const initialAdjustmentAmt = rowData?.balance_amount - paymentAmout || "";
+  //   setAdjustAmount(initialAdjustmentAmt);
+  // }, [rowData, TDSValue]);
   useEffect(() => {
-    const initialAdjustmentAmt = rowData?.balance_amount - paymentAmout || "";
-    setAdjustAmount(initialAdjustmentAmt);
-  }, [rowData, TDSValue]);
+    const initialAdjustmentAmt = rowData?.balance_amount - paymentAmout || 0;
+    const formattedAdjustmentAmt = initialAdjustmentAmt.toFixed(2);
+    setAdjustAmount(formattedAdjustmentAmt);
+  }, [rowData, paymentAmout]);
 
   console.log(filterData, "filterData>>>>>>>>>>>>>", rowData, "rowData");
   return (
@@ -1655,6 +1728,7 @@ export default function PendingPaymentRequest() {
         link="/admin/finance-pruchasemanagement-pendingpaymentrequest"
         uniqueVendorCount={uniqueVendorCount}
         totalPendingAmount={totalPendingAmount}
+        totalBalanceAmount={totalBalanceAmount}
         pendingRequestCount={pendingRequestCount}
         pendingPartialcount={pendingPartialcount}
         pendingInstantcount={pendingInstantcount}
@@ -1662,6 +1736,8 @@ export default function PendingPaymentRequest() {
         uniqueVendorsInstantCount={uniqueVendorsInstantCount}
         pendingAmountPartial={pendingAmountPartial}
         pendingAmountInstant={pendingAmountInstant}
+        balanceAmountPartial={balanceAmountPartial}
+        balanceAmountInstant={balanceAmountInstant}
         nonGstPartialCount={nonGstPartialCount}
         nonGstInstantCount={nonGstInstantCount}
         withInvcPartialImage={withInvcPartialImage}
@@ -2205,6 +2281,7 @@ export default function PendingPaymentRequest() {
                 columns={columns}
                 pageSize={5}
                 rowsPerPageOptions={[5]}
+                h
                 getRowClassName={getValidationCSSForRemainder}
                 slots={{ toolbar: GridToolbar }}
                 checkboxSelection
@@ -2267,476 +2344,495 @@ export default function PendingPaymentRequest() {
         </div>
 
         {/*Dialog Box */}
-        <Dialog open={payDialog} onClose={handleClosePayDialog}>
-          <DialogTitle>Vendor Payment</DialogTitle>
-          <IconButton
-            aria-label="close"
-            onClick={handleClosePayDialog}
-            sx={{
+        {loading ? (
+          <div
+            style={{
+              width: "100vw",
+              height: "100vh",
               position: "absolute",
-              right: 8,
-              top: 8,
-              color: (theme) => theme.palette.grey[500],
+              top: "28%",
+              width: "50%",
+              zIndex: "222",
             }}
           >
-            <CloseIcon />
-          </IconButton>
-          <DialogContent>
-            <div className="row">
-              <TextField
-                className="col-md-6 me-3"
-                value={rowData.vendor_name}
-                autoFocus
-                margin="dense"
-                id="name"
-                readOnly={true}
-                label="Vendor Name"
-                type="text"
-                InputProps={{
-                  readOnly: true,
-                }}
-                variant="outlined"
-              />
-              <TextField
-                className="col-md-5 ml-2"
-                value={rowData.address}
-                autoFocus
-                margin="dense"
-                id="name"
-                // disabled
-                readOnly
-                label="Address"
-                type="text"
-                variant="outlined"
-                InputProps={{
-                  readOnly: true,
-                }}
-              />
-            </div>
-            <div className="row">
-              <TextField
-                className="col-md-6 me-3"
-                value={rowData.mob1}
-                autoFocus
-                margin="dense"
-                // disabledreadOnly
-                readOnly
-                label="Mobile"
-                type="text"
-                variant="outlined"
-                InputProps={{
-                  readOnly: true,
-                }}
-              />
-              <TextField
-                className="col-md-5 ml-2"
-                value={rowData.pan}
-                autoFocus
-                margin="dense"
-                // disabled
-                readOnly
-                label="Pan"
-                type="text"
-                variant="outlined"
-                InputProps={{
-                  readOnly: true,
-                }}
-              />
-            </div>
-            <div className="row">
-              <TextField
-                className="col-md-6 me-3"
-                value={rowData.gst}
-                autoFocus
-                margin="dense"
-                // disabled
-                readOnly
-                label="GST"
-                type="text"
-                variant="outlined"
-                InputProps={{
-                  readOnly: true,
-                }}
-              />
-              <TextField
-                className="col-md-5 ml-2"
-                value={`₹${rowData.outstandings}`}
-                autoFocus
-                margin="dense"
-                // disabled
-                readOnly
-                label="Outstanding"
-                type="text"
-                variant="outlined"
-                InputProps={{
-                  readOnly: true,
-                }}
-              />
-            </div>
-            <div className="row">
-              <TextField
-                className="col-md-3 me-3"
-                value={`₹${rowData.request_amount}`}
-                autoFocus
-                margin="dense"
-                id="name"
-                // disabled
-                readOnly
-                label="Amount Requested"
-                type="text"
-                variant="outlined"
-                InputProps={{
-                  readOnly: true,
-                }}
-              />
-              <TextField
-                className="col-md-3 me-3"
-                value={`₹${rowData.balance_amount}`}
-                autoFocus
-                margin="dense"
-                id="name"
-                // disabled
-                readOnly
-                label="Balance Amount"
-                type="text"
-                variant="outlined"
-                InputProps={{
-                  readOnly: true,
-                }}
-              />
-              <TextField
-                className="col-md-4 me-3"
-                value={`₹${baseAmount}`}
-                autoFocus
-                margin="dense"
-                id="name"
-                // disabled
-                readOnly
-                label="Base Amount"
-                type="text"
-                variant="outlined"
-                InputProps={{
-                  readOnly: true,
-                }}
-              />
-              <TextField
-                className="col-md-4 "
-                value={`₹${rowData.gst_amount ? rowData.gst_amount : 0}`}
-                autoFocus
-                margin="dense"
-                id="name"
-                // disabled
-                readOnly
-                label="GST Amount"
-                type="text"
-                variant="outlined"
-                InputProps={{
-                  readOnly: true,
-                }}
-              />
-              <FormControlLabel
-                className="col-md-5"
-                control={
-                  <Checkbox
-                    onChange={handleGstHold}
-                    disabled={rowData.gst_amount == 0}
-                  />
-                }
-                label="GST Hold"
-              />
-              {rowData?.TDSDeduction !== "1" ? (
-                <>
-                  <FormControlLabel
-                    className="col-md-5"
-                    control={<Checkbox onChange={handleTDSDeduction} />}
-                    label="TDS Deduction"
-                  />
-                  {gstHold && (
-                    <TextField
-                      className="col-md-5 me-3"
-                      value={GSTHoldAmount}
-                      onChange={handleGSTHoldInputChange}
-                      autoFocus
-                      margin="dense"
-                      id="name"
-                      label="GST Hold"
+            {" "}
+            <Loader />
+          </div>
+        ) : (
+          <Dialog open={payDialog} onClose={handleClosePayDialog}>
+            <DialogTitle>Vendor Payment</DialogTitle>
+            <IconButton
+              aria-label="close"
+              onClick={handleClosePayDialog}
+              sx={{
+                position: "absolute",
+                right: 8,
+                top: 8,
+                color: (theme) => theme.palette.grey[500],
+              }}
+            >
+              <CloseIcon />
+            </IconButton>
+            <DialogContent>
+              <div className="row">
+                <TextField
+                  className="col-md-6 me-3"
+                  value={rowData.vendor_name}
+                  autoFocus
+                  margin="dense"
+                  id="name"
+                  readOnly={true}
+                  label="Vendor Name"
+                  type="text"
+                  InputProps={{
+                    readOnly: true,
+                  }}
+                  variant="outlined"
+                />
+                <TextField
+                  className="col-md-5 ml-2"
+                  value={rowData.address}
+                  autoFocus
+                  margin="dense"
+                  id="name"
+                  // disabled
+                  readOnly
+                  label="Address"
+                  type="text"
+                  variant="outlined"
+                  InputProps={{
+                    readOnly: true,
+                  }}
+                />
+              </div>
+              <div className="row">
+                <TextField
+                  className="col-md-6 me-3"
+                  value={rowData.mob1}
+                  autoFocus
+                  margin="dense"
+                  // disabledreadOnly
+                  readOnly
+                  label="Mobile"
+                  type="text"
+                  variant="outlined"
+                  InputProps={{
+                    readOnly: true,
+                  }}
+                />
+                <TextField
+                  className="col-md-5 ml-2"
+                  value={rowData.pan}
+                  autoFocus
+                  margin="dense"
+                  // disabled
+                  readOnly
+                  label="Pan"
+                  type="text"
+                  variant="outlined"
+                  InputProps={{
+                    readOnly: true,
+                  }}
+                />
+              </div>
+              <div className="row">
+                <TextField
+                  className="col-md-6 me-3"
+                  value={rowData.gst}
+                  autoFocus
+                  margin="dense"
+                  // disabled
+                  readOnly
+                  label="GST"
+                  type="text"
+                  variant="outlined"
+                  InputProps={{
+                    readOnly: true,
+                  }}
+                />
+                <TextField
+                  className="col-md-5 ml-2"
+                  value={`₹${rowData.outstandings}`}
+                  autoFocus
+                  margin="dense"
+                  // disabled
+                  readOnly
+                  label="Outstanding"
+                  type="text"
+                  variant="outlined"
+                  InputProps={{
+                    readOnly: true,
+                  }}
+                />
+              </div>
+              <div className="row">
+                <TextField
+                  className="col-md-3 me-3"
+                  value={`₹${rowData.request_amount}`}
+                  autoFocus
+                  margin="dense"
+                  id="name"
+                  // disabled
+                  readOnly
+                  label="Amount Requested"
+                  type="text"
+                  variant="outlined"
+                  InputProps={{
+                    readOnly: true,
+                  }}
+                />
+                <TextField
+                  className="col-md-3 me-3"
+                  value={`₹${rowData.balance_amount}`}
+                  autoFocus
+                  margin="dense"
+                  id="name"
+                  // disabled
+                  readOnly
+                  label="Balance Amount"
+                  type="text"
+                  variant="outlined"
+                  InputProps={{
+                    readOnly: true,
+                  }}
+                />
+                <TextField
+                  className="col-md-4 me-3"
+                  value={`₹${baseAmount}`}
+                  autoFocus
+                  margin="dense"
+                  id="name"
+                  // disabled
+                  readOnly
+                  label="Base Amount"
+                  type="text"
+                  variant="outlined"
+                  InputProps={{
+                    readOnly: true,
+                  }}
+                />
+                <TextField
+                  className="col-md-4 "
+                  value={`₹${rowData.gst_amount ? rowData.gst_amount : 0}`}
+                  autoFocus
+                  margin="dense"
+                  id="name"
+                  // disabled
+                  readOnly
+                  label="GST Amount"
+                  type="text"
+                  variant="outlined"
+                  InputProps={{
+                    readOnly: true,
+                  }}
+                />
+                <FormControlLabel
+                  className="col-md-5"
+                  control={
+                    <Checkbox
+                      onChange={handleGstHold}
+                      disabled={rowData.gst_amount == 0}
                     />
-                  )}
-                  {TDSDeduction && (
-                    <>
-                      <Autocomplete
-                        onChange={(e, value) => setTDSPercentage(value)}
-                        disablePortal
-                        className="col-md-3 mt-2"
-                        value={TDSPercentage}
-                        id="combo-box-demo"
-                        options={[
-                          1, 2, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16,
-                          17, 18, 19, 20,
-                        ]}
-                        renderInput={(params) => (
-                          <TextField
-                            {...params}
-                            label="TDS %"
-                            placeholder="TDS %"
-                          />
-                        )}
-                      />
+                  }
+                  label="GST Hold"
+                />
+                {rowData?.TDSDeduction !== "1" ? (
+                  <>
+                    <FormControlLabel
+                      className="col-md-5"
+                      control={<Checkbox onChange={handleTDSDeduction} />}
+                      label="TDS Deduction"
+                    />
+                    {gstHold && (
                       <TextField
-                        className="col-md-3 mt-2"
-                        value={TDSValue}
+                        className="col-md-5 me-3"
+                        value={GSTHoldAmount}
+                        onChange={handleGSTHoldInputChange}
                         autoFocus
-                        readOnly
                         margin="dense"
                         id="name"
-                        label="TDS Amount"
+                        label="GST Hold"
                       />
-                    </>
-                  )}
-                </>
-              ) : (
-                ""
-              )}
-              <TextField
-                className="col-md-6 me-3"
-                value={rowData.name}
-                autoFocus
-                margin="dense"
-                id="name"
-                readOnly
-                label="Requested By"
-                type="text"
-                variant="outlined"
-              />
-
-              <TextField
-                className="col-md-5 ml-2"
-                value={convertDateToDDMMYYYY(rowData.request_date)}
-                autoFocus
-                margin="dense"
-                id="name"
-                // disabled
-                readOnly
-                label="Request Date"
-                type="text"
-                variant="outlined"
-              />
-            </div>
-            <div className="row">
-              <TextField
-                className="col-md-11 ml-3"
-                value={rowData.t3}
-                autoFocus
-                margin="dense"
-                id="name"
-                disabled
-                label=" Purchase Remark"
-                type="text"
-                variant="outlined"
-              />
-            </div>
-            <div className="me-3">
-              <Autocomplete
-                onChange={(e, value) => setPaymentMode(value)}
-                disablePortal
-                className=" mt-2"
-                id="combo-box-demo"
-                options={
-                  paymentModeData.length > 0
-                    ? paymentModeData.map((item) => item.payment_mode)
-                    : []
-                }
-                fullWidth={true}
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    label="Payment Mode *"
-                    placeholder="Payment Mode"
-                  />
+                    )}
+                    {TDSDeduction && (
+                      <>
+                        <Autocomplete
+                          onChange={(e, value) => setTDSPercentage(value)}
+                          disablePortal
+                          className="col-md-3 mt-2"
+                          value={TDSPercentage}
+                          id="combo-box-demo"
+                          options={[
+                            1, 2, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16,
+                            17, 18, 19, 20,
+                          ]}
+                          renderInput={(params) => (
+                            <TextField
+                              {...params}
+                              label="TDS %"
+                              placeholder="TDS %"
+                            />
+                          )}
+                        />
+                        <TextField
+                          className="col-md-3 mt-2"
+                          value={TDSValue}
+                          autoFocus
+                          readOnly
+                          margin="dense"
+                          id="name"
+                          label="TDS Amount"
+                        />
+                      </>
+                    )}
+                  </>
+                ) : (
+                  ""
                 )}
-              />
-
-              <Autocomplete
-                onChange={(e, value) => setPaymentStatus(value)}
-                value={paymentStatus}
-                disablePortal
-                disabled
-                className=" mt-2"
-                id="combo-box-demo"
-                options={[
-                  "Fully Paid",
-                  "Fully Paid(TDS Deducted)",
-                  "Fully Paid(GST Hold)",
-                  "Fully Paid(TDS Deducted & GST Hold)",
-                  "Partially Paid",
-                ]}
-                fullWidth={true}
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    label="Payment Status *"
-                    placeholder="Payment Status"
-                  />
-                )}
-              />
-              <TextField
-                InputProps={{
-                  readOnly: gstHold,
-                }}
-                onChange={(e) => {
-                  rowData.balance_amount;
-
-                  const currentValue = e.target.value;
-                  if (/^\d+$/.test(currentValue) || currentValue === "") {
-                    // setPaymentAmount(currentValue);
-                    if (currentValue <= +rowData.balance_amount) {
-                      setPaymentAmount(currentValue);
-                      setPaymentStatus;
-                    } else {
-                      toastError(
-                        "Payment Amount should be less than or equal to Requested Amount"
-                      );
-                    }
-                  } else {
-                    setPaymentAmount("");
-                  }
-                }}
-                className="mt-3"
-                autoFocus
-                type="number"
-                margin="dense"
-                id="name"
-                label="Amount *"
-                variant="outlined"
-                fullWidth
-                value={paymentAmout}
-              />
-              <LocalizationProvider dateAdapter={AdapterDayjs}>
-                <DatePicker
-                  format="DD/MM/YYYY"
-                  className="mt-3"
-                  defaultValue={dayjs()}
+                <TextField
+                  className="col-md-6 me-3"
+                  value={rowData.name}
                   autoFocus
-                  label="Payment Date "
-                  onChange={(newValue) => {
-                    setPaymentDate(
-                      newValue
-                        .add(5, "hours")
-                        .add(30, "minutes")
-                        .$d.toGMTString()
-                    );
-                  }}
-                  disableFuture
-                  views={["year", "month", "day"]}
+                  margin="dense"
+                  id="name"
+                  readOnly
+                  label="Requested By"
+                  type="text"
+                  variant="outlined"
                 />
-              </LocalizationProvider>
-              <TextField
-                onChange={(e) => setAdjustAmount(e.target.value)}
-                multiline
-                className="mt-3"
-                autoFocus
-                margin="dense"
-                id="Adjust Amount"
-                label="Adjust Amount"
-                type="text"
-                variant="outlined"
-                fullWidth
-                value={TDSValue ? adjustAmount : ""}
-              />
 
-              <TextField
-                multiline
-                readOnly
-                className="mt-3"
-                autoFocus
-                margin="dense"
-                id="After Adjust Amount"
-                label="After Adjustment Amount"
-                variant="outlined"
-                fullWidth
-                InputProps={{
-                  readOnly: true,
-                  style: { color: "#6a89ba" },
-                }}
-                value={(parseFloat(rowData?.balance_amount) - TDSValue).toFixed(
-                  2
-                )}
-              />
-              <TextField
-                onChange={(e) => setPayRemark(e.target.value)}
-                multiline
-                className="mt-3"
-                autoFocus
-                margin="dense"
-                id="name"
-                label="Remark"
-                type="text"
-                variant="outlined"
-                fullWidth
-                value={payRemark}
-              />
-              <div className="form-group mt-3">
-                <div className="row">
-                  <label htmlFor="paymentProof">Payment Proof/ScreenShot</label>
-
-                  <input
-                    type="file"
-                    className="form-control col-md-6"
-                    id="paymentProof"
-                    onChange={handleFileChange}
-                    // onClick={openImgDialog}
-                  />
-                  <Button
-                    variant="contained"
-                    className="col-md-5 ms-3"
-                    fullWidth
-                    onClick={openImgDialog}
-                  >
-                    view image
-                  </Button>
-                  {openDialog && preview && (
-                    <div
-                      style={{
-                        position: "fixed",
-                        top: 0,
-                        left: 0,
-                        right: 0,
-                        bottom: 0,
-                        background: "rgba(0,0,0,0.5)",
-                        display: "flex",
-                        justifyContent: "center",
-                        alignItems: "center",
-                        zIndex: 9999,
-                      }}
-                      onClick={() => setOpenDialog(false)}
-                    >
-                      <img
-                        src={preview}
-                        alt="Selected file"
-                        style={{
-                          maxWidth: "50%",
-                          maxHeight: "80%",
-                          cursor: "pointer",
-                        }}
-                      />
-                    </div>
+                <TextField
+                  className="col-md-5 ml-2"
+                  value={convertDateToDDMMYYYY(rowData.request_date)}
+                  autoFocus
+                  margin="dense"
+                  id="name"
+                  // disabled
+                  readOnly
+                  label="Request Date"
+                  type="text"
+                  variant="outlined"
+                />
+              </div>
+              <div className="row">
+                <TextField
+                  className="col-md-11 ml-3"
+                  value={rowData.t3}
+                  autoFocus
+                  margin="dense"
+                  id="name"
+                  disabled
+                  label=" Purchase Remark"
+                  type="text"
+                  variant="outlined"
+                />
+              </div>
+              <div className="me-3">
+                <Autocomplete
+                  onChange={(e, value) => setPaymentMode(value)}
+                  disablePortal
+                  className=" mt-2"
+                  id="combo-box-demo"
+                  options={
+                    paymentModeData.length > 0
+                      ? paymentModeData.map((item) => item.payment_mode)
+                      : []
+                  }
+                  fullWidth={true}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      label="Payment Mode *"
+                      placeholder="Payment Mode"
+                    />
                   )}
+                />
+
+                <Autocomplete
+                  onChange={(e, value) => setPaymentStatus(value)}
+                  value={paymentStatus}
+                  disablePortal
+                  disabled
+                  className=" mt-2"
+                  id="combo-box-demo"
+                  options={[
+                    "Fully Paid",
+                    "Fully Paid(TDS Deducted)",
+                    "Fully Paid(GST Hold)",
+                    "Fully Paid(TDS Deducted & GST Hold)",
+                    "Partially Paid",
+                  ]}
+                  fullWidth={true}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      label="Payment Status *"
+                      placeholder="Payment Status"
+                    />
+                  )}
+                />
+                <TextField
+                  InputProps={{
+                    readOnly: gstHold,
+                  }}
+                  onChange={(e) => {
+                    rowData.balance_amount;
+
+                    const currentValue = e.target.value;
+                    if (/^\d+$/.test(currentValue) || currentValue === "") {
+                      // setPaymentAmount(currentValue);
+                      if (currentValue <= +rowData.balance_amount) {
+                        setPaymentAmount(currentValue);
+                        setPaymentStatus;
+                      } else {
+                        toastError(
+                          "Payment Amount should be less than or equal to Requested Amount"
+                        );
+                      }
+                    } else {
+                      setPaymentAmount("");
+                    }
+                  }}
+                  className="mt-3"
+                  autoFocus
+                  type="number"
+                  margin="dense"
+                  id="name"
+                  label="Amount *"
+                  variant="outlined"
+                  fullWidth
+                  value={paymentAmout}
+                />
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                  <DatePicker
+                    format="DD/MM/YYYY"
+                    className="mt-3"
+                    defaultValue={dayjs()}
+                    autoFocus
+                    label="Payment Date "
+                    onChange={(newValue) => {
+                      setPaymentDate(
+                        newValue
+                          .add(5, "hours")
+                          .add(30, "minutes")
+                          .$d.toGMTString()
+                      );
+                    }}
+                    disableFuture
+                    views={["year", "month", "day"]}
+                  />
+                </LocalizationProvider>
+                <TextField
+                  onChange={(e) => setAdjustAmount(e.target.value)}
+                  multiline
+                  className="mt-3"
+                  autoFocus
+                  margin="dense"
+                  id="Adjust Amount"
+                  label="Adjust Amount"
+                  type="text"
+                  variant="outlined"
+                  fullWidth
+                  value={TDSValue ? adjustAmount : ""}
+                />
+
+                <TextField
+                  multiline
+                  readOnly
+                  className="mt-3"
+                  autoFocus
+                  margin="dense"
+                  id="After Adjust Amount"
+                  label="After Adjustment Amount"
+                  variant="outlined"
+                  fullWidth
+                  InputProps={{
+                    readOnly: true,
+                    style: { color: "#6a89ba" },
+                  }}
+                  value={(
+                    parseFloat(rowData?.balance_amount) - TDSValue
+                  ).toFixed(2)}
+                />
+                <TextField
+                  onChange={(e) => setPayRemark(e.target.value)}
+                  multiline
+                  className="mt-3"
+                  autoFocus
+                  margin="dense"
+                  id="name"
+                  label="Remark"
+                  type="text"
+                  variant="outlined"
+                  fullWidth
+                  value={payRemark}
+                />
+                <div className="form-group mt-3">
+                  <div className="row">
+                    <label htmlFor="paymentProof">
+                      Payment Proof/ScreenShot
+                    </label>
+
+                    <input
+                      type="file"
+                      className="form-control col-md-6"
+                      id="paymentProof"
+                      onChange={handleFileChange}
+                      // onClick={openImgDialog}
+                    />
+                    <Button
+                      variant="contained"
+                      className="col-md-5 ms-3"
+                      fullWidth
+                      onClick={openImgDialog}
+                    >
+                      view image
+                    </Button>
+                    {openDialog && preview && (
+                      <div
+                        style={{
+                          position: "fixed",
+                          top: 0,
+                          left: 0,
+                          right: 0,
+                          bottom: 0,
+                          background: "rgba(0,0,0,0.5)",
+                          display: "flex",
+                          justifyContent: "center",
+                          alignItems: "center",
+                          zIndex: 9999,
+                        }}
+                        onClick={() => setOpenDialog(false)}
+                      >
+                        <img
+                          src={preview}
+                          alt="Selected file"
+                          style={{
+                            maxWidth: "50%",
+                            maxHeight: "80%",
+                            cursor: "pointer",
+                          }}
+                        />
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
-            </div>
-          </DialogContent>
-          <DialogActions>
-            <Button
-              variant="contained"
-              className="mx-2"
-              fullWidth
-              onClick={handlePayVendorClick}
-              disabled={!paymentMode || !paymentAmout}
-            >
-              Pay Vendor
-            </Button>
-          </DialogActions>
-        </Dialog>
+            </DialogContent>
+            <DialogActions>
+              <Button
+                variant="contained"
+                className="mx-2"
+                fullWidth
+                onClick={handlePayVendorClick}
+                disabled={!paymentMode || !paymentAmout}
+              >
+                Pay Vendor
+              </Button>
+            </DialogActions>
+          </Dialog>
+        )}
+
         {showDisCardModal && (
           <DiscardConfirmation
             userName={userName}

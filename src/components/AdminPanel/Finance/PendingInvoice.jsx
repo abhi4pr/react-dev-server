@@ -7,6 +7,7 @@ import DataTable from "react-data-table-component";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { useNavigate, Link } from "react-router-dom";
 import { baseUrl } from "../../../utils/config";
+import pdf from "./pdf-file.png";
 import {
   TextField,
   Button,
@@ -20,6 +21,9 @@ import dayjs from "dayjs";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
+import { blue } from "@mui/material/colors";
+import ImageView from "./ImageView";
+import moment from "moment";
 
 const PendingInvoice = () => {
   const navigate = useNavigate();
@@ -29,6 +33,8 @@ const PendingInvoice = () => {
   const [search, setSearch] = useState("");
   const [contextData, setDatas] = useState([]);
   const [filterData, setFilterData] = useState([]);
+  const [filterDataInvoice, setFilterDataInvoice] = useState([]);
+  const [dataInvoice, setDataInvoice] = useState([]);
   const [partyName, setPartyName] = useState("");
   const [inoiceNum, setInoiceNum] = useState("");
   const [date, setDate] = useState(dayjs());
@@ -38,106 +44,167 @@ const PendingInvoice = () => {
   const [customerName, setCustomerName] = useState("");
   const [baseAmountFilter, setBaseAmountFilter] = useState("");
   const [baseAmountField, setBaseAmountField] = useState("");
+  const [customerNameInvoice, setCustomerNameInvoice] = useState("");
+  const [invoiceParticularName, setInvoiceParticularName] = useState("");
+  const [salesPersonInvoiceName, setSalesPersonInvoiceName] = useState("");
+  const [campaignAmountInvoiceFilter, setCampaignAmountInvoiceFilter] =
+    useState("");
+  const [campaignAmountInvoiceField, setCampaignAmountInvoiceField] =
+    useState("");
   const [uniqueCustomerCount, setUniqueCustomerCount] = useState(0);
   const [uniqueCustomerDialog, setUniqueCustomerDialog] = useState(false);
   const [uniqueCustomerData, setUniqueCustomerData] = useState([]);
   const [sameCustomerDialog, setSameCustomerDialog] = useState(false);
+  const [openImageDialog, setOpenImageDialog] = useState(false);
+  const [viewImgSrc, setViewImgSrc] = useState("");
   const [sameCustomerData, setSameCustomerData] = useState([]);
+
+  const [uniqueCustomerInvoiceCount, setUniqueCustomerInvoiceCount] =
+    useState(0);
+  const [uniqueCustomerInvoiceData, setUniqueCustomerInvoiceData] = useState(
+    []
+  );
+  const [sameCustomerInvoiceData, setSameCustomerInvoiceData] = useState([]);
+
   const [uniqueSalesExecutiveCount, setUniqueSalesExecutiveCount] =
+    useState("");
+  const [
+    uniqueSalesExecutiveInvoiceCount,
+    setUniqueSalesExecutiveInvoiceCount,
+  ] = useState("");
+  const [uniqueSalesExecutiveInvoiceData, setUniqueSalesExecutiveInvoiceData] =
     useState("");
   const [uniqueSalesExecutiveDialog, setUniqueSalesExecutiveDialog] =
     useState("");
   const [uniqueSalesExecutiveData, setUniqueSalesExecutiveData] = useState("");
   const [sameSalesExecutiveDialog, setSameSalesExecutiveDialog] = useState("");
   const [sameSalesExecutiveData, setSameSalesExecutiveData] = useState("");
+  const [sameSalesExecutiveInvoiceData, setSameSalesExecutiveInvoiceData] =
+    useState("");
+  const [activeAccordionIndex, setActiveAccordionIndex] = useState(0);
+  const [editActionDialog, setEditActionDialog] = useState("");
+  const [invcDate, setInvcDate] = useState("");
+  const [invcNumber, setInvcNumber] = useState("");
+  const [fileUpload, setFileUpload] = useState("");
+  const [partyInvoiceName, setPartyInvoiceName] = useState("");
+  const [imageInvoice, setImageInvoice] = useState([]);
+  const [saleBookingId, setSaleBookingId] = useState("");
+  const [dateFilter, setDateFilter] = useState("");
+  const [dateFilterInvoice, setDateFilterInvoice] = useState("");
+  const [invoiceMngDate, setInvoiceMngDate] = useState("");
+  const [reason, setReason] = useState("");
+  const [discardSaleBookingId, setDiscardSaleBookingId] = useState("");
+  const [discardDialog, setDiscardDialog] = useState(false);
+
+  const accordionButtons = ["Pending Invoice", "Invoice Created", "Proforma"];
 
   const token = sessionStorage.getItem("token");
   const decodedToken = jwtDecode(token);
   const loginUserId = decodedToken.id;
 
-  const handleReject = async (row) => {
+  const handleReject = async (e) => {
+    e.preventDefault();
     const formData = new FormData();
     formData.append("loggedin_user_id", 36);
-    formData.append("sale_booking_id", row.sale_booking_id);
+    formData.append("sale_booking_id", discardSaleBookingId);
+    formData.append("invoice_action_reason", reason);
 
-    await axios
-      .post(
-        "https://sales.creativefuel.io/webservices/RestController.php?view=invoice_reject",
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      )
-      .then(() => {
-        axios
-          .put(baseUrl + "pending_invoice_update", formData, {
+    const confirmation = confirm("Are you sure you want to reject this data?");
+    if (confirmation) {
+      await axios
+        .post(
+          "https://sales.creativefuel.io/webservices/RestController.php?view=invoice_reject",
+          formData,
+          {
             headers: {
               "Content-Type": "multipart/form-data",
             },
-          })
-          .then(() => {
-            getData();
-            setDate(dayjs());
-            setInoiceNum("");
-            setPartyName("");
-          });
-      });
-
-    toastAlert("Data updated");
-    setIsFormSubmitted(true);
+          }
+        )
+        .then(() => {
+          axios
+            .put(baseUrl + "pending_invoice_update", formData, {
+              headers: {
+                "Content-Type": "multipart/form-data",
+              },
+            })
+            .then(() => {
+              toastAlert("Data Rejected Successfully");
+              handleDiscardCloseDialog();
+              getData();
+              setDate(dayjs());
+              setInoiceNum("");
+              setPartyName("");
+            });
+        });
+    } else {
+      getData();
+    }
+    // toastAlert("Data updated");
+    // setIsFormSubmitted(true);
   };
 
-  const handleImageUpload = async (row, fileData) => {
-    // if (!inoiceNum || !date || !partyName) {
+  const handleImageUpload = async (row) => {
+    console.log(inoiceNum, "inoiceNum", date, "date", partyName, "partyName>>");
+    console.log(partyName, "partyName>>>");
+    // if (!inoiceNum || !date || !partyName || !fileUpload) {
     //   toastError("Please fill all the fields");
     //   return;
     // }
-    if (!inoiceNum) {
-      toastError("Please fill Invoice Number");
-      return;
-    } else if (!date) {
-      toastError("Please fill Invoice Date");
-      return;
-    } else if (!partyName) {
-      toastError("Please fill Party Name");
+    if (!fileUpload) {
+      toastError("Please Add Invoice Image");
       return;
     }
-    const formData = new FormData();
-    formData.append("loggedin_user_id", 36);
-    formData.append("sale_booking_id", row.sale_booking_id);
-    formData.append("invoiceFormSubmit", 1);
-    formData.append("invoice", fileData);
-    formData.append("invoice_mnj_number", inoiceNum);
-    formData.append(
-      "invoice_mnj_date",
-      new Date(date.$d).toISOString().split("T")[0]
-    );
-    formData.append("party_mnj_name", partyName);
+    // if (!inoiceNum) {
+    //   toastError("Please fill Invoice Number");
+    // } else if (!date) {
+    //   toastError("Please fill Invoice Date ");
+    // } else if (!partyName) {
+    //   toastError("Please fill Party Name ");
+    // } else if (!fileUpload) {
+    //   toastError("Please Add File ");
+    // }
 
-    await axios
-      .post(
-        "https://sales.creativefuel.io/webservices/RestController.php?view=invoice_upload_file",
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      )
-      .then(() => {
-        toastAlert("Data updated");
-        axios
-          .put(baseUrl + "pending_invoice_update", formData, {
+    const confirmation = confirm("Are you sure you want to submit this data?");
+    if (confirmation) {
+      const formData = new FormData();
+      formData.append("loggedin_user_id", 36);
+      formData.append("sale_booking_id", row.sale_booking_id);
+      formData.append("invoiceFormSubmit", 1);
+      formData.append("invoice", fileUpload);
+      formData.append("invoice_mnj_number", inoiceNum);
+      formData.append(
+        "invoice_mnj_date",
+        new Date(date.$d).toISOString().split("T")[0]
+      );
+      formData.append("party_mnj_name", partyName);
+
+      await axios
+        .post(
+          "https://sales.creativefuel.io/webservices/RestController.php?view=invoice_upload_file",
+          formData,
+          {
             headers: {
               "Content-Type": "multipart/form-data",
             },
-          })
-          .then(() => {
-            getData();
-          });
-      });
+          }
+        )
+        .then((res) => {
+          toastAlert("Data Submitted Successfully");
+          getDataInvoiceCreated();
+          axios
+            .put(baseUrl + "pending_invoice_update", formData, {
+              headers: {
+                "Content-Type": "multipart/form-data",
+              },
+            })
+            .then((res) => {
+              getData();
+            });
+        });
+    } else {
+      getData();
+    }
   };
 
   function getData() {
@@ -157,8 +224,9 @@ const PendingInvoice = () => {
         }
       )
       .then((res) => {
+        console.log(res, "RES FILTER DATA????");
         setData(res.data.body);
-        setFilterData(res.data.body);
+        setFilterData(res?.data?.body);
         // For Unique Customers
         const custData = res.data.body;
         const uniqueCustomers = new Set(custData.map((item) => item.cust_name));
@@ -245,6 +313,26 @@ const PendingInvoice = () => {
       return allFiltersPassed;
     });
     setFilterData(filterData);
+
+    const uniqueCustomers = new Set(filterData.map((item) => item.cust_name));
+    setUniqueCustomerCount(uniqueCustomers.size);
+    const uniqueCustomerData = Array.from(uniqueCustomers).map(
+      (customerName) => {
+        return filterData.find((item) => item.cust_name === customerName);
+      }
+    );
+    setUniqueCustomerData(uniqueCustomerData);
+    // For Unique Sales Executive
+    const uniqueSalesEx = new Set(
+      filterData.map((item) => item.sales_person_username)
+    );
+    setUniqueSalesExecutiveCount(uniqueSalesEx.size);
+    const uniqueSEData = Array.from(uniqueSalesEx).map((salesEName) => {
+      return filterData.find(
+        (item) => item.sales_person_username === salesEName
+      );
+    });
+    setUniqueSalesExecutiveData(uniqueSEData);
   };
   const handleClearAllFilter = () => {
     setFilterData(datas);
@@ -254,6 +342,35 @@ const PendingInvoice = () => {
     setCustomerName("");
     setBaseAmountFilter("");
     setBaseAmountField("");
+
+    const uniqueCustomers = new Set(datas.map((item) => item.cust_name));
+    setUniqueCustomerCount(uniqueCustomers.size);
+    const uniqueCustomerData = Array.from(uniqueCustomers).map(
+      (customerName) => {
+        return datas.find((item) => item.cust_name === customerName);
+      }
+    );
+    setUniqueCustomerData(uniqueCustomerData);
+    // For Unique Sales Executive
+    const uniqueSalesEx = new Set(
+      datas.map((item) => item.sales_person_username)
+    );
+    setUniqueSalesExecutiveCount(uniqueSalesEx.size);
+    const uniqueSEData = Array.from(uniqueSalesEx).map((salesEName) => {
+      return datas.find((item) => item.sales_person_username === salesEName);
+    });
+    setUniqueSalesExecutiveData(uniqueSEData);
+  };
+
+  // For discard-----
+  const handleDiscardOpenDialog = (e, rowData) => {
+    e.preventDefault();
+    setDiscardSaleBookingId(rowData.sale_booking_id);
+    setDiscardDialog(true);
+  };
+  const handleDiscardCloseDialog = (e) => {
+    // e.preventDefault();
+    setDiscardDialog(false);
   };
   // For Customers
   const handleOpenUniqueCustomerClick = () => {
@@ -270,7 +387,12 @@ const PendingInvoice = () => {
     const sameNameCustomers = datas.filter(
       (item) => item.cust_name === custName
     );
+
+    const sameNameCustomersInvoice = dataInvoice.filter(
+      (item) => item.cust_name === custName
+    );
     setSameCustomerData(sameNameCustomers);
+    setSameCustomerInvoiceData(sameNameCustomersInvoice);
   };
 
   const handleCloseSameCustomer = () => {
@@ -293,7 +415,12 @@ const PendingInvoice = () => {
       (item) => item.sales_person_username === salesEName
     );
 
+    const sameNameSalesExecutiveInvoice = dataInvoice.filter(
+      (item) => item.sales_person_name === salesEName
+    );
+
     setSameSalesExecutiveData(sameNameSalesExecutive);
+    setSameSalesExecutiveInvoiceData(sameNameSalesExecutiveInvoice);
   };
 
   const handleCloseSameSalesExecutive = () => {
@@ -304,6 +431,44 @@ const PendingInvoice = () => {
     (total, item) => total + parseFloat(item.base_amount),
     0
   );
+
+  // Edit Action Field
+  const handleOpenEditFieldAction = (id, date) => {
+    setSaleBookingId(id);
+    setEditActionDialog(true);
+    setInvoiceMngDate(date);
+  };
+  const handleCloseEditFieldAction = () => {
+    setEditActionDialog(false);
+  };
+  // handle submit  function for updating fields
+  const handleInvoiceEditFields = async () => {
+    const formData = new FormData();
+    // const moment = require("moment");
+
+    formData.append("sale_booking_id", saleBookingId);
+    formData.append("loggedin_user_id", 36);
+    formData.append("invoiceFormSubmit", 1);
+    formData.append("invoice_mnj_number", invcNumber);
+    formData.append("invoice_mnj_date", moment(invcDate).format("YYYY/MM/DD"));
+    formData.append("party_mnj_name", partyInvoiceName);
+    formData.append("invoice", imageInvoice);
+
+    await axios
+      .post(
+        "https://sales.creativefuel.io/webservices/RestController.php?view=invoice_upload_file",
+        formData
+        // headers: {
+        //   "Content-Type": "multipart/form-data",
+        // },
+      )
+      .then((res) => {
+        handleCloseEditFieldAction();
+        toastAlert("Fields Updated Successfully");
+        getDataInvoiceCreated();
+      });
+  };
+  // =========================================
   const sameSalesExecutivecolumn = [
     {
       field: "s_no",
@@ -397,14 +562,15 @@ const PendingInvoice = () => {
       field: "sales_person_username",
       headerName: "Sales Person Name",
       renderCell: (params) => (
-        <div
-          style={{ cursor: "pointer" }}
+        <a
+          href="#"
+          style={{ cursor: "pointer", color: "blue" }}
           onClick={() =>
             handleOpenSameSalesExecutive(params.row.sales_person_username)
           }
         >
           {params.row.sales_person_username}
-        </div>
+        </a>
       ),
     },
 
@@ -471,6 +637,7 @@ const PendingInvoice = () => {
           <div>
             <TextField
               key={params.row.sale_booking_id}
+              className="d-block"
               type="text"
               name="input"
               label="Party Name"
@@ -622,8 +789,6 @@ const PendingInvoice = () => {
       field: "s_no",
       headerName: "S.No",
       renderCell: (params, index) => (
-        // <div style={{ whiteSpace: "normal" }}>{index + 1} </div>
-
         <div>{[...uniqueCustomerData].indexOf(params.row) + 1}</div>
       ),
     },
@@ -648,12 +813,13 @@ const PendingInvoice = () => {
       field: "cust_name",
       headerName: "Customer Name",
       renderCell: (params) => (
-        <div
-          style={{ cursor: "pointer" }}
+        <a
+          href="#"
+          style={{ cursor: "pointer", color: "blue" }}
           onClick={() => handleOpenSameCustomer(params.row.cust_name)}
         >
           {params.row.cust_name}
-        </div>
+        </a>
       ),
     },
 
@@ -775,6 +941,12 @@ const PendingInvoice = () => {
     //   ),
     // },
   ];
+  const handlePartyNameKeyDown = (e, params) => {
+    if (e.key === " " && params.value.trim().endsWith(" ")) {
+      e.preventDefault();
+    }
+  };
+
   const columns = [
     {
       width: 60,
@@ -792,7 +964,14 @@ const PendingInvoice = () => {
       height: "200px",
     },
     {
-      headerName: "Requested On Date",
+      headerName: " Requested On",
+      field: "invoice_requested_date",
+      width: 220,
+      renderCell: (params) =>
+        convertDateToDDMMYYYY(params.row.invoice_requested_date),
+    },
+    {
+      headerName: "Sale Booking Date",
       field: "sale_booking_date",
       width: 220,
       renderCell: (params) =>
@@ -819,67 +998,75 @@ const PendingInvoice = () => {
         </>
       ),
     },
-
     {
-      field: "Input",
-      headerName: "Input",
-      width: 600,
-      renderCell: (params, index) => (
-        <div className="mt-2 d-flex">
-          <TextField
+      field: "invoice_mnj_number",
+      headerName: "Invoice No.",
+      width: 200,
+      renderCell: (params) => (
+        <TextField
+          key={params.row.sale_booking_id}
+          className="d-block"
+          type="text"
+          name="input"
+          label="Invoice No."
+          sx={{
+            marginBottom: "1px",
+            "& .css-1t8l2tu-MuiInputBase-input-MuiOutlinedInput-input": {
+              padding: "12px ",
+            },
+          }}
+          onChange={(e) => setInoiceNum(e.target.value)}
+        />
+      ),
+    },
+    {
+      field: "invoice_mnj_date",
+      headerName: "Invoice Date",
+      width: 200,
+      renderCell: (params) => (
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
+          <DatePicker
             key={params.row.sale_booking_id}
-            className="d-block"
-            type="text"
-            name="input"
-            label="Invoice No."
+            format="DD/MM/YYYY"
             sx={{
-              marginBottom: "1px",
-              "& .css-1t8l2tu-MuiInputBase-input-MuiOutlinedInput-input": {
-                padding: "12px ",
+              "& .css-nxo287-MuiInputBase-input-MuiOutlinedInput-input": {
+                padding: "10px",
               },
             }}
-            onChange={(e) => setInoiceNum(e.target.value)}
+            defaultValue={dayjs()}
+            onChange={(e) => {
+              setDate(e);
+            }}
           />
-          {/* //invoice num , date , party name */}
-          <div>
-            <LocalizationProvider dateAdapter={AdapterDayjs}>
-              <DatePicker
-                key={params.row.sale_booking_id}
-                format="DD/MM/YYYY"
-                sx={{
-                  "& .css-nxo287-MuiInputBase-input-MuiOutlinedInput-input": {
-                    padding: "10px",
-                  },
-                }}
-                defaultValue={dayjs()}
-                onChange={(e) => {
-                  setDate(e);
-                }}
-              />
-            </LocalizationProvider>
-          </div>
-          <div>
-            <TextField
-              key={params.row.sale_booking_id}
-              type="text"
-              name="input"
-              label="Party Name"
-              sx={{
-                marginBottom: "1px",
-                "& .css-1t8l2tu-MuiInputBase-input-MuiOutlinedInput-input": {
-                  padding: "12px ",
-                },
-              }}
-              onChange={(e) => setPartyName(e.target.value)}
-            />
-          </div>
-        </div>
+        </LocalizationProvider>
+      ),
+    },
+    {
+      field: "party_mnj_name",
+      headerName: "Party Name",
+      width: 200,
+      renderCell: (params) => (
+        <TextField
+          key={params.row.sale_booking_id}
+          type="text"
+          name="input"
+          variant="outlined"
+          label="Party Name"
+          sx={{
+            marginBottom: "1px",
+            "& .css-1t8l2tu-MuiInputBase-input-MuiOutlinedInput-input": {
+              padding: "12px ",
+            },
+          }}
+          onChange={(e) => setPartyName(e.target.value)}
+          // onKeyDown={(e) => handlePartyNameKeyDown(e, params)}
+        />
       ),
     },
     {
       field: "Upload Invoice",
       headerName: "Upload Invoice",
-      width: 380,
+      width: 480,
       renderCell: (params, index) => (
         <div key={params.row.sale_booking_id} className="d-flex">
           <form>
@@ -888,21 +1075,21 @@ const PendingInvoice = () => {
               type="file"
               name="upload_image"
               className="w-70"
-              onChange={(e) => handleImageUpload(e.target.files[0])}
+              onChange={(e) => setFileUpload(e.target.files[0])}
             />
           </form>
           <br />
-          {/* <button
+          <button
             type="button"
             className="btn btn-success"
             onClick={() => handleImageUpload(params.row)}
           >
-            Sybmit
-          </button> */}
+            Submit
+          </button>
           <button
             type="button"
-            className="btn btn-success"
-            onClick={() => handleReject(params.row)}
+            className="btn btn-success ms-3"
+            onClick={(e) => handleDiscardOpenDialog(e, params.row)}
           >
             Reject
           </button>
@@ -914,6 +1101,46 @@ const PendingInvoice = () => {
       field: "invoice_particular_name",
       width: 200,
       renderCell: (params) => params.row.invoice_particular_name,
+    },
+    {
+      field: "po_file",
+      headerName: "PO File",
+      width: 210,
+      renderCell: (params) => {
+        // Extract file extension and check if it's a PDF
+        const fileExtension = params.row.po_file.split(".").pop().toLowerCase();
+        const isPdf = fileExtension === "pdf";
+
+        const imgUrl = `https://sales.creativefuel.io/${params.row.po_file}`;
+
+        return isPdf ? (
+          <img
+            onClick={() => {
+              setOpenImageDialog(true);
+              setViewImgSrc(imgUrl);
+            }}
+            src={pdf}
+            style={{ width: "40px", height: "40px" }}
+            title="PDF Preview"
+          />
+        ) : (
+          <img
+            onClick={() => {
+              setOpenImageDialog(true);
+              setViewImgSrc(imgUrl);
+            }}
+            src={imgUrl}
+            alt="Invoice"
+            style={{ width: "100px", height: "100px" }}
+          />
+        );
+      },
+    },
+    {
+      field: "po_number",
+      headerName: "PO Number",
+      width: 210,
+      renderCell: (params) => params.row.po_number,
     },
     {
       headerName: "Invoice Type",
@@ -939,24 +1166,12 @@ const PendingInvoice = () => {
       width: 180,
       renderCell: (params) => params.row.net_amount,
     },
-    // {
-    //   field: "Action",
-    //   cell: (row) => (
-    //     <>
-    //     <Link to={`/admin/finance-pendinginvoice/customer-details/${row.cust_id}`}>
-    //       <button className="btn btn-primary" >
-    //         Customer Details
-    //       </button>
-    //     </Link>
-    //     </>
-    //   ),
-    // },
   ];
 
   console.log(filterData, "filterData------------------------ ");
 
   return (
-    <>
+    <div>
       <FormContainer
         mainTitle="Pending Invoice "
         link="/admin/incentive-payment-list"
@@ -973,6 +1188,124 @@ const PendingInvoice = () => {
         uniqueSalesExecutiveCount={uniqueSalesExecutiveCount}
         pendingInvoicePaymentAdditionalTitles={true}
       />
+
+      {/* Edit Action Field */}
+      <Dialog
+        open={editActionDialog}
+        onClose={handleCloseEditFieldAction}
+        fullWidth={"md"}
+        maxWidth={"md"}
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <DialogTitle>Edit Fields</DialogTitle>
+        <IconButton
+          aria-label="close"
+          onClick={handleCloseEditFieldAction}
+          sx={{
+            position: "absolute",
+            right: 8,
+            top: 8,
+            color: (theme) => theme.palette.grey[500],
+          }}
+        >
+          <CloseIcon />
+        </IconButton>
+        <DialogContent
+          dividers={true}
+          sx={{ maxHeight: "80vh", overflowY: "auto" }}
+        >
+          <div className="row">
+            <TextField
+              type="text"
+              name="input"
+              label="Invoice No."
+              onChange={(e) => setInvcNumber(e.target.value)}
+            />
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <DatePicker
+                format="DD/MM/YYYY"
+                className="mt-3"
+                defaultValue={dayjs()}
+                onChange={(e) => {
+                  setInvcDate(e);
+                }}
+              />
+            </LocalizationProvider>
+            <TextField
+              type="text"
+              name="input"
+              label="Party Name"
+              className="mt-3"
+              onChange={(e) => setPartyInvoiceName(e.target.value)}
+            />
+
+            <input
+              type="file"
+              name="upload_image"
+              className="mt-3"
+              onChange={(e) => setImageInvoice(e.target.files[0])}
+            />
+
+            <Button
+              type="button"
+              className="mt-3"
+              variant="contained"
+              onClick={handleInvoiceEditFields}
+            >
+              Update
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+      {/* Dialog For Discard */}
+      <Dialog
+        open={discardDialog}
+        onClose={handleDiscardCloseDialog}
+        fullWidth={true}
+        maxWidth="md"
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <DialogTitle>TDS</DialogTitle>
+        <IconButton
+          aria-label="close"
+          onClick={handleDiscardCloseDialog}
+          sx={{
+            position: "absolute",
+            right: 8,
+            top: 8,
+            color: (theme) => theme.palette.grey[500],
+          }}
+        >
+          <CloseIcon />
+        </IconButton>
+        <DialogContent
+          dividers={true}
+          sx={{ maxHeight: "80vh", overflowY: "auto" }}
+        >
+          <TextField
+            multiline
+            label="Reason for Discard"
+            onChange={(e) => setReason(e.target.value)}
+            fullWidth
+          />
+          <div className="pack w-100 mt-3 sb">
+            <div></div>
+            <div className="pack gap16">
+              <Button variant="contained" onClick={(e) => handleReject(e)}>
+                Submit
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
       {/* Same Sales Executive Dialog Box */}
 
       <Dialog
@@ -1160,179 +1493,199 @@ const PendingInvoice = () => {
         </DialogContent>
       </Dialog>
 
-      <div className="card body-padding">
-        <div className="row">
-          <div className="col-md-3">
-            <div className="form-group">
-              <label>Sales Person Name</label>
-              <Autocomplete
-                value={salesPersonName}
-                onChange={(event, newValue) => setSalesPersonName(newValue)}
-                options={Array.from(
-                  new Set(datas.map((option) => option.sales_person_username))
-                )}
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    label="Sales Executive Name"
-                    type="text"
-                    variant="outlined"
-                    InputProps={{
-                      ...params.InputProps,
-                      className: "form-control", // Apply Bootstrap's form-control class
-                    }}
-                    style={{
-                      borderRadius: "0.25rem",
-                      transition:
-                        "border-color .15s ease-in-out,box-shadow .15s ease-in-out",
-                      "&:focus": {
-                        borderColor: "#80bdff",
-                        boxShadow: "0 0 0 0.2rem rgba(0,123,255,.25)",
-                      },
-                    }}
-                  />
-                )}
-              />
+      <div className="row">
+        <div className="col-12">
+          <div className="card">
+            <div className="card-header">
+              <h5 className="card-title">Search by filter</h5>
             </div>
-          </div>
-          <div className="col-md-3">
-            <div className="form-group">
-              <label>Customer Name</label>
-              <Autocomplete
-                value={customerName}
-                onChange={(event, newValue) => setCustomerName(newValue)}
-                options={Array.from(
-                  new Set(datas.map((option) => option.cust_name))
-                )}
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    label="customer Name"
-                    type="text"
-                    variant="outlined"
-                    InputProps={{
-                      ...params.InputProps,
-                      className: "form-control", // Apply Bootstrap's form-control class
-                    }}
-                    style={{
-                      borderRadius: "0.25rem",
-                      transition:
-                        "border-color .15s ease-in-out,box-shadow .15s ease-in-out",
-                      "&:focus": {
-                        borderColor: "#80bdff",
-                        boxShadow: "0 0 0 0.2rem rgba(0,123,255,.25)",
-                      },
-                    }}
-                  />
-                )}
-              />
+            <div className="card-body pb4">
+              <div className="row thm_form">
+                <div className="col-md-4">
+                  <div className="form-group">
+                    <label>Sales Person Name</label>
+                    <Autocomplete
+                      value={salesPersonName}
+                      onChange={(event, newValue) =>
+                        setSalesPersonName(newValue)
+                      }
+                      options={Array.from(
+                        new Set(
+                          datas.map((option) => option.sales_person_username)
+                        )
+                      )}
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          label="Sales Executive Name"
+                          type="text"
+                          variant="outlined"
+                          InputProps={{
+                            ...params.InputProps,
+                            className: "form-control", // Apply Bootstrap's form-control class
+                          }}
+                          style={{
+                            borderRadius: "0.25rem",
+                            transition:
+                              "border-color .15s ease-in-out,box-shadow .15s ease-in-out",
+                            "&:focus": {
+                              borderColor: "#80bdff",
+                              boxShadow: "0 0 0 0.2rem rgba(0,123,255,.25)",
+                            },
+                          }}
+                        />
+                      )}
+                    />
+                  </div>
+                </div>
+                <div className="col-md-4">
+                  <div className="form-group">
+                    <label>Customer Name</label>
+                    <Autocomplete
+                      value={customerName}
+                      onChange={(event, newValue) => setCustomerName(newValue)}
+                      options={Array.from(
+                        new Set(datas.map((option) => option.cust_name))
+                      )}
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          label="customer Name"
+                          type="text"
+                          variant="outlined"
+                          InputProps={{
+                            ...params.InputProps,
+                            className: "form-control", // Apply Bootstrap's form-control class
+                          }}
+                          style={{
+                            borderRadius: "0.25rem",
+                            transition:
+                              "border-color .15s ease-in-out,box-shadow .15s ease-in-out",
+                            "&:focus": {
+                              borderColor: "#80bdff",
+                              boxShadow: "0 0 0 0.2rem rgba(0,123,255,.25)",
+                            },
+                          }}
+                        />
+                      )}
+                    />
+                  </div>
+                </div>
+                <div className="col-md-4">
+                  <div className="form-group">
+                    <label>From Date</label>
+                    <input
+                      value={fromDate}
+                      type="date"
+                      className="form-control"
+                      onChange={(e) => setFromDate(e.target.value)}
+                    />
+                  </div>
+                </div>
+                <div className="col-md-4">
+                  <div className="form-group">
+                    <label>To Date</label>
+                    <input
+                      value={toDate}
+                      type="date"
+                      className="form-control"
+                      onChange={(e) => {
+                        setToDate(e.target.value);
+                      }}
+                    />
+                  </div>
+                </div>
+                <div className="col-md-4">
+                  <div className="form-group">
+                    <label>Requested Amount Filter</label>
+                    <select
+                      value={baseAmountFilter}
+                      className="form-control"
+                      onChange={(e) => setBaseAmountFilter(e.target.value)}
+                    >
+                      <option value="">Select Amount</option>
+                      <option value="greaterThan">Greater Than</option>
+                      <option value="lessThan">Less Than</option>
+                      <option value="equalTo">Equal To</option>
+                    </select>
+                  </div>
+                </div>
+                <div className="col-md-4">
+                  <div className="form-group">
+                    <label>Requested Amount</label>
+                    <input
+                      value={baseAmountField}
+                      type="number"
+                      placeholder="Request Amount"
+                      className="form-control"
+                      onChange={(e) => {
+                        setBaseAmountField(e.target.value);
+                      }}
+                    />
+                  </div>
+                </div>
+              </div>
             </div>
-          </div>
-          <div className="col-md-3">
-            <div className="form-group">
-              <label>From Date</label>
-              <input
-                value={fromDate}
-                type="date"
-                className="form-control"
-                onChange={(e) => setFromDate(e.target.value)}
-              />
+            <div className="card-footer">
+              <div className="flexCenter colGap16">
+                <Button
+                  variant="contained"
+                  onClick={handleAllFilters}
+                  className="btn cmnbtn btn-primary"
+                >
+                  <i className="fas fa-search"></i> Search
+                </Button>
+                <Button
+                  variant="contained"
+                  onClick={handleClearAllFilter}
+                  className="btn cmnbtn btn-secondary"
+                >
+                  Clear
+                </Button>
+              </div>
             </div>
-          </div>
-          <div className="col-md-3">
-            <div className="form-group">
-              <label>To Date</label>
-              <input
-                value={toDate}
-                type="date"
-                className="form-control"
-                onChange={(e) => {
-                  setToDate(e.target.value);
-                }}
-              />
-            </div>
-          </div>
-
-          <div className="col-md-3">
-            <div className="form-group">
-              <label>Requested Amount Filter</label>
-              <select
-                value={baseAmountFilter}
-                className="form-control"
-                onChange={(e) => setBaseAmountFilter(e.target.value)}
-              >
-                <option value="">Select Amount</option>
-                <option value="greaterThan">Greater Than</option>
-                <option value="lessThan">Less Than</option>
-                <option value="equalTo">Equal To</option>
-              </select>
-            </div>
-          </div>
-          <div className="col-md-3">
-            <div className="form-group">
-              <label>Requested Amount</label>
-              <input
-                value={baseAmountField}
-                type="number"
-                placeholder="Request Amount"
-                className="form-control"
-                onChange={(e) => {
-                  setBaseAmountField(e.target.value);
-                }}
-              />
-            </div>
-          </div>
-          <div className="col-md-1 mt-4 me-2">
-            <Button variant="contained" onClick={handleAllFilters}>
-              <i className="fas fa-search"></i> Search
-            </Button>
-          </div>
-          <div className="col-md-1 mt-4">
-            <Button variant="contained" onClick={handleClearAllFilter}>
-              Clear
-            </Button>
           </div>
         </div>
       </div>
-      <div className="card">
-        <div className="data_tbl table-responsive">
-          {/* <DataTable
-            title="Pending Invoice Creation"
-            columns={columns}
-            data={filterData}
-            fixedHeader
-            // pagination
-            fixedHeaderScrollHeight="64vh"
-            highlightOnHover
-            subHeader
-            subHeaderComponent={
-              <input
-                type="text"
-                placeholder="Search here"
-                className="w-50 form-control"
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-              />
-            }
-          /> */}
-          <DataGrid
-            rows={filterData}
-            columns={columns}
-            pageSize={5}
-            rowsPerPageOptions={[5]}
-            disableSelectionOnClick
-            autoHeight
-            slots={{ toolbar: GridToolbar }}
-            slotProps={{
-              toolbar: {
-                showQuickFilter: true,
-              },
-            }}
-            getRowId={(row) => filterData.indexOf(row)}
-          />
+      <div className="row">
+        <div className="col-12">
+          <div className="card">
+            <div className="card-body thm_table p0">
+              <div className="tab-content">
+                <DataGrid
+                  rows={filterData}
+                  columns={columns}
+                  pageSize={5}
+                  rowsPerPageOptions={[5]}
+                  disableSelectionOnClick
+                  autoHeight
+                  slots={{ toolbar: GridToolbar }}
+                  slotProps={{
+                    toolbar: {
+                      showQuickFilter: true,
+                    },
+                  }}
+                  state={{
+                    keyboard: {
+                      cell: null,
+                      columnHeader: null,
+                      isMultipleKeyPressed: false,
+                    },
+                  }}
+                  getRowId={(row) => filterData.indexOf(row)}
+                />
+                {openImageDialog && (
+                  <ImageView
+                    viewImgSrc={viewImgSrc}
+                    setViewImgDialog={setOpenImageDialog}
+                  />
+                )}
+              </div>
+            </div>
+          </div>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

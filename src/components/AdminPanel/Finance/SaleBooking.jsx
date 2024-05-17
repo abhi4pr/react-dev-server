@@ -16,9 +16,10 @@ const SaleBooking = () => {
   const [closecount, setclosecount] = useState(0);
   const [abouttoclosecount, setAbouttoclosecount] = useState(0);
   const [uniquesalesexecutiveCount, setUniquesalesexecutiveCount] = useState(0);
-  const [handleOpenUniqueCustomerClick, setHandleOpenUniqueCustomerClick] = useState(() => () => { });
-  const [handleOpenUniqueSalesExecutive, setHandleOpenUniqueSalesExecutive] = React.useState(() => () => { });
-
+  const [handleOpenUniqueCustomerClick, setHandleOpenUniqueCustomerClick] =
+    useState(() => () => {});
+  const [handleOpenUniqueSalesExecutive, setHandleOpenUniqueSalesExecutive] =
+    React.useState(() => () => {});
 
   // accordin function:-
   const handleAccordionButtonClick = (index) => {
@@ -31,9 +32,7 @@ const SaleBooking = () => {
         submitButton={false}
         link={true}
         mainTitle={"Sale Booking"}
-        buttonAccess={
-          buttonaccess
-        }
+        buttonAccess={buttonaccess}
         uniqueCustomerCount={uniquecustomerCount}
         baseAmountTotal={baseamountTotal}
         openCount={opencount}
@@ -45,15 +44,46 @@ const SaleBooking = () => {
         saleBookingClosePaymentAdditionalTitles={true}
       />
 
-      <Tab tabName={accordionButtons}
+      <Tab
+        tabName={accordionButtons}
         activeTabindex={activeAccordionIndex}
         onTabClick={handleAccordionButtonClick}
       />
 
-
-      {activeAccordionIndex === 0 && <SaleBookingClose onHandleOpenUniqueSalesExecutiveChange={setHandleOpenUniqueSalesExecutive} onHandleOpenUniqueCustomerClickChange={setHandleOpenUniqueCustomerClick} setAbouttoclosecount={setAbouttoclosecount} setButtonaccess={setButtonaccess} setclosecount={setclosecount} setOpencount={setOpencount} setUniquecustomerCount={setUniquecustomerCount} setBaseamountTotal={setBaseamountTotal} setUniquesalesexecutiveCount={setUniquesalesexecutiveCount} />}
-      {activeAccordionIndex === 1 && <SaleBookingVerify onHandleOpenUniqueSalesExecutiveChange={setHandleOpenUniqueSalesExecutive} onHandleOpenUniqueCustomerClickChange={setHandleOpenUniqueCustomerClick} setAbouttoclosecount={setAbouttoclosecount} setButtonaccess={setButtonaccess} setclosecount={setclosecount} setOpencount={setOpencount} setUniquecustomerCount={setUniquecustomerCount} setBaseamountTotal={setBaseamountTotal} setUniquesalesexecutiveCount={setUniquesalesexecutiveCount} />}
-
+      {activeAccordionIndex === 0 && (
+        <SaleBookingClose
+          onHandleOpenUniqueSalesExecutiveChange={
+            setHandleOpenUniqueSalesExecutive
+          }
+          onHandleOpenUniqueCustomerClickChange={
+            setHandleOpenUniqueCustomerClick
+          }
+          setAbouttoclosecount={setAbouttoclosecount}
+          setButtonaccess={setButtonaccess}
+          setclosecount={setclosecount}
+          setOpencount={setOpencount}
+          setUniquecustomerCount={setUniquecustomerCount}
+          setBaseamountTotal={setBaseamountTotal}
+          setUniquesalesexecutiveCount={setUniquesalesexecutiveCount}
+        />
+      )}
+      {activeAccordionIndex === 1 && (
+        <SaleBookingVerify
+          onHandleOpenUniqueSalesExecutiveChange={
+            setHandleOpenUniqueSalesExecutive
+          }
+          onHandleOpenUniqueCustomerClickChange={
+            setHandleOpenUniqueCustomerClick
+          }
+          setAbouttoclosecount={setAbouttoclosecount}
+          setButtonaccess={setButtonaccess}
+          setclosecount={setclosecount}
+          setOpencount={setOpencount}
+          setUniquecustomerCount={setUniquecustomerCount}
+          setBaseamountTotal={setBaseamountTotal}
+          setUniquesalesexecutiveCount={setUniquesalesexecutiveCount}
+        />
+      )}
     </div>
   );
 };

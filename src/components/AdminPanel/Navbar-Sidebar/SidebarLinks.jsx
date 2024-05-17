@@ -1256,12 +1256,12 @@ const SidebarLinks = () => {
                             >
                               <i className="bi bi-dot"></i> Pending for approval
                             </NavLink> */}
-                            <NavLink
+                            {/* <NavLink
                               className="collapse-item"
                               to="/admin/finance-paymentmode"
                             >
                               <i className="bi bi-dot"></i> Payment Mode
-                            </NavLink>
+                            </NavLink> */}
                             {/* <NavLink
                               className="collapse-item"
                               to="/admin/finance-pendingapproveupdate"

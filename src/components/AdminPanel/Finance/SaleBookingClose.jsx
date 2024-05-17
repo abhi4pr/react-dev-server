@@ -20,7 +20,17 @@ import CloseIcon from "@mui/icons-material/Close";
 import moment from "moment";
 import { set } from "date-fns";
 
-const SaleBookingClose = ({ onHandleOpenUniqueSalesExecutiveChange, onHandleOpenUniqueCustomerClickChange, setAbouttoclosecount, setButtonaccess, setclosecount, setOpencount, setUniquecustomerCount, setBaseamountTotal, setUniquesalesexecutiveCount }) => {
+const SaleBookingClose = ({
+  onHandleOpenUniqueSalesExecutiveChange,
+  onHandleOpenUniqueCustomerClickChange,
+  setAbouttoclosecount,
+  setButtonaccess,
+  setclosecount,
+  setOpencount,
+  setUniquecustomerCount,
+  setBaseamountTotal,
+  setUniquesalesexecutiveCount,
+}) => {
   const { toastAlert } = useGlobalContext();
   const [displaySeq, setDisplaySeq] = useState("");
   const [isFormSubmitted, setIsFormSubmitted] = useState(false);
@@ -49,13 +59,12 @@ const SaleBookingClose = ({ onHandleOpenUniqueSalesExecutiveChange, onHandleOpen
   const [sameSalesExecutiveDialog, setSameSalesExecutiveDialog] = useState("");
   const [sameSalesExecutiveData, setSameSalesExecutiveData] = useState("");
   const [dateFilter, setDateFilter] = useState("");
-  // const [openCount, setOpenCount] = useState(0);
-  // const [closeCount, setCloseCount] = useState(0);
-  // const [aboutToCloseCount, setAboutToCloseCount] = useState(0);
   const [verifyDialog, setVerifyDialog] = useState(false);
   const [balAmount, setBalAmount] = useState("");
   const [remark, setRemark] = useState("");
   const [row, setRow] = useState({});
+  const [openBtnCount, setOpenBtnCount] = useState(0);
+  const [closeBtnCount, setCloseBtnCount] = useState(0);
 
   const token = sessionStorage.getItem("token");
   const decodedToken = jwtDecode(token);
@@ -84,13 +93,11 @@ const SaleBookingClose = ({ onHandleOpenUniqueSalesExecutiveChange, onHandleOpen
   function getData() {
     axios
       .post(baseUrl + "add_php_sale_booking_tds_data_in_node")
-      .then((res) => { });
+      .then((res) => {});
+
     let formData = new FormData();
     formData.append("loggedin_user_id", 36);
     formData.append("tds_status", tdsStatus);
-    {
-      aboutToClose && formData.append("about_to_close", 1);
-    }
 
     axios
       .post(
@@ -103,9 +110,6 @@ const SaleBookingClose = ({ onHandleOpenUniqueSalesExecutiveChange, onHandleOpen
         }
       )
       .then((res) => {
-        // const filteredData = allData.filter(
-        //   (item) => item.show_fstatus == "Open"
-        // );
         setData(res.data.body);
         setFilterData(res.data.body);
         const custData = res.data.body;
@@ -134,61 +138,33 @@ const SaleBookingClose = ({ onHandleOpenUniqueSalesExecutiveChange, onHandleOpen
 
         const dateFilterData = filterDataBasedOnSelection(res.data.body);
         setFilterData(dateFilterData);
-
-        const openCount = res.data.body.filter(
-          (item) => item.show_fstatus === "Open"
-        ).length;
-        const closeCount = res.data.body.filter(
-          (item) => item.show_fstatus === "Closed Link"
-        ).length;
-        const aboutToCloseCount = res.data.body.filter(
-          (item) => item.show_fstatus === "About To Close"
-        ).length;
-
-        // setOpenCount(openCount);
-        // setCloseCount(closeCount);
-        // setAboutToCloseCount(aboutToCloseCount);
       });
   }
 
   useEffect(() => {
     getData();
-    setButtonaccess(contextData &&
-      contextData[2] &&
-      contextData[2].insert_value === 1 &&
-      false);
+    setButtonaccess(
+      contextData &&
+        contextData[2] &&
+        contextData[2].insert_value === 1 &&
+        false
+    );
   }, [tdsStatus, aboutToClose, dateFilter]);
 
-  const aboutClose = (e) => {
-    e.preventDefault();
-    // const allData = datas;
-    // const filteredData = allData.filter(
-    //   (item) => item.show_fstatus == "About To Close"
-    // );
-    // setData(allData);
-    // setFilterData(filteredData);
-    setTdsStatus(0);
-    setAboutToClose(true);
-  };
+  // const aboutClose = (e) => {
+  //   e.preventDefault();
+  //   setTdsStatus(0);
+  //   setAboutToClose(true);
+  // };
 
   const open = (e) => {
     e.preventDefault();
-    // const allData = datas;
-    // const filteredData = allData.filter((item) => item.show_fstatus == "Open");
-    // setData(allData);
-    // setFilterData(filteredData);
     setTdsStatus(0);
     setAboutToClose(false);
   };
 
   const close = (e) => {
     e.preventDefault();
-    // const allData = datas;
-    // const filteredData = allData.filter(
-    //   (item) => item.show_fstatus == "Closed Link"
-    // );
-    // setData(allData);
-    // setFilterData(filteredData);
     setTdsStatus(1);
     setAboutToClose(false);
   };
@@ -304,7 +280,9 @@ const SaleBookingClose = ({ onHandleOpenUniqueSalesExecutiveChange, onHandleOpen
     setSameSalesExecutiveDialog(false);
   };
   useEffect(() => {
-    onHandleOpenUniqueSalesExecutiveChange(() => handleOpenUniqueSalesExecutive);
+    onHandleOpenUniqueSalesExecutiveChange(
+      () => handleOpenUniqueSalesExecutive
+    );
     onHandleOpenUniqueCustomerClickChange(() => handleOpenUniqueCustomerClick);
   }, []);
   // Total base amount:-
@@ -367,7 +345,6 @@ const SaleBookingClose = ({ onHandleOpenUniqueSalesExecutiveChange, onHandleOpen
       fieldName: "cust_name",
       renderCell: (params) => params.row.cust_name,
       width: 200,
-
     },
     {
       field: "Sales Executive Name",
@@ -459,7 +436,9 @@ const SaleBookingClose = ({ onHandleOpenUniqueSalesExecutiveChange, onHandleOpen
     {
       field: "Customer Name",
       fieldName: "cust_name",
-      renderCell: (params) => params.row.cust_name,
+      renderCell: (params) => {
+        return <div>{params.row.cust_name}</div>;
+      },
       width: 200,
     },
     {
@@ -476,14 +455,12 @@ const SaleBookingClose = ({ onHandleOpenUniqueSalesExecutiveChange, onHandleOpen
         </div>
       ),
       width: 200,
-
     },
     {
       field: "Booking Date",
       fieldName: "sale_booking_date",
       renderCell: (params) => params.row.sale_booking_date,
       width: 200,
-
     },
     {
       field: "Campaign Amount",
@@ -530,7 +507,6 @@ const SaleBookingClose = ({ onHandleOpenUniqueSalesExecutiveChange, onHandleOpen
       fieldName: "booking_created_date",
       renderCell: (params) => params.row.booking_created_date,
       width: 200,
-
     },
     {
       field: "Action",
@@ -546,10 +522,8 @@ const SaleBookingClose = ({ onHandleOpenUniqueSalesExecutiveChange, onHandleOpen
         ) : (
           <span>{params.row.show_fstatus}</span>
         );
-
       },
       width: 200,
-
     },
   ];
   const sameCustomercolumn = [
@@ -565,44 +539,40 @@ const SaleBookingClose = ({ onHandleOpenUniqueSalesExecutiveChange, onHandleOpen
     {
       field: "Customer Name",
       fieldName: "cust_name",
-      renderCell: (params) => (<div style={{ wordWrap: "break-word" }}>{params.row.cust_name} </div>),
+      renderCell: (params) => (
+        <div style={{ wordWrap: "break-word" }}>{params.row.cust_name} </div>
+      ),
       width: 200,
-
     },
     {
       field: "Sales Executive Name",
       fieldName: "sales_exe_name",
       renderCell: (params) => params.row.sales_exe_name,
       width: 200,
-
     },
     {
       field: "Booking Date",
       fieldName: "sale_booking_date",
       renderCell: (params) => params.row.sale_booking_date,
       width: 200,
-
     },
     {
       field: "Campaign Amount",
       fieldName: "campaign_amount",
       renderCell: (params) => params.row.campaign_amount,
       width: 200,
-
     },
     {
       field: "Base Amount",
       fieldName: "base_amount",
       renderCell: (params) => params.row.base_amount,
       width: 200,
-
     },
     {
       field: "GST Amount",
       fieldName: "gst_amount",
       renderCell: (params) => params.row.gst_amount,
       width: 200,
-
     },
     {
       field: "Net Amount",
@@ -616,7 +586,6 @@ const SaleBookingClose = ({ onHandleOpenUniqueSalesExecutiveChange, onHandleOpen
       fieldName: "total_paid_amount",
       renderCell: (params) => params.row.total_paid_amount,
       width: 200,
-
     },
     {
       field: "Refund Amount",
@@ -669,8 +638,8 @@ const SaleBookingClose = ({ onHandleOpenUniqueSalesExecutiveChange, onHandleOpen
         <div
           style={{
             cursor: "pointer",
-            whiteSpace: 'nowrap',
-            textOverflow: 'ellipsis'
+            whiteSpace: "nowrap",
+            textOverflow: "ellipsis",
           }}
           onClick={() => handleOpenSameCustomer(params.row.cust_name)}
           title={params.row.cust_name} // Add this line
@@ -678,7 +647,6 @@ const SaleBookingClose = ({ onHandleOpenUniqueSalesExecutiveChange, onHandleOpen
           {params.row.cust_name}
         </div>
       ),
-
     },
     {
       field: "Sales Executive Name",
@@ -776,7 +744,6 @@ const SaleBookingClose = ({ onHandleOpenUniqueSalesExecutiveChange, onHandleOpen
       },
     },
   ];
-  const [columnWidth, setColumnWidth] = useState(200);
 
   // const handleMouseDown = (e) => {
   //   e.preventDefault();
@@ -795,106 +762,129 @@ const SaleBookingClose = ({ onHandleOpenUniqueSalesExecutiveChange, onHandleOpen
   // };
   const columns = [
     {
-      name: "S.No",
-      cell: (row, index) => <div>{index + 1}</div>,
-
+      field: "s_no",
+      headerName: "S.No",
+      renderCell: (params, index) => (
+        <div>{[...filterData].indexOf(params.row) + 1}</div>
+      ),
       sortable: true,
     },
     {
-      name: "Customer Name",
-      cell: (row) => (
+      field: "sale_booking_id",
+      headerName: "Booking Id",
+      renderCell: (params) => {
+        return <div>{params.row.sale_booking_id}</div>;
+      },
+      width: 150,
+    },
+    {
+      field: "cust_name",
+      headerName: "Customer Name",
+      renderCell: (params) => {
+        return <div>{params.row.cust_name}</div>;
+      },
+      width: 150,
+    },
+    {
+      field: "sales_exe_name",
+      headerName: "Sales Executive Name",
+      renderCell: (params) => <div>{params.row.sales_exe_name}</div>,
+      width: 150,
+    },
+    {
+      field: "sale_booking_date",
+      headerName: "Booking Date",
+      renderCell: (params) => params.row.sale_booking_date,
+      width: 150,
+    },
+    {
+      field: "campaign_amount",
+      headerName: "Campaign Amount",
+      renderCell: (params) => params.row.campaign_amount,
+      width: 150,
+    },
 
-        <div >{row.cust_name}</div>
-
+    {
+      field: "base_amount",
+      headerName: "Base Amount",
+      renderCell: (params) => params.row.base_amount,
+      width: 150,
+    },
+    {
+      field: "tds_amount",
+      headerName: "TDS Amount",
+      width: 150,
+      renderCell: (params) => (
+        <div>{params.row.tds_amount !== "" ? params.row.tds_amount : 0}</div>
       ),
-      width: "150px",
     },
     {
-      name: "Sales Executive Name",
-      cell: (row) => (<div>
-
-        {row.sales_exe_name}
-      </div>
-      ),
-      width: "170px",
+      field: "gst_amount",
+      headerName: "GST Amount",
+      renderCell: (params) => params.row.gst_amount,
+      width: 150,
     },
     {
-      name: "Booking Date",
-      selector: (row) => row.sale_booking_date,
+      field: "net_amount",
+      headerName: "Net Amount",
+      renderCell: (params) => params.row.net_amount,
+      width: 150,
     },
     {
-      name: "Campaign Amount",
-      selector: (row) => row.campaign_amount,
-      width: "170px",
-
+      field: "total_paid_amount",
+      headerName: "Paid Amount",
+      renderCell: (params) => params.row.total_paid_amount,
+      width: 150,
     },
 
     {
-      name: "Base Amount",
-      selector: (row) => row.base_amount,
-      width: "170px",
-
+      field: "total_refund_amount",
+      headerName: "Refund Amount",
+      renderCell: (params) => params.row.total_refund_amount,
     },
     {
-      name: "GST Amount",
-      selector: (row) => row.gst_amount,
-      width: "170px",
-
+      field: "balance_refund_amount",
+      headerName: "Refund Balance Amount",
+      renderCell: (params) => params.row.balance_refund_amount,
+      width: 150,
     },
     {
-      name: "Net Amount",
-      selector: (row) => row.net_amount,
-      width: "170px",
-
+      field: "net_balance_amount_to_pay_percentage",
+      headerName: "Net Bal Cust to pay Amt (%)",
+      renderCell: (params) => params.row.net_balance_amount_to_pay_percentage,
+      width: 150,
     },
     {
-      name: "Paid Amount",
-      selector: (row) => row.total_paid_amount,
-      width: "170px",
-
+      field: "booking_created_date",
+      headerName: "Booking Created Date",
+      renderCell: (params) => params.row.booking_created_date,
+      width: 150,
     },
     {
-      name: "Refund Amount",
-      selector: (row) => row.total_refund_amount,
-      width: "170px",
-
+      field: "show_fstatus",
+      headerName: "Status",
+      renderCell: (params) => params.row.show_fstatus,
     },
-    {
-      name: "Refund Balance Amount",
-      selector: (row) => row.balance_refund_amount,
-      width: "170px",
 
-    },
     {
-      name: "Net Bal Cust to pay Amt (%)",
-      selector: (row) => row.net_balance_amount_to_pay_percentage,
-      width: "190px",
-
-    },
-    {
-      name: "Booking Created Date",
-      selector: (row) => row.booking_created_date,
-      width: "170px",
-
-    },
-    {
-      name: "Action",
-      selector: (row) => {
+      field: "Action",
+      headerName: "Action",
+      renderCell: (params) => {
         // return row.show_fstatus === "About To Close" ? (
-        return tdsStatus === 0 && aboutToClose == true ? (
-          <button
-            className="btn btn-sm btn-outline-info"
-            onClick={() => handleVerify(row)}
-          >
-            Close
-          </button>
+        return tdsStatus === 0 ? (
+          // <button
+          //   className="btn btn-sm btn-outline-info"
+          //   onClick={() => handleVerify(params.row)}
+          // >
+          //   Close
+          // </button>
+          ""
         ) : (
           <div className="flex-row gap16">
-            <span className="mt-2">{row.show_fstatus}</span>
-            {row.show_fstatus === "Closed" ? (
+            {params.row.show_fstatus === "Closed" ? (
               <button
                 className="btn cmnbtn btn_sm btn-outline-primary mr4"
-                onClick={(e) => handleOpenVerifyDialog(e, row)}
+                onClick={(e) => handleOpenVerifyDialog(e, params.row)}
               >
                 Verify
               </button>
@@ -902,22 +892,17 @@ const SaleBookingClose = ({ onHandleOpenUniqueSalesExecutiveChange, onHandleOpen
           </div>
         );
       },
-      width: "170px",
-
     },
-    {
-      field: "Action",
-      fieldName: "Action",
-      selector: (row) => (
-        <>
-
-        </>
-      ),
-      width: "170px",
-
-    },
+    // {
+    //   field: "Action",
+    //   fieldName: "Action",
+    //   renderCell: (params) => <></>,
+    //   width: "170px",
+    // },
   ];
+
   console.log(filterData, "FILTER DATA>>");
+
   const filterDataBasedOnSelection = (apiData) => {
     const now = moment();
     switch (dateFilter) {
@@ -1002,51 +987,23 @@ const SaleBookingClose = ({ onHandleOpenUniqueSalesExecutiveChange, onHandleOpen
     }
   };
 
-  const openCount = filterData?.filter(
-    (item) => item.show_fstatus === "Open"
-  ).length;
-  setOpencount(openCount);
-  const closeCount = filterData?.filter(
-    (item) => item.show_fstatus === "Closed"
-  ).length;
-  setclosecount(closeCount);
-  const aboutToCloseCount = filterData?.filter(
-    (item) => item.show_fstatus === "About To Close"
-  ).length;
-  setAbouttoclosecount(aboutToCloseCount);
-  // setOpenCount(openCount);
-  // setCloseCount(closeCount);
-  // setAboutToCloseCount(aboutToCloseCount);
+  useEffect(() => {
+    const openCount = filterData.filter(
+      (item) => item.show_fstatus === "Open"
+    ).length;
+    setOpenBtnCount(openCount);
+    // setOpencount(openCount);
 
-  // const openCount = filterData?.filter((open) => open?.show_fstatus === "Open");
-  // const closeCount = filterData?.filter(
-  //   (close) => close?.show_fstatus === "Close Link "
-  // );
-  // const aboutToCloseCount = filterData?.filter(
-  //   (aboutTo) => aboutTo?.show_fstatus === "About To Close"
-  // );
+    const closeCount = filterData.filter(
+      (item) => item.show_fstatus === "Closed"
+    ).length;
+    setCloseBtnCount(closeCount);
+    // setclosecount(closeCount);
+  }, [filterData]);
+
   console.log(filterData, "filterData>");
   return (
     <>
-      {/* <FormContainer
-        mainTitle="Sale Booking "
-        link="/admin/incentive-payment-list"
-        buttonAccess={
-          contextData &&
-          contextData[2] &&
-          contextData[2].insert_value === 1 &&
-          false
-        }
-        uniqueCustomerCount={uniqueCustomerCount}
-        baseAmountTotal={baseAmountTotal}
-        openCount={openCount}
-        closeCount={closeCount}
-        aboutToCloseCount={aboutToCloseCount}
-        handleOpenUniqueCustomerClick={handleOpenUniqueCustomerClick}
-        handleOpenUniqueSalesExecutive={handleOpenUniqueSalesExecutive}
-        uniqueSalesExecutiveCount={uniqueSalesExecutiveCount}
-        saleBookingClosePaymentAdditionalTitles={true}
-      /> */}
       {/* verify dialog box */}
       <Dialog
         open={verifyDialog}
@@ -1156,7 +1113,6 @@ const SaleBookingClose = ({ onHandleOpenUniqueSalesExecutiveChange, onHandleOpen
           sx={{ maxHeight: "80vh", overflowY: "auto" }}
         >
           <div className="thm_table fx-head">
-
             <DataGrid
               rows={sameSalesExecutiveData}
               columns={sameSalesExecutivecolumn}
@@ -1206,8 +1162,6 @@ const SaleBookingClose = ({ onHandleOpenUniqueSalesExecutiveChange, onHandleOpen
           sx={{ maxHeight: "80vh", overflowY: "auto" }}
         >
           <div className="thm_table fx-head">
-
-
             <DataGrid
               rows={uniqueSalesExecutiveData}
               columns={uniqueSalesExecutivecolumn}
@@ -1256,8 +1210,6 @@ const SaleBookingClose = ({ onHandleOpenUniqueSalesExecutiveChange, onHandleOpen
           sx={{ maxHeight: "80vh", overflowY: "auto" }}
         >
           <div className="thm_table fx-head">
-
-
             <DataGrid
               rows={sameCustomerData}
               columns={sameCustomercolumn}
@@ -1306,8 +1258,6 @@ const SaleBookingClose = ({ onHandleOpenUniqueSalesExecutiveChange, onHandleOpen
           sx={{ maxHeight: "80vh", overflowY: "auto" }}
         >
           <div className="thm_table fx-head">
-
-
             <DataGrid
               rows={uniqueCustomerData}
               columns={uniqueCustomercolumn}
@@ -1390,9 +1340,7 @@ const SaleBookingClose = ({ onHandleOpenUniqueSalesExecutiveChange, onHandleOpen
                 <label>Sales Executive Name</label>
                 <Autocomplete
                   value={salesExecutive}
-                  onChange={(event, newValue) =>
-                    setSalesExecutive(newValue)
-                  }
+                  onChange={(event, newValue) => setSalesExecutive(newValue)}
                   options={Array.from(
                     new Set(datas.map((option) => option.sales_exe_name))
                   )}
@@ -1495,10 +1443,6 @@ const SaleBookingClose = ({ onHandleOpenUniqueSalesExecutiveChange, onHandleOpen
         </div>
       </div>
 
-
-
-
-
       <div className="card">
         <div className="card-header flexCenterBetween">
           <h5 className="card-title">Sale Booking Close</h5>
@@ -1514,37 +1458,41 @@ const SaleBookingClose = ({ onHandleOpenUniqueSalesExecutiveChange, onHandleOpen
               className="btn cmnbtn btn_sm btn-success"
               onClick={(e) => open(e)}
             >
-              Open ({openCount})
+              Open ({openBtnCount})
             </button>
             <button
               className="btn cmnbtn btn_sm btn-danger"
               onClick={(e) => close(e)}
             >
-              Closed({closeCount})
+              Closed({closeBtnCount})
             </button>
-            {/* <button
-                  className="btn cmnbtn btn_sm btn-warning"
-                  onClick={(e) => aboutClose(e)}
-                >
-                  About to close
-                </button> */}
           </div>
         </div>
         <div className="card-body thm_table fx-head data_tbl table-responsive">
-          <DataTable
+          <DataGrid
+            rows={filterData}
             columns={columns}
-            data={filterData}
-            fixedHeader
-            pagination
-            fixedHeaderScrollHeight="64vh"
-            highlightOnHover
-
-
+            pageSize={5}
+            rowsPerPageOptions={[5]}
+            disableSelectionOnClick
+            autoHeight
+            slots={{ toolbar: GridToolbar }}
+            slotProps={{
+              toolbar: {
+                showQuickFilter: true,
+              },
+            }}
+            state={{
+              keyboard: {
+                cell: null,
+                columnHeader: null,
+                isMultipleKeyPressed: false,
+              },
+            }}
+            getRowId={(row) => filterData.indexOf(row)}
           />
         </div>
       </div>
-
-
     </>
   );
 };

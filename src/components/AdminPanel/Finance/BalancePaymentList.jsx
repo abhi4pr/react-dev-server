@@ -167,7 +167,7 @@ const BalancePaymentList = () => {
     formData.append("payment_type", paymentType.label);
     formData.append("payment_mode", "others");
     formData.append("paid_amount", paidAmount);
-    formData.append("payment_date", paymentDate);
+    formData.append("payment_date", moment(paymentDate).format("YYYY/MM/DD"));
     formData.append("incentive_adjustment_amount", adjustmentAmount);
 
     await axios
@@ -214,8 +214,8 @@ const BalancePaymentList = () => {
     setDiscardDialog(false);
   };
 
-  function getData() {
-    axios.post(baseUrl + "add_php_payment_bal_data_in_node").then(() => { });
+  const getData = () => {
+    axios.post(baseUrl + "add_php_payment_bal_data_in_node").then(() => {});
     const formData = new FormData();
     formData.append("loggedin_user_id", 36);
     axios
@@ -284,7 +284,7 @@ const BalancePaymentList = () => {
         const dateFilterData = filterDataBasedOnSelection(res?.data?.body);
         setFilterData(dateFilterData);
       });
-  }
+  };
 
   useEffect(() => {
     getData();
@@ -753,6 +753,8 @@ const BalancePaymentList = () => {
         const formData = new FormData();
         formData.append("sale_booking_id", tdsFieldSaleBookingId);
         formData.append("tds_status", 1);
+        formData.append("tds_amount", balAmount - paidAmount);
+        formData.append("tds_percent", tdsPercentage);
         axios
           .post(
             "https://sales.creativefuel.io/webservices/RestController.php?view=sales_tds_detail_update",
@@ -778,13 +780,13 @@ const BalancePaymentList = () => {
         const rowIndex =
           activeAccordionIndex == 0
             ? sameSalesExecutiveData
-              .filter((d) => d.invoice_mnj_number !== "")
-              .indexOf(params.row)
+                .filter((d) => d.invoice_mnj_number !== "")
+                .indexOf(params.row)
             : activeAccordionIndex == 1
-              ? sameSalesExecutiveData
+            ? sameSalesExecutiveData
                 .filter((d) => d.invoice_mnj_number === "")
                 .indexOf(params.row)
-              : "";
+            : "";
 
         return <div>{rowIndex + 1}</div>;
       },
@@ -860,13 +862,13 @@ const BalancePaymentList = () => {
         const rowIndex =
           activeAccordionIndex == 0
             ? uniqueSalesExecutiveData
-              .filter((d) => d.invoice_mnj_number !== "")
-              .indexOf(params.row)
+                .filter((d) => d.invoice_mnj_number !== "")
+                .indexOf(params.row)
             : activeAccordionIndex == 1
-              ? uniqueSalesExecutiveData
+            ? uniqueSalesExecutiveData
                 .filter((d) => d.invoice_mnj_number === "")
                 .indexOf(params.row)
-              : "";
+            : "";
 
         return <div>{rowIndex + 1}</div>;
       },
@@ -1013,13 +1015,13 @@ const BalancePaymentList = () => {
         const rowIndex =
           activeAccordionIndex == 0
             ? sameCustomerData
-              .filter((d) => d.invoice_mnj_number !== "")
-              .indexOf(params.row)
+                .filter((d) => d.invoice_mnj_number !== "")
+                .indexOf(params.row)
             : activeAccordionIndex == 1
-              ? sameCustomerData
+            ? sameCustomerData
                 .filter((d) => d.invoice_mnj_number === "")
                 .indexOf(params.row)
-              : "";
+            : "";
 
         return <div>{rowIndex + 1}</div>;
       },
@@ -1095,13 +1097,13 @@ const BalancePaymentList = () => {
         const rowIndex =
           activeAccordionIndex == 0
             ? uniqueCustomerData
-              .filter((d) => d.invoice_mnj_number !== "")
-              .indexOf(params.row)
+                .filter((d) => d.invoice_mnj_number !== "")
+                .indexOf(params.row)
             : activeAccordionIndex == 1
-              ? uniqueCustomerData
+            ? uniqueCustomerData
                 .filter((d) => d.invoice_mnj_number === "")
                 .indexOf(params.row)
-              : "";
+            : "";
 
         return <div>{rowIndex + 1}</div>;
       },
@@ -1264,8 +1266,8 @@ const BalancePaymentList = () => {
           activeAccordionIndex == 0
             ? invcForCreated.indexOf(params.row)
             : activeAccordionIndex == 1
-              ? invcForNonCreated.indexOf(params.row)
-              : "";
+            ? invcForNonCreated.indexOf(params.row)
+            : "";
 
         return <div>{rowIndex + 1}</div>;
 
@@ -1592,13 +1594,13 @@ const BalancePaymentList = () => {
 
   const calculateTDSPercentage = () => {
     const remainingData = balAmount - paidAmount;
+    console.log(remainingData, "RD------------");
     if (remainingData === 0) {
       setTDSPercentage(0);
     } else {
-      const percentage = (baseAmount / remainingData) * 100;
-      const roundedPercentage = parseFloat(percentage.toFixed(2)); // Round to two decimal places and convert to float
-      const formattedPercentage = (roundedPercentage / 100).toFixed(2); // Divide by 100 and round to two decimal places
-      setTDSPercentage(formattedPercentage);
+      const percentage = (remainingData / baseAmount) * 100;
+      const roundedPercentage = parseFloat(percentage.toFixed(2));
+      setTDSPercentage(roundedPercentage);
     }
   };
 

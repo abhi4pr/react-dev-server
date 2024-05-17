@@ -1,0 +1,38 @@
+:root {
+ 
+}
+
+
+
+/* .loading-animation{
+
+    
+    .loader {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: calc(var(--dot-size) / 2);
+  block-size: var(--max-block-size);
+}
+
+.dot {
+  inline-size: var(--dot-size);
+  block-size: var(--dot-size);
+  border-radius: calc(var(--dot-size) / 2);
+  background: var(--dot-color);
+  animation: y-grow 2s infinite ease-in-out;
+  animation-delay: calc(var(--delay) * 1ms);
+}
+
+@keyframes y-grow {
+  25% {
+    block-size: var(--max-block-size);
+    background-color: var(--dot-color-transition-1);
+  }
+  50% {
+      block-size: var(--dot-size);
+      background-color: var(--dot-color-transition-2);
+    }
+}
+
+} */

@@ -162,7 +162,7 @@ export default function TDSdeduct() {
       // Vender Name Filter
       const vendorNameFilterPassed =
         !vendorName ||
-        item.vendor_name.toLowerCase().includes(vendorName.toLowerCase());
+        item.vendor_name?.toLowerCase().includes(vendorName.toLowerCase());
 
       // Priority Filter
       const priorityFilterPassed =
@@ -349,6 +349,14 @@ export default function TDSdeduct() {
         return <p> &#8377; {params.row.request_amount}</p>;
       },
     },
+    {
+      field: "outstandings",
+      headerName: "OutStanding ",
+      width: 150,
+      renderCell: (params) => {
+        return <p> &#8377; {params.row.outstandings}</p>;
+      },
+    },
     // {
     //   headerName: "Action",
     //   width: 150,
@@ -422,8 +430,15 @@ export default function TDSdeduct() {
       field: "outstandings",
       headerName: "OutStanding ",
       width: 150,
-      renderCell: (params) => {
-        return <p> &#8377; {params.row.outstandings}</p>;
+      renderCell: ({ row }) => {
+        const sameVendor = filterData.filter(
+          (e) => e.vendor_name === row.vendor_name
+        );
+        const reduceAmt = sameVendor.reduce(
+          (a, b) => a + 1 * b.outstandings,
+          0
+        );
+        return <p> &#8377; {reduceAmt}</p>;
       },
     },
   ];
@@ -1000,10 +1015,26 @@ export default function TDSdeduct() {
     // Generate PDFs and add them to the zip
     await Promise.all(
       rowSelectionModel.map(async (rowId) => {
-        const pdf = new jsPDF();
-        // Customize your PDF content here
-        pdf.text(`PDF content for row ${rowId}`, 10, 10);
-        zip.file(`invoice_${rowId}.pdf`, pdf.output());
+        const rowData = filterData[rowId]; // Access the row data using rowId
+        console.log(rowData, "RD-------------");
+        if (rowData) {
+          const pdf = new jsPDF();
+
+          const keys = Object.keys(rowData);
+          const values = Object.values(rowData);
+
+          // Convert data to table format
+          const tableData = keys.map((key, index) => [key, values[index]]);
+
+          // Add table to PDF
+          pdf.autoTable({
+            startY: 10,
+            head: [["Key", "Value"]],
+            body: tableData,
+          });
+
+          zip.file(`invoice_${rowId}.pdf`, pdf.output());
+        }
       })
     );
 
@@ -1013,6 +1044,35 @@ export default function TDSdeduct() {
     // Save the zip file
     saveAs(zipBlob, "invoices.zip");
   };
+  // csv download----
+  // const handleDownloadInvoices = async () => {
+  //   // Prepare CSV content
+  //   let csvContent = ""; // Initialize CSV content
+
+  //   // Generate headers row
+  //   const headers = Object.keys(filterData[rowSelectionModel[0]]);
+  //   csvContent += headers.join(",") + "\n";
+
+  //   // Generate CSV content for each row
+  //   rowSelectionModel.forEach((rowId) => {
+  //     const rowData = filterData[rowId]; // Access the row data using rowId
+  //     console.log(rowData, "RD-------------");
+  //     if (rowData) {
+  //       const values = Object.values(rowData);
+
+  //       // Construct CSV row
+  //       const rowContent = values.map((value) => `"${value}"`).join(",");
+  //       csvContent += `${rowContent}\n`;
+  //     }
+  //   });
+
+  //   // Create Blob containing the CSV data
+  //   const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8" });
+
+  //   // Trigger download
+  //   saveAs(blob, "invoices.csv");
+  // };
+
   function CustomColumnMenu(props) {
     return (
       <GridColumnMenu
@@ -1160,7 +1220,9 @@ export default function TDSdeduct() {
                       value={vendorName}
                       onChange={(event, newValue) => setVendorName(newValue)}
                       options={Array.from(
-                        new Set(data.map((option) => option.vendor_name))
+                        new Set(
+                          data?.map((option) => option?.vendor_name || [])
+                        )
                       )}
                       renderInput={(params) => (
                         <TextField

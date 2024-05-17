@@ -16,12 +16,15 @@ const FormContainer = ({
   uniqueCustomerInvoiceCount,
   uniqueSalesExecutiveInvoiceCount,
   nonInvcbalanceAmountTotal,
+  totalBalanceAmount,
   link,
   uniqueNonInvoiceCustomerCount,
   uniqueNonInvoiceSalesExecutiveCount,
-  openCount,
-  closeCount,
-  aboutToCloseCount,
+  balanceAmountPartial,
+  balanceAmountInstant,
+  // openCount,
+  // closeCount,
+  // aboutToCloseCount,
   buttonAccess,
   newbutton,
   newbuttonRouting,
@@ -113,6 +116,10 @@ const FormContainer = ({
               <h2>
                 Pending Request Amount : <a href="#"> {totalPendingAmount}</a>
               </h2>
+
+              <h2>
+                Balance Amount : <a href="#"> {totalBalanceAmount}</a>
+              </h2>
               <h2>
                 Pending Request : <a href="#"> {pendingRequestCount}</a>
               </h2>
@@ -136,6 +143,9 @@ const FormContainer = ({
               </h2>
               <h2>
                 Pending Request Amount : <a href="#"> {pendingAmountPartial}</a>
+              </h2>
+              <h2>
+                Balance Amount : <a href="#"> {balanceAmountPartial}</a>
               </h2>
               <h2>
                 Pending Request : <a href="#"> {pendingPartialcount}</a>
@@ -163,6 +173,9 @@ const FormContainer = ({
               </h2>
               <h2>
                 Pending Request Amount : <a href="#"> {pendingAmountInstant}</a>
+              </h2>
+              <h2>
+                Balance Amount : <a href="#"> {balanceAmountInstant}</a>
               </h2>
               <h2>
                 Pending Request : <a href="#"> {pendingInstantcount}</a>
@@ -472,8 +485,9 @@ const FormContainer = ({
               <Link to={link}>
                 <button
                   title={"Add New " + mainTitle}
-                  className={`btn cmnbtn btn-primary ${addNewButtonName && "text_button"
-                    }`}
+                  className={`btn cmnbtn btn-primary ${
+                    addNewButtonName && "text_button"
+                  }`}
                 >
                   {/* {addNewButtonName ? addNewButtonName : <FaUserPlus />} */}
                   {addNewButtonName ? addNewButtonName : "Add"}
@@ -483,8 +497,9 @@ const FormContainer = ({
                 <Link to={newbuttonRouting}>
                   <button
                     title={"Add " + mainTitle}
-                    className={`btn cmnbtn btn-success ml-2 ${newbuttonName && "text_button"
-                      }`}
+                    className={`btn cmnbtn btn-success ml-2 ${
+                      newbuttonName && "text_button"
+                    }`}
                   >
                     {/* {newbuttonName ? newbuttonName : <FaUserPlus />} */}
                     {newbuttonName ? newbuttonName : "Add"}
@@ -519,8 +534,9 @@ const FormContainer = ({
             <div
               className="btn-group w-100"
               style={{
-                display: `${TitleHeaderComponentDisplay === "none" ? "" : "none"
-                  }`,
+                display: `${
+                  TitleHeaderComponentDisplay === "none" ? "" : "none"
+                }`,
               }}
             >
               {accordionButtons.map((buttonName, index) => (
@@ -558,8 +574,9 @@ const FormContainer = ({
                     {activeAccordionIndex === accordionButtons.length - 1 &&
                       submitButton && (
                         <button
-                          className={`btn cmnbtn ${loading ? "btn-danger" : "btn-success"
-                            }`}
+                          className={`btn cmnbtn ${
+                            loading ? "btn-danger" : "btn-success"
+                          }`}
                           style={{ marginRight: "5px" }}
                           type="submit"
                           disabled={loading}
