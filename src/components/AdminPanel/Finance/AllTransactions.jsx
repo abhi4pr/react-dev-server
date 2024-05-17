@@ -843,6 +843,8 @@ const AllTransactions = () => {
         return apiData; // No filter applied
     }
   };
+
+  console.log(filterData, "dfffEEFEDWWSWSf----------------------");
   return (
     <div>
       <FormContainer
@@ -1280,7 +1282,11 @@ const AllTransactions = () => {
           <div className="card" style={{ height: "600px" }}>
             <div className="card-body thm_table">
               <DataGrid
-                rows={filterData}
+                rows={filterData.filter(
+                  (data) =>
+                    data.payment_approval_status === "1" ||
+                    data.payment_approval_status === "2"
+                )}
                 columns={columns}
                 pageSize={5}
                 rowsPerPageOptions={[5]}

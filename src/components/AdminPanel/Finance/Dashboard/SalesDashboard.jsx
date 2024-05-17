@@ -54,6 +54,8 @@ export default function SalesDashboard() {
   const [filterVendorCardData, setFilterVendorCardData] = useState([]);
   const [filterValue, setFilterValue] = useState();
   const [payoutData, setPayoutData] = useState([]);
+  const [paymentModeData, setPaymentModeData] = useState([]);
+  const [filterPaymentModeData, setFilterPaymentModeData] = useState([]);
   const [filterPayoutData, setFilterPayoutData] = useState([]);
   const [incentiveData, setIncentiveData] = useState([]);
   const [incentiveFilterData, setIncentiveFilterData] = useState([]);
@@ -240,6 +242,16 @@ export default function SalesDashboard() {
       });
     } catch (error) {}
 
+    try {
+      axios
+        .post(baseUrl + "add_php_payment_acc_data_in_node")
+        .then((res) => {});
+      axios.get(baseUrl + "get_all_php_payment_acc_data").then((res) => {
+        setFilterPaymentModeData(res.data.data);
+        setPaymentModeData(res.data.data);
+      });
+    } catch (error) {}
+
     axios
       .post(baseUrl + "add_php_payment_incentive_data_in_node")
       .then(() => {});
@@ -395,13 +407,20 @@ export default function SalesDashboard() {
       return itemDate >= startFilterDate && itemDate <= endFilterDate;
     });
     setIncentiveData(filterData9);
+
+    const filterData10 = filterPaymentModeData.filter((item) => {
+      const itemDate = new Date(item.created_at);
+      return itemDate >= startFilterDate && itemDate <= endFilterDate;
+    });
+    setPaymentModeData(filterData10);
   };
-  console.log(incentiveData, "incentiveData>>>");
+  console.log(filterPaymentModeData, "filterPaymentModeData>>>");
 
   const incentiveCount = incentiveData?.filter(
     (data) => data?.action === "Complete Release Button"
   );
   console.log(incentiveCount?.length, "count--------------");
+
   return (
     <div>
       <div className="card">
@@ -696,6 +715,17 @@ export default function SalesDashboard() {
                             .reduce((prev, next) => prev + next, 0)
                             .toLocaleString("en-IN")
                         : 0}
+                    </h3>
+                  </div>
+                </Link>
+              </div>
+              <div className="col">
+                <Link to="/admin/finance-paymentmode">
+                  <div className="card-body cardGrdnt blueGrdnt financeCardSmall">
+                    <h2>Payment Mode</h2>
+                    <h3>
+                      <span>&#8377; </span>
+                      {paymentModeData?.length}
                     </h3>
                   </div>
                 </Link>

@@ -552,8 +552,8 @@ export default function GSThold() {
               {item.status == 0
                 ? "Pending"
                 : item.status == 2
-                  ? "Discarded"
-                  : "Paid"}
+                ? "Discarded"
+                : "Paid"}
             </p>
           ));
         } else {
@@ -716,11 +716,13 @@ export default function GSThold() {
         const isCurrentMonthGreaterThanMarch = new Date().getMonth() + 1 > 3;
         const currentYear = new Date().getFullYear();
         const startDate = new Date(
-          `04/01/${isCurrentMonthGreaterThanMarch ? currentYear : currentYear - 1
+          `04/01/${
+            isCurrentMonthGreaterThanMarch ? currentYear : currentYear - 1
           }`
         );
         const endDate = new Date(
-          `03/31/${isCurrentMonthGreaterThanMarch ? currentYear + 1 : currentYear
+          `03/31/${
+            isCurrentMonthGreaterThanMarch ? currentYear + 1 : currentYear
           }`
         );
         const dataFY = nodeData.filter((e) => {
@@ -990,10 +992,26 @@ export default function GSThold() {
     // Generate PDFs and add them to the zip
     await Promise.all(
       rowSelectionModel.map(async (rowId) => {
-        const pdf = new jsPDF();
-        // Customize your PDF content here
-        pdf.text(`PDF content for row ${rowId}`, 10, 10);
-        zip.file(`invoice_${rowId}.pdf`, pdf.output());
+        const rowData = filterData[rowId]; // Access the row data using rowId
+        console.log(rowData, "RD-------------");
+        if (rowData) {
+          const pdf = new jsPDF();
+
+          const keys = Object.keys(rowData);
+          const values = Object.values(rowData);
+
+          // Convert data to table format
+          const tableData = keys.map((key, index) => [key, values[index]]);
+
+          // Add table to PDF
+          pdf.autoTable({
+            startY: 10,
+            head: [["Key", "Value"]],
+            body: tableData,
+          });
+
+          zip.file(`invoice_${rowId}.pdf`, pdf.output());
+        }
       })
     );
 
@@ -1003,6 +1021,35 @@ export default function GSThold() {
     // Save the zip file
     saveAs(zipBlob, "invoices.zip");
   };
+  // csv download----
+  // const handleDownloadInvoices = async () => {
+  //   // Prepare CSV content
+  //   let csvContent = ""; // Initialize CSV content
+
+  //   // Generate headers row
+  //   const headers = Object.keys(filterData[rowSelectionModel[0]]);
+  //   csvContent += headers.join(",") + "\n";
+
+  //   // Generate CSV content for each row
+  //   rowSelectionModel.forEach((rowId) => {
+  //     const rowData = filterData[rowId]; // Access the row data using rowId
+  //     console.log(rowData, "RD-------------");
+  //     if (rowData) {
+  //       const values = Object.values(rowData);
+
+  //       // Construct CSV row
+  //       const rowContent = values.map((value) => `"${value}"`).join(",");
+  //       csvContent += `${rowContent}\n`;
+  //     }
+  //   });
+
+  //   // Create Blob containing the CSV data
+  //   const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8" });
+
+  //   // Trigger download
+  //   saveAs(blob, "invoices.csv");
+  // };
+
   function CustomColumnMenu(props) {
     return (
       <GridColumnMenu
@@ -1054,7 +1101,6 @@ export default function GSThold() {
           sx={{ maxHeight: "80vh", overflowY: "auto" }}
         >
           <div className="fx-head thm_table">
-
             <DataGrid
               rows={sameVendorData}
               columns={sameVenderColumns}
@@ -1104,7 +1150,6 @@ export default function GSThold() {
           sx={{ maxHeight: "80vh", overflowY: "auto" }}
         >
           <div className="thm_table fx-head">
-
             <DataGrid
               rows={uniqueVendorData}
               columns={uniqueVendorColumns}
@@ -1123,8 +1168,6 @@ export default function GSThold() {
           </div>
         </DialogContent>
       </Dialog>
-
-
 
       <div className="card">
         <div className="card-header flexCenterBetween">
@@ -1274,9 +1317,6 @@ export default function GSThold() {
         </div>
       </div>
 
-
-
-
       <div className="card">
         <div className="card-body thm_table">
           {rowSelectionModel.length > 0 && (
@@ -1414,8 +1454,6 @@ export default function GSThold() {
           </Dialog>
         </div>
       </div>
-
-
     </div>
   );
 }

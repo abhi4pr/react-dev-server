@@ -95,6 +95,8 @@ const Invoice = () => {
   const [reason, setReason] = useState("");
   const [discardSaleBookingId, setDiscardSaleBookingId] = useState("");
   const [discardDialog, setDiscardDialog] = useState(false);
+  const [proformaDialog, setProformaDialog] = useState(false);
+  const [proformaData, setProformaData] = useState([]);
 
   const accordionButtons = ["Pending Invoice", "Invoice Created"];
 
@@ -252,6 +254,24 @@ const Invoice = () => {
         setUniqueSalesExecutiveData(uniqueSEData);
       });
   }
+
+  function handleGetProforma() {
+    // const formData = new FormData();
+    // formData.append("loggedin_user_id", 36);
+    axios
+      .post(
+        "https://sales.creativefuel.io/webservices/RestController.php?view=pending_request_performa_invoice_list",
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      )
+      .then((res) => {
+        console.log(res.data.body, "Proforma-----------------------????");
+        setProformaData(res.data.body);
+      });
+  }
   function getDataInvoiceCreated() {
     axios
       .post(baseUrl + "add_php_pending_invoice_data_in_node")
@@ -311,6 +331,7 @@ const Invoice = () => {
   useEffect(() => {
     getData();
     getDataInvoiceCreated();
+    handleGetProforma();
   }, []);
 
   useEffect(() => {
@@ -528,7 +549,7 @@ const Invoice = () => {
   const handleCloseUniqueCustomer = () => {
     setUniqueCustomerDialog(false);
   };
-
+  // ============================================
   const handleOpenSameCustomer = (custName) => {
     setSameCustomerDialog(true);
 
@@ -1100,16 +1121,12 @@ const Invoice = () => {
     // },
   ];
 
-  const handleKeyDown = (e) => {
-    if (e.key === " ") {
-      e.preventDefault(); // Prevent default behavior (e.g., page scroll)
-      e.stopPropagation(); // Stop propagation to prevent DataGrid from handling the event
-      setPartyName((prevName) => prevName + " "); // Append space character to the current value
-    }
-    if (e.key === "Shift") {
-      e.preventDefault(); // Prevent focus shift when Shift key is pressed
+  const handlePartyNameKeyDown = (e, params) => {
+    if (e.key === " " && params.value.trim().endsWith(" ")) {
+      e.preventDefault();
     }
   };
+  console.log(filterData, "-----------------------");
   const columns = [
     {
       width: 60,
@@ -1222,6 +1239,7 @@ const Invoice = () => {
             },
           }}
           onChange={(e) => setPartyName(e.target.value)}
+          // onKeyDown={(e) => handlePartyNameKeyDown(e, params)}
         />
       ),
     },
@@ -1328,8 +1346,41 @@ const Invoice = () => {
       width: 180,
       renderCell: (params) => params.row.net_amount,
     },
+    {
+      field: "country",
+      headerName: "Country",
+      width: 210,
+      renderCell: (params) => params.row.country,
+    },
+    {
+      field: "state",
+      headerName: "State",
+      width: 210,
+      renderCell: (params) => params.row.state,
+    },
+    {
+      field: "city",
+      headerName: "City",
+      width: 210,
+      renderCell: (params) => params.row.city,
+    },
+    {
+      field: "address",
+      headerName: "Address",
+      width: 210,
+      renderCell: (params) => params.row.address,
+    },
   ];
 
+  // For Proforma================================
+  const handleOpenPerforma = () => {
+    setProformaDialog(true);
+  };
+
+  const handleClosePerforma = () => {
+    setProformaDialog(false);
+  };
+  // ==============================================
   //   Invoice Created Column :-
   const columnsInvoice = [
     {
@@ -1744,18 +1795,168 @@ const Invoice = () => {
       width: "250px",
     },
   ];
+  const proformaColumns = [
+    {
+      width: 60,
+      headerName: "S.No",
+      field: "s_no",
+      renderCell: (params, index) => (
+        <div>{[...proformaData].indexOf(params.row) + 1}</div>
+      ),
+    },
+    {
+      headerName: "Sales Person name",
+      field: "user_name",
+      width: 220,
+      renderCell: (params) => params.row.user_name,
+      height: "200px",
+    },
+    {
+      headerName: "Customer Name",
+      field: "cust_name",
+      width: 220,
+      renderCell: (params) => params.row.cust_name,
+      height: "200px",
+    },
+    {
+      field: "invoice_mnj_number",
+      headerName: "Invoice No.",
+      width: 200,
+      renderCell: (params) => params.row.invoice_mnj_number,
+    },
+    {
+      field: "invoice_mnj_date",
+      headerName: "Invoice Date",
+      width: 200,
+      renderCell: (params) => {
+        new Date(params.row.invoice_mnj_date).toLocaleDateString("en-IN") +
+          " " +
+          new Date(params.row.invoice_mnj_date).toLocaleTimeString("en-IN");
+      },
+    },
+    {
+      field: "party_mnj_name",
+      headerName: "Party Name",
+      width: 200,
+      renderCell: (params) => params.row.party_mnj_name,
+    },
 
-  // ==========================================
+    {
+      headerName: "Invoice Particular Name",
+      field: "invoice_particular_name",
+      width: 200,
+      renderCell: (params) => params.row.invoice_particular_name,
+    },
+    {
+      field: "invoice_performa",
+      headerName: "Invoice Performa",
+      width: 210,
+      renderCell: (params) => {
+        // Extract file extension and check if it's a PDF
+        const fileExtension = params.row.invoice_performa
+          .split(".")
+          .pop()
+          .toLowerCase();
+        const isPdf = fileExtension === "pdf";
 
-  const YYYYMMDDdateConverter = (date) => {
-    let dateObj = new Date(date);
-    let month = String(dateObj.getUTCMonth() + 1).padStart(2, "0"); // Month in 2 digits
-    let day = String(dateObj.getUTCDate()).padStart(2, "0"); // Day in 2 digits
-    let year = dateObj.getUTCFullYear(); // Year in 4 digits
-    let newdate = year + "-" + month + "-" + day;
-    return newdate;
-  };
+        const imgUrl = `https://sales.creativefuel.io/${params.row.invoice_performa}`;
 
+        return isPdf ? (
+          <img
+            onClick={() => {
+              setOpenImageDialog(true);
+              setViewImgSrc(imgUrl);
+            }}
+            src={pdf}
+            style={{ width: "40px", height: "40px" }}
+            title="PDF Preview"
+          />
+        ) : (
+          <img
+            onClick={() => {
+              setOpenImageDialog(true);
+              setViewImgSrc(imgUrl);
+            }}
+            src={imgUrl}
+            alt="Invoice"
+            style={{ width: "100px", height: "100px" }}
+          />
+        );
+      },
+    },
+    {
+      field: "po_file",
+      headerName: "PO File",
+      width: 210,
+      renderCell: (params) => {
+        // Extract file extension and check if it's a PDF
+        const fileExtension = params.row.po_file.split(".").pop().toLowerCase();
+        const isPdf = fileExtension === "pdf";
+
+        const imgUrl = `https://sales.creativefuel.io/${params.row.po_file}`;
+
+        return isPdf ? (
+          <img
+            onClick={() => {
+              setOpenImageDialog(true);
+              setViewImgSrc(imgUrl);
+            }}
+            src={pdf}
+            style={{ width: "40px", height: "40px" }}
+            title="PDF Preview"
+          />
+        ) : (
+          <img
+            onClick={() => {
+              setOpenImageDialog(true);
+              setViewImgSrc(imgUrl);
+            }}
+            src={imgUrl}
+            alt="Invoice"
+            style={{ width: "100px", height: "100px" }}
+          />
+        );
+      },
+    },
+    {
+      field: "po_number",
+      headerName: "PO Number",
+      width: 210,
+      renderCell: (params) => params.row.po_number,
+    },
+    {
+      headerName: "Invoice Type",
+      field: "invoice_type_id",
+      width: 180,
+      renderCell: (params) =>
+        params.row.invoice_type_id === "1" ? "Proforma" : "",
+    },
+    {
+      headerName: "Base Amount",
+      field: "base_amount",
+      width: 180,
+      renderCell: (params) => params.row.base_amount,
+    },
+    {
+      headerName: "GST Amount",
+      field: "gst_amount",
+      width: 180,
+      renderCell: (params) => params.row.gst_amount,
+    },
+    {
+      headerName: "GST Status",
+      field: "gst_status",
+      width: 180,
+      renderCell: (params) =>
+        params.row.gst_status === "1" ? "GST" : "Non GST",
+    },
+    {
+      headerName: "Net Amount",
+      field: "net_amount",
+      width: 180,
+      renderCell: (params) => params.row.net_amount,
+    },
+  ];
   return (
     <div>
       <FormContainer
@@ -2156,6 +2357,53 @@ const Invoice = () => {
           )}
         </DialogContent>
       </Dialog>
+      {/* Proforma Details */}
+      <Dialog
+        open={proformaDialog}
+        onClose={handleClosePerforma}
+        fullWidth={"md"}
+        maxWidth={"md"}
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <DialogTitle>Performa Details</DialogTitle>
+        <IconButton
+          aria-label="close"
+          onClick={handleClosePerforma}
+          sx={{
+            position: "absolute",
+            right: 8,
+            top: 8,
+            color: (theme) => theme.palette.grey[500],
+          }}
+        >
+          <CloseIcon />
+        </IconButton>
+        <DialogContent
+          dividers={true}
+          sx={{ maxHeight: "80vh", overflowY: "auto" }}
+        >
+          <DataGrid
+            rows={proformaData}
+            columns={proformaColumns}
+            pageSize={5}
+            rowsPerPageOptions={[5]}
+            disableSelectionOnClick
+            autoHeight
+            slots={{ toolbar: GridToolbar }}
+            slotProps={{
+              toolbar: {
+                showQuickFilter: true,
+              },
+            }}
+            getRowId={(row) => proformaData.indexOf(row)}
+          />
+        </DialogContent>
+      </Dialog>
+
       {activeAccordionIndex === 0 && (
         <div className="row">
           <div className="col-12">
@@ -2307,6 +2555,13 @@ const Invoice = () => {
                     className="btn cmnbtn btn-secondary"
                   >
                     Clear
+                  </Button>
+                  <Button
+                    variant="contained"
+                    onClick={handleOpenPerforma}
+                    className="btn cmnbtn btn-secondary"
+                  >
+                    Proforma Detail
                   </Button>
                 </div>
               </div>

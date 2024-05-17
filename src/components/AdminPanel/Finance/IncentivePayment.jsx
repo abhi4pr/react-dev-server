@@ -1274,7 +1274,7 @@ const IncentivePayment = () => {
                   options={[
                     "Fund Management",
                     "Tax Deduction",
-                    "Bad Depth Adjustment",
+                    "Bad Debt Adjustment",
                   ]}
                   renderInput={(params) => (
                     <TextField
