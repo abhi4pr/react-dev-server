@@ -864,7 +864,7 @@ const AdminPreOnboarding = () => {
         </div>
         {/* )} */}
 
-        {/* {jobType == "WFO" && (
+        {jobType == "WFO" && (
           <div className="form-group col-3">
             <label className="form-label">
               Offer Letter Send <sup className="form-error">*</sup>
@@ -896,7 +896,7 @@ const AdminPreOnboarding = () => {
               <p className="form-error">*Please select a Letter</p>
             )}
           </div>
-        )} */}
+        )}
 
         {/* {sendLetter.label == "Yes" && (
           <div className="col-md-3">

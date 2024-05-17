@@ -392,14 +392,14 @@ const UserUpdate = () => {
   }, [department]);
 
   useEffect(() => {
-    if (department) {
+    if (subDepartment) {
       axios
-        .get(baseUrl + `get_all_designations_by_deptId/${department}`)
+        .get(baseUrl + `get_all_designation/${subDepartment}`)
         .then((res) => {
           setDesignationData(res.data.data);
         });
     }
-  }, [department]);
+  }, [subDepartment]);
 
   useEffect(() => {
     const GetAllData = async () => {
@@ -1591,14 +1591,15 @@ const UserUpdate = () => {
         <Select
           className=""
           options={subDepartmentData?.map((option) => ({
-            value: option.id,
+            value: option.sub_dept_id,
             label: `${option.sub_dept_name}`,
           }))}
           value={{
             value: subDepartmentData,
             label:
-              subDepartmentData.find((user) => user.id === subDepartment)
-                ?.sub_dept_name || "",
+              subDepartmentData.find(
+                (user) => user.sub_dept_id === subDepartment
+              )?.sub_dept_name || "",
           }}
           onChange={(e) => {
             setSubDeparment(e.value);

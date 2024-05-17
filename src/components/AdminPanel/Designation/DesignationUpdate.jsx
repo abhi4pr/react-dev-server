@@ -14,11 +14,28 @@ const DesignationUpdate = () => {
     id: 0,
     desi_name: "",
     dept_id: "",
+    sub_dept_id: "",
     remark: "",
   });
   const [departmentOptions, setDepartmentOptions] = useState([]);
   const [isFormSubmitted, setIsFormSubmitted] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+
+  const [subDepartmentData, setSubDeparmentData] = useState([]);
+  const [subDeparmtment, setSubDepartment] = useState("");
+
+  function subDepartmentDatas() {
+    if (designationData.dept_id) {
+      axios
+        .get(baseUrl + `get_subdept_from_dept/${designationData.dept_id}`)
+        .then((res) => {
+          setSubDeparmentData(res.data);
+        });
+    }
+  }
+  useEffect(() => {
+    subDepartmentDatas();
+  }, [designationData.dept_id]);
 
   useEffect(() => {
     const fetchDepartmentData = async () => {
@@ -41,6 +58,7 @@ const DesignationUpdate = () => {
           `${baseUrl}` + `get_single_designation/${desi_id}`
         );
         setDesignationData(response.data.data);
+        setSubDepartment(response.data.data.sub_dept_id);
       } catch (error) {
         console.error("Error fetching designation: ", error);
         toastAlert("Failed to fetch designation");
@@ -81,12 +99,13 @@ const DesignationUpdate = () => {
     >
       <FieldContainer
         label="Designation Name"
+        fieldGrid={4}
         value={designationData.desi_name}
         onChange={(e) =>
           setDesignationData({ ...designationData, desi_name: e.target.value })
         }
       />
-      <div className="form-group col-6">
+      <div className="form-group col-4">
         <label className="form-label">
           Department Name <sup style={{ color: "red" }}>*</sup>
         </label>
@@ -103,6 +122,30 @@ const DesignationUpdate = () => {
           }
         />
       </div>
+
+      <div className="form-group col-4">
+        <label className="form-label">
+          Sub Department <sup style={{ color: "red" }}>*</sup>
+        </label>
+        <Select
+          className=""
+          options={subDepartmentData?.map((option) => ({
+            value: option.id,
+            label: `${option.sub_dept_name}`,
+          }))}
+          value={{
+            value: subDepartmentData,
+            label:
+              subDepartmentData.find((user) => user.id === subDeparmtment)
+                ?.sub_dept_name || "",
+          }}
+          onChange={(e) => {
+            setSubDepartment(e.value);
+          }}
+          required
+        />
+      </div>
+
       <FieldContainer
         label="Remark"
         required={false}

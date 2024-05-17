@@ -530,7 +530,7 @@ const PreOnboardingUserMaster = () => {
   };
 
   useEffect(() => {
-    console.log(documentData,"mmmmmmmmmmmmmmmm");
+    console.log(documentData, "mmmmmmmmmmmmmmmm");
     const MandatoryDocuments = documentData.filter(
       (doc) => doc.document.isRequired == true
     );
@@ -1433,7 +1433,6 @@ const PreOnboardingUserMaster = () => {
               </div>
             </div>
             <div className="topnavbarRight">
-
               <div className="navbar_menu">
                 {/*    <div className="daysLeft">
                     <img src={hourGlass} alt="welcome" />
@@ -1484,8 +1483,9 @@ const PreOnboardingUserMaster = () => {
               <div className="sidebar_wrapper_in">
                 <div className="sidebar_items">
                   <div
-                    className={`sidebar_itembox ${activeTab == 1 ? "sidebar_item_active" : ""
-                      }`}
+                    className={`sidebar_itembox ${
+                      activeTab == 1 ? "sidebar_item_active" : ""
+                    }`}
                     id="sidebarFormBox"
                     onClick={() => setActiveTab(1)}
                   >
@@ -1507,8 +1507,9 @@ const PreOnboardingUserMaster = () => {
                     </div>
                   </div>
                   <div
-                    className={`sidebar_itembox sidebar_itemboxCol ${activeTab == 2 ? "sidebar_item_active" : ""
-                      }`}
+                    className={`sidebar_itembox sidebar_itemboxCol ${
+                      activeTab == 2 ? "sidebar_item_active" : ""
+                    }`}
                     id="sidebarDocumentBox"
                     onClick={() => setActiveTab(2)}
                   >
@@ -1545,16 +1546,17 @@ const PreOnboardingUserMaster = () => {
                   {/* Remove Comment */}
                   {/* {allUserData.offer_letter_send && ( */}
                   <div
-                    className={`sidebar_itembox ${activeTab === 5 ? "sidebar_item_active" : ""
-                      }`}
+                    className={`sidebar_itembox ${
+                      activeTab === 5 ? "sidebar_item_active" : ""
+                    }`}
                     id="sidebarLetterBox"
                     onClick={() => setActiveTab(5)}
-                  // style={{
-                  //   opacity: joiningDate <= formattedDate ? 0.5 : 1,
-                  //   // cursor: joiningDate <= formattedDate ? "not-allowed" : "pointer",
-                  //   pointerEvents:
-                  //     joiningDate <= formattedDate ? "none" : "auto",
-                  // }}
+                    // style={{
+                    //   opacity: joiningDate <= formattedDate ? 0.5 : 1,
+                    //   // cursor: joiningDate <= formattedDate ? "not-allowed" : "pointer",
+                    //   pointerEvents:
+                    //     joiningDate <= formattedDate ? "none" : "auto",
+                    // }}
                   >
                     <div className="progress-circle progressing pp-26">
                       <div className="progress-circle-border">
@@ -1572,10 +1574,11 @@ const PreOnboardingUserMaster = () => {
                     // className={`sidebar_itembox  ${
                     //   activeTab == 3 ? "sidebar_item_active" : ""
                     // }`}
-                    className={`sidebar_itembox ${activeTab === 3 && documentPercentage < 90
-                      ? "sidebar_item_active"
-                      : ""
-                      }`}
+                    className={`sidebar_itembox ${
+                      activeTab === 3 && documentPercentage < 90
+                        ? "sidebar_item_active"
+                        : ""
+                    }`}
                     id="sidebarPolicyBox"
                     style={{
                       pointerEvents: documentPercentage < 90 ? "none" : "auto",
@@ -1596,16 +1599,15 @@ const PreOnboardingUserMaster = () => {
                       COC <small>Code of conduct</small>
                       <div className="cocInfo">
                         {documentPercentage < 90 && (
-                          <p>
-                            Please complete Mandatory Document
-                          </p>
+                          <p>Please complete Mandatory Document</p>
                         )}
                       </div>
                     </h2>
                   </div>
                   <div
-                    className={`sidebar_itembox ${activeTab == 4 ? "sidebar_item_active" : ""
-                      }`}
+                    className={`sidebar_itembox ${
+                      activeTab == 4 ? "sidebar_item_active" : ""
+                    }`}
                     id="sidebarFaqBox"
                     onClick={() => setActiveTab(4)}
                   >
@@ -1711,7 +1713,8 @@ const PreOnboardingUserMaster = () => {
                                   name="name"
                                   InputProps={{
                                     readOnly: true,
-                                  }} value={username}
+                                  }}
+                                  value={username}
                                   onChange={handleFullNameChange}
                                 />
                               </div>
@@ -1756,7 +1759,6 @@ const PreOnboardingUserMaster = () => {
                                   label="Personal Contact"
                                   setParentComponentContact={setPersonalContact}
                                   parentComponentContact={personalContact}
-
                                 />
                               </div>
 
@@ -1787,7 +1789,6 @@ const PreOnboardingUserMaster = () => {
                                   renderInput={(params) => (
                                     <TextField {...params} label="Gender" />
                                   )}
-
                                 />
                               </div>
 
@@ -1936,7 +1937,7 @@ const PreOnboardingUserMaster = () => {
                                     setNationality(e.target.value)
                                   }
                                 /> */}
-                                
+
                                 <Autocomplete
                                   options={nationalityData}
                                   value={nationality}
@@ -2069,7 +2070,7 @@ const PreOnboardingUserMaster = () => {
 
                             <div className="board_form form_checkbox">
                               <label className="cstm_check">
-                                Permanent Address  Same as Current Address
+                                Permanent Address Same as Current Address
                                 <input
                                   className="form-control"
                                   type="checkbox"

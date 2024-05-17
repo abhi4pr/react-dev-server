@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import FieldContainer from "../FieldContainer";
 import FormContainer from "../FormContainer";
 import axios from "axios";
@@ -17,20 +17,36 @@ const Designation = () => {
   const [remark, setRemark] = useState("");
   const [isFormSubmitted, setIsFormSubmitted] = useState(false);
 
-  // useEffect(() => {
-  //   axios
-  //     .get(baseUrl+"get_all_departments")
-  //     .then((res) => {
-  //       getDepartmentData(res.data).catch((error) => console.log(error));
-  //     });
-  // }, []);
+  const [subDepartmentData, setSubDeparmentData] = useState([]);
+  const [subDeparmtment, setSubDepartment] = useState("");
+
+  function subDepartmentDatas() {
+    if (departmentName) {
+      axios
+        .get(baseUrl + `get_subdept_from_dept/${departmentName}`)
+        .then((res) => {
+          setSubDeparmentData(res.data);
+        });
+    }
+  }
+  useEffect(() => {
+    subDepartmentDatas();
+  }, [departmentName]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!designationName || designationName == "") {
+      return toastError("Designation is Required");
+    } else if (!departmentName || departmentName == "") {
+      return toastError("Department is Required");
+    } else if (!subDeparmtment || subDeparmtment == "") {
+      return toastError("Sub-Department is Required");
+    }
     try {
       await axios.post(baseUrl + "add_designation", {
         desi_name: designationName,
         dept_id: departmentName,
+        sub_dept_id: subDeparmtment,
         remark: remark,
       });
       setDesignationName("");
@@ -55,9 +71,10 @@ const Designation = () => {
         handleSubmit={handleSubmit}
       >
         <div className="mb-3 row">
-
           <FieldContainer
             label="Designation Name"
+            astric
+            required={false}
             value={designationName}
             onChange={(e) => setDesignationName(e.target.value)}
           />
@@ -84,13 +101,34 @@ const Designation = () => {
               required
             />
           </div>
+          <div className="form-group col-6">
+            <label className="form-label">
+              Sub Department Name <sup style={{ color: "red" }}>*</sup>
+            </label>
+            <Select
+              className=""
+              options={subDepartmentData.map((option) => ({
+                value: option.id,
+                label: `${option.sub_dept_name}`,
+              }))}
+              value={{
+                value: subDeparmtment,
+                label:
+                  subDepartmentData.find((user) => user.id === subDeparmtment)
+                    ?.sub_dept_name || "",
+              }}
+              onChange={(e) => {
+                setSubDepartment(e.value);
+              }}
+              required
+            />
+          </div>
           <FieldContainer
             label="Remark"
             value={remark}
             required={false}
             Tag="textarea"
             onChange={(e) => setRemark(e.target.value)}
-
           />
         </div>
       </FormContainer>
