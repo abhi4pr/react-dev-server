@@ -47,9 +47,9 @@ import { constant } from "../../../utils/constants";
 import { User } from "@phosphor-icons/react";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { subYears } from "date-fns";
+import { isAfter, subYears } from "date-fns";
 import IndianCitiesMui from "../../ReusableComponents/IndianCitiesMui";
-import dayjs from 'dayjs';
+import dayjs from "dayjs";
 
 const colourOptions = [
   { value: "English", label: "English" },
@@ -297,8 +297,8 @@ const UserMaster = () => {
 
   const castOption = ["General", "OBC", "SC", "ST"];
   const maritialStatusData = ["Single", "Married"]; //,"Divorced","Widowed","Separated"
-  const [dobError, setDobError] = useState('');
-  const [dobValidate, setDobValidate] = useState(0)
+  const [dobError, setDobError] = useState("");
+  const [dobValidate, setDobValidate] = useState(0);
 
   useEffect(() => {
     const test = tempLanguage?.map((option) => option.value).join();
@@ -596,7 +596,7 @@ const UserMaster = () => {
       }));
     }
     if (dobValidate < 15 || dobValidate > 100) {
-      setDobError('Age should be greater than 15 and less than 100');
+      setDobError("Age should be greater than 15 and less than 100");
     }
 
     if (!jobType) {
@@ -991,6 +991,10 @@ const UserMaster = () => {
     // return <Navigate to="/admin/user-overview" />;
   }
 
+  const disableFutureDates = (date) => {
+    return dayjs(date).isAfter(dayjs(), "day");
+  };
+
   // Email Validation
   function handleEmailChange(e) {
     const newEmail = e.target.value;
@@ -1321,24 +1325,24 @@ const UserMaster = () => {
 
   const handleDateChange = (e) => {
     const selectedDate = e;
-    const validateAge = dayjs().diff(e, 'year');
-    setDobValidate(validateAge)
+    const validateAge = dayjs().diff(e, "year");
+    setDobValidate(validateAge);
 
     const age = calculateAge(selectedDate);
     const ageDays = calculateAgeInDays(selectedDate);
 
     if (validateAge < 15) {
-      setDobError('Age must be at least 15 years.');
-      setDateOfBirth('')
-    } 
+      setDobError("Age must be at least 15 years.");
+      setDateOfBirth("");
+    }
     if (validateAge > 100) {
-      setDobError('Age can not more than 100 years');
-      setDateOfBirth('')
+      setDobError("Age can not more than 100 years");
+      setDateOfBirth("");
     }
     // else {
-      setDateOfBirth(selectedDate);
-      setAge(age);
-      setAgeCalculate(ageDays);
+    setDateOfBirth(selectedDate);
+    setAge(age);
+    setAgeCalculate(ageDays);
     // }
   };
 
@@ -1571,8 +1575,11 @@ const UserMaster = () => {
         {(isContactTouched1 || personalContact.length >= 10) &&
           !isValidcontact1 &&
           mandatoryFieldsEmpty.personalContact && (
-            <p className="form-error">*Please enter a valid Contact Number</p>
+            <p className="form-error">Please enter a valid Contact Number</p>
           )}
+        {mandatoryFieldsEmpty.personalContact && (
+          <p className="form-error">Please enter Personal Contact</p>
+        )}
       </div>
       <div className="col-3">
         <FieldContainer
@@ -1588,7 +1595,7 @@ const UserMaster = () => {
         {(isAlternateTouched1 || alternateContact.length >= 10) &&
           !isValidcontact3 &&
           !mandatoryFieldsEmpty.alternateContact && (
-            <p className="form-error">*Please enter a valid Number</p>
+            <p className="form-error">Please enter a valid Number</p>
           )}
         {mandatoryFieldsEmpty.alternateContact && (
           <p className="form-error">Please enter Alternate Contact</p>
@@ -1669,10 +1676,11 @@ const UserMaster = () => {
           <DatePicker
             value={dateOfBirth}
             onChange={handleDateChange}
+            shouldDisableDate={disableFutureDates}
             renderInput={(params) => <TextField {...params} />}
           />
         </LocalizationProvider>
-        {<p style={{color:'red !important'}}>{dobError}</p>}
+        {<p style={{ color: "red !important" }}>{dobError}</p>}
       </div>
       {dateOfBirth !== "" && (
         <FieldContainer fieldGrid={3} label="Age" value={age} />
@@ -2509,14 +2517,14 @@ const UserMaster = () => {
             onChange={(option) => setcurrentState(option ? option.value : null)}
           />
         </div> */}
-        <div className="form-group col-6 mt-3">
+        <div className="form-group col-4 mt-3">
           <IndianStatesMui
             selectedState={currentState}
             onChange={(option) => setcurrentState(option ? option : null)}
           />
         </div>
 
-        <div className="form-group col-6 mt-3">
+        <div className="form-group col-4 mt-3">
           <IndianCitiesMui
             selectedState={currentState}
             selectedCity={currentCity}
