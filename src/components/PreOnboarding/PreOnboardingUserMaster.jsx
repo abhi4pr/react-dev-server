@@ -63,6 +63,7 @@ import { baseUrl } from "../../utils/config";
 import { set } from "date-fns";
 import ImageSelector from "./ImageSelector";
 import RocketAnimation from "./RocketAnimation";
+import { FormatName } from "../../utils/FormatName";
 
 const LanguageList = [
   "English",
@@ -1710,6 +1711,7 @@ const PreOnboardingUserMaster = () => {
                                   type="text"
                                   // className="form-control"
                                   name="name"
+                                  // disabled
                                   InputProps={{
                                     readOnly: true,
                                   }}
@@ -1770,14 +1772,28 @@ const PreOnboardingUserMaster = () => {
                                   name="father Name"
                                   value={FatherName}
                                   onChange={(e) =>
-                                    setFatherName(e.target.value)
+                                    setFatherName(FormatName(e.target.value))
                                   }
+                                />
+                              </div>
+
+                              <div className="form-group">
+                                <TextField
+                                  id="outlined-basic"
+                                  label="Mother Name"
+                                  variant="outlined"
+                                  type="text"
+                                  value={motherName}
+                                  onChange={(e) => {
+                                    setMotherName(FormatName(e.target.value));
+                                  }}
                                 />
                               </div>
 
                               <div className="form-group form_select">
                                 <Autocomplete
                                   disablePortal
+                                  disabled
                                   id="combo-box-demo"
                                   options={genderData}
                                   // defaultValue={genderData[0]}
@@ -1799,41 +1815,8 @@ const PreOnboardingUserMaster = () => {
                                 placeholder="Father’s Occupation "
                               />
                             </div> */}
-                              <div className="form-group">
-                                <TextField
-                                  id="outlined-basic"
-                                  label="Mother Name"
-                                  variant="outlined"
-                                  type="text"
-                                  // className="form-control"
-                                  // name="mother name"
-                                  // placeholder="Mother Name"
-                                  value={motherName}
-                                  onChange={(e) =>
-                                    setMotherName(e.target.value)
-                                  }
-                                />
-                              </div>
+
                               <div className="form-group form_select">
-                                {/* <Autocomplete
-                                  multiple
-                                  id="hobbies-autocomplete"
-                                  options={hobbiesData}
-                                  getOptionLabel={(option) => option.label}
-                                  value={hobbies}
-                                  onChange={handleHobbiesChange}
-                                  isOptionEqualToValue={(option, value) =>
-                                    option.value === value.value
-                                  }
-                                  renderInput={(params) => (
-                                    <TextField
-                                      {...params}
-                                      label="Hobbies"
-                                      placeholder="Select hobbies"
-                                    />
-                                  )}
-                                  clearOnEscape
-                                /> */}
                                 <Autocomplete
                                   multiple
                                   id="combo-box-demo"
@@ -1886,6 +1869,9 @@ const PreOnboardingUserMaster = () => {
                                     id="outlined-basic"
                                     label="Date Of Marriage"
                                     variant="outlined"
+                                    InputProps={{
+                                      readOnly: true,
+                                    }}
                                     type="date"
                                     value={dateOfMarraige}
                                     onChange={(e) =>
@@ -1918,6 +1904,9 @@ const PreOnboardingUserMaster = () => {
                                   id="outlined-basic"
                                   label="Date Of Birth"
                                   variant="outlined"
+                                  InputProps={{
+                                    readOnly: true,
+                                  }}
                                   type="date"
                                   value={dateOfBirth}
                                   onChange={(e) =>
@@ -1940,6 +1929,7 @@ const PreOnboardingUserMaster = () => {
                                 <Autocomplete
                                   options={nationalityData}
                                   value={nationality}
+                                  readOnly
                                   onChange={(e, newValue) => {
                                     setNationality(newValue);
                                   }}
