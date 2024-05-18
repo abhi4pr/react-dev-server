@@ -42,26 +42,18 @@ const FAQTab = ({ username, designation }) => {
                     2.What is the duration of the notice period that needs to be
                     served?
                   </h3>
-<<<<<<< Updated upstream
                   <p>
                     <span className="bold">Ans:- </span>60 Days
                   </p>
-=======
-                  <p>60 Days</p>
->>>>>>> Stashed changes
                 </div>
                 <div className="thm_textbx">
                   <h3>
                     3. What is the notice period that needs to be served under
                     probation?
                   </h3>
-<<<<<<< Updated upstream
                   <p>
                     <span className="bold">Ans:- </span>7 Days
                   </p>
-=======
-                  <p>7 Days</p>
->>>>>>> Stashed changes
                 </div>
                 <div className="thm_textbx">
                   <h3>
@@ -125,10 +117,7 @@ const FAQTab = ({ username, designation }) => {
                     queries
                   </h3>
                   <p>
-<<<<<<< Updated upstream
                     <span className="bold">Ans:- </span>
-=======
->>>>>>> Stashed changes
                     The HR E-mail ID,
                     <a
                       style={{ color: "blue" }}
@@ -149,30 +138,19 @@ const FAQTab = ({ username, designation }) => {
                       {" "}
                       fabhr@creativefuel.io
                     </a>
-                    . Please ensure that every email is cc'd to{" "}
+                    . Please ensure that every email is ccd to{" "}
                     <a
                       style={{ color: "blue" }}
                       href="https://mail.google.com/mail/?view=cm&fs=1&tf=1&to=nikhil@creativefuel.io"
                     >
                       {" "}
-<<<<<<< Updated upstream
                       nikhil@creativefuel.io,
                     </a>{" "}
-=======
-                      nikhil@creativefuel.io
-                    </a>{" "}
-                    ,
->>>>>>> Stashed changes
                     <a
                       style={{ color: "blue" }}
                       href="https://mail.google.com/mail/?view=cm&fs=1&tf=1&to=tushar@creativefuel.io"
                     >
-<<<<<<< Updated upstream
                       tushar@creativefuel.io{" "}
-=======
-                      {" "}
-                      tushar@creativefuel.io
->>>>>>> Stashed changes
                     </a>
                     and your team leader when necessary.
                   </p>
