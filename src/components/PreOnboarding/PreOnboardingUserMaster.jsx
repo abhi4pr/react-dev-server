@@ -1599,14 +1599,7 @@ const PreOnboardingUserMaster = () => {
                       COC <small>Code of conduct</small>
                       <div className="cocInfo">
                         {documentPercentage < 90 && (
-<<<<<<< Updated upstream
                           <p>Please complete Mandatory Document</p>
-=======
-                          <p>
-                            Please complete documentation by 90% then you can
-                            read coc
-                          </p>
->>>>>>> Stashed changes
                         )}
                       </div>
                     </h2>
