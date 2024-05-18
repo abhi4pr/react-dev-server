@@ -8,6 +8,11 @@ import jwtDecode from "jwt-decode";
 import { Navigate } from "react-router";
 import Select from "react-select";
 import "./Tagcss.css";
+import { IconButton } from "@mui/material";
+import AddIcon from "@mui/icons-material/Add";
+import InfoIcon from "@mui/icons-material/Info";
+import { useDispatch, useSelector } from "react-redux";
+import { setOpenShowAddModal } from "../../Store/PageMaster";
 
 const PageMaster = () => {
   const { toastAlert, toastError } = useGlobalContext();
@@ -52,6 +57,9 @@ const PageMaster = () => {
   const decodedToken = jwtDecode(token);
   const userID = decodedToken.id;
 
+  const dispatch = useDispatch();
+  const showAddModal= useSelector(state=>state.pageMaster.showAddModal)
+console.log(showAddModal,"showAddModal")
   const PageLevels = [
     { value: "Level 1 (High)", label: "Level 1 (High)" },
     { value: "Level 2 (Medium)", label: "Level 2 (Medium)" },
@@ -72,6 +80,11 @@ const PageMaster = () => {
     { value: "Own", label: "Own" },
     { value: "CF", label: "CF" },
   ];
+
+  const handleAddProfileTypeClick = () => {
+    dispatch(setOpenShowAddModal());
+
+  };
 
   const getData = () => {
     axios.get(baseUrl + "getAllPlatform").then((res) => {
@@ -178,7 +191,7 @@ const PageMaster = () => {
       link: link,
       platform_id: platformId,
       page_catg_id: categoryId,
-      tag_category: tag.map(e => e.value),
+      tag_category: tag.map((e) => e.value),
       page_level: pageLevel,
       page_status: pageStatus,
       page_closed_by: closeBy,
@@ -285,8 +298,23 @@ const PageMaster = () => {
             onChange={(e) => {
               setProfileId(e.value);
             }}
-          ></Select>
-          
+          />
+          <IconButton
+            onClick={handleAddProfileTypeClick}
+            variant="contained"
+            color="primary"
+            aria-label="Add Profile Type.."
+          >
+            <AddIcon />
+          </IconButton>
+          <IconButton
+            // onClick={handleInfoClick}
+            variant="contained"
+            color="primary"
+            aria-label="Profile Type Info.."
+          >
+            <InfoIcon />
+          </IconButton>
         </div>
         <div className="form-group col-6">
           <label className="form-label">

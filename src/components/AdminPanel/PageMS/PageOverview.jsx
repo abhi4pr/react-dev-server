@@ -186,8 +186,6 @@ const PageOverview = () => {
               item.purchase_price.forEach(priceObj => {
                   // const keyName = `price_${priceObj.price_type_id}`;
                   const keyName = allPriceTypeList?.find((d) => d.price_type_id == priceObj.price_type_id)?.price_type;
-                  console.log(keyName,"keyName")
-                  console.log(priceObj.price_type_id,"keyName")
                   item[keyName] = priceObj.price;
               });
               // delete item.purchase_price;
@@ -356,9 +354,9 @@ const PageOverview = () => {
               <Button
                 className="text-center"
                 // onClick={handlePlatfrormClick(data)}
-                onClick={()=>{
-                  console.log(params.row)
-                }}
+                // onClick={()=>{
+                //   console.log(params.row)
+                // }}
               >
                 <KeyboardDoubleArrowUpIcon />
               </Button>

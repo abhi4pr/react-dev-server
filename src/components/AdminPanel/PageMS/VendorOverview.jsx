@@ -329,7 +329,7 @@ const VendorOverview = () => {
               <RouteIcon />
             </button>
           </Link>
-          <Link to={`/admin/pms-vendor-edit/${params.row._id}`}>
+          <Link to={`/admin/pms-vendor-master/${params.row._id}`}>
             <button
               title="Edit"
               className="btn btn-outline-primary btn-sm user-button"

@@ -4,6 +4,7 @@ import PageOverview from "./PageOverview";
 import { reduxBaseURL } from "./reduxBaseURL";
 import { setupListeners } from "@reduxjs/toolkit/query";
 import vendorMaster from "./VendorMaster";
+import pageMaster from "./PageMaster";
 
 const store = configureStore({
   reducer: {
@@ -11,6 +12,7 @@ const store = configureStore({
     executon,
     PageOverview,
     vendorMaster,
+    pageMaster,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(reduxBaseURL.middleware),

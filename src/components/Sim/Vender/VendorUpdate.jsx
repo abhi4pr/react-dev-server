@@ -39,20 +39,7 @@ const VendorUpdate = () => {
     }, 1000);
   }, [categoryDataContext]);
 
-  // const [categoryData, setCategoryData] = useState([]);
-  // const getCategoryData = () => {
-  //   axios
-  //     .get(baseUrl+"get_all_asset_category")
-  //     .then((res) => {
-  //       console.log(res.data, "category");
-  //       setCategoryData(res.data);
-  //     });
-  // };
-  // useEffect(() => {
-  //   getCategoryData();
-  // }, []);
-
-  const getData = () => {
+const getData = () => {
     axios.get(`${baseUrl}` + `get_single_vendor/${id}`).then((res) => {
       const response = res?.data.data;
 
@@ -85,14 +72,6 @@ const VendorUpdate = () => {
       setType(response.vendor_type);
       setCompanyName(response.company_name);
 
-      // console.log(
-      //   response.vendor_category?.map((category) => ({
-      //     label: categoryData?.filter((e) => {
-      //       return e.category_id == category;
-      //     })[0]?.category_name,
-      //     value: +category,
-      //   }))
-      // );
     });
   };
 

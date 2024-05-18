@@ -10,6 +10,9 @@ import { useParams } from "react-router-dom";
 import Select from "react-select";
 import { IconButton } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
+import RemoveCircleTwoToneIcon from "@mui/icons-material/RemoveCircleTwoTone";
+import AddCircleTwoToneIcon from "@mui/icons-material/AddCircleTwoTone";
+
 
 const VendorEdit = () => {
   const [cycleName, setCycleName] = useState("");
@@ -53,6 +56,16 @@ const VendorEdit = () => {
   const [ifscCode, setIfscCode] = useState("");
   const [upiId, setUpiId] = useState("");
   const [whatsappLink, setWhatsappLink] = useState([]);
+  const [bankRows, setBankRows] = useState([
+    {
+      bankName: "",
+      accountType: "",
+      accountNo: "",
+      ifscCode: "",
+      UPIid: "",
+      registeredMobileNo: "",
+    },
+  ]);
 
   const token = sessionStorage.getItem("token");
   const decodedToken = jwtDecode(token);
@@ -67,7 +80,7 @@ const VendorEdit = () => {
         "data"
       );
       const data = res.data.tmsVendorkMastList.filter((e) => e._id === _id);
-      console.log(data, "data")
+      console.log(data, "data");
       setVendorName(data[0].vendorMast_name);
       setCountryCode(data[0].country_code);
       setMobile(data[0].mobile);
@@ -99,7 +112,7 @@ const VendorEdit = () => {
       setIfscCode(data[0].ifsc_code);
       setUpiId(data[0].upi_id);
       setWhatsappLink(data[0].whatsapp_link);
-      setVendorCategory(data[0].vendor_category );
+      setVendorCategory(data[0].vendor_category);
     });
 
     axios.get(baseUrl + "getAllVendor").then((res) => {
@@ -138,19 +151,16 @@ const VendorEdit = () => {
   //   }
   // },[payId])
 
-  
-  const handleRemarkChange = (i,value) => {
+  const handleRemarkChange = (i, value) => {
     const remark = [...whatsappLink];
     remark[i].remark = value;
     setWhatsappLink(remark);
-  }
+  };
 
   const handleLinkChange = (index, newValue) => {
-   let link = [...whatsappLink]
+    let link = [...whatsappLink];
     link[index].link = newValue;
-    setWhatsappLink(
-      link
-    );
+    setWhatsappLink(link);
   };
 
   const removeLink = (index) => {
@@ -159,46 +169,39 @@ const VendorEdit = () => {
       setWhatsappLink(updatedLinks);
     };
   };
-  
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    if(!vendorName){
-      toastError('Please enter vendor name');
+    if (!vendorName) {
+      toastError("Please enter vendor name");
       return;
-    }
-    else if(!countryCode){
-      toastError('Please enter country code');
+    } else if (!countryCode) {
+      toastError("Please enter country code");
       return;
-    }
-    else if(!mobile){
-      toastError('Please enter mobile number');
+    } else if (!mobile) {
+      toastError("Please enter mobile number");
       return;
-    }
-    else if(!email){
-      toastError('Please enter email');
+    } else if (!email) {
+      toastError("Please enter email");
       return;
-    }
-    else if(!typeId){
-      toastError('Please select vendor type');
+    } else if (!typeId) {
+      toastError("Please select vendor type");
       return;
-    }
-    else if(!platformId){
-      toastError('Please select platform');
+    } else if (!platformId) {
+      toastError("Please select platform");
       return;
-    }
-    else if(!payId){
-      toastError('Please select payment method');
+    } else if (!payId) {
+      toastError("Please select payment method");
       return;
-    }
-    else if(!cycleId){
-      toastError('Please select pay cycle');
+    } else if (!cycleId) {
+      toastError("Please select pay cycle");
       return;
     }
     const formData = new FormData();
     formData.append("vendorMast_name", vendorName);
     formData.append("country_code", countryCode);
     formData.append("mobile", mobile);
-    formData.append("alternate_mobile", altMobile?altMobile:"");
+    formData.append("alternate_mobile", altMobile ? altMobile : "");
     formData.append("email", email);
     formData.append("personal_address", perAddress);
     formData.append("pan_no", pan);
@@ -208,7 +211,7 @@ const VendorEdit = () => {
     formData.append("company_name", compName);
     formData.append("company_address", compAddress);
     formData.append("company_city", compCity);
-    formData.append("company_pincode", compPin?Number(compPin):0);
+    formData.append("company_pincode", compPin ? Number(compPin) : 0);
     formData.append("company_state", compState);
     formData.append("threshold_limit", limit);
     formData.append("home_address", homeAddress);
@@ -227,7 +230,7 @@ const VendorEdit = () => {
       formData.append("account_type", accountType);
       formData.append("account_no", Number(accountNo));
       formData.append("ifsc_code", ifscCode);
-    }else{
+    } else {
       formData.append("bank_name", "");
       formData.append("account_type", "");
       formData.append("account_no", "");
@@ -236,14 +239,14 @@ const VendorEdit = () => {
 
     if (upiId) {
       formData.append("upi_id", upiId);
-    }else{
+    } else {
       formData.append("upi_id", "");
     }
     axios
-      .put(baseUrl + `updateVendorMast/${_id}`, formData,{
+      .put(baseUrl + `updateVendorMast/${_id}`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
-        }
+        },
       })
       .then(() => {
         setIsFormSubmitted(true);
@@ -260,16 +263,75 @@ const VendorEdit = () => {
 
   const handlePanChange = (e) => {
     const inputValue = e.target.value.toUpperCase();
-    
+
     setPan(inputValue);
     // Validate PAN format
     const panRegex = /[A-Z]{5}[0-9]{4}[A-Z]{1}/;
     if (!panRegex.test(inputValue)) {
-      toastError('Please enter a valid PAN number');
-    } 
+      toastError("Please enter a valid PAN number");
+    }
   };
 
- 
+
+  const handleBankNameChange = (e, i) => {
+    const updatedRows = [...bankRows];
+    updatedRows[i].bankName = e.target.value;
+    setBankRows(updatedRows);
+  };
+
+  const handleAccountTypeChange = (e, i) => {
+    const updatedRows = [...bankRows];
+    updatedRows[i].accountType = e.value;
+    setBankRows(updatedRows);
+  };
+
+  const handleAccountNoChange = (e, i) => {
+    const updatedRows = [...bankRows];
+    updatedRows[i].accountNo = e.target.value;
+    setBankRows(updatedRows);
+  };
+
+  const handleIFSCChange = (e, i) => {
+    const updatedRows = [...bankRows];
+    updatedRows[i].ifscCode = e.target.value;
+    setBankRows(updatedRows);
+  };
+
+  const handleUPIidChange = (e, i) => {
+    const updatedRows = [...bankRows];
+    updatedRows[i].UPIid = e.target.value;
+    setBankRows(updatedRows);
+  };
+
+  const handleRegisteredMobileChange = (e, i) => {
+    if (e.target.value.length > 10) {
+      return;
+    }
+    const updatedRows = [...bankRows];
+    updatedRows[i].registeredMobileNo = e.target.value;
+    setBankRows(updatedRows);
+  };
+
+  const handleAddBankInfoRow = () => {
+    setBankRows([
+      ...bankRows,
+      {
+        bankName: "",
+        accountType: "",
+        accountNo: "",
+        ifscCode: "",
+        UPIid: "",
+        registeredMobileNo: "",
+      },
+    ]);
+  };
+
+  const handleRemoveBankInfoRow = (index) => {
+    return () => {
+      const updatedRows = bankRows.filter((row, i) => i !== index);
+      setBankRows(updatedRows);
+    };
+  };
 
   return (
     <>
@@ -284,7 +346,7 @@ const VendorEdit = () => {
           required={true}
           onChange={(e) => setVendorName(e.target.value)}
         />
-         <div className="form-group col-6">
+        <div className="form-group col-6">
           <label className="form-label">
             Vendor Category <sup style={{ color: "red" }}>*</sup>
           </label>
@@ -401,82 +463,79 @@ const VendorEdit = () => {
           ></Select>
         </div>
 
-        {payData.find((role) => role._id === payId)?.payMethod_name ===
-          "Bank Details" && (
-          <FieldContainer
-            label="Bank Name *"
-            value={bankName}
-            // className= "w-100"
-            required={
-              payData.find((role) => role._id === payId)?.payMethod_name ===
-              "Bank Details"
-                ? true
-                : false
-            }
-            onChange={(e) => setBankName(e.target.value)}
-          />
-        )}
-        {payData.find((role) => role._id === payId)?.payMethod_name ===
-          "Bank Details" && (
-          <FieldContainer
-            label="Account Type *"
-            value={accountType}
-            // className= "w-100"
-            required={
-              payData.find((role) => role._id === payId)?.payMethod_name ===
-              "Bank Details"
-                ? true
-                : false
-            }
-            onChange={(e) => setAccountType(e.target.value)}
-          />
-        )}
-        {payData.find((role) => role._id === payId)?.payMethod_name ===
-          "Bank Details" && (
-          <FieldContainer
-            label="Account Number *"
-            value={accountNo}
-            type="number"
-            // className= "w-100"
-            required={
-              payData.find((role) => role._id === payId)?.payMethod_name ===
-              "Bank Details"
-                ? true
-                : false
-            }
-            onChange={(e) => setAccountNo(e.target.value)}
-          />
-        )}
-        {payData.find((role) => role._id === payId)?.payMethod_name ===
-          "Bank Details" && (
-          <FieldContainer
-            label="IFSC *"
-            value={ifscCode}
-            // className= "w-100"
-            required={
-              payData.find((role) => role._id === payId)?.payMethod_name ===
-              "Bank Details"
-                ? true
-                : false
-            }
-            onChange={(e) => setIfscCode(e.target.value)}
-          />
-        )}
-        {payData.find((role) => role._id === payId)?.payMethod_name ===
-          "UPI" && (
-          <FieldContainer
-            label="UPI ID *"
-            value={upiId}
-            // className= "w-100"
-            required={
-              payData.find((role) => role._id === payId)?.payMethod_name ===
-              "UPI"
-                ? true
-                : false
-            }
-            onChange={(e) => setUpiId(e.target.value)}
-          />
-        )}
+        {bankRows.map((row, i) => (
+          <>
+            <FieldContainer
+              label="Bank Name "
+              value={bankRows[i].bankName}
+              onChange={(e) => handleBankNameChange(e, i)}
+            />
+
+            <div className="form-group col-6">
+              <label className="form-label">Account Type</label>
+              <Select
+                options={["Savings", "Current"].map((option) => ({
+                  label: option,
+                  value: option,
+                }))}
+                required={true}
+                value={{
+                  value: bankRows[i].accountType,
+                  label: bankRows[i].accountType,
+                }}
+                onChange={(e) => {
+                  handleAccountTypeChange(e, i);
+                }}
+              />
+            </div>
+
+            <FieldContainer
+              label="Account Number "
+              value={bankRows[i].accountNo}
+              onChange={(e) => handleAccountNoChange(e, i)}
+            />
+
+            <FieldContainer
+              label="IFSC "
+              value={bankRows[i].ifscCode}
+              onChange={(e) => handleIFSCChange(e, i)}
+            />
+
+            <FieldContainer
+              label="UPI ID "
+              value={bankRows[i].UPIid}
+              onChange={(e) => handleUPIidChange(e, i)}
+            />
+
+            <FieldContainer
+              label={"Registered Mobile Number"}
+              value={bankRows[i].registeredMobileNo}
+              required={false}
+              type="number"
+              onChange={(e) => handleRegisteredMobileChange(e, i)}
+            />
+
+            {i > 0 && (
+              <IconButton
+                onClick={handleRemoveBankInfoRow(i)}
+                variant="contained"
+                color="error"
+              >
+                <RemoveCircleTwoToneIcon />
+              </IconButton>
+            )}
+          </>
+        ))}
+
+        <div className="row">
+          <IconButton
+            onClick={handleAddBankInfoRow}
+            variant="contained"
+            color="primary"
+          >
+            <AddCircleTwoToneIcon />
+          </IconButton>
+        </div>
 
         <div className="form-group col-6">
           <label className="form-label">
@@ -503,7 +562,7 @@ const VendorEdit = () => {
           label="PAN"
           value={pan}
           required={false}
-          onChange={(e) => setPan((e.target.value).toUpperCase())}
+          onChange={(e) => setPan(e.target.value.toUpperCase())}
         />
         <FieldContainer
           type="file"
@@ -518,7 +577,7 @@ const VendorEdit = () => {
           label="GST"
           value={gst}
           required={false}
-          onChange={(e) => setGst((e.target.value).toUpperCase())}
+          onChange={(e) => setGst(e.target.value.toUpperCase())}
         />
         <FieldContainer
           type="file"
@@ -591,7 +650,7 @@ const VendorEdit = () => {
           required={false}
           onChange={(e) => setHomeState(e.target.value)}
         />
-         {whatsappLink?.map((link, index) => (
+        {whatsappLink?.map((link, index) => (
           <>
             <FieldContainer
               key={index}
@@ -600,7 +659,7 @@ const VendorEdit = () => {
               required={false}
               onChange={(e) => handleLinkChange(index, e.target.value)}
             />
-             <FieldContainer
+            <FieldContainer
               key={index.remark}
               label={`Remark`}
               value={link.remark}
@@ -634,10 +693,10 @@ const VendorEdit = () => {
               // <Button onClick={removeLink(index)}  icon />
 
               <IconButton
-              size="small"
-              sx={{
-                display: "inline",
-              }}
+                size="small"
+                sx={{
+                  display: "inline",
+                }}
                 onClick={removeLink(index)}
                 color="secondary"
                 aria-label="add an alarm"
@@ -645,11 +704,22 @@ const VendorEdit = () => {
                 <CloseIcon />
               </IconButton>
             )}
-
           </>
         ))}
-     {panImglink?.length>0 &&   <img  style={{ width: "100px", height: "100px" }} src={panImglink} alt="pan" />}
-     {  gstImglink?.length>0 && <img   style={{ width: "100px", height: "100px" }} src={gstImglink} alt="gst" />}
+        {panImglink?.length > 0 && (
+          <img
+            style={{ width: "100px", height: "100px" }}
+            src={panImglink}
+            alt="pan"
+          />
+        )}
+        {gstImglink?.length > 0 && (
+          <img
+            style={{ width: "100px", height: "100px" }}
+            src={gstImglink}
+            alt="gst"
+          />
+        )}
       </FormContainer>
     </>
   );

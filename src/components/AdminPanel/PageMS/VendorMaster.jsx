@@ -33,6 +33,7 @@ import InfoIcon from "@mui/icons-material/Info";
 import VendorTypeInfoModal from "./VendorTypeInfoModal";
 import AddCircleTwoToneIcon from "@mui/icons-material/AddCircleTwoTone";
 import RemoveCircleTwoToneIcon from "@mui/icons-material/RemoveCircleTwoTone";
+import { useParams } from "react-router";
 
 const countries = [
   { code: "AD", label: "Andorra", phone: "376" },
@@ -460,6 +461,7 @@ const countries = [
 ];
 
 const VendorMaster = () => {
+  const { _id } = useParams();
   const dispatch = useDispatch();
   const isVendorModalOpen = useSelector(
     (state) => state.vendorMaster.showVendorInfoModal
@@ -493,11 +495,6 @@ const VendorMaster = () => {
   const [emailIsInvalid, setEmailIsInvalid] = useState(false);
   const [gstApplicable, setGstApplicable] = useState("No");
   const [vendorCategory, setVendorCategory] = useState("Theme Page");
-  const [bankName, setBankName] = useState("");
-  const [accountType, setAccountType] = useState("");
-  const [accountNo, setAccountNo] = useState("");
-  const [ifscCode, setIfscCode] = useState("");
-  const [upiId, setUpiId] = useState("");
   const [whatsappLink, setWhatsappLink] = useState([]);
   const [bankRows, setBankRows] = useState([
     {
@@ -628,6 +625,44 @@ const VendorMaster = () => {
     setWhatsappLink(link);
   };
 
+  if (_id) {
+    axios.get(baseUrl + "vendorAllData").then((res) => {
+      const data = res.data.tmsVendorkMastList.filter((e) => e._id === _id);
+      setVendorName(data[0].vendorMast_name);
+      setCountryCode(data[0].country_code);
+      setMobile(data[0].mobile);
+      setAltMobile(data[0].alternate_mobile);
+      setEmail(data[0].email);
+      setPerAddress(data[0].personal_address);
+      setPan(data[0].pan_no);
+      setPanImage(data[0]?.upload_pan_image);
+      setGstImage(data[0].upload_gst_image);
+      setGst(data[0].gst_no);
+      setCompName(data[0].company_name);
+      setCompAddress(data[0].company_address);
+      setCompCity(data[0].company_city);
+      setCompPin(data[0].company_pincode);
+      setCompState(data[0].company_state);
+      setLimit(data[0].threshold_limit);
+      setHomeAddress(data[0].home_address);
+      setHomeCity(data[0].home_city);
+      setHomeState(data[0].home_state);
+      setTypeId(data[0].type_id);
+      setPlatformId(data[0].platform_id);
+      setPayId(data[0].payMethod_id);
+      setCycleId(data[0].cycle_id);
+      // setPanImglink(data[0].upload_pan_image);
+      // setGstImglink(data[0].upload_gst_image);
+      // setBankName(data[0].bank_name);
+      // setAccountType(data[0].account_type);
+      // setAccountNo(data[0].account_no);
+      // setIfscCode(data[0].ifsc_code);
+      // setUpiId(data[0].upi_id);
+      setWhatsappLink(data[0].whatsapp_link);
+      setVendorCategory(data[0].vendor_category);
+    });
+  }
+
   const addLink = () => {
     setWhatsappLink([
       ...whatsappLink,
@@ -728,7 +763,7 @@ const VendorMaster = () => {
       toastError("Please select pay cycle");
       return;
     }
-    return console.log(bankRows);
+    // return console.log(bankRows);
     const formData = new FormData();
     formData.append("vendorMast_name", vendorName);
     formData.append("country_code", countryCode);
@@ -769,11 +804,18 @@ const VendorMaster = () => {
     // if (upiId) {
     //   formData.append("upi_id", upiId);
     // }
-
-    axios.post(baseUrl + "addVendorMast", formData).then(() => {
-      setIsFormSubmitted(true);
-      toastAlert("Submitted");
-    });
+    if (!_id) {
+      axios.post(baseUrl + "addVendorMast", formData).then(() => {
+        setIsFormSubmitted(true);
+        toastAlert("Submitted");
+      });
+    } else {
+      axios.put(baseUrl + `updateVendorMast/${_id}`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+    }
   };
 
   const gstOptions = [
@@ -794,8 +836,8 @@ const VendorMaster = () => {
   return (
     <>
       <FormContainer
-        mainTitle="Vendor Master"
-        title="Vendor Master"
+        mainTitle={_id ? "Edit Vendor Master" : "Add Vendor Master"}
+        title={_id ? "Edit Vendor Master" : "Add Vendor Master"}
         handleSubmit={handleSubmit}
       >
         <FieldContainer
@@ -1041,7 +1083,6 @@ const VendorMaster = () => {
         {bankRows.map((row, i) => (
           <>
             <FieldContainer
-
               label="Bank Name "
               value={bankRows[i].bankName}
               onChange={(e) => handleBankNameChange(e, i)}
@@ -1277,20 +1318,36 @@ const VendorMaster = () => {
           required={false}
           onChange={(e) => setHomeState(e.target.value)}
         />
-        {panImage && (
+        {panImage && !_id && (
           <img
             src={URL.createObjectURL(panImage)}
             alt="pan"
             style={{ width: "100px", height: "100px" }}
           />
         )}
-        {gstImage && (
+        {gstImage && !_id && (
           <img
             src={URL.createObjectURL(gstImage)}
             alt="gst"
             style={{ width: "100px", height: "100px" }}
           />
         )}
+
+        {panImage && _id && (
+          <img
+            src={panImage}
+            alt="pan"
+            style={{ width: "100px", height: "100px" }}
+          />
+        )}
+        {gstImage && _id && (
+          <img
+            src={gstImage}
+            alt="gst"
+            style={{ width: "100px", height: "100px" }}
+          />
+        )}
+
         {whatsappLink?.map((link, index) => (
           <>
             <FieldContainer
