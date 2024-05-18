@@ -1676,11 +1676,17 @@ const UserMaster = () => {
           <DatePicker
             value={dateOfBirth}
             onChange={handleDateChange}
+<<<<<<< Updated upstream
             shouldDisableDate={disableFutureDates}
             renderInput={(params) => <TextField {...params} />}
           />
         </LocalizationProvider>
         {<p style={{ color: "red !important" }}>{dobError}</p>}
+=======
+            renderInput={(params) => <TextField {...params} />}
+          />
+        </LocalizationProvider>
+>>>>>>> Stashed changes
       </div>
       {dateOfBirth !== "" && (
         <FieldContainer fieldGrid={3} label="Age" value={age} />
@@ -2086,6 +2092,7 @@ const UserMaster = () => {
           }}
         ></Select>
       </div>
+<<<<<<< Updated upstream
       <div className="col-md-3">
         <FieldContainer
           label="Official Email"
@@ -2111,6 +2118,32 @@ const UserMaster = () => {
         />
         {!validEmail && <p className="form-error">*Please enter valid email</p>}
       </div>
+=======
+
+      <FieldContainer
+        label="Official Email"
+        type="email"
+        placeholder="Not Allocated"
+        fieldGrid={3}
+        value={email}
+        onChange={handleEmailChange}
+        onBlur={() => {
+          if (email === "") {
+            // setMandatoryFieldsEmpty({...mandatoryFieldsEmpty,personalEmail:true});
+            return setMandatoryFieldsEmpty((prevState) => ({
+              ...prevState,
+              email: true,
+            }));
+          } else {
+            setMandatoryFieldsEmpty({
+              ...mandatoryFieldsEmpty,
+              email: false,
+            });
+          }
+        }}
+      />
+
+>>>>>>> Stashed changes
       <div className="col-xl-3 col-lg-3 col-md-3 col-sm-12">
         <FieldContainer
           label="Official Contact"
@@ -2294,6 +2327,7 @@ const UserMaster = () => {
         <LocalizationProvider dateAdapter={AdapterDayjs}>
           <DatePicker
             value={joiningDate}
+<<<<<<< Updated upstream
             // onChange={(e) => setJoiningDate(e)}
             onChange={(e) => {
               setJoiningDate(e);
@@ -2317,6 +2351,12 @@ const UserMaster = () => {
         {mandatoryFieldsEmpty.joiningDate && (
           <p className="form-error">Please enter Joining Date</p>
         )}
+=======
+            onChange={(e) => setJoiningDate(e.target.value)}
+            renderInput={(params) => <TextField {...params} />}
+          />
+        </LocalizationProvider>
+>>>>>>> Stashed changes
       </div>
 
       {department == constant.CONST_SALES_DEPT_ID && (

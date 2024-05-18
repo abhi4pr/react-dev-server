@@ -687,6 +687,7 @@ const AdminPreOnboarding = () => {
 
         <div className="form-group col-3">
           <label className="form-label">
+<<<<<<< Updated upstream
             Sub Department <sup className="form-error">*</sup>
           </label>
           <Select
@@ -725,6 +726,8 @@ const AdminPreOnboarding = () => {
 
         <div className="form-group col-3">
           <label className="form-label">
+=======
+>>>>>>> Stashed changes
             Designation <sup className="form-error">*</sup>
           </label>
           <Select
@@ -812,6 +815,20 @@ const AdminPreOnboarding = () => {
           )}
         </div>
 
+<<<<<<< Updated upstream
+=======
+        {/* <FieldContainer
+          label="Email"
+          type="email"
+          fieldGrid={3}
+          required
+          value={email}
+          onChange={handleEmailChange}
+        />
+        {!validEmail && (
+          <p className="form-error">*Please enter valid email</p>
+        )} */}
+>>>>>>> Stashed changes
         <div className="col-md-3">
           <FieldContainer
             label="Personal Email"
@@ -825,9 +842,12 @@ const AdminPreOnboarding = () => {
           {!validPersonalEmail && (
             <p className="form-error">*Please enter valid email</p>
           )}
+<<<<<<< Updated upstream
           {isRequired.personalEmail && (
             <p className="form-error">*Please select Personal Email</p>
           )}
+=======
+>>>>>>> Stashed changes
         </div>
         <div className="col-md-3">
           <FieldContainer
@@ -915,6 +935,7 @@ const AdminPreOnboarding = () => {
                 setUserCtc(value);
               }
 
+<<<<<<< Updated upstream
               userCtc !== "" &&
                 setIsRequired((prev) => {
                   return { ...prev, userCtc: true };
@@ -973,6 +994,53 @@ const AdminPreOnboarding = () => {
             />
           </div>
         )} */}
+=======
+        {jobType == "WFO" && (
+          <div className="form-group col-3">
+            <label className="form-label">
+              Letter send <sup className="form-error">*</sup>
+            </label>
+            <Select
+              options={offerLetter.map((option) => ({
+                value: `${option.value}`,
+                label: `${option.label}`,
+              }))}
+              value={{
+                value: sendLetter.value,
+                label: sendLetter.label || "", // Fallback to empty string if label is undefined
+              }}
+              onChange={(e) => {
+                setSendLetter(e);
+                setIsRequired((prev) => ({
+                  ...prev,
+                  sendLetter: !e.value, // Set to true if e.value is empty, false otherwise
+                }));
+              }}
+              onBlur={() => {
+                setIsRequired((prev) => ({
+                  ...prev,
+                  sendLetter: !sendLetter.value, // Set to true if sendLetter.value is empty, false otherwise
+                }));
+              }}
+            />
+            {isRequired.sendLetter && (
+              <p className="form-error">*Please select a Letter</p>
+            )}
+          </div>
+        )}
+
+        {sendLetter.label == "Yes" && (
+          <div className="col-md-3">
+            <FieldContainer
+              label="Annexure pdf"
+              fieldGrid={3}
+              type="file"
+              onChange={(e) => setAnnexurePdf(e.target.files[0])}
+              required={false}
+            />
+          </div>
+        )}
+>>>>>>> Stashed changes
 
         {/* <FieldContainer
           label="Contact"
@@ -1095,7 +1163,11 @@ const AdminPreOnboarding = () => {
               }
             }}
           />
+<<<<<<< Updated upstream
           {isRequired.roles && (
+=======
+          {isRequired.role && (
+>>>>>>> Stashed changes
             <p className="form-error">*Please select a Role</p>
           )}
         </div>
@@ -1106,6 +1178,7 @@ const AdminPreOnboarding = () => {
           <LocalizationProvider dateAdapter={AdapterDayjs}>
             <DatePicker
               value={joiningDate}
+<<<<<<< Updated upstream
               onChange={(e) => {
                 setJoiningDate(e);
                 if (e === "") {
@@ -1120,6 +1193,12 @@ const AdminPreOnboarding = () => {
           {isRequired.joiningDate && (
             <p className="form-error">*Please select a Joining Date</p>
           )}
+=======
+              onChange={(e) => setJoiningDate(e)}
+              renderInput={(params) => <TextField {...params} />}
+            />
+          </LocalizationProvider>
+>>>>>>> Stashed changes
         </div>
         {/* <FieldContainer
           type="date"
@@ -1141,9 +1220,12 @@ const AdminPreOnboarding = () => {
               renderInput={(params) => <TextField {...params} />}
             />
           </LocalizationProvider>
+<<<<<<< Updated upstream
           {isRequired.dateOfBirth && (
             <p className="form-error">*Please select a DOB</p>
           )}
+=======
+>>>>>>> Stashed changes
         </div>
         {/* <FieldContainer
           astric
