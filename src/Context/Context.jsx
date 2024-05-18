@@ -16,6 +16,7 @@ const AppProvider = ({ children }) => {
   const [getBrandDataContext, setBrandDataContext] = useState([]);
   const [getAssetDataContext, setAssetDataContext] = useState([]);
   const [usersDataContext, setUsersContextData] = useState([]);
+  const [activeAccordionIndex, setActiveAccordionIndex] = useState(0);
 
   const toastAlert = (text) => {
     toast.success(text);
@@ -64,6 +65,7 @@ const AppProvider = ({ children }) => {
         getBrandDataContext,
         getAssetDataContext,
         usersDataContext,
+        activeAccordionIndex, setActiveAccordionIndex
       }}
     >
       {children}

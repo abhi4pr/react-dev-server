@@ -189,7 +189,7 @@ const PurchaseDashboard = () => {
                 (item) =>
                   item.status == 0 || item.status == 3 || item.status == 2
               );
-              console.log(mergedArray, "mergedArray?>>>>");
+              // console.log(mergedArray, "mergedArray?>>>>");
               setPendingReqData(mergedArray);
               setFilterPendingReqData(mergedArray);
             });
