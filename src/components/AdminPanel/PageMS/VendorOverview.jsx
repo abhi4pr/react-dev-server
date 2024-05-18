@@ -27,6 +27,7 @@ const VendorOverview = () => {
   const [vendorTypes, setVendorTypes] = useState([]);
   const [search, setSearch] = useState("");
   const [filterData, setFilterData] = useState([]);
+  const [data, setData] = useState([]);
   const [typeData, setTypeData] = useState([{}]);
   const [platformData, setPlatformData] = useState([{}]);
   const [cycleData, setCycleData] = useState([{}]);
@@ -66,6 +67,7 @@ const VendorOverview = () => {
       return d.vendorMast_name.toLowerCase().match(search.toLowerCase());
     });
     setFilterData(result);
+    setData(result);
   }, [search]);
 
   const handleOpenWhatsappModal = (whatsappLink) => {
@@ -561,6 +563,39 @@ const VendorOverview = () => {
                 </div>
               </div>
             </div>
+            <div className="mx-3 mb-2">
+              {[
+                ...new Set(
+                  filterData.map((item) => {
+                    return item?.vendor_category;
+                  })
+                ),
+              ].map((item, index) => {
+                return (
+                  <button
+                    key={index}
+                    className="btn btn-primary btn-sm"
+                    onClick={() => setSearch(item)}
+                  >
+                    {item}{" "}
+                    <span className="badge bg-secondary">
+                      {
+                        filterData.filter((data) => {
+                          return data.vendor_category === item;
+                        }).length
+                      }
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+            <div className="mx-3 mb-2">
+              <h4>
+                <span className="text-primary">
+                  Total Vendor:{vendorTypes.length}
+                </span>
+              </h4>
+            </div>
           </div>
 
           {loading ? (
@@ -616,7 +651,7 @@ const VendorOverview = () => {
           )}
         </div>
       </div>
-      <VendorPageModal  />
+      <VendorPageModal />
     </>
   );
 };

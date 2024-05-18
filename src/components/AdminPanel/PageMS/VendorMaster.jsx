@@ -15,6 +15,24 @@ import {
   TextField,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
+import AddIcon from "@mui/icons-material/Add";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  handleChangeVendorInfoModal,
+  setModalType,
+  setShowAddVendorModal,
+} from "./../../Store/VendorMaster";
+import AddVendorModal from "./AddVendorModal";
+import {
+  useGetAllVendorQuery,
+  useGetPmsPayCycleQuery,
+  useGetPmsPaymentMethodQuery,
+  useGetPmsPlatformQuery,
+} from "../../Store/reduxBaseURL";
+import InfoIcon from "@mui/icons-material/Info";
+import VendorTypeInfoModal from "./VendorTypeInfoModal";
+import AddCircleTwoToneIcon from "@mui/icons-material/AddCircleTwoTone";
+import RemoveCircleTwoToneIcon from "@mui/icons-material/RemoveCircleTwoTone";
 
 const countries = [
   { code: "AD", label: "Andorra", phone: "376" },
@@ -442,6 +460,11 @@ const countries = [
 ];
 
 const VendorMaster = () => {
+  const dispatch = useDispatch();
+  const isVendorModalOpen = useSelector(
+    (state) => state.vendorMaster.showVendorInfoModal
+  );
+
   const { toastAlert, toastError } = useGlobalContext();
   const [vendorName, setVendorName] = useState("");
   const [countryCode, setCountryCode] = useState("");
@@ -467,30 +490,173 @@ const VendorMaster = () => {
   const [platformId, setPlatformId] = useState("");
   const [payId, setPayId] = useState("");
   const [cycleId, setCycleId] = useState("");
-  const [typeData, setTypeData] = useState([]);
-  const [platformData, setPlatformData] = useState([]);
-  const [payData, setPayData] = useState([]);
-  const [cycleData, setCycleData] = useState([]);
   const [emailIsInvalid, setEmailIsInvalid] = useState(false);
   const [gstApplicable, setGstApplicable] = useState("No");
   const [vendorCategory, setVendorCategory] = useState("Theme Page");
-  // const [countries, setCountries] = useState([{}]);
   const [bankName, setBankName] = useState("");
   const [accountType, setAccountType] = useState("");
   const [accountNo, setAccountNo] = useState("");
   const [ifscCode, setIfscCode] = useState("");
   const [upiId, setUpiId] = useState("");
   const [whatsappLink, setWhatsappLink] = useState([]);
+  const [bankRows, setBankRows] = useState([
+    {
+      bankName: "",
+      accountType: "",
+      accountNo: "",
+      ifscCode: "",
+      UPIid: "",
+      registeredMobileNo: "",
+    },
+  ]);
+
+  const {
+    isLoading: typeLoading,
+    error: typeError,
+    data: typeData,
+  } = useGetAllVendorQuery();
+
+  const {
+    isLoading: platformLoading,
+    error: platformError,
+    data: platformData,
+  } = useGetPmsPlatformQuery();
+
+  const {
+    isLoading: payLoading,
+    error: payError,
+    data,
+  } = useGetPmsPaymentMethodQuery();
+  const payData = data?.data;
+
+  const {
+    isLoading: cycleLoading,
+    error: cycleError,
+    data: cycleQueryData,
+  } = useGetPmsPayCycleQuery();
+
+  const cycleData = cycleQueryData?.data;
+
+  const handleRemarkChange = (i, value) => {
+    const remark = [...whatsappLink];
+    remark[i].remark = value;
+    setWhatsappLink(remark);
+  };
+
+  const handleAddVendorTypeClick = () => {
+    dispatch(setShowAddVendorModal());
+    dispatch(setModalType("Vendor"));
+  };
+
+  const handleInfoClick = () => {
+    dispatch(handleChangeVendorInfoModal());
+    dispatch(setModalType("Vendor"));
+  };
+
+  const handleAddPlatformClick = () => {
+    dispatch(setShowAddVendorModal());
+    dispatch(setModalType("Platform"));
+  };
+
+  const handlePlatformInfoClick = () => {
+    dispatch(handleChangeVendorInfoModal());
+    dispatch(setModalType("Platform"));
+  };
+
+  const handleAddPaymentMethodClick = () => {
+    dispatch(setShowAddVendorModal());
+    dispatch(setModalType("PaymentMethod"));
+  };
+
+  const handlePaymentMethodInfoClick = () => {
+    dispatch(handleChangeVendorInfoModal());
+    dispatch(setModalType("PaymentMethod"));
+  };
+
+  const handleAddPayCycleClick = () => {
+    dispatch(setShowAddVendorModal());
+    dispatch(setModalType("PayCycle"));
+  };
+
+  const handlePayCycleInfoClick = () => {
+    dispatch(handleChangeVendorInfoModal());
+    dispatch(setModalType("PayCycle"));
+  };
+
+  const handleBankNameChange = (e, i) => {
+    const updatedRows = [...bankRows];
+    updatedRows[i].bankName = e.target.value;
+    setBankRows(updatedRows);
+  };
+
+  const handleAccountTypeChange = (e, i) => {
+    const updatedRows = [...bankRows];
+    updatedRows[i].accountType = e.value;
+    setBankRows(updatedRows);
+  };
+
+  const handleAccountNoChange = (e, i) => {
+    const updatedRows = [...bankRows];
+    updatedRows[i].accountNo = e.target.value;
+    setBankRows(updatedRows);
+  };
+
+  const handleIFSCChange = (e, i) => {
+    const updatedRows = [...bankRows];
+    updatedRows[i].ifscCode = e.target.value;
+    setBankRows(updatedRows);
+  };
+
+  const handleUPIidChange = (e, i) => {
+    const updatedRows = [...bankRows];
+    updatedRows[i].UPIid = e.target.value;
+    setBankRows(updatedRows);
+  };
+
+  const handleRegisteredMobileChange = (e, i) => {
+    if (e.target.value.length > 10) {
+      return;
+    }
+    const updatedRows = [...bankRows];
+    updatedRows[i].registeredMobileNo = e.target.value;
+    setBankRows(updatedRows);
+  };
 
   const handleLinkChange = (index, newValue) => {
-    const updatedLinks = whatsappLink.map((link, i) =>
-      i === index ? newValue : link
-    );
-    setWhatsappLink(updatedLinks);
+    let link = [...whatsappLink];
+    link[index].link = newValue;
+    setWhatsappLink(link);
   };
 
   const addLink = () => {
-    setWhatsappLink([...whatsappLink, ""]);
+    setWhatsappLink([
+      ...whatsappLink,
+      {
+        link: "",
+        remark: "",
+        type: "",
+      },
+    ]);
+  };
+
+  const handleAddBankInfoRow = () => {
+    setBankRows([
+      ...bankRows,
+      {
+        bankName: "",
+        accountType: "",
+        accountNo: "",
+        ifscCode: "",
+        UPIid: "",
+        registeredMobileNo: "",
+      },
+    ]);
+  };
+  const handleRemoveBankInfoRow = (index) => {
+    return () => {
+      const updatedRows = bankRows.filter((row, i) => i !== index);
+      setBankRows(updatedRows);
+    };
   };
   const removeLink = (index) => {
     return () => {
@@ -502,51 +668,6 @@ const VendorMaster = () => {
   const token = sessionStorage.getItem("token");
   const decodedToken = jwtDecode(token);
   const userID = decodedToken.id;
-
-  const getData = async () => {
-    axios.get(baseUrl + "getAllVendor").then((res) => {
-      setTypeData(res.data.data);
-    });
-
-    axios.get(baseUrl + "getAllPlatform").then((res) => {
-      setPlatformData(res.data.data);
-    });
-
-    axios.get(baseUrl + "getAllPay").then((res) => {
-      setPayData(res.data.data);
-    });
-
-    axios.get(baseUrl + "getAllPayCycle").then((res) => {
-      setCycleData(res.data.data);
-    });
-
-    // try {
-    //   let res = await axios.get(
-    //     "https://bitbucket.org/atlassian/atlaskit-mk-2/raw/4ad0e56649c3e6c973e226b7efaeb28cb240ccb0/packages/core/select/src/data/countries.js"
-    //   );
-    //   if (res.ok) {
-    //     console.log(res.data, "countries data");
-    //     setCountries(res.data);
-    //   }
-    //   console.log(res.data, "countries data without ok");
-    // } catch (e) {
-    //   console.error(e);
-    // }
-  };
-
-  useEffect(() => {
-    getData();
-  }, []);
-
-  // useEffect(()=>{
-  //   if(payData.find((role) => role._id === payId)?.payMethod_name ===
-  //   "Bank Details"){
-  //     setBankName('')
-  //     setAccountType('')
-  //     setAccountNo('')
-  //     setIfscCode('')
-  //   }
-  // },[payId])
 
   const handleMobileNumSet = (e, setState) => {
     const re = /^[0-9\b]+$/;
@@ -607,7 +728,7 @@ const VendorMaster = () => {
       toastError("Please select pay cycle");
       return;
     }
-
+    return console.log(bankRows);
     const formData = new FormData();
     formData.append("vendorMast_name", vendorName);
     formData.append("country_code", countryCode);
@@ -634,18 +755,20 @@ const VendorMaster = () => {
     formData.append("home_state", homeState);
     formData.append("created_by", userID);
     formData.append("vendor_category", vendorCategory);
-    formData.append("whatsapp_link", whatsappLink.map((link) => link.trim()));
 
-    if (bankName) {
-      formData.append("bank_name", bankName);
-      formData.append("account_type", accountType);
-      formData.append("account_no", accountNo);
-      formData.append("ifsc_code", ifscCode);
-    }
+    // sumit will give the update for bank and whatsapp link
+    // formData.append("whatsapp_link", JSON.stringify(whatsappLink));
 
-    if (upiId) {
-      formData.append("upi_id", upiId);
-    }
+    // if (bankName) {
+    //   formData.append("bank_name", bankName);
+    //   formData.append("account_type", accountType);
+    //   formData.append("account_no", accountNo);
+    //   formData.append("ifsc_code", ifscCode);
+    // }
+
+    // if (upiId) {
+    //   formData.append("upi_id", upiId);
+    // }
 
     axios.post(baseUrl + "addVendorMast", formData).then(() => {
       setIsFormSubmitted(true);
@@ -722,7 +845,6 @@ const VendorMaster = () => {
             // className=" col-6"
             onChange={(e, val) => {
               setCountryCode(val.phone);
-              console.log(e.target.value, "e", val.phone, "val");
             }}
             autoHighlight
             getOptionLabel={(option) => option.phone}
@@ -800,20 +922,42 @@ const VendorMaster = () => {
             Vendor Type <sup style={{ color: "red" }}>*</sup>
           </label>
           <Select
-            options={typeData.map((option) => ({
-              value: option._id,
-              label: option.type_name,
-            }))}
+            options={
+              !typeLoading &&
+              typeData.data?.map((option) => ({
+                value: option._id,
+                label: option.type_name,
+              }))
+            }
             required={true}
             value={{
               value: typeId,
               label:
-                typeData.find((role) => role._id === typeId)?.type_name || "",
+                (!typeLoading &&
+                  typeData.data?.find((role) => role._id === typeId)
+                    ?.type_name) ||
+                "",
             }}
             onChange={(e) => {
               setTypeId(e.value);
             }}
-          ></Select>
+          />
+          <IconButton
+            onClick={handleAddVendorTypeClick}
+            variant="contained"
+            color="primary"
+            aria-label="Add Vendor Type.."
+          >
+            <AddIcon />
+          </IconButton>
+          <IconButton
+            onClick={handleInfoClick}
+            variant="contained"
+            color="primary"
+            aria-label="Vendor Type Info.."
+          >
+            <InfoIcon />
+          </IconButton>
         </div>
 
         <div className="form-group col-6">
@@ -821,7 +965,7 @@ const VendorMaster = () => {
             Platform <sup style={{ color: "red" }}>*</sup>
           </label>
           <Select
-            options={platformData.map((option) => ({
+            options={platformData?.data?.map((option) => ({
               value: option._id,
               label: option.platform_name,
             }))}
@@ -829,13 +973,30 @@ const VendorMaster = () => {
             value={{
               value: platformId,
               label:
-                platformData.find((role) => role._id === platformId)
+                platformData?.data?.find((role) => role._id === platformId)
                   ?.platform_name || "",
             }}
             onChange={(e) => {
               setPlatformId(e.value);
             }}
           ></Select>
+
+          <IconButton
+            onClick={handleAddPlatformClick}
+            variant="contained"
+            color="primary"
+            aria-label="Add Platform.."
+          >
+            <AddIcon />
+          </IconButton>
+          <IconButton
+            onClick={handlePlatformInfoClick}
+            variant="contained"
+            color="primary"
+            aria-label="Platform Info.."
+          >
+            <InfoIcon />
+          </IconButton>
         </div>
 
         <div className="form-group col-6">
@@ -843,7 +1004,7 @@ const VendorMaster = () => {
             Payment Method <sup style={{ color: "red" }}>*</sup>
           </label>
           <Select
-            options={payData.map((option) => ({
+            options={payData?.map((option) => ({
               value: option._id,
               label: option.payMethod_name,
             }))}
@@ -851,96 +1012,121 @@ const VendorMaster = () => {
             value={{
               value: payId,
               label:
-                payData.find((role) => role._id === payId)?.payMethod_name ||
+                payData?.find((role) => role._id === payId)?.payMethod_name ||
                 "",
             }}
             onChange={(e) => {
               setPayId(e.value);
             }}
           ></Select>
+
+          <IconButton
+            onClick={handleAddPaymentMethodClick}
+            variant="contained"
+            color="primary"
+            aria-label="Add Payment Method.."
+          >
+            <AddIcon />
+          </IconButton>
+          <IconButton
+            onClick={handlePaymentMethodInfoClick}
+            variant="contained"
+            color="primary"
+            aria-label="Payment Method Info.."
+          >
+            <InfoIcon />
+          </IconButton>
         </div>
-        {payData.find((role) => role._id === payId)?.payMethod_name ===
-          "Bank Details" && (
-          <FieldContainer
-            label="Bank Name *"
-            value={bankName}
-            // className= "w-100"
-            required={
-              payData.find((role) => role._id === payId)?.payMethod_name ===
-              "Bank Details"
-                ? true
-                : false
-            }
-            onChange={(e) => setBankName(e.target.value)}
-          />
-        )}
-        {payData.find((role) => role._id === payId)?.payMethod_name ===
-          "Bank Details" && (
-          <FieldContainer
-            label="Account Type *"
-            value={accountType}
-            // className= "w-100"
-            required={
-              payData.find((role) => role._id === payId)?.payMethod_name ===
-              "Bank Details"
-                ? true
-                : false
-            }
-            onChange={(e) => setAccountType(e.target.value)}
-          />
-        )}
-        {payData.find((role) => role._id === payId)?.payMethod_name ===
-          "Bank Details" && (
-          <FieldContainer
-            label="Account Number *"
-            value={accountNo}
-            // className= "w-100"
-            required={
-              payData.find((role) => role._id === payId)?.payMethod_name ===
-              "Bank Details"
-                ? true
-                : false
-            }
-            onChange={(e) => setAccountNo(e.target.value)}
-          />
-        )}
-        {payData.find((role) => role._id === payId)?.payMethod_name ===
-          "Bank Details" && (
-          <FieldContainer
-            label="IFSC *"
-            value={ifscCode}
-            // className= "w-100"
-            required={
-              payData.find((role) => role._id === payId)?.payMethod_name ===
-              "Bank Details"
-                ? true
-                : false
-            }
-            onChange={(e) => setIfscCode(e.target.value)}
-          />
-        )}
-        {payData.find((role) => role._id === payId)?.payMethod_name ===
-          "UPI" && (
-          <FieldContainer
-            label="UPI ID *"
-            value={upiId}
-            // className= "w-100"
-            required={
-              payData.find((role) => role._id === payId)?.payMethod_name ===
-              "UPI"
-                ? true
-                : false
-            }
-            onChange={(e) => setUpiId(e.target.value)}
-          />
-        )}
+
+        {bankRows.map((row, i) => (
+          <>
+            <FieldContainer
+
+              label="Bank Name "
+              value={bankRows[i].bankName}
+              onChange={(e) => handleBankNameChange(e, i)}
+            />
+
+            <div className="form-group col-6">
+              <label className="form-label">Account Type</label>
+              <Select
+                options={["Savings", "Current"].map((option) => ({
+                  label: option,
+                  value: option,
+                }))}
+                required={true}
+                value={{
+                  value: bankRows[i].accountType,
+                  label: bankRows[i].accountType,
+                }}
+                onChange={(e) => {
+                  handleAccountTypeChange(e, i);
+                }}
+              />
+            </div>
+
+            <FieldContainer
+              label="Account Number "
+              value={bankRows[i].accountNo}
+              onChange={(e) => handleAccountNoChange(e, i)}
+            />
+
+            <FieldContainer
+              label="IFSC "
+              value={bankRows[i].ifscCode}
+              onChange={(e) => handleIFSCChange(e, i)}
+            />
+
+            <FieldContainer
+              label="UPI ID "
+              value={bankRows[i].UPIid}
+              onChange={(e) => handleUPIidChange(e, i)}
+            />
+
+            <FieldContainer
+              label={"Registered Mobile Number"}
+              value={bankRows[i].registeredMobileNo}
+              required={false}
+              type="number"
+              onChange={(e) => handleRegisteredMobileChange(e, i)}
+            />
+
+            {i > 0 && (
+              <IconButton
+                onClick={handleRemoveBankInfoRow(i)}
+                variant="contained"
+                color="error"
+              >
+                <RemoveCircleTwoToneIcon />
+              </IconButton>
+            )}
+          </>
+        ))}
+        <div className="row">
+          <IconButton
+            onClick={handleAddBankInfoRow}
+            variant="contained"
+            color="primary"
+          >
+            <AddCircleTwoToneIcon />
+          </IconButton>
+          {/* {bankRows.length > 1 && (
+            <IconButton
+              onClick={handleRemoveBankInfoRow}
+              variant="contained"
+              color="primary"
+            >
+              <RemoveCircleTwoToneIcon />
+            </IconButton>
+          )} */}
+        </div>
 
         <div className="form-group col-6">
           <label className="form-label">
             Pay Cycle <sup style={{ color: "red" }}>*</sup>
           </label>
           <Select
-            options={cycleData.map((option) => ({
+            options={cycleData?.map((option) => ({
               value: option._id,
               label: option.cycle_name,
             }))}
@@ -948,13 +1134,29 @@ const VendorMaster = () => {
             value={{
               value: cycleId,
               label:
-                cycleData.find((role) => role._id === cycleId)?.cycle_name ||
+                cycleData?.find((role) => role._id === cycleId)?.cycle_name ||
                 "",
             }}
             onChange={(e) => {
               setCycleId(e.value);
             }}
           ></Select>
+          <IconButton
+            onClick={handleAddPayCycleClick}
+            variant="contained"
+            color="primary"
+            aria-label="Add Pay Cycle.."
+          >
+            <AddIcon />
+          </IconButton>
+          <IconButton
+            onClick={handlePayCycleInfoClick}
+            variant="contained"
+            color="primary"
+            aria-label="Pay Cycle Info.."
+          >
+            <InfoIcon />
+          </IconButton>
         </div>
 
         <FieldContainer
@@ -1089,23 +1291,53 @@ const VendorMaster = () => {
             style={{ width: "100px", height: "100px" }}
           />
         )}
-        {whatsappLink.map((link, index) => (
+        {whatsappLink?.map((link, index) => (
           <>
             <FieldContainer
               key={index}
               label={`Whatsapp Link ${index + 1}`}
-              value={link}
+              value={link.link}
               required={false}
               onChange={(e) => handleLinkChange(index, e.target.value)}
             />
+            <FieldContainer
+              key={index.remark}
+              label={`Remark`}
+              value={link.remark}
+              required={false}
+              onChange={(e) => handleRemarkChange(index, e.target.value)}
+            />
+
+            <div className="form-group col-6">
+              <label className="form-label">
+                Type <sup style={{ color: "red" }}>*</sup>
+              </label>
+              <Select
+                options={["Execution", "Payment"].map((option) => ({
+                  label: option,
+                  value: option,
+                }))}
+                required={true}
+                value={{
+                  value: link.type,
+                  label: link.type,
+                }}
+                onChange={(e) => {
+                  let updatedLinks = [...whatsappLink];
+                  updatedLinks[index].type = e.value;
+                  setWhatsappLink(updatedLinks);
+                }}
+              ></Select>
+            </div>
+
             {index > 0 && (
               // <Button onClick={removeLink(index)}  icon />
 
               <IconButton
-              size="small"
-              sx={{
-                display: "inline",
-              }}
+                size="small"
+                sx={{
+                  display: "inline",
+                }}
                 onClick={removeLink(index)}
                 color="secondary"
                 aria-label="add an alarm"
@@ -1117,6 +1349,8 @@ const VendorMaster = () => {
         ))}
         <Button onClick={addLink}>ADD Link</Button>
       </FormContainer>
+      <AddVendorModal />
+      {isVendorModalOpen && <VendorTypeInfoModal />}
     </>
   );
 };

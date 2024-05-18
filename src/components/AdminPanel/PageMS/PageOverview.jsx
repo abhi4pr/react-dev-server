@@ -30,11 +30,14 @@ import {
   openTagCategoriesModal,
   setPlatform,
   setShowPageHealthColumn,
+  setShowVendorNotAssignedModal,
   setTagCategories,
 } from "../../Store/PageOverview";
 import TagCategoryListModal from "./TagCategoryListModal";
 import KeyboardDoubleArrowUpIcon from "@mui/icons-material/KeyboardDoubleArrowUp";
 import { EditTwoTone } from "@mui/icons-material";
+import { useGetnotAssignedVendorsQuery } from "../../Store/reduxBaseURL";
+import VendorNotAssignedModal from "./VendorNotAssignedModal";
 
 const PageOverview = () => {
   // const { toastAlert } = useGlobalContext();
@@ -48,29 +51,29 @@ const PageOverview = () => {
   const [platformData, setPlatformData] = useState([]);
   const [allPriceTypeList, setAllallPriceTypeList] = useState([]);
   const [showPriceModal, setShowPriceModal] = useState(false);
-  const [priceData, setPriceData] = useState({});
+  const [priceData, setPriceData] = useState([]);
   const [contextData, setContextData] = useState(false);
   const storedToken = sessionStorage.getItem("token");
   const decodedToken = jwtDecode(storedToken);
   const userID = decodedToken.id;
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const [updatedRows, setUpdatedRows] = useState([]);
 
+  const { isLoading: isNotAssignedVendorLoading, data: notAssignedVenodrData } =
+    useGetnotAssignedVendorsQuery();
+  function handleNotAssignedVendorClick() {
+    dispatch(setShowVendorNotAssignedModal());
+  }
   const handleEditCellChange = (params) => {
     (async () => {
-      console.log(params, "params", params.field, "params.field");
       const updatedRow = {
         ...params.row,
         [params.field]: params.value,
       };
 
-      console.log("come to edit ");
       return axios
         .put(baseUrl + `updatePage/${params.row._id}`, updatedRow)
-        .then((res) => {
-          console.log(res.data);
-        });
+        .then((res) => {});
     })();
 
     // Make API call to update the row data
@@ -167,24 +170,6 @@ const PageOverview = () => {
       let data = res.data.data;
 
       data = data.map((e) => {
-        let priceKeyWithValues = e.purchase_price.map((item) => {
-          console.log(item, "item");
-          let name = allPriceTypeList?.find(
-            (item) => item.price_type_id == e.purchase_price[0].price_type_id
-          )?.price_type;
-          console.log(name, "name");
-
-          let objname = allPriceTypeList?.find(
-            (item) => item.price_type_id == item.price_type_id
-          )?.price_type;
-          console.log(objname, "objname");
-          objname = objname ? objname : "";
-          return {
-            price_type_id: item.price_type_id,
-            price: item.price,
-          };
-        });
-        console.log(priceKeyWithValues, "obj");
         return {
           ...e,
           tag_category_name: cat
@@ -193,17 +178,27 @@ const PageOverview = () => {
             })
             .map((item) => item.page_category)
             .join(","),
-          // price_name: allPriceTypeList?.find(
-          //   (item) => item?.price_type_id == e.purchase_price?.price_type_id
-          // )
-
-          // allPriceTypeList?.find(
-          //   (item) => item.price_type_id == params.row.price_type_id
-          // )?.price_type;
         };
       });
-      setVendorTypes(data);
-      setFilterData(data.reverse());
+
+        const addPricesToParent = (dataArray) => {
+          return dataArray.map(item => {
+              item.purchase_price.forEach(priceObj => {
+                  // const keyName = `price_${priceObj.price_type_id}`;
+                  const keyName = allPriceTypeList?.find((d) => d.price_type_id == priceObj.price_type_id)?.price_type;
+                  console.log(keyName,"keyName")
+                  console.log(priceObj.price_type_id,"keyName")
+                  item[keyName] = priceObj.price;
+              });
+              // delete item.purchase_price;
+              return item;
+          });
+      };
+    
+      const updatedData = addPricesToParent(data);
+
+      setVendorTypes(updatedData);
+      setFilterData(updatedData.reverse());
       setLoading(false);
     });
 
@@ -268,7 +263,7 @@ const PageOverview = () => {
       headerName: "Count",
       renderCell: (params) => <div>{filterData.indexOf(params.row) + 1}</div>,
 
-      width: 130,
+      width: 80,
     },
     {
       field: "page_user_name",
@@ -360,7 +355,10 @@ const PageOverview = () => {
             {data.length > 0 && (
               <Button
                 className="text-center"
-                onClick={handlePlatfrormClick(data)}
+                // onClick={handlePlatfrormClick(data)}
+                onClick={()=>{
+                  console.log(params.row)
+                }}
               >
                 <KeyboardDoubleArrowUpIcon />
               </Button>
@@ -374,7 +372,6 @@ const PageOverview = () => {
       headerName: "Tag Category",
       width: 200,
       renderCell: (params) => {
-        console.log(params.row.tag_category_name, "params.tag_category_name");
         let data = cat.filter((item) => {
           return params.row?.tag_category?.includes(item._id);
         });
@@ -469,10 +466,9 @@ const PageOverview = () => {
       headerName: "Price",
       width: 200,
       renderCell: ({ row }) => {
-        console.log(row.price_name, "row.price_name");
         return (
           <div>
-            {row.purchase_price && (
+            {row.purchase_price.length>0 && (
               <button
                 title="Price"
                 onClick={handlePriceClick(row)}
@@ -485,7 +481,9 @@ const PageOverview = () => {
         );
       },
     },
-    { field: "description", headerName: "Description", width: 200 },
+    { field: "Reel", headerName: "Reel", width: 200 },
+    { field: "Post", headerName: "Post", width: 200 },
+    { field: "Both", headerName: "Both", width: 200 },
     {
       field: "Action",
       headerName: "Action",
@@ -1299,6 +1297,221 @@ const PageOverview = () => {
                     );
                   })}
                 </div>
+                <div>
+                  {[
+                    ...new Set(
+                      vendorTypes.map((item) => {
+                        return item?.ownership_type;
+                      })
+                    ),
+                  ].map((item, i) => {
+                    return (
+                      <button
+                        key={i}
+                        onClick={() => {
+                          let result = vendorTypes.filter((d) => {
+                            return d.ownership_type == item;
+                          });
+                          setFilterData(result);
+                        }}
+                        className="btn btn-primary btn-sm me-5"
+                        id="pageName"
+                      >
+                        {item} (
+                        {
+                          vendorTypes.filter((d) => {
+                            return d.ownership_type == item;
+                          }).length
+                        }
+                        )
+                      </button>
+                    );
+                  })}
+                  <div className="mt-2">
+                    <h4>Page Status</h4>
+
+                    {[
+                      ...new Set(
+                        vendorTypes.map((item) => {
+                          return item?.page_status;
+                        })
+                      ),
+                    ].map((item, i) => {
+                      return (
+                        <button
+                          key={i}
+                          onClick={() => {
+                            let result = vendorTypes.filter((d) => {
+                              return d.page_status == item;
+                            });
+                            setFilterData(result);
+                          }}
+                          className="btn btn-primary btn-sm me-5 mt-2"
+                          id="pageName"
+                        >
+                          {item} (
+                          {
+                            vendorTypes.filter((d) => {
+                              return d.page_status == item;
+                            }).length
+                          }
+                          )
+                        </button>
+                      );
+                    })}
+                  </div>
+                  <div className="mt-2">
+                    <h4>Page Name Type</h4>
+                    {[
+                      ...new Set(
+                        vendorTypes.map((item) => {
+                          return item?.page_name_type;
+                        })
+                      ),
+                    ].map((item, i) => {
+                      return (
+                        <button
+                          key={i}
+                          onClick={() => {
+                            let result = vendorTypes.filter((d) => {
+                              return d.page_name_type == item;
+                            });
+                            setFilterData(result);
+                          }}
+                          className="btn btn-primary btn-sm me-5 mt-2"
+                          id="pageName"
+                        >
+                          {item} (
+                          {
+                            vendorTypes.filter((d) => {
+                              return d.page_name_type == item;
+                            }).length
+                          }
+                          )
+                        </button>
+                      );
+                    })}
+                  </div>
+                  <div className="mt-2">
+                    <h4>Closed By</h4>
+                    {[
+                      ...new Set(
+                        vendorTypes.map((item) => {
+                          return item?.page_closed_by;
+                        })
+                      ),
+                    ].map((item, i) => {
+                      return (
+                        <button
+                          key={i}
+                          onClick={() => {
+                            let result = vendorTypes.filter((d) => {
+                              return d.page_closed_by == item;
+                            });
+                            setFilterData(result);
+                          }}
+                          className="btn btn-primary btn-sm me-5 mt-2"
+                          id="pageName"
+                        >
+                          {
+                            user?.find((e) => {
+                              return e.user_id == item;
+                            })?.user_name
+                          }{" "}
+                          (
+                          {
+                            vendorTypes.filter((d) => {
+                              return d.page_closed_by == item;
+                            }).length
+                          }
+                          )
+                        </button>
+                      );
+                    })}
+                  </div>
+                  <div className="mt-2">
+                    <h4>Category</h4>
+                    {[
+                      ...new Set(
+                        vendorTypes.map((item) => {
+                          return item?.page_catg_id;
+                        })
+                      ),
+                    ].map((item, i) => {
+                      return (
+                        <button
+                          key={i}
+                          onClick={() => {
+                            let result = vendorTypes.filter((d) => {
+                              return d.page_catg_id == item;
+                            });
+                            setFilterData(result);
+                          }}
+                          className="btn btn-primary btn-sm me-5 mt-2"
+                          id="pageName"
+                        >
+                          {
+                            cat?.find((e) => {
+                              return e._id == item;
+                            })?.page_category
+                          }{" "}
+                          (
+                          {
+                            vendorTypes.filter((d) => {
+                              return d.page_catg_id == item;
+                            }).length
+                          }
+                          )
+                        </button>
+                      );
+                    })}
+                  </div>
+                  <div className="mt-2">
+                    <h4>Ownership</h4>
+                    {[
+                      ...new Set(
+                        vendorTypes.map((item) => {
+                          return item?.ownership_type;
+                        })
+                      ),
+                    ].map((item, i) => {
+                      return (
+                        <button
+                          key={i}
+                          onClick={() => {
+                            let result = vendorTypes.filter((d) => {
+                              return d.ownership_type == item;
+                            });
+                            setFilterData(result);
+                          }}
+                          className="btn btn-primary btn-sm me-5 mt-2"
+                          id="pageName"
+                        >
+                          {item} (
+                          {
+                            vendorTypes.filter((d) => {
+                              return d.ownership_type == item;
+                            }).length
+                          }
+                          )
+                        </button>
+                      );
+                    })}
+                  </div>
+                  <br />
+                  <hr />
+                  {!isNotAssignedVendorLoading && (
+                    <div className="mt-2">
+                      <button
+                        onClick={handleNotAssignedVendorClick}
+                        className="btn btn-primary btn-sm me-5 mt-2"
+                        id="pageName"
+                      >
+                        Not Assigned Vendor {notAssignedVenodrData.length}
+                      </button>
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
           </div>
@@ -1351,6 +1564,9 @@ const PageOverview = () => {
                 // onCellEditStop={handleEditCellChange}
                 // onCellEditStart={handleEditCellChange}
                 // onEditCellChange={handleEditCellChange}
+                onRowDoubleClick={(params) => {
+                  navigate(`/admin/pms-page-edit/${params.row._id}`);
+                }}
                 onCellEditStop={(params) =>
                   setTimeout(() => handleEditCellChange(params), 1000)
                 }
@@ -1403,8 +1619,8 @@ const PageOverview = () => {
           </Button>
         </DialogActions>
       </Dialog>
-
       <TagCategoryListModal />
+      <VendorNotAssignedModal />
     </>
   );
 };

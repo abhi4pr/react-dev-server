@@ -10,6 +10,7 @@ import Button from "@mui/material/Button";
 import { useDispatch, useSelector } from "react-redux";
 import { setCloseWhatsappModal } from "../../Store/PageOverview";
 import { Link } from "react-router-dom";
+import { DataGrid } from "@mui/x-data-grid";
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   "& .MuiDialogContent-root": {
@@ -53,11 +54,21 @@ const links = useSelector(state=>state.PageOverview.whatsappLink)
           <CloseIcon />
         </IconButton>
         <DialogContent dividers>
-       {links.map((link,i)=>(
-         <Typography key={i} gutterBottom>
-       {i+1} <Link rel="stylesheet" className="link-primary" target="__blank" href={link} >  {link}</Link>
-         </Typography>
-         ))}
+      <DataGrid 
+        rows={links}
+        columns={[
+          { field: 'sno', headerName: 'S.NO', width: 90, renderCell: (params) => { return links.indexOf(params.row)+1; }},
+          { field: 'link', headerName: 'Link', width: 150 },
+          { field: 'type', headerName: 'Type', width: 150 },
+          { field: 'remark', headerName: 'Remark', width: 150 },
+
+        ]}
+        pageSize={5}
+        rowsPerPageOptions={[5]}
+        getRowId={(row) => row.link}
+        disableSelectionOnClick
+      />
+
         </DialogContent>
         <DialogActions>
           <Button autoFocus variant="contained" color="error" onClick={handleClose}>

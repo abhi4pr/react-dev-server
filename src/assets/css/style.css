@@ -16422,3 +16422,6 @@ body[theme="dark"] .blurBg {
     }
   }
 }
+div:where(.swal2-container) {
+  z-index:1400 !important;
+}
