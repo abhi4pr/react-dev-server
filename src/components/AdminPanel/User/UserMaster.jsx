@@ -49,6 +49,7 @@ import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { subYears } from "date-fns";
 import IndianCitiesMui from "../../ReusableComponents/IndianCitiesMui";
+import dayjs from 'dayjs';
 
 const colourOptions = [
   { value: "English", label: "English" },
@@ -296,6 +297,8 @@ const UserMaster = () => {
 
   const castOption = ["General", "OBC", "SC", "ST"];
   const maritialStatusData = ["Single", "Married"]; //,"Divorced","Widowed","Separated"
+  const [dobError, setDobError] = useState('');
+  const [dobValidate, setDobValidate] = useState(0)
 
   useEffect(() => {
     const test = tempLanguage?.map((option) => option.value).join();
@@ -592,9 +595,12 @@ const UserMaster = () => {
         joiningDate: true,
       }));
     }
+    if (dobValidate < 15 || dobValidate > 100) {
+      setDobError('Age should be greater than 15 and less than 100');
+    }
 
     if (!jobType) {
-      console.log("job type");
+      // console.log("job type");
       toastError("Fill the Mandatory fields");
     } else if (!department || department == "") {
       toastError("Fill the Mandatory fields");
@@ -855,7 +861,7 @@ const UserMaster = () => {
         }
       );
       toastAlert("Other Details Submitted");
-      console.log("Update successful", response.data);
+      // console.log("Update successful", response.data);
     } catch (error) {
       console.error(
         "Update failed",
@@ -930,7 +936,7 @@ const UserMaster = () => {
         // setActiveAccordionIndex((prev) => prev + 1)
       );
       toastAlert("Bank Details Submitted");
-      console.log("Update successful", response.data);
+      // console.log("Update successful", response.data);
       setActiveAccordionIndex((prev) => prev + 1);
     } catch (error) {
       console.error(
@@ -1206,8 +1212,8 @@ const UserMaster = () => {
   const handleAccordionButtonClick = (index) => {
     // {
     setActiveAccordionIndex(index);
-    console.log("hhhhhh");
-    console.log("ss");
+    // console.log("hhhhhh");
+    // console.log("ss");
   };
 
   const images = [
@@ -1288,7 +1294,7 @@ const UserMaster = () => {
   // };
 
   useEffect(() => {
-    console.log(dateOfBirth, "dateOfBirth");
+    // console.log(dateOfBirth, "dateOfBirth");
   }, [dateOfBirth]);
 
   function calculateAge(dob) {
@@ -1315,16 +1321,25 @@ const UserMaster = () => {
 
   const handleDateChange = (e) => {
     const selectedDate = e;
+    const validateAge = dayjs().diff(e, 'year');
+    setDobValidate(validateAge)
+
     const age = calculateAge(selectedDate);
     const ageDays = calculateAgeInDays(selectedDate);
 
-    if (age < 15) {
-      window.alert("Your age must be greater than 15 years.");
-    } else {
+    if (validateAge < 15) {
+      setDobError('Age must be at least 15 years.');
+      setDateOfBirth('')
+    } 
+    if (validateAge > 100) {
+      setDobError('Age can not more than 100 years');
+      setDateOfBirth('')
+    }
+    // else {
       setDateOfBirth(selectedDate);
       setAge(age);
       setAgeCalculate(ageDays);
-    }
+    // }
   };
 
   function addMore() {
@@ -1657,6 +1672,7 @@ const UserMaster = () => {
             renderInput={(params) => <TextField {...params} />}
           />
         </LocalizationProvider>
+        {<p style={{color:'red !important'}}>{dobError}</p>}
       </div>
       {dateOfBirth !== "" && (
         <FieldContainer fieldGrid={3} label="Age" value={age} />
