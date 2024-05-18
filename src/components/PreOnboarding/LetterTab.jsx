@@ -197,7 +197,7 @@ const LetterTab = ({ allUserData, gettingData }) => {
                 <p className="bold">1) Compensation:</p>
                 <p className="pl-3">
                   Your remuneration will have a fixed component of INR{" "}
-                  {allUserData?.ctc} per month (CTC), paid monthly, and a
+                  {allUserData?.ctc} Anually (CTC), paid monthly, and a
                   detailed breakdown of your remuneration can be found in
                   [Annexure-A].
                 </p>
@@ -581,8 +581,160 @@ const LetterTab = ({ allUserData, gettingData }) => {
             </p>
             <p className="bold">www.creativefuel.io</p>
           </footer>
+          <header className="header-letter">
+            <img
+              src={logo}
+              alt="Creativefuel Logo"
+              width={70}
+              height={70}
+            />
+            <div className="brandtext">
+              Creative <span>fuel</span>
+            </div>
+          </header>
+          <br />
+          <div className="w-100 header-letter"><p className="bold underlined ">Annexure B</p><p className="bold underlined ">Creativefuel Private Limited</p></div>
         </div>
+        <div>
+          {/* <p>Basic Salary - {(monthlySalary) * (0.60)}</p>
+                    <p>HRA - {(((monthlySalary) * (0.60)) * 0.40)}</p>
+                    <p>Advance Bonus - {(((monthlySalary) * (0.60)) / 20)}</p>
+                    <p>Monthly Leave Enhancement - {(((monthlySalary * 0.60) / 26) * 3).toFixed(2)}</p>
+                    <p>PF - {monthlySalary <= 12000 ? 0 : 1800}</p>
+                    <p>PT - {(monthlySalary >= 18500 && monthlySalary <= 25000) ? 125 :
+                      (monthlySalary >= 25001 && monthlySalary <= 34999) ? 167 :
+                        (monthlySalary >= 35000) ? 208 : 0
+                    }
+                    </p>
+                    <p>ESIC - {monthlySalary <= 21000 ? monthlySalary * (0.0075) : 0}</p> */}
+          <p>Employee Name: pratyush  gupta</p>
+          <p>Designation: social</p>
+          <p>D.O.J : 12/3/4242</p>
+        </div>
+        <br />
+        <div className="ol-table">
+          <p className="underlined bold">Renumeration Structure & Break-up </p>
+          <table>
+            <thead>
+              <tr>
+                <th>EARNINGS</th>
+                <th>MONTHLY</th>
+                <th>ANNUALY</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Basic Salary</td>
+                <td>{(monthlySalary) * (0.60)}</td>
+                <td>{(monthlySalary) * (0.60) * 12}</td>
+              </tr>
+              <tr>
+                <td>HRA</td>
+                <td>{(((monthlySalary) * (0.60)) * 0.40)}</td>
+                <td>{(((monthlySalary) * (0.60)) * 0.40) * 12}</td>
+              </tr>
+              <tr>
+                <td>Advance Bonus</td>
+                <td>{(((monthlySalary) * (0.60)) / 20)}</td>
+                <td>{(((monthlySalary) * (0.60)) / 20) * 12}</td>
+              </tr>
+              <tr>
+                <td>Monthly Leave Enhancement</td>
+                <td>{(((monthlySalary * 0.60) / 26) * 3).toFixed(2)}</td>
+                <td>{(((monthlySalary * 0.60) / 26) * 3).toFixed(0) * 12}</td>
+              </tr>
+              <tr>
+                <td>Total Earning</td>
+                <td>{((monthlySalary) * (0.60)) + (((monthlySalary) * (0.60)) * 0.40) + (((monthlySalary) * (0.60)) / 20) + (((monthlySalary * 0.60) / 26) * 3).toFixed(2)}</td>
+                <td>{(((monthlySalary) * (0.60)) + (((monthlySalary) * (0.60)) * 0.40) + (((monthlySalary) * (0.60)) / 20) + (((monthlySalary * 0.60) / 26) * 3).toFixed(2)) * 12}</td>
+              </tr>
+
+
+
+
+            </tbody>
+            <thead>
+              <tr>
+                <th>DEDUCTIONS</th>
+                <th>MONTHLY</th>
+                <th>ANNUALY</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>PF</td>
+                <td>{monthlySalary <= 12000 ? 0 : 1800}</td>
+                <td>{monthlySalary <= 12000 ? 0 : 1800 * 12}</td>
+              </tr>
+              <tr>
+                <td>PT</td>
+                <td>{(monthlySalary >= 18500 && monthlySalary <= 25000) ? 125 :
+                  (monthlySalary >= 25001 && monthlySalary <= 34999) ? 167 :
+                    (monthlySalary >= 35000) ? 208 : 0
+                }</td>
+                <td>{(monthlySalary >= 18500 && monthlySalary <= 25000) ? 125 * 12 :
+                  (monthlySalary >= 25001 && monthlySalary <= 34999) ? 167 * 12 :
+                    (monthlySalary >= 35000) ? 208 * 12 : 0
+                }</td>
+              </tr>
+
+              <tr>
+                <td>Net Pay</td>
+                <td>{(monthlySalary <= 12000 ? 0 : 1800) + ((monthlySalary >= 18500 && monthlySalary <= 25000) ? 125 :
+                  (monthlySalary >= 25001 && monthlySalary <= 34999) ? 167 :
+                    (monthlySalary >= 35000) ? 208 : 0
+                ) + (monthlySalary <= 21000 ? monthlySalary * (0.0075) : 0)}</td>
+                <td>{((monthlySalary <= 12000 ? 0 : 1800) + ((monthlySalary >= 18500 && monthlySalary <= 25000) ? 125 :
+                  (monthlySalary >= 25001 && monthlySalary <= 34999) ? 167 :
+                    (monthlySalary >= 35000) ? 208 : 0
+                ) + (monthlySalary <= 21000 ? monthlySalary * (0.0075) : 0)) * 12}</td>
+              </tr>
+            </tbody>
+            <thead>
+              <tr>
+                <th>Contribution</th>
+                <th>MONTHLY</th>
+                <th>ANNUALY</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>ESIC</td>
+                <td>{monthlySalary <= 21000 ? monthlySalary * (0.0075) : 0}</td>
+                <td>{(monthlySalary <= 21000 ? monthlySalary * (0.0075) : 0) * 12}</td>
+              </tr>
+              <tr>
+                <td>Total CTC</td>
+                <td>413214</td>
+                <td>413214</td>
+              </tr>
+            </tbody>
+
+          </table>
+        </div>
+        <br />
+        <p>** I, name acknowledge that i have recived, read through and understand the contents of this letter and agree to the contents here in.</p>
+        <br />
+        <p>Signature: _________________</p>
+        <footer
+          className="footer-letter "
+          style={{ pageBreakAfter: "always" }}
+        >
+          <p className="bold">CREATIVEFUEL PRIVATE LIMITED</p>
+          <p className="bold">
+            Registered Office: - 105, Gravity Mall, Vijay Nagar
+            Indore (M.P) 452010, India
+          </p>
+          <p className="bold ">
+            Email:
+            <a href="mailto:fahbir@creativefuel.io">
+              fahbir@creativefuel.io
+            </a>
+          </p>
+          <p className="bold">www.creativefuel.io</p>
+        </footer>
       </div>
+
       <div className="letterBoardContainer">
         <div className="cardBoard">
           <div className="cardBodyBoard">
@@ -731,8 +883,8 @@ const LetterTab = ({ allUserData, gettingData }) => {
                         Date{" "}
                         {allUserData?.joining_date
                           ? new Date(
-                              allUserData.joining_date
-                            ).toLocaleDateString()
+                            allUserData.joining_date
+                          ).toLocaleDateString()
                           : ""}
                       </p>
 
@@ -794,7 +946,7 @@ const LetterTab = ({ allUserData, gettingData }) => {
                           <p className="bold">1) Compensation:</p>
                           <p className="pl-3">
                             Your remuneration will have a fixed component of INR{" "}
-                            {allUserData?.ctc} per month (CTC), paid monthly,
+                            {allUserData?.ctc} Annually (CTC), paid monthly,
                             and a detailed breakdown of your remuneration can be
                             found in [Annexure-A].
                           </p>
@@ -1214,17 +1366,7 @@ const LetterTab = ({ allUserData, gettingData }) => {
               </div> */}
                       </div>
                     </article>
-                    <p>Basic Salary - {(monthlySalary) * (0.60)}</p>
-                    <p>HRA - {(((monthlySalary) * (0.60))*0.40)}</p>
-                    <p>Advance Bonus - {(((monthlySalary) * (0.60))/20)}</p>
-                    <p>Monthly Leave Enhancement - {(((monthlySalary * 0.60)/26)*3).toFixed(2)}</p>
-                    <p>PF - {monthlySalary <= 12000 ? 0 : 1800}</p>
-                    <p>PT - {(monthlySalary >= 18500 && monthlySalary <= 25000) ? 125 : 
-                          (monthlySalary >= 25001 && monthlySalary <= 34999) ? 167 :
-                          (monthlySalary >= 35000) ? 208 : 0
-                        }
-                    </p>
-                    <p>ESIC - {monthlySalary <= 21000 ? monthlySalary * (0.0075) : 0}</p>
+
                     <footer
                       className="footer-letter "
                       style={{ pageBreakAfter: "always" }}
@@ -1242,7 +1384,165 @@ const LetterTab = ({ allUserData, gettingData }) => {
                       </p>
                       <p className="bold">www.creativefuel.io</p>
                     </footer>
+                    <div
+                      style={{
+                        width: "100%",
+                        background: "black",
+                        height: "2px",
+                      }}
+                    ></div>
+                    <header className="header-letter">
+                      <img
+                        src={logo}
+                        alt="Creativefuel Logo"
+                        width={70}
+                        height={70}
+                      />
+                      <div className="brandtext">
+                        Creative <span>fuel</span>
+                      </div>
+                    </header>
+                    <br />
+                    <div className="w-100 header-letter"><p className="bold underlined ">Annexure B</p><p className="bold underlined ">Creativefuel Private Limited</p></div>
                   </div>
+                  <div>
+                    {/* <p>Basic Salary - {(monthlySalary) * (0.60)}</p>
+                    <p>HRA - {(((monthlySalary) * (0.60)) * 0.40)}</p>
+                    <p>Advance Bonus - {(((monthlySalary) * (0.60)) / 20)}</p>
+                    <p>Monthly Leave Enhancement - {(((monthlySalary * 0.60) / 26) * 3).toFixed(2)}</p>
+                    <p>PF - {monthlySalary <= 12000 ? 0 : 1800}</p>
+                    <p>PT - {(monthlySalary >= 18500 && monthlySalary <= 25000) ? 125 :
+                      (monthlySalary >= 25001 && monthlySalary <= 34999) ? 167 :
+                        (monthlySalary >= 35000) ? 208 : 0
+                    }
+                    </p>
+                    <p>ESIC - {monthlySalary <= 21000 ? monthlySalary * (0.0075) : 0}</p> */}
+                    <p>Employee Name: pratyush  gupta</p>
+                    <p>Designation: social</p>
+                    <p>D.O.J : 12/3/4242</p>
+                  </div>
+                  <br />
+                  <div className="ol-table">
+                    <p className="underlined bold">Renumeration Structure & Break-up </p>
+                    <table>
+                      <thead>
+                        <tr>
+                          <th>EARNINGS</th>
+                          <th>MONTHLY</th>
+                          <th>ANNUALY</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td>Basic Salary</td>
+                          <td>{(monthlySalary) * (0.60)}</td>
+                          <td>{(monthlySalary) * (0.60) * 12}</td>
+                        </tr>
+                        <tr>
+                          <td>HRA</td>
+                          <td>{(((monthlySalary) * (0.60)) * 0.40)}</td>
+                          <td>{(((monthlySalary) * (0.60)) * 0.40) * 12}</td>
+                        </tr>
+                        <tr>
+                          <td>Advance Bonus</td>
+                          <td>{(((monthlySalary) * (0.60)) / 20)}</td>
+                          <td>{(((monthlySalary) * (0.60)) / 20) * 12}</td>
+                        </tr>
+                        <tr>
+                          <td>Monthly Leave Enhancement</td>
+                          <td>{(((monthlySalary * 0.60) / 26) * 3).toFixed(2)}</td>
+                          <td>{(((monthlySalary * 0.60) / 26) * 3).toFixed(0) * 12}</td>
+                        </tr>
+                        <tr>
+                          <td>Total Earning</td>
+                          <td>{((monthlySalary) * (0.60)) + (((monthlySalary) * (0.60)) * 0.40) + (((monthlySalary) * (0.60)) / 20) + (((monthlySalary * 0.60) / 26) * 3).toFixed(2)}</td>
+                          <td>{(((monthlySalary) * (0.60)) + (((monthlySalary) * (0.60)) * 0.40) + (((monthlySalary) * (0.60)) / 20) + (((monthlySalary * 0.60) / 26) * 3).toFixed(2)) * 12}</td>
+                        </tr>
+
+
+
+
+                      </tbody>
+                      <thead>
+                        <tr>
+                          <th>DEDUCTIONS</th>
+                          <th>MONTHLY</th>
+                          <th>ANNUALY</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td>PF</td>
+                          <td>{monthlySalary <= 12000 ? 0 : 1800}</td>
+                          <td>{monthlySalary <= 12000 ? 0 : 1800 * 12}</td>
+                        </tr>
+                        <tr>
+                          <td>PT</td>
+                          <td>{(monthlySalary >= 18500 && monthlySalary <= 25000) ? 125 :
+                            (monthlySalary >= 25001 && monthlySalary <= 34999) ? 167 :
+                              (monthlySalary >= 35000) ? 208 : 0
+                          }</td>
+                          <td>{(monthlySalary >= 18500 && monthlySalary <= 25000) ? 125 * 12 :
+                            (monthlySalary >= 25001 && monthlySalary <= 34999) ? 167 * 12 :
+                              (monthlySalary >= 35000) ? 208 * 12 : 0
+                          }</td>
+                        </tr>
+
+                        <tr>
+                          <td>Net Pay</td>
+                          <td>{(monthlySalary <= 12000 ? 0 : 1800) + ((monthlySalary >= 18500 && monthlySalary <= 25000) ? 125 :
+                            (monthlySalary >= 25001 && monthlySalary <= 34999) ? 167 :
+                              (monthlySalary >= 35000) ? 208 : 0
+                          ) + (monthlySalary <= 21000 ? monthlySalary * (0.0075) : 0)}</td>
+                          <td>{((monthlySalary <= 12000 ? 0 : 1800) + ((monthlySalary >= 18500 && monthlySalary <= 25000) ? 125 :
+                            (monthlySalary >= 25001 && monthlySalary <= 34999) ? 167 :
+                              (monthlySalary >= 35000) ? 208 : 0
+                          ) + (monthlySalary <= 21000 ? monthlySalary * (0.0075) : 0)) * 12}</td>
+                        </tr>
+                      </tbody>
+                      <thead>
+                        <tr>
+                          <th>Contribution</th>
+                          <th>MONTHLY</th>
+                          <th>ANNUALY</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td>ESIC</td>
+                          <td>{monthlySalary <= 21000 ? monthlySalary * (0.0075) : 0}</td>
+                          <td>{(monthlySalary <= 21000 ? monthlySalary * (0.0075) : 0) * 12}</td>
+                        </tr>
+                        <tr>
+                          <td>Total CTC</td>
+                          <td>413214</td>
+                          <td>413214</td>
+                        </tr>
+                      </tbody>
+
+                    </table>
+                  </div>
+                  <br />
+                  <p>** I, name acknowledge that i have recived, read through and understand the contents of this letter and agree to the contents here in.</p>
+                  <br />
+                  <p>Signature: _________________</p>
+                  <footer
+                    className="footer-letter "
+                    style={{ pageBreakAfter: "always" }}
+                  >
+                    <p className="bold">CREATIVEFUEL PRIVATE LIMITED</p>
+                    <p className="bold">
+                      Registered Office: - 105, Gravity Mall, Vijay Nagar
+                      Indore (M.P) 452010, India
+                    </p>
+                    <p className="bold ">
+                      Email:
+                      <a href="mailto:fahbir@creativefuel.io">
+                        fahbir@creativefuel.io
+                      </a>
+                    </p>
+                    <p className="bold">www.creativefuel.io</p>
+                  </footer>
                 </div>
               </Modal>
               <Modal

@@ -1483,9 +1483,8 @@ const PreOnboardingUserMaster = () => {
               <div className="sidebar_wrapper_in">
                 <div className="sidebar_items">
                   <div
-                    className={`sidebar_itembox ${
-                      activeTab == 1 ? "sidebar_item_active" : ""
-                    }`}
+                    className={`sidebar_itembox ${activeTab == 1 ? "sidebar_item_active" : ""
+                      }`}
                     id="sidebarFormBox"
                     onClick={() => setActiveTab(1)}
                   >
@@ -1507,9 +1506,8 @@ const PreOnboardingUserMaster = () => {
                     </div>
                   </div>
                   <div
-                    className={`sidebar_itembox sidebar_itemboxCol ${
-                      activeTab == 2 ? "sidebar_item_active" : ""
-                    }`}
+                    className={`sidebar_itembox sidebar_itemboxCol ${activeTab == 2 ? "sidebar_item_active" : ""
+                      }`}
                     id="sidebarDocumentBox"
                     onClick={() => setActiveTab(2)}
                   >
@@ -1546,17 +1544,16 @@ const PreOnboardingUserMaster = () => {
                   {/* Remove Comment */}
                   {/* {allUserData.offer_letter_send && ( */}
                   <div
-                    className={`sidebar_itembox ${
-                      activeTab === 5 ? "sidebar_item_active" : ""
-                    }`}
+                    className={`sidebar_itembox ${activeTab === 5 ? "sidebar_item_active" : ""
+                      }`}
                     id="sidebarLetterBox"
                     onClick={() => setActiveTab(5)}
-                    // style={{
-                    //   opacity: joiningDate <= formattedDate ? 0.5 : 1,
-                    //   // cursor: joiningDate <= formattedDate ? "not-allowed" : "pointer",
-                    //   pointerEvents:
-                    //     joiningDate <= formattedDate ? "none" : "auto",
-                    // }}
+                  // style={{
+                  //   opacity: joiningDate <= formattedDate ? 0.5 : 1,
+                  //   // cursor: joiningDate <= formattedDate ? "not-allowed" : "pointer",
+                  //   pointerEvents:
+                  //     joiningDate <= formattedDate ? "none" : "auto",
+                  // }}
                   >
                     <div className="progress-circle progressing pp-26">
                       <div className="progress-circle-border">
@@ -1574,16 +1571,15 @@ const PreOnboardingUserMaster = () => {
                     // className={`sidebar_itembox  ${
                     //   activeTab == 3 ? "sidebar_item_active" : ""
                     // }`}
-                    className={`sidebar_itembox ${
-                      activeTab === 3 && documentPercentage < 90
+                    className={`sidebar_itembox ${activeTab === 3 && documentPercentage < 90
                         ? "sidebar_item_active"
                         : ""
-                    }`}
+                      }`}
                     id="sidebarPolicyBox"
-                    style={{
-                      pointerEvents: documentPercentage < 90 ? "none" : "auto",
-                      opacity: documentPercentage < 90 ? 0.5 : 1,
-                    }}
+                    // style={{
+                    //   pointerEvents: documentPercentage < 90 ? "none" : "auto",
+                    //   opacity: documentPercentage < 90 ? 0.5 : 1,
+                    // }}
                     onClick={() => setActiveTab(3)}
                   >
                     <div className="progress-circle progressing pp-100">
@@ -1605,9 +1601,8 @@ const PreOnboardingUserMaster = () => {
                     </h2>
                   </div>
                   <div
-                    className={`sidebar_itembox ${
-                      activeTab == 4 ? "sidebar_item_active" : ""
-                    }`}
+                    className={`sidebar_itembox ${activeTab == 4 ? "sidebar_item_active" : ""
+                      }`}
                     id="sidebarFaqBox"
                     onClick={() => setActiveTab(4)}
                   >

@@ -123,9 +123,8 @@ const SidebarLinks = () => {
     <>
       <li className="nav-item nav-item-single">
         <Link
-          className={`nav-btn nav-link ${
-            activelink === "/admin" ? "active" : ""
-          }`}
+          className={`nav-btn nav-link ${activelink === "/admin" ? "active" : ""
+            }`}
           to="/admin"
         >
           <i className="ph">
@@ -170,12 +169,12 @@ const SidebarLinks = () => {
               {contextData &&
                 contextData[0] &&
                 contextData[0].view_value === 1 && (
-                  <Link
+                  <NavLink
                     className="collapse-item"
                     to={`/admin/user-overview/${"Active"}`}
                   >
                     <i className="bi bi-dot"></i> User
-                  </Link>
+                  </NavLink>
                 )}
 
               {/* Asset Management here  */}
@@ -779,7 +778,7 @@ const SidebarLinks = () => {
                     id="collapsInnerOne"
                     className="collapse"
                     aria-labelledby="headingTwo"
-                    // data-parent="#accordionSidebar"
+                  // data-parent="#accordionSidebar"
                   >
                     <div className="internal collapse-inner">
                       <NavLink className="collapse-item" to="/admin/execution">
@@ -1223,7 +1222,7 @@ const SidebarLinks = () => {
                   id="collapsInnerEightFinanceEdit"
                   className="collapse"
                   aria-labelledby="headingTwo"
-                  // data-parent="#accordionSidebar"
+                // data-parent="#accordionSidebar"
                 >
                   <div className="collapse-inner">
                     <>
@@ -1468,7 +1467,7 @@ const SidebarLinks = () => {
                   id="collapsInnerEightFinance"
                   className="collapse"
                   aria-labelledby="headingTwo"
-                  // data-parent="#accordionSidebar"
+                // data-parent="#accordionSidebar"
                 >
                   <div className="internal collapse-inner">
                     <>
@@ -1534,7 +1533,7 @@ const SidebarLinks = () => {
                   id="collapsInnerEightFinancePayout"
                   className="collapse"
                   aria-labelledby="headingTwo"
-                  // data-parent="#accordionSidebar"
+                // data-parent="#accordionSidebar"
                 >
                   <div className="internal collapse-inner">
                     <>
@@ -1570,7 +1569,7 @@ const SidebarLinks = () => {
                   id="collapsInnerEightFinanceTask"
                   className="collapse"
                   aria-labelledby="headingTwo"
-                  // data-parent="#accordionSidebar"
+                // data-parent="#accordionSidebar"
                 >
                   <div className="internal collapse-inner">
                     <>
@@ -1661,7 +1660,7 @@ const SidebarLinks = () => {
             id="customer"
             className="collapse"
             aria-labelledby="headingTwo"
-            // data-parent="#accordionSidebar"
+          // data-parent="#accordionSidebar"
           >
             <div className="internal collapse-inner">
               <>
