@@ -139,11 +139,18 @@ const VendorEdit = () => {
   // },[payId])
 
   
+  const handleRemarkChange = (i,value) => {
+    const remark = [...whatsappLink];
+    remark[i].remark = value;
+    setWhatsappLink(remark);
+  }
+
   const handleLinkChange = (index, newValue) => {
-    const updatedLinks = whatsappLink.map((link, i) =>
-      i === index ? newValue : link
+   let link = [...whatsappLink]
+    link[index].link = newValue;
+    setWhatsappLink(
+      link
     );
-    setWhatsappLink(updatedLinks);
   };
 
   const removeLink = (index) => {
@@ -213,7 +220,7 @@ const VendorEdit = () => {
     formData.append("cycle_id", cycleId);
     formData.append("created_by", userID);
     formData.append("vendor_category", vendorCategory);
-    formData.append("whatsapp_link", whatsappLink.map((link) => link.trim()));
+    formData.append("whatsapp_link", JSON.stringify(whatsappLink));
 
     if (bankName) {
       formData.append("bank_name", bankName);
@@ -584,15 +591,45 @@ const VendorEdit = () => {
           required={false}
           onChange={(e) => setHomeState(e.target.value)}
         />
-          {whatsappLink.map((link, index) => (
+         {whatsappLink?.map((link, index) => (
           <>
             <FieldContainer
               key={index}
               label={`Whatsapp Link ${index + 1}`}
-              value={link}
+              value={link.link}
               required={false}
               onChange={(e) => handleLinkChange(index, e.target.value)}
             />
+             <FieldContainer
+              key={index.remark}
+              label={`Remark`}
+              value={link.remark}
+              required={false}
+              onChange={(e) => handleRemarkChange(index, e.target.value)}
+            />
+
+            <div className="form-group col-6">
+              <label className="form-label">
+                Type <sup style={{ color: "red" }}>*</sup>
+              </label>
+              <Select
+                options={["Execution", "Payment"].map((option) => ({
+                  label: option,
+                  value: option,
+                }))}
+                required={true}
+                value={{
+                  value: link.type,
+                  label: link.type,
+                }}
+                onChange={(e) => {
+                  let updatedLinks = [...whatsappLink];
+                  updatedLinks[index].type = e.value;
+                  setWhatsappLink(updatedLinks);
+                }}
+              ></Select>
+            </div>
+
             {index > 0 && (
               // <Button onClick={removeLink(index)}  icon />
 
@@ -608,6 +645,7 @@ const VendorEdit = () => {
                 <CloseIcon />
               </IconButton>
             )}
+
           </>
         ))}
      {panImglink?.length>0 &&   <img  style={{ width: "100px", height: "100px" }} src={panImglink} alt="pan" />}

@@ -4,14 +4,7 @@ import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
-import FormControl from "@mui/material/FormControl";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import InputLabel from "@mui/material/InputLabel";
-import MenuItem from "@mui/material/MenuItem";
-import Select from "@mui/material/Select";
-import Switch from "@mui/material/Switch";
 import { useDispatch, useSelector } from "react-redux";
 import { setClosePageModal } from "../../Store/PageOverview";
 import { useGlobalContext } from "../../../Context/Context";
@@ -25,14 +18,11 @@ export default function VendorPageModal() {
   const vendorRow = useSelector((state) => state.PageOverview.venodrRowData);
   const open = useSelector((state) => state.PageOverview.showPageModal);
   const dispatch = useDispatch();
-  const [fullWidth, setFullWidth] = React.useState(true);
+
   const [pages, setPages] = React.useState([]);
   const handleClose = () => {
     setPages([]);
     dispatch(setClosePageModal());
-  };
-  const handleFullWidthChange = (event) => {
-    setFullWidth(event.target.checked);
   };
 
   const dataGridcolumns = [
@@ -92,23 +82,24 @@ export default function VendorPageModal() {
     { field: "description", headerName: "Description", width: 200 },
   ];
   useEffect(() => {
-    (async () => {
-      try {
-        const response = await axios.get(
-          `${baseUrl}pageByVenodrId/${vendorRow.vendorMast_id}`
-        );
-        setPages(response.data.data);
-      } catch (error) {
-        toastError("Error while fetching tag categories");
-      }
-    })();
-  }, []);
-  
+    if (vendorRow.vendorMast_id) {
+      (async () => {
+        try {
+          const response = await axios.get(
+            `${baseUrl}pageByVenodrId/${vendorRow.vendorMast_id}`
+          );
+          setPages(response.data.data);
+        } catch (error) {
+          toastError("Error while fetching tag categories");
+        }
+      })();
+    }
+  }, [vendorRow]);
 
   return (
     <>
       <Dialog
-        fullWidth={fullWidth}
+        fullWidth={true}
         maxWidth={"lg"}
         open={open}
         onClose={handleClose}
@@ -125,23 +116,26 @@ export default function VendorPageModal() {
               width: "fit-content",
             }}
           >
-         {pages.length>0 ?<DataGrid
-              title="Page Overview"
-              rows={pages}
-              columns={dataGridcolumns}
-              pageSize={5}
-              rowsPerPageOptions={[5]}
-              rowHeight={38}
-              getRowId={(row) => row._id}
-              slots={{ toolbar: GridToolbar }}
-              slotProps={{
-                toolbar: {
-                  showQuickFilter: true,
-                },
-              }}
-              disableRowSelectionOnClick
-            />:<h1>No Data Found</h1>}
-
+            {pages.length > 0 ? (
+              <DataGrid
+                title="Page Overview"
+                rows={pages}
+                columns={dataGridcolumns}
+                pageSize={5}
+                rowsPerPageOptions={[5]}
+                rowHeight={38}
+                getRowId={(row) => row._id}
+                slots={{ toolbar: GridToolbar }}
+                slotProps={{
+                  toolbar: {
+                    showQuickFilter: true,
+                  },
+                }}
+                disableRowSelectionOnClick
+              />
+            ) : (
+              <h1>No Data Found</h1>
+            )}
           </Box>
         </DialogContent>
         <DialogActions>
