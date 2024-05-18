@@ -57,9 +57,14 @@ const LetterTab = ({ allUserData, gettingData }) => {
 
   //   html2pdf().from(element).set(opt).save();
   // };
+<<<<<<< Updated upstream
 
   const downloadOfferLetter = () => {
     setIsLoading(true);
+=======
+  console.log("personal email", allUserData);
+  const downloadOfferLetter = () => {
+>>>>>>> Stashed changes
     var element = document.getElementById("element-to-print");
     var opt = {
       margin: 1,
@@ -96,6 +101,10 @@ const LetterTab = ({ allUserData, gettingData }) => {
         );
 
         pdfData.append("email_id", allUserData.PersonalEmail);
+<<<<<<< Updated upstream
+=======
+
+>>>>>>> Stashed changes
         axios
           .post(baseUrl + "offer_letter_send_in_mail", pdfData, {
             headers: {
@@ -107,13 +116,17 @@ const LetterTab = ({ allUserData, gettingData }) => {
           })
           .catch(function (error) {
             console.error(error);
+<<<<<<< Updated upstream
           })
           .finally(() => {
             setIsLoading(false); // Set loading state to false after the download process completes
+=======
+>>>>>>> Stashed changes
           });
       });
   };
 
+<<<<<<< Updated upstream
   axios
     .post(baseUrl + "image_to_base64", {
       imageUrl: allUserData.digital_signature_image_url,
@@ -124,6 +137,20 @@ const LetterTab = ({ allUserData, gettingData }) => {
     .catch((error) => {
       console.error("Error fetching data:", error);
     });
+=======
+  useEffect(() => {
+    axios
+      .post(baseUrl + "image_to_base64", {
+        imageUrl: allUserData.digital_signature_image_url,
+      })
+      .then((response) => {
+        setImage64(response.data.base64String);
+      })
+      .catch((error) => {
+        console.error("Error fetching data:", error);
+      });
+  }, []);
+>>>>>>> Stashed changes
 
   return (
     <>
@@ -593,10 +620,20 @@ const LetterTab = ({ allUserData, gettingData }) => {
                     <span className="bold">
                       {" "}
                       Congratulations on accepting the offer letter and becoming
+<<<<<<< Updated upstream
                       a part of Creativefuel team! Your offer letter has been
                       sent to your email address
                     </span>{" "}
                     <br />
+=======
+                      a part of Creativefuel team!{" "}
+                    </span>{" "}
+                    <br /> Your offer letter has been sent to your email
+                    address. Kindly take a moment to review the attached
+                    document, which outlines the terms and conditions of your
+                    employment, including your start date, compensation package,
+                    and other important details.
+>>>>>>> Stashed changes
                   </p>
                 ) : (
                   <p>
@@ -607,10 +644,17 @@ const LetterTab = ({ allUserData, gettingData }) => {
                     <span className="bold">
                       {allUserData.designation_name}{" "}
                     </span>
+<<<<<<< Updated upstream
                     {/* ! We believe that your experience & skills will be a great
                     asset to our organisation. <br /> <br /> Congratulations on
                     your new role, and cheers to a journey full of excitement,
                     growth & achievement! */}
+=======
+                    ! We believe that your experience & skills will be a great
+                    asset to our organisation. <br /> <br /> Congratulations on
+                    your new role, and cheers to a journey full of excitement,
+                    growth & achievement!
+>>>>>>> Stashed changes
                   </p>
                 )}
               </div>

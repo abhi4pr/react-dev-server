@@ -21,6 +21,8 @@ import OccupationList from "../../../assets/js/OccupationList";
 import familyRelationList from "../../../assets/js/familyRelationList";
 import { ToastContainer } from "react-toastify";
 import IndianBankList from "../../../assets/js/IndianBankList";
+import IndianStatesMui from "../../ReusableComponents/IndianStatesMui";
+import IndianCitiesMui from "../../ReusableComponents/IndianCitiesMui";
 
 const castOption = ["General", "OBC", "SC", "ST"];
 const colourOptions = [
@@ -1737,7 +1739,7 @@ const UserUpdate = () => {
       )}
       <div className="col-xl-3 col-lg-3 col-md-3 col-sm-12">
         <div className="form-group">
-          {/* <p
+          {/* <ps
             className={
               loginResponse == "login id available"
                 ? "login-success1"
@@ -1745,7 +1747,7 @@ const UserUpdate = () => {
             }
           >
             {loginResponse}
-          </p> */}
+          </ps> */}
           <label>
             Login ID <sup style={{ color: "red" }}>*</sup>
           </label>
@@ -1877,7 +1879,7 @@ const UserUpdate = () => {
           required={false}
         />
 
-        <div className="form-group col-4">
+        {/* <div className="form-group col-4">
           <label className="form-label">
             Current City <sup style={{ color: "red" }}>*</sup>
           </label>
@@ -1904,6 +1906,20 @@ const UserUpdate = () => {
           <IndianStates
             newValue={currentState}
             onChange={(option) => setcurrentState(option ? option.value : null)}
+          />
+        </div> */}
+        <div className="form-group col-6 mt-3">
+          <IndianStatesMui
+            selectedState={currentState}
+            onChange={(option) => setcurrentState(option ? option : null)}
+          />
+        </div>
+
+        <div className="form-group col-6 mt-3">
+          <IndianCitiesMui
+            selectedState={currentState}
+            selectedCity={currentCity}
+            onChange={(option) => setcurrentCity(option ? option : null)}
           />
         </div>
 
@@ -1945,7 +1961,7 @@ const UserUpdate = () => {
         required={false}
       />
 
-      <div className="form-group col-4">
+      {/* <div className="form-group col-4">
         <label className="form-label">Parmanent City</label>
         <Select
           options={cityData?.map((city) => ({
@@ -1969,6 +1985,20 @@ const UserUpdate = () => {
         <IndianStates
           newValue={state}
           onChange={(option) => setState(option ? option.value : null)}
+        />
+      </div> */}
+      <div className="form-group col-4 mt-3">
+        <IndianStatesMui
+          selectedState={currentState}
+          onChange={(option) => setcurrentState(option ? option : null)}
+        />
+      </div>
+
+      <div className="form-group col-4 mt-3">
+        <IndianCitiesMui
+          selectedState={currentState}
+          selectedCity={currentCity}
+          onChange={(option) => setcurrentCity(option ? option : null)}
         />
       </div>
       <FieldContainer

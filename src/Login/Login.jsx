@@ -18,7 +18,7 @@ const Login = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     axios
-      .post(baseUrl+"login_user", {
+      .post(baseUrl + "login_user", {
         user_login_id: email,
         user_login_password: password,
       })
@@ -97,6 +97,7 @@ const Login = () => {
                 </div>
                 <div className="forgotPassword form-group">
                   <button
+                    style={{ color: "blue" }}
                     className="btn link_btn"
                     type="submit"
                     onClick={() => {
