@@ -39,7 +39,7 @@ const FAQTab = ({ username, designation }) => {
                 </div>
                 <div className="thm_textbx">
                   <h3>
-                    2.What is the duration of the notice period that needs to be
+                    2. What is the duration of the notice period that needs to be
                     served?
                   </h3>
                   <p>
@@ -96,7 +96,7 @@ const FAQTab = ({ username, designation }) => {
                 </div>
                 <div className="thm_textbx">
                   <h3>
-                    8.What are the prerequisites for employees to be eligible
+                    8. What are the prerequisites for employees to be eligible
                     for working from home (WFH)?
                   </h3>
                   <p>
@@ -105,7 +105,7 @@ const FAQTab = ({ username, designation }) => {
                     working from home. Failure to obtain such approval may
                     result in the employee being considered absent from work.
                   </p>
-                  <p>
+                  <p className="pl-4">
                     * Work from home will be considered half-day attendance, and
                     accordingly, the employee will receive only 50% of there
                     salary for that day.
@@ -152,7 +152,7 @@ const FAQTab = ({ username, designation }) => {
                     >
                       tushar@creativefuel.io{" "}
                     </a>
-                    and your team leader when necessary.
+                    {" "}and your team leader when necessary.
                   </p>
                 </div>
               </div>
