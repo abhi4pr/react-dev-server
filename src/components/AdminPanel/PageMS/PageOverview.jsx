@@ -1507,7 +1507,7 @@ const PageOverview = () => {
                         className="btn btn-primary btn-sm me-5 mt-2"
                         id="pageName"
                       >
-                        Not Assigned Venodr {notAssignedVenodrData.length}
+                        Not Assigned Vendor {notAssignedVenodrData.length}
                       </button>
                     </div>
                   )}
