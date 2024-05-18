@@ -15,19 +15,23 @@ const ContactNumber = ({
   }, [parentComponentContact]);
 
   function validateContact(newContact) {
-    return /^(\+91[ \-\s]?)?[0]?(91)?[6789]\d{9}$/.test(newContact);
+    return /^[0-9]*$/.test(newContact) && newContact.length <= 10;
   }
 
   function handleContactChange(event) {
     const newContact = event.target.value;
-    setContact(newContact);
-    setIsValidContact(newContact ? validateContact(newContact) : false);
-    setParentComponentContact(newContact);
+    if (validateContact(newContact)) {
+      setContact(newContact);
+      setIsValidContact(true);
+      setParentComponentContact(newContact);
+    } else {
+      setIsValidContact(false);
+    }
   }
 
   function handleContactBlur() {
     setIsContactTouched(true);
-    setIsValidContact(contact ? validateContact(contact) : false);
+    setIsValidContact(validateContact(contact));
   }
 
   return (
@@ -37,6 +41,10 @@ const ContactNumber = ({
         label={label}
         variant="outlined"
         type="text"
+        inputProps={{ maxLength: 10, pattern: "[0-9]*" }}
+        InputProps={{
+          readOnly: label === "Emergency Contact" ? false : true,
+        }}
         value={contact}
         onChange={handleContactChange}
         onBlur={handleContactBlur}

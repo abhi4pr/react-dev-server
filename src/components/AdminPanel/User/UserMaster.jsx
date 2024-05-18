@@ -48,6 +48,7 @@ import { User } from "@phosphor-icons/react";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { subYears } from "date-fns";
+import IndianCitiesMui from "../../ReusableComponents/IndianCitiesMui";
 
 const colourOptions = [
   { value: "English", label: "English" },
@@ -2470,7 +2471,7 @@ const UserMaster = () => {
         {mandatoryFieldsEmpty.currentAddress && (
           <p className="form-error">Please enter Address</p>
         )}
-        <div className="form-group col-4">
+        {/* <div className="form-group col-4">
           <label className="form-label">
             Current City <sup className="form-error">*</sup>
           </label>
@@ -2480,51 +2481,31 @@ const UserMaster = () => {
               label: city.city_name,
             }))}
             onChange={setcurrentCity}
-            // onBlur={() => {
-            //   if (city === "") {
-            //     // setMandatoryFieldsEmpty({...mandatoryFieldsEmpty,city:true});
-            //     return setMandatoryFieldsEmpty((prevState) => ({
-            //       ...prevState,
-            //       city: true,
-            //     }));
-            //   } else {
-            //     setMandatoryFieldsEmpty({
-            //       ...mandatoryFieldsEmpty,
-            //       city: false,
-            //     });
-            //   }
-            // }}
             required={true}
             value={currentCity}
             placeholder="Select a city..."
             isClearable
           />
-          {/* {mandatoryFieldsEmpty.city && (
-            <p className="form-error">Please enter City</p>
-          )} */}
         </div>
 
         <div className="form-group col-4">
           <IndianStates
-            // onBlur={() => {
-            //   if (currentState === "") {
-            //     // setMandatoryFieldsEmpty({...mandatoryFieldsEmpty,state:true});
-            //     return setMandatoryFieldsEmpty((prevState) => ({
-            //       ...prevState,
-            //       state: true,
-            //     }));
-            //   } else {
-            //     setMandatoryFieldsEmpty({
-            //       ...mandatoryFieldsEmpty,
-            //       state: false,
-            //     });
-            //   }
-            // }}
             onChange={(option) => setcurrentState(option ? option.value : null)}
           />
-          {/* {mandatoryFieldsEmpty.state && (
-            <p className="form-error">Please enter State</p>
-          )} */}
+        </div> */}
+        <div className="form-group col-6 mt-3">
+          <IndianStatesMui
+            selectedState={currentState}
+            onChange={(option) => setcurrentState(option ? option : null)}
+          />
+        </div>
+
+        <div className="form-group col-6 mt-3">
+          <IndianCitiesMui
+            selectedState={currentState}
+            selectedCity={currentCity}
+            onChange={(option) => setcurrentCity(option ? option : null)}
+          />
         </div>
 
         <FieldContainer
@@ -2582,25 +2563,12 @@ const UserMaster = () => {
         fieldGrid={12}
         value={address}
         onChange={(e) => setAddress(e.target.value)}
-        // onBlur={() => {
-        //   if (address === "") {
-        //     return setMandatoryFieldsEmpty((prevState) => ({
-        //       ...prevState,
-        //       address: true,
-        //     }));
-        //   } else {
-        //     setMandatoryFieldsEmpty({
-        //       ...mandatoryFieldsEmpty,
-        //       address: false,
-        //     });
-        //   }
-        // }}
         required={false}
       />
       {/* {mandatoryFieldsEmpty.address && (
         <p  className="form-error">Please enter Address</p>
       )} */}
-      <div className="form-group col-4">
+      {/* <div className="form-group col-4">
         <label className="form-label">Parmanent City</label>
         <Select
           options={cityData.map((city) => ({
@@ -2608,52 +2576,34 @@ const UserMaster = () => {
             label: city.city_name,
           }))}
           onChange={setCity}
-          // onBlur={() => {
-          //   if (city === "") {
-          //     // setMandatoryFieldsEmpty({...mandatoryFieldsEmpty,city:true});
-          //     return setMandatoryFieldsEmpty((prevState) => ({
-          //       ...prevState,
-          //       city: true,
-          //     }));
-          //   } else {
-          //     setMandatoryFieldsEmpty({
-          //       ...mandatoryFieldsEmpty,
-          //       city: false,
-          //     });
-          //   }
-          // }}
           required={true}
           value={city}
           placeholder="Select a city..."
           isClearable
         />
-        {/* {mandatoryFieldsEmpty.city && (
-          <p  className="form-error">Please enter City</p>
-        )} */}
       </div>
       <div className="form-group col-4">
         <IndianStates
-          // onBlur={() => {
-          //   if (state === "") {
-          //     return setMandatoryFieldsEmpty((prevState) => ({
-          //       ...prevState,
-          //       state: true,
-          //     }));
-          //   } else {
-          //     setMandatoryFieldsEmpty({
-          //       ...mandatoryFieldsEmpty,
-          //       state: false,
-          //     });
-          //   }
-          // }}
           onChange={(option) => setState(option ? option.value : null)}
           newValue={state}
         />
+      </div> */}
 
-        {/* {mandatoryFieldsEmpty.state && (
-          <p  className="form-error">Please enter State</p>
-        )} */}
+      <div className="form-group col-6 mt-3">
+        <IndianStatesMui
+          selectedState={state}
+          onChange={(option) => setState(option ? option : null)}
+        />
       </div>
+
+      <div className="form-group col-6 mt-3">
+        <IndianCitiesMui
+          selectedState={state}
+          selectedCity={city}
+          onChange={(option) => setCity(option ? option : null)}
+        />
+      </div>
+
       <FieldContainer
         label="Parmanent Pincode"
         type="number"
@@ -3022,6 +2972,7 @@ const UserMaster = () => {
                         }
                         isClearable={true}
                         isSearchable={true}
+                        required={false}
                       />
                     </div>
                   );
