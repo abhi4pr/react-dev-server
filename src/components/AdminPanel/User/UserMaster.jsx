@@ -50,7 +50,8 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { isAfter, subYears } from "date-fns";
 import IndianCitiesMui from "../../ReusableComponents/IndianCitiesMui";
 import dayjs from "dayjs";
-import { Line, Circle } from 'rc-progress';
+import { FormatName } from "../../../utils/FormatName";
+import { Line, Circle } from "rc-progress";
 
 const colourOptions = [
   { value: "English", label: "English" },
@@ -912,7 +913,7 @@ const UserMaster = () => {
     } else if (!bankAccountNumber || bankAccountNumber == "") {
       return toastError("Fill the Mandatory fields");
     } else if (!IFSC || IFSC == "" || IFSC.length < 11) {
-      return toastError("IFSC is required and length must be 11 digit");
+      return toastError("Fill the Mandatory fields");
     } else if (!banktype || banktype == "") {
       return toastError("Fill the Mandatory fields");
     }
@@ -961,7 +962,7 @@ const UserMaster = () => {
           });
         }
       }
-      toastAlert("Submit Family Details");
+      toastAlert("Submitted Family Details");
     } catch (error) {
       toastError(error);
     }
@@ -982,7 +983,7 @@ const UserMaster = () => {
           });
         }
       }
-      toastAlert("Submite Euducation Details ");
+      toastAlert("Submitted Euducation Details ");
     } catch (error) {
       toastError(error);
     }
@@ -1216,8 +1217,7 @@ const UserMaster = () => {
 
   const handleAccordionButtonClick = (index) => {
     // {
-    if (userResID !== "")
-      setActiveAccordionIndex(index);
+    if (userResID !== "") setActiveAccordionIndex(index);
     // console.log("hhhhhh");
     // console.log("ss");
   };
@@ -1379,7 +1379,7 @@ const UserMaster = () => {
     if (name === "Contact") {
       if (!/^(\+91[ \-\s]?)?[0]?(91)?[6789]\d{9}$/.test(value)) {
         errors[`${name}-${index}`] =
-          "Invalid contact number. Please enter a valid phone number.";
+          "Invalid contact number. Please Enter a valid phone number.";
       } else {
         delete errors[`${name}-${index}`];
       }
@@ -1426,22 +1426,69 @@ const UserMaster = () => {
 
   // const accordionButtons = ["General", "Others", "Education & Family"];
   const accordionButtons = ["General", "Others", "Education & Family"];
-  const accordionButtonstitle = ["Personal & Official Details", "Other & Bank Details", "Upload Document"];
+  const accordionButtonstitle = [
+    "Personal & Official Details",
+    "Other & Bank Details",
+    "Upload Document",
+  ];
   const indicator = {
-    completed: <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <rect width="20" height="20" rx="10" fill="#782BE4" />
-      <path d="M9 11.793L7.3535 10.1465L6.6465 10.8535L9 13.207L13.8535 8.35348L13.1465 7.64648L9 11.793Z" fill="var(--bg-white)" />
-    </svg>,
-    active: <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <rect x="0.5" y="0.5" width="19" height="19" rx="9.5" fill="#782BE4" />
-      <rect x="0.5" y="0.5" width="19" height="19" rx="9.5" stroke="white" />
-      <rect x="6" y="6" width="8" height="8" rx="4" fill="white" />
-    </svg>,
-    disabled: <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <rect x="0.25" y="0.25" width="19.5" height="19.5" rx="9.75" fill="#ABB7C2" fill-opacity="0.1" />
-      <rect x="0.25" y="0.25" width="19.5" height="19.5" rx="9.75" stroke="#CFD6DC" stroke-width="0.5" />
-    </svg>,
-  }
+    completed: (
+      <svg
+        width="20"
+        height="20"
+        viewBox="0 0 20 20"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <rect width="20" height="20" rx="10" fill="#782BE4" />
+        <path
+          d="M9 11.793L7.3535 10.1465L6.6465 10.8535L9 13.207L13.8535 8.35348L13.1465 7.64648L9 11.793Z"
+          fill="var(--bg-white)"
+        />
+      </svg>
+    ),
+    active: (
+      <svg
+        width="20"
+        height="20"
+        viewBox="0 0 20 20"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <rect x="0.5" y="0.5" width="19" height="19" rx="9.5" fill="#782BE4" />
+        <rect x="0.5" y="0.5" width="19" height="19" rx="9.5" stroke="white" />
+        <rect x="6" y="6" width="8" height="8" rx="4" fill="white" />
+      </svg>
+    ),
+    disabled: (
+      <svg
+        width="20"
+        height="20"
+        viewBox="0 0 20 20"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <rect
+          x="0.25"
+          y="0.25"
+          width="19.5"
+          height="19.5"
+          rx="9.75"
+          fill="#ABB7C2"
+          fill-opacity="0.1"
+        />
+        <rect
+          x="0.25"
+          y="0.25"
+          width="19.5"
+          height="19.5"
+          rx="9.75"
+          stroke="#CFD6DC"
+          stroke-width="0.5"
+        />
+      </svg>
+    ),
+  };
   // if (userResID) {
   // accordionButtons.push();
   // }
@@ -1508,8 +1555,6 @@ const UserMaster = () => {
       <div className="card">
         <div className="card-header">Personal Details</div>
         <div className="card-body row">
-
-
           <div className=" col-3">
             <FieldContainer
               label="Full Name"
@@ -1566,12 +1611,14 @@ const UserMaster = () => {
               value={personalContact}
               required={false}
               onChange={handlePersonalContactChange}
-            // onBlur={(e) => handleContentBlur(e, "personalContact")}
+              // onBlur={(e) => handleContentBlur(e, "personalContact")}
             />
             {(isContactTouched1 || personalContact.length >= 10) &&
               !isValidcontact1 &&
               mandatoryFieldsEmpty.personalContact && (
-                <p className="form-error">Please enter a valid Contact Number</p>
+                <p className="form-error">
+                  Please enter a valid Contact Number
+                </p>
               )}
             {mandatoryFieldsEmpty.personalContact && (
               <p className="form-error">Please enter Personal Contact</p>
@@ -1579,10 +1626,8 @@ const UserMaster = () => {
           </div>
           <div className="col-xl-3 col-lg-3 col-md-3 col-sm-12">
             <div className="form-group">
-
               <div className="flex-row w-100 justify-content-center">
                 <div className="hover-label">
-
                   <button
                     id="uploadImage"
                     className="profile-holder-1 ml-1"
@@ -1591,7 +1636,9 @@ const UserMaster = () => {
                     title="Upload Image"
                     style={{
                       border:
-                        selectedImage === null ? "1px solid var(--medium)" : "none",
+                        selectedImage === null
+                          ? "1px solid var(--medium)"
+                          : "none",
                     }}
                   >
                     {!selectedImage && <User style={{ fontSize: "400px" }} />}
@@ -1618,7 +1665,7 @@ const UserMaster = () => {
               value={alternateContact}
               required={false}
               onChange={handleAlternateContactChange}
-            // onBlur={(e) => handleAlternateBlur(e, "alternateContact")}
+              // onBlur={(e) => handleAlternateBlur(e, "alternateContact")}
             />
             {(isAlternateTouched1 || alternateContact.length >= 10) &&
               !isValidcontact3 &&
@@ -1780,7 +1827,7 @@ const UserMaster = () => {
       )} */}
           <div className="form-group col-3">
             <label className="form-label">
-              Maritial Status <sup className="form-error">*</sup>
+              Marital Status <sup className="form-error">*</sup>
             </label>
             <Select
               className=""
@@ -1820,7 +1867,7 @@ const UserMaster = () => {
               label="Spouse Name"
               value={spouseName}
               fieldGrid={3}
-              onChange={(e) => setSpouseName(e.target.value)}
+              onChange={(e) => setSpouseName(FormatName(e.target.value))}
               required={false}
             />
           )}
@@ -1850,15 +1897,12 @@ const UserMaster = () => {
         </div>
       </div>
 
-
-
       {/* Personal Info Inputs------------------------End------------ */}
 
       {/* Official Info Inputs------------------------Start------------ */}
       <div className="card">
         <div className="card-header">Official Details</div>
         <div className="card-body row">
-
           <div className="form-group col-3">
             <label className="form-label">
               Job Type <sup className="form-error">*</sup>
@@ -1960,7 +2004,11 @@ const UserMaster = () => {
                 setSubDeparment(e.value);
 
                 // onBlur functionality
-                if (e.value === "" || e.value === null || e.value.length === 0) {
+                if (
+                  e.value === "" ||
+                  e.value === null ||
+                  e.value.length === 0
+                ) {
                   setMandatoryFieldsEmpty((prevState) => ({
                     ...prevState,
                     subDepartment: true,
@@ -2032,8 +2080,8 @@ const UserMaster = () => {
               value={{
                 value: reportL1,
                 label:
-                  usersData.find((user) => user.user_id === reportL1)?.user_name ||
-                  "",
+                  usersData.find((user) => user.user_id === reportL1)
+                    ?.user_name || "",
               }}
               onChange={(e) => {
                 setReportL1(e.value);
@@ -2071,8 +2119,8 @@ const UserMaster = () => {
               value={{
                 value: reportL2,
                 label:
-                  usersData.find((user) => user.user_id === reportL2)?.user_name ||
-                  "",
+                  usersData.find((user) => user.user_id === reportL2)
+                    ?.user_name || "",
               }}
               onChange={(e) => {
                 setReportL2(e.value);
@@ -2092,8 +2140,8 @@ const UserMaster = () => {
               value={{
                 value: reportL3,
                 label:
-                  usersData.find((user) => user.user_id === reportL3)?.user_name ||
-                  "",
+                  usersData.find((user) => user.user_id === reportL3)
+                    ?.user_name || "",
               }}
               onChange={(e) => {
                 setReportL3(e.value);
@@ -2114,7 +2162,8 @@ const UserMaster = () => {
               value={{
                 value: roles,
                 label:
-                  roledata.find((role) => role.role_id === roles)?.Role_name || "",
+                  roledata.find((role) => role.role_id === roles)?.Role_name ||
+                  "",
               }}
               onChange={(e) => {
                 setRoles(e.value);
@@ -2144,7 +2193,9 @@ const UserMaster = () => {
                 }
               }}
             />
-            {!validEmail && <p className="form-error">*Please enter valid email</p>}
+            {!validEmail && (
+              <p className="form-error">*Please enter valid email</p>
+            )}
           </div>
           <div className="col-xl-3 col-lg-3 col-md-3 col-sm-12">
             <FieldContainer
@@ -2155,7 +2206,7 @@ const UserMaster = () => {
               value={contact}
               required={true}
               onChange={handleContactChange}
-            // onBlur={handleContentBlur}
+              // onBlur={handleContentBlur}
             />
           </div>
 
@@ -2175,12 +2226,13 @@ const UserMaster = () => {
               </label>
               <div className="input-group">
                 <input
-                  className={`form-control ${loginId
-                    ? loginResponse === "login id available"
-                      ? "login-success-border"
-                      : "login-error-border"
-                    : ""
-                    }`}
+                  className={`form-control ${
+                    loginId
+                      ? loginResponse === "login id available"
+                        ? "login-success-border"
+                        : "login-error-border"
+                      : ""
+                  }`}
                   value={loginId}
                   disabled
                   onChange={handleLoginIdChange}
@@ -2505,7 +2557,6 @@ const UserMaster = () => {
         <div className="card-header">Other Details</div>
         {/* Current Address input-- */}
         <div className="card-body">
-
           <div className="row">
             <FieldContainer
               label="Current Address"
@@ -2556,7 +2607,10 @@ const UserMaster = () => {
           />
         </div> */}
             <div className="form-group col-4 mt-3">
-              <label htmlFor=""> State <sup style={{ color: "red" }}>*</sup></label>
+              <label htmlFor="">
+                {" "}
+                State <sup style={{ color: "red" }}>*</sup>
+              </label>
               <IndianStatesMui
                 selectedState={currentState}
                 onChange={(option) => setcurrentState(option ? option : null)}
@@ -2564,7 +2618,10 @@ const UserMaster = () => {
             </div>
 
             <div className="form-group col-4 mt-3">
-              <label htmlFor=""> City <sup style={{ color: "red" }}>*</sup></label>
+              <label htmlFor="">
+                {" "}
+                City <sup style={{ color: "red" }}>*</sup>
+              </label>
 
               <IndianCitiesMui
                 selectedState={currentState}
@@ -2573,7 +2630,6 @@ const UserMaster = () => {
               />
             </div>
             <div className="">
-
               <FieldContainer
                 label="Pincode"
                 type="number"
@@ -2626,20 +2682,16 @@ const UserMaster = () => {
 
           <hr className="mb-2 mt-3" />
           <div className="row">
-
-
-
             <FieldContainer
-              label="Parmanent Address"
+              label="Permanent Address"
               fieldGrid={12}
               value={address}
               onChange={(e) => setAddress(e.target.value)}
               required={false}
             />
 
-
             {/* {mandatoryFieldsEmpty.address && (
-        <p  className="form-error">Please enter Address</p>
+        <p  className="form-error">Please Enter Address</p>
       )} */}
             {/* <div className="form-group col-4">
         <label className="form-label">Parmanent City</label>
@@ -2673,16 +2725,14 @@ const UserMaster = () => {
             <div className="form-group col-3 mt-3">
               <label htmlFor="">Permanent City</label>
               <IndianCitiesMui
-
                 selectedState={state}
                 selectedCity={city}
                 onChange={(option) => setCity(option ? option : null)}
               />
             </div>
             <div className="form-group col-3 mt-3">
-
               <FieldContainer
-                label="Parmanent Pincode"
+                label="Permanent Pincode"
                 type="number"
                 fieldGrid={4}
                 maxLength={6}
@@ -2697,9 +2747,8 @@ const UserMaster = () => {
               />
             </div>
 
-
             {/* {mandatoryFieldsEmpty.pincode && (
-        <p  className="form-error">Please enter Pincode</p>
+        <p  className="form-error">Please Enter Pincode</p>
       )} */}
             <div className="form-group col-3 mt-3">
               <label className="form-label">Blood Group</label>
@@ -2761,29 +2810,28 @@ const UserMaster = () => {
                 classNamePrefix="select"
                 value={tempLanguage}
                 onChange={handleLanguageSelect}
-              // onBlur={() => {
-              //   if (
-              //     tempLanguage === "" ||
-              //     tempLanguage === null ||
-              //     tempLanguage.length === 0
-              //   ) {
-              //     return setMandatoryFieldsEmpty((prevState) => ({
-              //       ...prevState,
-              //       language: true,
-              //     }));
-              //   } else {
-              //     setMandatoryFieldsEmpty({
-              //       ...mandatoryFieldsEmpty,
-              //       language: false,
-              //     });
-              //   }
-              // }}
+                // onBlur={() => {
+                //   if (
+                //     tempLanguage === "" ||
+                //     tempLanguage === null ||
+                //     tempLanguage.length === 0
+                //   ) {
+                //     return setMandatoryFieldsEmpty((prevState) => ({
+                //       ...prevState,
+                //       language: true,
+                //     }));
+                //   } else {
+                //     setMandatoryFieldsEmpty({
+                //       ...mandatoryFieldsEmpty,
+                //       language: false,
+                //     });
+                //   }
+                // }}
               />
               {/* {mandatoryFieldsEmpty.language && (
           <p className="form-error">Please enter Languages</p>
         )} */}
             </div>
-
 
             <div className="form-group col-3">
               <label className="form-label">Category</label>
@@ -2834,10 +2882,8 @@ const UserMaster = () => {
 
       {/* Bank Info Inputs------------------------Start------------ */}
       <div className="card">
-
         <div className="card-header">Bank Details</div>
         <div className="card-body row">
-
           <div className="form-group col-6">
             <label className="form-label">
               Bank Name <sup className="form-error">*</sup>
@@ -3026,7 +3072,6 @@ const UserMaster = () => {
       <div className="card">
         <div className="card-header">Family Details</div>
         <div className="card-body">
-
           {familyDetails.map((detail, index) => (
             <div key={index} mb={2}>
               <div className="row">
@@ -3063,7 +3108,9 @@ const UserMaster = () => {
                               handleFamilyDetailsChange(index, {
                                 target: {
                                   name: key,
-                                  value: selectedOption ? selectedOption.value : "",
+                                  value: selectedOption
+                                    ? selectedOption.value
+                                    : "",
                                 },
                               })
                             }
@@ -3119,7 +3166,9 @@ const UserMaster = () => {
                             label={key}
                             placeholder={key}
                             value={detail[key]}
-                            onChange={(e) => handleFamilyDetailsChange(index, e)}
+                            onChange={(e) =>
+                              handleFamilyDetailsChange(index, e)
+                            }
                           />
                           {familyValidationErrors[`Contact-${index}`] && (
                             <span className="form-error">
@@ -3194,7 +3243,6 @@ const UserMaster = () => {
 
       {/* Education Info Inputs------------------------Start------------ */}
       <div className="card">
-
         <div className="card-header">Education Details</div>
         <div className="card-body">
           {educationDetails.map((detail, index) => (
@@ -3225,7 +3273,9 @@ const UserMaster = () => {
                   )
                 )}
                 {educationDetails.length > 1 && (
-                  <IconButton onClick={() => handleRemoveEducationDetails(index)}>
+                  <IconButton
+                    onClick={() => handleRemoveEducationDetails(index)}
+                  >
                     <DeleteIcon />
                   </IconButton>
                 )}
@@ -3273,28 +3323,52 @@ const UserMaster = () => {
 
   return (
     <div>
-      <FormContainer
-        mainTitle={"User"}
-        link={true}
-      />
+      <FormContainer mainTitle={"User"} link={true} />
 
       <div className="user-tab w-100 mb-4">
-        {accordionButtons.map((button, index) => (<div className="flex-row align-items-center w-100 gap-4">
-          <button className={`tab ${activeAccordionIndex === index ? "active" : (userResID !== "" ? "completed" : "disabled")}`} onClick={() => handleAccordionButtonClick(index)}>
-            <div className="gap-1 flex-row">
-              {activeAccordionIndex === index ? indicator.active : (userResID !== "" ? indicator.completed : indicator.disabled)}
-              <p>
-                {button}
-              </p>
-            </div>
-            {accordionButtonstitle[index]}
-          </button>
-          <svg className="arrow" width="24" height="24" viewBox="0 0 24 24" fill="" xmlns="http://www.w3.org/2000/svg">
-            <g id="Component 2">
-              <path id="Vector (Stroke)" fill-rule="evenodd" clip-rule="evenodd" d="M6.51171 4.43057C6.8262 4.161 7.29968 4.19743 7.56924 4.51192L13.5692 11.5119C13.81 11.7928 13.81 12.2072 13.5692 12.4881L7.56924 19.4881C7.29968 19.8026 6.8262 19.839 6.51171 19.5695C6.19721 19.2999 6.16079 18.8264 6.43036 18.5119L12.012 12L6.43036 5.48811C6.16079 5.17361 6.19721 4.70014 6.51171 4.43057ZM10.5119 4.43068C10.8264 4.16111 11.2999 4.19753 11.5694 4.51202L17.5694 11.512C17.8102 11.7929 17.8102 12.2073 17.5694 12.4882L11.5694 19.4882C11.2999 19.8027 10.8264 19.8391 10.5119 19.5696C10.1974 19.3 10.161 18.8265 10.4306 18.512L16.0122 12.0001L10.4306 5.48821C10.161 5.17372 10.1974 4.70024 10.5119 4.43068Z" fill={`${activeAccordionIndex === index ? "var(--primary)" : ""}`} />
-            </g>
-          </svg>
-        </div>
+        {accordionButtons.map((button, index) => (
+          <div className="flex-row align-items-center w-100 gap-4">
+            <button
+              className={`tab ${
+                activeAccordionIndex === index
+                  ? "active"
+                  : userResID !== ""
+                  ? "completed"
+                  : "disabled"
+              }`}
+              onClick={() => handleAccordionButtonClick(index)}
+            >
+              <div className="gap-1 flex-row">
+                {activeAccordionIndex === index
+                  ? indicator.active
+                  : userResID !== ""
+                  ? indicator.completed
+                  : indicator.disabled}
+                <p>{button}</p>
+              </div>
+              {accordionButtonstitle[index]}
+            </button>
+            <svg
+              className="arrow"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill=""
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <g id="Component 2">
+                <path
+                  id="Vector (Stroke)"
+                  fill-rule="evenodd"
+                  clip-rule="evenodd"
+                  d="M6.51171 4.43057C6.8262 4.161 7.29968 4.19743 7.56924 4.51192L13.5692 11.5119C13.81 11.7928 13.81 12.2072 13.5692 12.4881L7.56924 19.4881C7.29968 19.8026 6.8262 19.839 6.51171 19.5695C6.19721 19.2999 6.16079 18.8264 6.43036 18.5119L12.012 12L6.43036 5.48811C6.16079 5.17361 6.19721 4.70014 6.51171 4.43057ZM10.5119 4.43068C10.8264 4.16111 11.2999 4.19753 11.5694 4.51202L17.5694 11.512C17.8102 11.7929 17.8102 12.2073 17.5694 12.4882L11.5694 19.4882C11.2999 19.8027 10.8264 19.8391 10.5119 19.5696C10.1974 19.3 10.161 18.8265 10.4306 18.512L16.0122 12.0001L10.4306 5.48821C10.161 5.17372 10.1974 4.70024 10.5119 4.43068Z"
+                  fill={`${
+                    activeAccordionIndex === index ? "var(--primary)" : ""
+                  }`}
+                />
+              </g>
+            </svg>
+          </div>
         ))}
       </div>
       {activeAccordionIndex === 0 && genralFields}
@@ -3307,7 +3381,6 @@ const UserMaster = () => {
         <ToastContainer />
         <div className="profloat">
           <div className="progress-bar">
-
             <Circle percent={progress} strokeWidth={10} strokeColor="#16B364" />
             <div className="progress-value">
               <p>{progress.toFixed(0)} %</p>
@@ -3352,7 +3425,7 @@ const UserMaster = () => {
           activeAccordionIndex === 2 &&
           educationFamilyFieald}
       </FormContainer> */}
-    </div >
+    </div>
   );
 };
 

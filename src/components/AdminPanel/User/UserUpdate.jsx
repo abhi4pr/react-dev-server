@@ -2164,7 +2164,7 @@ const UserUpdate = () => {
         onChange={(e) => setBeneficiary(e.target.value)}
       />
 
-      <FieldContainer
+      {/* <FieldContainer
         label="Upload Proof *"
         type="file"
         multiple
@@ -2174,7 +2174,7 @@ const UserUpdate = () => {
         }}
         fieldGrid={6}
         required={true}
-      />
+      /> */}
 
       <div style={{ display: "flex", justifyContent: "flex-end" }}>
         <button

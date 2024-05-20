@@ -109,6 +109,7 @@ const AdminPreOnboarding = () => {
     userCtc: false,
     loginId: false,
     personalEmail: false,
+    personalContact: false,
     subDepartment: false,
   });
 
@@ -383,9 +384,9 @@ const AdminPreOnboarding = () => {
     // } else {
     //   if (contact.length !== 10) {
     //     if (isValidcontact == false)
-    //       alert("Enter Phone Number in Proper Format");
+    //       alert("Enter   Phone Number in Proper Format");
     //   } else if (validEmail != true) {
-    //     alert("Enter Valid Email");
+    //     alert("Enter   Valid Email");
     //   }
     // }
   };
@@ -619,7 +620,7 @@ const AdminPreOnboarding = () => {
           />
           <div className="">
             {isRequired.username && (
-              <p className="form-error">Please enter Full Name</p>
+              <p className="form-error">Please Enter Full Name</p>
             )}
           </div>
         </div>
@@ -680,7 +681,7 @@ const AdminPreOnboarding = () => {
           />
           <div className="">
             {isRequired.department && (
-              <p className="form-error">Please enter Department</p>
+              <p className="form-error">Please Enter Department</p>
             )}
           </div>
         </div>
@@ -718,7 +719,7 @@ const AdminPreOnboarding = () => {
           />
           <div className="">
             {isRequired.subDepartment && (
-              <p className="form-error">Please enter Sub-Department</p>
+              <p className="form-error">Please Enter Sub-Department</p>
             )}
           </div>
         </div>
@@ -758,7 +759,7 @@ const AdminPreOnboarding = () => {
           />
           <div className="">
             {isRequired.designation && (
-              <p className="form-error">Please enter Designation</p>
+              <p className="form-error">Please Enter Designation</p>
             )}
           </div>
         </div>
@@ -823,7 +824,7 @@ const AdminPreOnboarding = () => {
             onChange={handlePersonalEmailChange}
           />
           {!validPersonalEmail && (
-            <p className="form-error">*Please enter valid email</p>
+            <p className="form-error">*Please Enter valid email</p>
           )}
           {isRequired.personalEmail && (
             <p className="form-error">*Please select Personal Email</p>
@@ -842,8 +843,11 @@ const AdminPreOnboarding = () => {
           />
           {(isContactTouched1 || personalContact.length >= 10) &&
             !isValidcontact1 && (
-              <p className="form-error">*Please enter a valid Number</p>
+              <p className="form-error">*Please Enter a valid Number</p>
             )}
+          {isRequired.personalContact && (
+            <p className="form-error">*Please select Personal Contact</p>
+          )}
         </div>
         {/* <FieldContainer
           label=" City"
@@ -925,7 +929,7 @@ const AdminPreOnboarding = () => {
                 });
             }}
           />
-          {isRequired.userCtc && <p className="form-error">Please enter CTC</p>}
+          {isRequired.userCtc && <p className="form-error">Please Enter CTC</p>}
         </div>
         {/* )} */}
 
@@ -984,7 +988,7 @@ const AdminPreOnboarding = () => {
           onBlur={handleContactBlur}
         />
         {(isContactTouched || contact.length >= 10) && !isValidcontact && (
-          <p className="form-error">*Please enter a valid Number</p>
+          <p className="form-error">*Please Enter   a valid Number</p>
         )} */}
         {/* 
         <IndianCitiesReact
