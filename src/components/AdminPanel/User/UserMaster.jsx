@@ -238,6 +238,7 @@ const UserMaster = () => {
   const token = sessionStorage.getItem("token");
   const decodedToken = jwtDecode(token);
   const loginUserId = decodedToken.id;
+  const ROLEID = decodedToken.role_id;
 
   const [familyValidationErrors, setFamilyValidationErrors] = useState({});
 
@@ -1549,6 +1550,15 @@ const UserMaster = () => {
     }
   };
 
+    // to disable admin and super admin in role dropdown start
+    const modifiedRoleData = roledata.map((option) => ({
+      value: option.role_id,
+      label: option.Role_name,
+      isDisabled: ROLEID === 1 && (option.role_id === 1 || option.role_id === 6),
+    }));
+    const selectedRole = roledata.find((role) => role.role_id === roles);
+    // to disable admin and super admin in role dropdown end
+
   const genralFields = (
     <>
       {/* Personal Info Inputs------------------------Start------------ */}
@@ -2155,20 +2165,12 @@ const UserMaster = () => {
               Role <sup className="form-error">*</sup>
             </label>
             <Select
-              options={roledata.map((option) => ({
-                value: option.role_id,
-                label: option.Role_name,
-              }))}
-              value={{
-                value: roles,
-                label:
-                  roledata.find((role) => role.role_id === roles)?.Role_name ||
-                  "",
-              }}
+              options={modifiedRoleData}
+              value={selectedRole ? { value: selectedRole.role_id, label: selectedRole.Role_name } : null}
               onChange={(e) => {
                 setRoles(e.value);
               }}
-            ></Select>
+            />
           </div>
           <div className="col-md-3">
             <FieldContainer
