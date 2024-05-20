@@ -58,28 +58,28 @@ const colourOptions = [
 const initialFamilyDetailsGroup = {
   relation: "",
   name: "",
-  DOB: "",
+  // DOB: "",
   contact: "",
   occupation: "",
-  annual_income: "",
+  // annual_income: "",
 };
 
 const familyDisplayFields = [
   "relation",
   "name",
-  "DOB",
+  // "DOB",
   "contact",
   "occupation",
-  "annual_income",
+  // "annual_income",
 ];
 
 const familyFieldLabels = {
   relation: "Relationship",
   name: "Full Name",
-  DOB: "Date of Birth",
+  // DOB: "Date of Birth",
   contact: "Contact Number",
   occupation: "Occupation",
-  annual_income: "Annual Income",
+  // annual_income: "Annual Income",
 };
 
 const initialEducationDetailsGroup = {
@@ -1006,11 +1006,11 @@ const UserUpdate = () => {
       let payload = {
         user_id: id,
         name: elements.name,
-        DOB: elements.DOB,
+        // DOB: elements.DOB,
         relation: elements.relation,
         contact: elements.contact,
         occupation: elements.occupation,
-        annual_income: elements.annual_income,
+        // annual_income: elements.annual_income,
       };
 
       if (elements.family_id) {
@@ -2204,20 +2204,20 @@ const UserUpdate = () => {
           <div className="row">
             {Object.keys(detail)?.map((key) => {
               switch (key) {
-                case "DOB":
-                  return (
-                    <FieldContainer
-                      key={key}
-                      fieldGrid={2}
-                      type="date"
-                      name={key}
-                      label="Date of Birth"
-                      value={
-                        detail[key] ? detail[key].split("T")[0] : detail[key]
-                      }
-                      onChange={(e) => handleFamilyDetailsChange(index, e)}
-                    />
-                  );
+                // case "DOB":
+                //   return (
+                //     <FieldContainer
+                //       key={key}
+                //       fieldGrid={2}
+                //       type="date"
+                //       name={key}
+                //       label="Date of Birth"
+                //       value={
+                //         detail[key] ? detail[key].split("T")[0] : detail[key]
+                //       }
+                //       onChange={(e) => handleFamilyDetailsChange(index, e)}
+                //     />
+                //   );
 
                 case "relation":
                   return (
@@ -2295,19 +2295,19 @@ const UserUpdate = () => {
                     </>
                   );
 
-                case "annual_income":
-                  return (
-                    <FieldContainer
-                      key={key}
-                      type="number"
-                      fieldGrid={2}
-                      name={key}
-                      label={familyFieldLabels[key]}
-                      placeholder={familyFieldLabels[key]}
-                      value={detail[key]}
-                      onChange={(e) => handleFamilyDetailsChange(index, e)}
-                    />
-                  );
+                // case "annual_income":
+                //   return (
+                //     <FieldContainer
+                //       key={key}
+                //       type="number"
+                //       fieldGrid={2}
+                //       name={key}
+                //       label={familyFieldLabels[key]}
+                //       placeholder={familyFieldLabels[key]}
+                //       value={detail[key]}
+                //       onChange={(e) => handleFamilyDetailsChange(index, e)}
+                //     />
+                //   );
 
                 default:
                   if (familyDisplayFields.includes(key)) {

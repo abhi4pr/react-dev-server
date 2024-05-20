@@ -126,16 +126,16 @@ const guardianFieldLabels = {
 //Family
 const initialFamilyDetailsGroup = {
   name: "",
-  DOB: "",
+  // DOB: "",
   contact: "",
   occupation: "",
-  annual_income: "",
+  // annual_income: "",
   relation: "",
 };
 
 const familyDisplayFields = [
   "name",
-  "DOB",
+  // "DOB",
   "contact",
   "occupation",
   "relation",
@@ -144,7 +144,7 @@ const familyDisplayFields = [
 
 const familyFieldLabels = {
   name: "Full Name",
-  DOB: "Date of Birth",
+  // DOB: "Date of Birth",
   contact: "Contact Number",
   occupation: "Occupation",
   // annual_income: "Annual Income",
@@ -559,9 +559,8 @@ const PreOnboardingUserMaster = () => {
   }, [documentData]);
 
   useEffect(() => {
-    const approveCount = documentData.filter(
-      (doc) => doc.status == "Approved"
-    ).length;
+    // const approveCount = documentData.filter((doc) => doc.status == "Approved" ).length;
+    const approveCount = documentData.filter((doc) => doc.status == "Verification Pending").length;
 
     const documentPercentageTemp = Math.ceil(
       (approveCount / documentData.length) * 100
@@ -1527,18 +1526,18 @@ const PreOnboardingUserMaster = () => {
                     <div className="sidebar_iteminfo">
                       <div className="pack" style={{ flexDirection: "row" }}>
                         <h2 className="document_tab_name">Documents</h2>
-                        <span>(verified)</span>
+                        {/* <span>(verified)</span> */}
                         <h3>{documentPercentage}%</h3>
                       </div>
                       <h3>
-                        Mandatory <span>{showMandotaryPer}%</span>
+                        {/* Mandatory <span>{showMandotaryPer}%</span> */}
                       </h3>
-                      <h3>
+                      {/* <h3>
                         Non Mandatory{" "}
                         <span>
                           {showNonMandotaryPer ? showNonMandotaryPer : 0}%
                         </span>
-                      </h3>
+                      </h3> */}
                     </div>
                   </div>
                   {/* Remove Comment */}

@@ -16538,7 +16538,7 @@ div:where(.swal2-container) {
   height: 80px;
   border-radius: 50%;
   position: absolute;
-  background-color: #e1fbea66;
+  background-color: #e1fbeaeb;
   top: 10px;
   right: 10px;
   display: flex;
@@ -16556,8 +16556,8 @@ div:where(.swal2-container) {
 .profloat {
   pointer-events: none;
   position: absolute;
-  top: 87%;
-  right: 0;
+  top: 94%;
+  right: -40px;
   transform: translate(-50%, -50%);
 }
 
