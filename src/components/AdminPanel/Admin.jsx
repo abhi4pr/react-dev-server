@@ -334,6 +334,7 @@ import RegisterCampaigns from "./Operation/RegisterCampaigns";
 import PendingCreditApproval from "./Finance/CreditApproval/CreditApproval";
 import CreditApproval from "./Finance/CreditApproval/CreditApproval";
 import ViewPaymentUpdate from "./Sales/PaymentUpdate/ViewPaymentUpdate";
+import { FinanceContextComponent } from "../../Context/FinanceContext";
 
 const Admin = () => {
   const [contextData, setData] = useState([]);

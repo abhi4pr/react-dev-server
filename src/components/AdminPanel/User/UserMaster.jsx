@@ -50,6 +50,8 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { isAfter, subYears } from "date-fns";
 import IndianCitiesMui from "../../ReusableComponents/IndianCitiesMui";
 import dayjs from "dayjs";
+import { FormatName } from "../../../utils/FormatName";
+import { Line, Circle } from "rc-progress";
 
 const colourOptions = [
   { value: "English", label: "English" },
@@ -236,6 +238,7 @@ const UserMaster = () => {
   const token = sessionStorage.getItem("token");
   const decodedToken = jwtDecode(token);
   const loginUserId = decodedToken.id;
+  const ROLEID = decodedToken.role_id;
 
   const [familyValidationErrors, setFamilyValidationErrors] = useState({});
 
@@ -911,7 +914,7 @@ const UserMaster = () => {
     } else if (!bankAccountNumber || bankAccountNumber == "") {
       return toastError("Fill the Mandatory fields");
     } else if (!IFSC || IFSC == "" || IFSC.length < 11) {
-      return toastError("IFSC is required and length must be 11 digit");
+      return toastError("Fill the Mandatory fields");
     } else if (!banktype || banktype == "") {
       return toastError("Fill the Mandatory fields");
     }
@@ -960,7 +963,7 @@ const UserMaster = () => {
           });
         }
       }
-      toastAlert("Submit Family Details");
+      toastAlert("Submitted Family Details");
     } catch (error) {
       toastError(error);
     }
@@ -981,7 +984,7 @@ const UserMaster = () => {
           });
         }
       }
-      toastAlert("Submite Euducation Details ");
+      toastAlert("Submitted Euducation Details ");
     } catch (error) {
       toastError(error);
     }
@@ -1215,7 +1218,7 @@ const UserMaster = () => {
 
   const handleAccordionButtonClick = (index) => {
     // {
-    setActiveAccordionIndex(index);
+    if (userResID !== "") setActiveAccordionIndex(index);
     // console.log("hhhhhh");
     // console.log("ss");
   };
@@ -1377,7 +1380,7 @@ const UserMaster = () => {
     if (name === "Contact") {
       if (!/^(\+91[ \-\s]?)?[0]?(91)?[6789]\d{9}$/.test(value)) {
         errors[`${name}-${index}`] =
-          "Invalid contact number. Please enter a valid phone number.";
+          "Invalid contact number. Please Enter a valid phone number.";
       } else {
         delete errors[`${name}-${index}`];
       }
@@ -1423,10 +1426,73 @@ const UserMaster = () => {
   const isPersonalEmailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(personalEmail);
 
   // const accordionButtons = ["General", "Others", "Education & Family"];
-  const accordionButtons = ["General"];
-  if (userResID) {
-    accordionButtons.push("Others", "Education & Family");
-  }
+  const accordionButtons = ["General", "Others", "Education & Family"];
+  const accordionButtonstitle = [
+    "Personal & Official Details",
+    "Other & Bank Details",
+    "Upload Document",
+  ];
+  const indicator = {
+    completed: (
+      <svg
+        width="20"
+        height="20"
+        viewBox="0 0 20 20"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <rect width="20" height="20" rx="10" fill="#782BE4" />
+        <path
+          d="M9 11.793L7.3535 10.1465L6.6465 10.8535L9 13.207L13.8535 8.35348L13.1465 7.64648L9 11.793Z"
+          fill="var(--bg-white)"
+        />
+      </svg>
+    ),
+    active: (
+      <svg
+        width="20"
+        height="20"
+        viewBox="0 0 20 20"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <rect x="0.5" y="0.5" width="19" height="19" rx="9.5" fill="#782BE4" />
+        <rect x="0.5" y="0.5" width="19" height="19" rx="9.5" stroke="white" />
+        <rect x="6" y="6" width="8" height="8" rx="4" fill="white" />
+      </svg>
+    ),
+    disabled: (
+      <svg
+        width="20"
+        height="20"
+        viewBox="0 0 20 20"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <rect
+          x="0.25"
+          y="0.25"
+          width="19.5"
+          height="19.5"
+          rx="9.75"
+          fill="#ABB7C2"
+          fill-opacity="0.1"
+        />
+        <rect
+          x="0.25"
+          y="0.25"
+          width="19.5"
+          height="19.5"
+          rx="9.75"
+          stroke="#CFD6DC"
+          stroke-width="0.5"
+        />
+      </svg>
+    ),
+  };
+  // if (userResID) {
+  // accordionButtons.push();
+  // }
 
   // const handleFullNameChange = (event) => {
   //   let userName = event.target.value;
@@ -1484,163 +1550,182 @@ const UserMaster = () => {
     }
   };
 
+    // to disable admin and super admin in role dropdown start
+    const modifiedRoleData = roledata.map((option) => ({
+      value: option.role_id,
+      label: option.Role_name,
+      isDisabled: ROLEID === 1 && (option.role_id === 1 || option.role_id === 6),
+    }));
+    const selectedRole = roledata.find((role) => role.role_id === roles);
+    // to disable admin and super admin in role dropdown end
+
   const genralFields = (
     <>
       {/* Personal Info Inputs------------------------Start------------ */}
-      <div className="personal_header">Personal Details</div>
-      <div className="col-xl-3 col-lg-3 col-md-3 col-sm-12">
-        <div className="form-group">
-          <label className="form-label ">Upload Image</label>
-          <div className="flex-row sb">
-            <button
-              id="uploadImage"
-              className="profile-holder ml-1"
-              data-bs-toggle="modal"
-              data-bs-target="#transferModal"
-              title="Upload Image"
-              style={{
-                border:
-                  selectedImage === null ? "1px solid var(--medium)" : "none",
-              }}
-            >
-              {!selectedImage && <User style={{ fontSize: "200px" }} />}
-              {selectedImage && (
-                <img
-                  className="profile-holder"
-                  src={imagePreview}
-                  alt="Selected"
-                />
+      <div className="card">
+        <div className="card-header">Personal Details</div>
+        <div className="card-body row">
+          <div className=" col-3">
+            <FieldContainer
+              label="Full Name"
+              astric={true}
+              fieldGrid={12}
+              value={username}
+              onChange={handleFullNameChange}
+            />
+            <div className="h-100 w-100">
+              {mandatoryFieldsEmpty?.fullName && (
+                <p className="form-error">Please enter Full Name</p>
               )}
-            </button>
+            </div>
           </div>
-        </div>
-      </div>
-      <div className=" col-3">
-        <FieldContainer
-          label="Full Name"
-          astric={true}
-          fieldGrid={12}
-          value={username}
-          onChange={handleFullNameChange}
-        />
-        <div className="h-100 w-100">
-          {mandatoryFieldsEmpty?.fullName && (
-            <p className="form-error">Please enter Full Name</p>
-          )}
-        </div>
-      </div>
-      <div className="col-md-3">
-        <FieldContainer
-          label="Personal Email"
-          astric={true}
-          type="email"
-          fieldGrid={12}
-          required={false}
-          value={personalEmail}
-          onChange={(e) => {
-            const email = e.target.value;
-            setPersonalEmail(email);
+          <div className="col-md-3">
+            <FieldContainer
+              label="Personal Email"
+              astric={true}
+              type="email"
+              fieldGrid={12}
+              required={false}
+              value={personalEmail}
+              onChange={(e) => {
+                const email = e.target.value;
+                setPersonalEmail(email);
 
-            if (email === "") {
-              setMandatoryFieldsEmpty((prevState) => ({
-                ...prevState,
-                personalEmail: true,
-              }));
-            } else {
-              setMandatoryFieldsEmpty((prevState) => ({
-                ...prevState,
-                personalEmail: false,
-              }));
-            }
-          }}
-        />
-        {!isPersonalEmailValid && personalEmail && (
-          <p className="form-error">*Please enter valid email</p>
-        )}
-        {mandatoryFieldsEmpty.personalEmail && (
-          <p className="form-error">Please enter Personal Email</p>
-        )}
-      </div>
-      <div className="col-3">
-        <FieldContainer
-          label="Personal Contact"
-          astric={true}
-          type="number"
-          fieldGrid={12}
-          value={personalContact}
-          required={false}
-          onChange={handlePersonalContactChange}
-          // onBlur={(e) => handleContentBlur(e, "personalContact")}
-        />
-        {(isContactTouched1 || personalContact.length >= 10) &&
-          !isValidcontact1 &&
-          mandatoryFieldsEmpty.personalContact && (
-            <p className="form-error">Please enter a valid Contact Number</p>
-          )}
-        {mandatoryFieldsEmpty.personalContact && (
-          <p className="form-error">Please enter Personal Contact</p>
-        )}
-      </div>
-      <div className="col-3">
-        <FieldContainer
-          label="Alternate Contact"
-          astric={true}
-          type="number"
-          fieldGrid={12}
-          value={alternateContact}
-          required={false}
-          onChange={handleAlternateContactChange}
-          // onBlur={(e) => handleAlternateBlur(e, "alternateContact")}
-        />
-        {(isAlternateTouched1 || alternateContact.length >= 10) &&
-          !isValidcontact3 &&
-          !mandatoryFieldsEmpty.alternateContact && (
-            <p className="form-error">Please enter a valid Number</p>
-          )}
-        {mandatoryFieldsEmpty.alternateContact && (
-          <p className="form-error">Please enter Alternate Contact</p>
-        )}
-      </div>
-      <div className="form-group col-3">
-        <label className="form-label">
-          Gender <sup className="form-error">*</sup>
-        </label>
-        <Select
-          className=""
-          options={genderData.map((option) => ({
-            value: `${option}`,
-            label: `${option}`,
-          }))}
-          value={{
-            value: gender,
-            label: `${gender}`,
-          }}
-          onChange={(e) => {
-            setGender(e.value);
+                if (email === "") {
+                  setMandatoryFieldsEmpty((prevState) => ({
+                    ...prevState,
+                    personalEmail: true,
+                  }));
+                } else {
+                  setMandatoryFieldsEmpty((prevState) => ({
+                    ...prevState,
+                    personalEmail: false,
+                  }));
+                }
+              }}
+            />
+            {!isPersonalEmailValid && personalEmail && (
+              <p className="form-error">*Please enter valid email</p>
+            )}
+            {mandatoryFieldsEmpty.personalEmail && (
+              <p className="form-error">Please enter Personal Email</p>
+            )}
+          </div>
 
-            if (e.value === "" || e.value === null) {
-              setMandatoryFieldsEmpty((prevState) => ({
-                ...prevState,
-                gender: true,
-              }));
-            } else {
-              setMandatoryFieldsEmpty({
-                ...mandatoryFieldsEmpty,
-                gender: false,
-              });
-            }
-          }}
-          required
-        />
-        {mandatoryFieldsEmpty.gender && (
-          <p className="form-error">Please enter Gender</p>
-        )}
-      </div>
-      <div className="from-group col-3">
-        <label className="form-label">
-          DOB <sup className="form-error">*</sup>
-        </label>
-        {/* <div className="pack" style={{ position: "relative" }}>
+          <div className="col-3">
+            <FieldContainer
+              label="Personal Contact"
+              astric={true}
+              type="number"
+              fieldGrid={12}
+              value={personalContact}
+              required={false}
+              onChange={handlePersonalContactChange}
+              // onBlur={(e) => handleContentBlur(e, "personalContact")}
+            />
+            {(isContactTouched1 || personalContact.length >= 10) &&
+              !isValidcontact1 &&
+              mandatoryFieldsEmpty.personalContact && (
+                <p className="form-error">
+                  Please enter a valid Contact Number
+                </p>
+              )}
+            {mandatoryFieldsEmpty.personalContact && (
+              <p className="form-error">Please enter Personal Contact</p>
+            )}
+          </div>
+          <div className="col-xl-3 col-lg-3 col-md-3 col-sm-12">
+            <div className="form-group">
+              <div className="flex-row w-100 justify-content-center">
+                <div className="hover-label">
+                  <button
+                    id="uploadImage"
+                    className="profile-holder-1 ml-1"
+                    data-bs-toggle="modal"
+                    data-bs-target="#transferModal"
+                    title="Upload Image"
+                    style={{
+                      border:
+                        selectedImage === null
+                          ? "1px solid var(--medium)"
+                          : "none",
+                    }}
+                  >
+                    {!selectedImage && <User style={{ fontSize: "400px" }} />}
+                    {selectedImage && (
+                      <img
+                        className="profile-holder-1"
+                        src={imagePreview}
+                        alt="Selected"
+                      />
+                    )}
+                  </button>
+
+                  <div className="hover-lab">Upload Image</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="col-3">
+            <FieldContainer
+              label="Alternate Contact"
+              astric={true}
+              type="number"
+              fieldGrid={12}
+              value={alternateContact}
+              required={false}
+              onChange={handleAlternateContactChange}
+              // onBlur={(e) => handleAlternateBlur(e, "alternateContact")}
+            />
+            {(isAlternateTouched1 || alternateContact.length >= 10) &&
+              !isValidcontact3 &&
+              !mandatoryFieldsEmpty.alternateContact && (
+                <p className="form-error">Please enter a valid Number</p>
+              )}
+            {mandatoryFieldsEmpty.alternateContact && (
+              <p className="form-error">Please enter Alternate Contact</p>
+            )}
+          </div>
+          <div className="form-group col-3">
+            <label className="form-label">
+              Gender <sup className="form-error">*</sup>
+            </label>
+            <Select
+              className=""
+              options={genderData.map((option) => ({
+                value: `${option}`,
+                label: `${option}`,
+              }))}
+              value={{
+                value: gender,
+                label: `${gender}`,
+              }}
+              onChange={(e) => {
+                setGender(e.value);
+
+                if (e.value === "" || e.value === null) {
+                  setMandatoryFieldsEmpty((prevState) => ({
+                    ...prevState,
+                    gender: true,
+                  }));
+                } else {
+                  setMandatoryFieldsEmpty({
+                    ...mandatoryFieldsEmpty,
+                    gender: false,
+                  });
+                }
+              }}
+              required
+            />
+            {mandatoryFieldsEmpty.gender && (
+              <p className="form-error">Please enter Gender</p>
+            )}
+          </div>
+          <div className="from-group col-3">
+            <label className="form-label">
+              DOB <sup className="form-error">*</sup>
+            </label>
+            {/* <div className="pack" style={{ position: "relative" }}>
           <input
             label="DOB"
             type="date"
@@ -1672,58 +1757,58 @@ const UserMaster = () => {
             <i class="bi bi-calendar-week"></i>
           </div>
         </div> */}
-        <LocalizationProvider dateAdapter={AdapterDayjs}>
-          <DatePicker
-            value={dateOfBirth}
-            onChange={handleDateChange}
-            shouldDisableDate={disableFutureDates}
-            renderInput={(params) => <TextField {...params} />}
-          />
-        </LocalizationProvider>
-        {<p style={{ color: "red !important" }}>{dobError}</p>}
-      </div>
-      {dateOfBirth !== "" && (
-        <FieldContainer fieldGrid={3} label="Age" value={age} />
-      )}
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <DatePicker
+                value={dateOfBirth}
+                onChange={handleDateChange}
+                shouldDisableDate={disableFutureDates}
+                renderInput={(params) => <TextField {...params} />}
+              />
+            </LocalizationProvider>
+            {<p style={{ color: "red !important" }}>{dobError}</p>}
+          </div>
+          {dateOfBirth !== "" && (
+            <FieldContainer fieldGrid={3} label="Age" value={age} />
+          )}
 
-      <div className="form-group col-3">
-        <label className="form-label">
-          Nationality <sup className="form-error">*</sup>
-        </label>
-        <Select
-          className=""
-          options={nationalityData.map((option) => ({
-            value: `${option}`,
-            label: `${option}`,
-          }))}
-          value={{
-            value: nationality,
-            label: `${nationality}`,
-          }}
-          onChange={(e) => {
-            setNationality(e.value);
-          }}
-          // onBlur={() => {
-          //   if (nationality === "" || nationality === null) {
-          //     setMandatoryFieldsEmpty((prevState) => ({
-          //       ...prevState,
-          //       nationality: true,
-          //     }));
-          //   } else {
-          //     setMandatoryFieldsEmpty({
-          //       ...mandatoryFieldsEmpty,
-          //       nationality: false,
-          //     });
-          //   }
-          // }}
-          required
-        />
-        {mandatoryFieldsEmpty.nationality && (
-          <p className="form-error">Please enter nationality</p>
-        )}
-      </div>
+          <div className="form-group col-3">
+            <label className="form-label">
+              Nationality <sup className="form-error">*</sup>
+            </label>
+            <Select
+              className=""
+              options={nationalityData.map((option) => ({
+                value: `${option}`,
+                label: `${option}`,
+              }))}
+              value={{
+                value: nationality,
+                label: `${nationality}`,
+              }}
+              onChange={(e) => {
+                setNationality(e.value);
+              }}
+              // onBlur={() => {
+              //   if (nationality === "" || nationality === null) {
+              //     setMandatoryFieldsEmpty((prevState) => ({
+              //       ...prevState,
+              //       nationality: true,
+              //     }));
+              //   } else {
+              //     setMandatoryFieldsEmpty({
+              //       ...mandatoryFieldsEmpty,
+              //       nationality: false,
+              //     });
+              //   }
+              // }}
+              required
+            />
+            {mandatoryFieldsEmpty.nationality && (
+              <p className="form-error">Please enter nationality</p>
+            )}
+          </div>
 
-      {/* <FieldContainer
+          {/* <FieldContainer
         label="Nationality"
         astric={true}
         fieldGrid={3}
@@ -1750,383 +1835,386 @@ const UserMaster = () => {
       {mandatoryFieldsEmpty.nationality && (
         <p  className="form-error">Please Enter Nationality</p>
       )} */}
-      <div className="form-group col-3">
-        <label className="form-label">
-          Maritial Status <sup className="form-error">*</sup>
-        </label>
-        <Select
-          className=""
-          options={maritialStatusData.map((option) => ({
-            value: `${option}`,
-            label: `${option}`,
-          }))}
-          value={{
-            value: maritialStatus,
-            label: `${maritialStatus}`,
-          }}
-          onChange={(e) => {
-            setMaritialStatus(e.value);
+          <div className="form-group col-3">
+            <label className="form-label">
+              Marital Status <sup className="form-error">*</sup>
+            </label>
+            <Select
+              className=""
+              options={maritialStatusData.map((option) => ({
+                value: `${option}`,
+                label: `${option}`,
+              }))}
+              value={{
+                value: maritialStatus,
+                label: `${maritialStatus}`,
+              }}
+              onChange={(e) => {
+                setMaritialStatus(e.value);
 
-            // onBlur functionality
-            if (e.value === "" || e.value === null) {
-              setMandatoryFieldsEmpty((prevState) => ({
-                ...prevState,
-                maritialStatus: true,
-              }));
-            } else {
-              setMandatoryFieldsEmpty({
-                ...mandatoryFieldsEmpty,
-                maritialStatus: false,
-              });
-            }
-          }}
-          required={false}
-        />
-        {mandatoryFieldsEmpty.maritialStatus && (
-          <p className="form-error">Please enter Maritial Status</p>
-        )}
-      </div>
-
-      {maritialStatus === "Married" && (
-        <FieldContainer
-          label="Spouse Name"
-          value={spouseName}
-          fieldGrid={3}
-          onChange={(e) => setSpouseName(e.target.value)}
-          required={false}
-        />
-      )}
-      {maritialStatus == "Married" && (
-        // <FieldContainer
-        //   type="date"
-        //   fieldGrid={3}
-        //   label="Date Of Marraige"
-        //   value={dateOfMarraige}
-        //   onChange={(e) => setDateOfMarraige(e.target.value)}
-        //   max={today}
-        //   required={false}
-        // />
-        <div className="col-3">
-          <label className="form-label">
-            Date Of Marraige <sup className="form-error">*</sup>
-          </label>
-          <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <DatePicker
-              value={dateOfMarraige}
-              onChange={(e) => setDateOfMarraige(e)}
-              renderInput={(params) => <TextField {...params} />}
+                // onBlur functionality
+                if (e.value === "" || e.value === null) {
+                  setMandatoryFieldsEmpty((prevState) => ({
+                    ...prevState,
+                    maritialStatus: true,
+                  }));
+                } else {
+                  setMandatoryFieldsEmpty({
+                    ...mandatoryFieldsEmpty,
+                    maritialStatus: false,
+                  });
+                }
+              }}
+              required={false}
             />
-          </LocalizationProvider>
+            {mandatoryFieldsEmpty.maritialStatus && (
+              <p className="form-error">Please enter Maritial Status</p>
+            )}
+          </div>
+
+          {maritialStatus === "Married" && (
+            <FieldContainer
+              label="Spouse Name"
+              value={spouseName}
+              fieldGrid={3}
+              onChange={(e) => setSpouseName(FormatName(e.target.value))}
+              required={false}
+            />
+          )}
+          {maritialStatus == "Married" && (
+            // <FieldContainer
+            //   type="date"
+            //   fieldGrid={3}
+            //   label="Date Of Marraige"
+            //   value={dateOfMarraige}
+            //   onChange={(e) => setDateOfMarraige(e.target.value)}
+            //   max={today}
+            //   required={false}
+            // />
+            <div className="col-3">
+              <label className="form-label">
+                Date Of Marraige <sup className="form-error">*</sup>
+              </label>
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <DatePicker
+                  value={dateOfMarraige}
+                  onChange={(e) => setDateOfMarraige(e)}
+                  renderInput={(params) => <TextField {...params} />}
+                />
+              </LocalizationProvider>
+            </div>
+          )}
         </div>
-      )}
+      </div>
 
       {/* Personal Info Inputs------------------------End------------ */}
 
       {/* Official Info Inputs------------------------Start------------ */}
-      <div className="personal_header">Official Details</div>
-      <div className="form-group col-3">
-        <label className="form-label">
-          Job Type <sup className="form-error">*</sup>
-        </label>
-        <Select
-          className=""
-          options={jobTypeData.map((option) => ({
-            value: `${option.job_type}`,
-            label: `${option.job_type}`,
-          }))}
-          value={{
-            value: jobType,
-            label: `${jobType}`,
-          }}
-          onChange={(e) => {
-            setJobType(e.value);
+      <div className="card">
+        <div className="card-header">Official Details</div>
+        <div className="card-body row">
+          <div className="form-group col-3">
+            <label className="form-label">
+              Job Type <sup className="form-error">*</sup>
+            </label>
+            <Select
+              className=""
+              options={jobTypeData.map((option) => ({
+                value: `${option.job_type}`,
+                label: `${option.job_type}`,
+              }))}
+              value={{
+                value: jobType,
+                label: `${jobType}`,
+              }}
+              onChange={(e) => {
+                setJobType(e.value);
 
-            // onBlur functionality
-            if (e.value === "" || e.value === null) {
-              setMandatoryFieldsEmpty((prevState) => ({
-                ...prevState,
-                jobType: true,
-              }));
-            } else {
-              setMandatoryFieldsEmpty({
-                ...mandatoryFieldsEmpty,
-                jobType: false,
-              });
-            }
-          }}
-          required
-        />
-        <div className="">
-          {mandatoryFieldsEmpty.jobType && (
-            <p className="form-error">Please enter Job Type</p>
-          )}
-        </div>
-      </div>
+                // onBlur functionality
+                if (e.value === "" || e.value === null) {
+                  setMandatoryFieldsEmpty((prevState) => ({
+                    ...prevState,
+                    jobType: true,
+                  }));
+                } else {
+                  setMandatoryFieldsEmpty({
+                    ...mandatoryFieldsEmpty,
+                    jobType: false,
+                  });
+                }
+              }}
+              required
+            />
+            <div className="">
+              {mandatoryFieldsEmpty.jobType && (
+                <p className="form-error">Please enter Job Type</p>
+              )}
+            </div>
+          </div>
 
-      <div className="form-group col-3">
-        <label className="form-label">
-          Department Name <sup className="form-error">*</sup>
-        </label>
-        <Select
-          className=""
-          options={departmentdata.map((option) => ({
-            value: option.dept_id,
-            label: `${option.dept_name}`,
-          }))}
-          value={{
-            value: department,
-            label:
-              departmentdata.find((user) => user.dept_id === department)
-                ?.dept_name || "",
-          }}
-          onChange={(e) => {
-            setDepartment(e.value);
+          <div className="form-group col-3">
+            <label className="form-label">
+              Department Name <sup className="form-error">*</sup>
+            </label>
+            <Select
+              className=""
+              options={departmentdata.map((option) => ({
+                value: option.dept_id,
+                label: `${option.dept_name}`,
+              }))}
+              value={{
+                value: department,
+                label:
+                  departmentdata.find((user) => user.dept_id === department)
+                    ?.dept_name || "",
+              }}
+              onChange={(e) => {
+                setDepartment(e.value);
 
-            // onBlur functionality
-            if (e.value === "" || e.value === null) {
-              setMandatoryFieldsEmpty((prevState) => ({
-                ...prevState,
-                department: true,
-              }));
-            } else {
-              setMandatoryFieldsEmpty({
-                ...mandatoryFieldsEmpty,
-                department: false,
-              });
-            }
-          }}
-          required
-        />
-        <div className="">
-          {mandatoryFieldsEmpty.department && (
-            <p className="form-error">Please enter Department</p>
-          )}
-        </div>
-      </div>
+                // onBlur functionality
+                if (e.value === "" || e.value === null) {
+                  setMandatoryFieldsEmpty((prevState) => ({
+                    ...prevState,
+                    department: true,
+                  }));
+                } else {
+                  setMandatoryFieldsEmpty({
+                    ...mandatoryFieldsEmpty,
+                    department: false,
+                  });
+                }
+              }}
+              required
+            />
+            <div className="">
+              {mandatoryFieldsEmpty.department && (
+                <p className="form-error">Please enter Department</p>
+              )}
+            </div>
+          </div>
 
-      <div className="form-group col-3">
-        <label className="form-label">
-          Sub Department <sup className="form-error">*</sup>
-        </label>
-        <Select
-          className=""
-          options={subDepartmentData.map((option) => ({
-            value: option.sub_dept_id,
-            label: `${option.sub_dept_name}`,
-          }))}
-          value={{
-            value: subDepartmentData,
-            label:
-              subDepartmentData.find(
-                (user) => user.sub_dept_id === subDepartment
-              )?.sub_dept_name || "",
-          }}
-          onChange={(e) => {
-            setSubDeparment(e.value);
+          <div className="form-group col-3">
+            <label className="form-label">
+              Sub Department <sup className="form-error">*</sup>
+            </label>
+            <Select
+              className=""
+              options={subDepartmentData.map((option) => ({
+                value: option.sub_dept_id,
+                label: `${option.sub_dept_name}`,
+              }))}
+              value={{
+                value: subDepartmentData,
+                label:
+                  subDepartmentData.find(
+                    (user) => user.sub_dept_id === subDepartment
+                  )?.sub_dept_name || "",
+              }}
+              onChange={(e) => {
+                setSubDeparment(e.value);
 
-            // onBlur functionality
-            if (e.value === "" || e.value === null || e.value.length === 0) {
-              setMandatoryFieldsEmpty((prevState) => ({
-                ...prevState,
-                subDepartment: true,
-              }));
-            } else {
-              setMandatoryFieldsEmpty({
-                ...mandatoryFieldsEmpty,
-                subDepartment: false,
-              });
-            }
-          }}
-          required
-        />
-        <div className="">
-          {mandatoryFieldsEmpty.subDepartment && (
-            <p className="form-error">Please enter Sub Department</p>
-          )}
-        </div>
-      </div>
-      <div className="form-group col-3">
-        <label className="form-label">
-          Designation <sup className="form-error">*</sup>
-        </label>
-        <Select
-          options={designationData.map((option) => ({
-            value: option.desi_id,
-            label: `${option.desi_name}`,
-          }))}
-          value={{
-            value: designation,
-            label:
-              designationData.find((user) => user.desi_id === designation)
-                ?.desi_name || "",
-          }}
-          onChange={(e) => {
-            setDesignation(e.value);
+                // onBlur functionality
+                if (
+                  e.value === "" ||
+                  e.value === null ||
+                  e.value.length === 0
+                ) {
+                  setMandatoryFieldsEmpty((prevState) => ({
+                    ...prevState,
+                    subDepartment: true,
+                  }));
+                } else {
+                  setMandatoryFieldsEmpty({
+                    ...mandatoryFieldsEmpty,
+                    subDepartment: false,
+                  });
+                }
+              }}
+              required
+            />
+            <div className="">
+              {mandatoryFieldsEmpty.subDepartment && (
+                <p className="form-error">Please enter Sub Department</p>
+              )}
+            </div>
+          </div>
+          <div className="form-group col-3">
+            <label className="form-label">
+              Designation <sup className="form-error">*</sup>
+            </label>
+            <Select
+              options={designationData.map((option) => ({
+                value: option.desi_id,
+                label: `${option.desi_name}`,
+              }))}
+              value={{
+                value: designation,
+                label:
+                  designationData.find((user) => user.desi_id === designation)
+                    ?.desi_name || "",
+              }}
+              onChange={(e) => {
+                setDesignation(e.value);
 
-            // onBlur functionality
-            if (e.value === "" || e.value === null) {
-              setMandatoryFieldsEmpty((prevState) => ({
-                ...prevState,
-                designation: true,
-              }));
-            } else {
-              setMandatoryFieldsEmpty({
-                ...mandatoryFieldsEmpty,
-                designation: false,
-              });
-            }
-          }}
-          required
-        />
-        <div className="">
-          {mandatoryFieldsEmpty.designation && (
-            <p className="form-error">Please enter Designation</p>
-          )}
-        </div>
-      </div>
-      <div className="form-group col-3">
-        <label className="form-label">
-          Report L1 <sup className="form-error">*</sup>
-        </label>
-        <Select
-          className=""
-          options={usersData.map((option) => ({
-            value: option.user_id,
-            label: `${option.user_name}`,
-          }))}
-          value={{
-            value: reportL1,
-            label:
-              usersData.find((user) => user.user_id === reportL1)?.user_name ||
-              "",
-          }}
-          onChange={(e) => {
-            setReportL1(e.value);
+                // onBlur functionality
+                if (e.value === "" || e.value === null) {
+                  setMandatoryFieldsEmpty((prevState) => ({
+                    ...prevState,
+                    designation: true,
+                  }));
+                } else {
+                  setMandatoryFieldsEmpty({
+                    ...mandatoryFieldsEmpty,
+                    designation: false,
+                  });
+                }
+              }}
+              required
+            />
+            <div className="">
+              {mandatoryFieldsEmpty.designation && (
+                <p className="form-error">Please enter Designation</p>
+              )}
+            </div>
+          </div>
+          <div className="form-group col-3">
+            <label className="form-label">
+              Report L1 <sup className="form-error">*</sup>
+            </label>
+            <Select
+              className=""
+              options={usersData.map((option) => ({
+                value: option.user_id,
+                label: `${option.user_name}`,
+              }))}
+              value={{
+                value: reportL1,
+                label:
+                  usersData.find((user) => user.user_id === reportL1)
+                    ?.user_name || "",
+              }}
+              onChange={(e) => {
+                setReportL1(e.value);
 
-            // onBlur functionality
-            if (e.value === "" || e.value === null) {
-              setMandatoryFieldsEmpty((prevState) => ({
-                ...prevState,
-                reportL1: true,
-              }));
-            } else {
-              setMandatoryFieldsEmpty({
-                ...mandatoryFieldsEmpty,
-                reportL1: false,
-              });
-            }
-          }}
-          required
-        />
-        <div className="">
-          {mandatoryFieldsEmpty.reportL1 && (
-            <p className="form-error">Please enter Report L1</p>
-          )}
-        </div>
-      </div>
+                // onBlur functionality
+                if (e.value === "" || e.value === null) {
+                  setMandatoryFieldsEmpty((prevState) => ({
+                    ...prevState,
+                    reportL1: true,
+                  }));
+                } else {
+                  setMandatoryFieldsEmpty({
+                    ...mandatoryFieldsEmpty,
+                    reportL1: false,
+                  });
+                }
+              }}
+              required
+            />
+            <div className="">
+              {mandatoryFieldsEmpty.reportL1 && (
+                <p className="form-error">Please enter Report L1</p>
+              )}
+            </div>
+          </div>
 
-      <div className="form-group col-3">
-        <label className="form-label">Report L2</label>
-        <Select
-          className=""
-          options={usersData.map((option) => ({
-            value: option.user_id,
-            label: `${option.user_name}`,
-          }))}
-          value={{
-            value: reportL2,
-            label:
-              usersData.find((user) => user.user_id === reportL2)?.user_name ||
-              "",
-          }}
-          onChange={(e) => {
-            setReportL2(e.value);
-          }}
-          required={false}
-        />
-      </div>
+          <div className="form-group col-3">
+            <label className="form-label">Report L2</label>
+            <Select
+              className=""
+              options={usersData.map((option) => ({
+                value: option.user_id,
+                label: `${option.user_name}`,
+              }))}
+              value={{
+                value: reportL2,
+                label:
+                  usersData.find((user) => user.user_id === reportL2)
+                    ?.user_name || "",
+              }}
+              onChange={(e) => {
+                setReportL2(e.value);
+              }}
+              required={false}
+            />
+          </div>
 
-      <div className="form-group col-3">
-        <label className="form-label">Report L3</label>
-        <Select
-          className=""
-          options={usersData.map((option) => ({
-            value: option.user_id,
-            label: `${option.user_name}`,
-          }))}
-          value={{
-            value: reportL3,
-            label:
-              usersData.find((user) => user.user_id === reportL3)?.user_name ||
-              "",
-          }}
-          onChange={(e) => {
-            setReportL3(e.value);
-          }}
-          required={false}
-        />
-      </div>
+          <div className="form-group col-3">
+            <label className="form-label">Report L3</label>
+            <Select
+              className=""
+              options={usersData.map((option) => ({
+                value: option.user_id,
+                label: `${option.user_name}`,
+              }))}
+              value={{
+                value: reportL3,
+                label:
+                  usersData.find((user) => user.user_id === reportL3)
+                    ?.user_name || "",
+              }}
+              onChange={(e) => {
+                setReportL3(e.value);
+              }}
+              required={false}
+            />
+          </div>
 
-      <div className="form-group col-3">
-        <label className="form-label">
-          Role <sup className="form-error">*</sup>
-        </label>
-        <Select
-          options={roledata.map((option) => ({
-            value: option.role_id,
-            label: option.Role_name,
-          }))}
-          value={{
-            value: roles,
-            label:
-              roledata.find((role) => role.role_id === roles)?.Role_name || "",
-          }}
-          onChange={(e) => {
-            setRoles(e.value);
-          }}
-        ></Select>
-      </div>
-      <div className="col-md-3">
-        <FieldContainer
-          label="Official Email"
-          type="email"
-          placeholder="Not Allocated"
-          fieldGrid={3}
-          value={email}
-          onChange={handleEmailChange}
-          onBlur={() => {
-            if (email === "") {
-              // setMandatoryFieldsEmpty({...mandatoryFieldsEmpty,personalEmail:true});
-              return setMandatoryFieldsEmpty((prevState) => ({
-                ...prevState,
-                email: true,
-              }));
-            } else {
-              setMandatoryFieldsEmpty({
-                ...mandatoryFieldsEmpty,
-                email: false,
-              });
-            }
-          }}
-        />
-        {!validEmail && <p className="form-error">*Please enter valid email</p>}
-      </div>
-      <div className="col-xl-3 col-lg-3 col-md-3 col-sm-12">
-        <FieldContainer
-          label="Official Contact"
-          type="number"
-          placeholder="Not Allocated"
-          fieldGrid={3}
-          value={contact}
-          required={true}
-          onChange={handleContactChange}
-          // onBlur={handleContentBlur}
-        />
-      </div>
+          <div className="form-group col-3">
+            <label className="form-label">
+              Role <sup className="form-error">*</sup>
+            </label>
+            <Select
+              options={modifiedRoleData}
+              value={selectedRole ? { value: selectedRole.role_id, label: selectedRole.Role_name } : null}
+              onChange={(e) => {
+                setRoles(e.value);
+              }}
+            />
+          </div>
+          <div className="col-md-3">
+            <FieldContainer
+              label="Official Email"
+              type="email"
+              placeholder="Not Allocated"
+              fieldGrid={3}
+              value={email}
+              onChange={handleEmailChange}
+              onBlur={() => {
+                if (email === "") {
+                  // setMandatoryFieldsEmpty({...mandatoryFieldsEmpty,personalEmail:true});
+                  return setMandatoryFieldsEmpty((prevState) => ({
+                    ...prevState,
+                    email: true,
+                  }));
+                } else {
+                  setMandatoryFieldsEmpty({
+                    ...mandatoryFieldsEmpty,
+                    email: false,
+                  });
+                }
+              }}
+            />
+            {!validEmail && (
+              <p className="form-error">*Please enter valid email</p>
+            )}
+          </div>
+          <div className="col-xl-3 col-lg-3 col-md-3 col-sm-12">
+            <FieldContainer
+              label="Official Contact"
+              type="number"
+              placeholder="Not Allocated"
+              fieldGrid={3}
+              value={contact}
+              required={true}
+              onChange={handleContactChange}
+              // onBlur={handleContentBlur}
+            />
+          </div>
 
-      <div className="col-xl-3 col-lg-3 col-md-3 col-sm-12">
-        <div className="form-group">
-          {/* <p
+          <div className="col-xl-3 col-lg-3 col-md-3 col-sm-12">
+            <div className="form-group">
+              {/* <p
             className={
               loginResponse == "login id available"
                 ? "login-success1"
@@ -2135,133 +2223,133 @@ const UserMaster = () => {
           >
             {loginResponse}
           </p> */}
-          <label>
-            Login ID <sup className="form-error">*</sup>
-          </label>
-          <div className="input-group">
-            <input
-              className={`form-control ${
-                loginId
-                  ? loginResponse === "login id available"
-                    ? "login-success-border"
-                    : "login-error-border"
-                  : ""
-              }`}
-              value={loginId}
-              disabled
-              onChange={handleLoginIdChange}
+              <label>
+                Login ID <sup className="form-error">*</sup>
+              </label>
+              <div className="input-group">
+                <input
+                  className={`form-control ${
+                    loginId
+                      ? loginResponse === "login id available"
+                        ? "login-success-border"
+                        : "login-error-border"
+                      : ""
+                  }`}
+                  value={loginId}
+                  disabled
+                  onChange={handleLoginIdChange}
+                  onBlur={() => {
+                    if (loginId === "") {
+                      return setMandatoryFieldsEmpty((prevState) => ({
+                        ...prevState,
+                        loginId: true,
+                      }));
+                    } else {
+                      setMandatoryFieldsEmpty({
+                        ...mandatoryFieldsEmpty,
+                        loginId: false,
+                      });
+                    }
+                  }}
+                />
+                <div className="input-group-append">
+                  <button
+                    className="btn btn-outline-primary"
+                    onClick={generateLoginId}
+                    type="button"
+                  >
+                    <AiOutlineReload />
+                  </button>
+                </div>
+              </div>
+            </div>
+            {mandatoryFieldsEmpty.loginId && (
+              <p className="form-error">Please enter Login ID</p>
+            )}
+          </div>
+          <div className="col-xl-3 col-lg-3 col-md-3 col-sm-12">
+            <div className="form-group">
+              <label>
+                Generate Password <sup className="form-error">*</sup>
+              </label>
+              <div className="input-group">
+                <input
+                  type="text"
+                  className="form-control"
+                  value={password}
+                  onChange={(e) => {
+                    setPassword(e.target.value);
+
+                    // onBlur functionality
+                    if (e.target.value === "") {
+                      setMandatoryFieldsEmpty((prevState) => ({
+                        ...prevState,
+                        password: true,
+                      }));
+                    } else {
+                      setMandatoryFieldsEmpty({
+                        ...mandatoryFieldsEmpty,
+                        password: false,
+                      });
+                    }
+                  }}
+                />
+                <div className="input-group-append">
+                  <button
+                    className="btn btn-outline-primary"
+                    onClick={generatePassword}
+                    type="button"
+                  >
+                    <i className="fa-solid fa-repeat"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+            {mandatoryFieldsEmpty.password && (
+              <p className="form-error">Please enter Password</p>
+            )}
+          </div>
+          <div className="form-group col-3">
+            <label className="form-label">
+              Status <sup className="form-error">*</sup>
+            </label>
+            <Select
+              className=""
+              options={statusData.map((option) => ({
+                value: `${option}`,
+                label: `${option}`,
+              }))}
+              value={{
+                value: status,
+                label: `${status}`,
+              }}
+              onChange={(e) => {
+                setStatus(e.value);
+              }}
               onBlur={() => {
-                if (loginId === "") {
+                if (status === "" || status === null) {
                   return setMandatoryFieldsEmpty((prevState) => ({
                     ...prevState,
-                    loginId: true,
+                    status: true,
                   }));
                 } else {
                   setMandatoryFieldsEmpty({
                     ...mandatoryFieldsEmpty,
-                    loginId: false,
+                    status: false,
                   });
                 }
               }}
+              required
             />
-            <div className="input-group-append">
-              <button
-                className="btn btn-outline-primary"
-                onClick={generateLoginId}
-                type="button"
-              >
-                <AiOutlineReload />
-              </button>
-            </div>
+            {mandatoryFieldsEmpty.status && (
+              <p className="form-error">Please enter Status</p>
+            )}
           </div>
-        </div>
-        {mandatoryFieldsEmpty.loginId && (
-          <p className="form-error">Please enter Login ID</p>
-        )}
-      </div>
-      <div className="col-xl-3 col-lg-3 col-md-3 col-sm-12">
-        <div className="form-group">
-          <label>
-            Generate Password <sup className="form-error">*</sup>
-          </label>
-          <div className="input-group">
-            <input
-              type="text"
-              className="form-control"
-              value={password}
-              onChange={(e) => {
-                setPassword(e.target.value);
-
-                // onBlur functionality
-                if (e.target.value === "") {
-                  setMandatoryFieldsEmpty((prevState) => ({
-                    ...prevState,
-                    password: true,
-                  }));
-                } else {
-                  setMandatoryFieldsEmpty({
-                    ...mandatoryFieldsEmpty,
-                    password: false,
-                  });
-                }
-              }}
-            />
-            <div className="input-group-append">
-              <button
-                className="btn btn-outline-primary"
-                onClick={generatePassword}
-                type="button"
-              >
-                <i className="fa-solid fa-repeat"></i>
-              </button>
-            </div>
-          </div>
-        </div>
-        {mandatoryFieldsEmpty.password && (
-          <p className="form-error">Please enter Password</p>
-        )}
-      </div>
-      <div className="form-group col-3">
-        <label className="form-label">
-          Status <sup className="form-error">*</sup>
-        </label>
-        <Select
-          className=""
-          options={statusData.map((option) => ({
-            value: `${option}`,
-            label: `${option}`,
-          }))}
-          value={{
-            value: status,
-            label: `${status}`,
-          }}
-          onChange={(e) => {
-            setStatus(e.value);
-          }}
-          onBlur={() => {
-            if (status === "" || status === null) {
-              return setMandatoryFieldsEmpty((prevState) => ({
-                ...prevState,
-                status: true,
-              }));
-            } else {
-              setMandatoryFieldsEmpty({
-                ...mandatoryFieldsEmpty,
-                status: false,
-              });
-            }
-          }}
-          required
-        />
-        {mandatoryFieldsEmpty.status && (
-          <p className="form-error">Please enter Status</p>
-        )}
-      </div>
-      <div className="from-group col-3">
-        <label className="form-label">
-          Joining Date <sup className="form-error">*</sup>
-        </label>
-        {/* <div className="pack" style={{ position: "relative" }}>
+          <div className="from-group col-3">
+            <label className="form-label">
+              Joining Date <sup className="form-error">*</sup>
+            </label>
+            {/* <div className="pack" style={{ position: "relative" }}>
           <input
             type="date"
             className="form-control"
@@ -2291,139 +2379,141 @@ const UserMaster = () => {
           </div>
         </div> */}
 
-        <LocalizationProvider dateAdapter={AdapterDayjs}>
-          <DatePicker
-            value={joiningDate}
-            // onChange={(e) => setJoiningDate(e)}
-            onChange={(e) => {
-              setJoiningDate(e);
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <DatePicker
+                value={joiningDate}
+                // onChange={(e) => setJoiningDate(e)}
+                onChange={(e) => {
+                  setJoiningDate(e);
 
-              // Check if joiningDate is empty
-              if (!e) {
-                setMandatoryFieldsEmpty((prevState) => ({
-                  ...prevState,
-                  joiningDate: true,
-                }));
-              } else {
-                setMandatoryFieldsEmpty({
-                  ...mandatoryFieldsEmpty,
-                  joiningDate: false,
-                });
-              }
-            }}
-            renderInput={(params) => <TextField {...params} />}
-          />
-        </LocalizationProvider>
-        {mandatoryFieldsEmpty.joiningDate && (
-          <p className="form-error">Please enter Joining Date</p>
-        )}
-      </div>
+                  // Check if joiningDate is empty
+                  if (!e) {
+                    setMandatoryFieldsEmpty((prevState) => ({
+                      ...prevState,
+                      joiningDate: true,
+                    }));
+                  } else {
+                    setMandatoryFieldsEmpty({
+                      ...mandatoryFieldsEmpty,
+                      joiningDate: false,
+                    });
+                  }
+                }}
+                renderInput={(params) => <TextField {...params} />}
+              />
+            </LocalizationProvider>
+            {mandatoryFieldsEmpty.joiningDate && (
+              <p className="form-error">Please enter Joining Date</p>
+            )}
+          </div>
 
-      {department == constant.CONST_SALES_DEPT_ID && (
-        <FieldContainer
-          label="Credit Limit"
-          type="number"
-          fieldGrid={3}
-          value={creditLimit}
-          required={true}
-          onChange={(e) => setCreditLimit(e.target.value)}
-        />
-      )}
+          {department == constant.CONST_SALES_DEPT_ID && (
+            <FieldContainer
+              label="Credit Limit"
+              type="number"
+              fieldGrid={3}
+              value={creditLimit}
+              required={true}
+              onChange={(e) => setCreditLimit(e.target.value)}
+            />
+          )}
 
-      <div style={{ display: "flex", justifyContent: "flex-end" }}>
-        {/* <button
+          <div style={{ display: "flex", justifyContent: "flex-end" }}>
+            {/* <button
           type="button"
           className="btn btn-primary mr-2"
           onClick={handleSubmit}
         >
           Submit & Next
         </button> */}
-        <button
-          type="submit"
-          className="btn cmnbtn btn-primary"
-          onClick={handleSubmit}
-          // disabled={isLoading}
-          disabled={isLoading || userResID !== ""}
-          style={{ width: "20%", marginLeft: "1%" }}
-        >
-          {isLoading ? "Please wait submiting..." : "Register"}
-        </button>
-      </div>
+            <button
+              type="submit"
+              className="btn cmnbtn btn-primary"
+              onClick={handleSubmit}
+              // disabled={isLoading}
+              disabled={isLoading || userResID !== ""}
+              style={{ width: "20%", marginLeft: "1%" }}
+            >
+              {isLoading ? "Please wait submiting..." : "Register"}
+            </button>
+          </div>
 
-      {/* Official Info Inputs------------------------End------------ */}
+          {/* Official Info Inputs------------------------End------------ */}
 
-      {/* Transfer Modal Start  Profile Modal*/}
-      <div
-        className="modal fade alert_modal transfer_modal "
-        id="transferModal"
-        tabIndex={-1}
-        aria-labelledby="transferModalLabel"
-        aria-hidden="true"
-      >
-        <div className="modal-dialog modal-dialog-centered modal-lg">
-          <div className="modal-content m-0">
-            <div className="modal-body">
-              <div>
-                {selectedImage && (
-                  <div className=" flex-row  w-100 justify-content-center">
-                    <div
-                      className="profile-holder"
-                      style={{ width: "80px", height: "80px" }}
-                    >
-                      <img
-                        src={imagePreview}
-                        alt="Selected"
-                        className="profile-holder"
+          {/* Transfer Modal Start  Profile Modal*/}
+          <div
+            className="modal fade alert_modal transfer_modal "
+            id="transferModal"
+            tabIndex={-1}
+            aria-labelledby="transferModalLabel"
+            aria-hidden="true"
+          >
+            <div className="modal-dialog modal-dialog-centered modal-lg">
+              <div className="modal-content m-0">
+                <div className="modal-body">
+                  <div>
+                    {selectedImage && (
+                      <div className=" flex-row  w-100 justify-content-center">
+                        <div
+                          className="profile-holder"
+                          style={{ width: "80px", height: "80px" }}
+                        >
+                          <img
+                            src={imagePreview}
+                            alt="Selected"
+                            className="profile-holder"
+                          />
+                        </div>
+                      </div>
+                    )}
+
+                    <div>
+                      <h5>Choose Image:</h5>
+                      <div
+                        style={{
+                          display: "flex",
+                          justifyContent: "center",
+                          flexWrap: "wrap",
+                        }}
+                      >
+                        {images.map((image) => (
+                          <img
+                            key={image}
+                            src={image}
+                            // alt={imageName}
+                            style={{
+                              width: "80px",
+                              height: "80px",
+                              margin: "5px",
+                              cursor: "pointer",
+                              borderRadius: "50%",
+                            }}
+                            onClick={() => handleImageClick(image)}
+                          />
+                        ))}
+                      </div>
+                    </div>
+
+                    <div>
+                      <h5>Upload Image:</h5>
+                      <input
+                        className="form-control"
+                        type="file"
+                        accept="image/*"
+                        onChange={handleImageUpload}
+                        required={false}
                       />
                     </div>
                   </div>
-                )}
-
-                <div>
-                  <h5>Choose Image:</h5>
-                  <div
-                    style={{
-                      display: "flex",
-                      justifyContent: "center",
-                      flexWrap: "wrap",
-                    }}
-                  >
-                    {images.map((image) => (
-                      <img
-                        key={image}
-                        src={image}
-                        // alt={imageName}
-                        style={{
-                          width: "80px",
-                          height: "80px",
-                          margin: "5px",
-                          cursor: "pointer",
-                          borderRadius: "50%",
-                        }}
-                        onClick={() => handleImageClick(image)}
-                      />
-                    ))}
+                  <div className="alert_text">
+                    <button
+                      className="btn cmnbtn btn_success"
+                      data-bs-dismiss="modal"
+                    >
+                      Upload
+                    </button>
                   </div>
                 </div>
-
-                <div>
-                  <h5>Upload Image:</h5>
-                  <input
-                    className="form-control"
-                    type="file"
-                    accept="image/*"
-                    onChange={handleImageUpload}
-                    required={false}
-                  />
-                </div>
-              </div>
-              <div className="alert_text">
-                <button
-                  className="btn cmnbtn btn_success"
-                  data-bs-dismiss="modal"
-                >
-                  Upload
-                </button>
               </div>
             </div>
           </div>
@@ -2464,38 +2554,39 @@ const UserMaster = () => {
 
   const othersFields = (
     <>
-      {/* Other Info Inputs------------------------Start------------ */}
-      <div className="personal_header">Other Details</div>
-      {/* Current Address input-- */}
+      <div className="card">
+        {/* Other Info Inputs------------------------Start------------ */}
+        <div className="card-header">Other Details</div>
+        {/* Current Address input-- */}
+        <div className="card-body">
+          <div className="row">
+            <FieldContainer
+              label="Current Address"
+              fieldGrid={12}
+              astric={true}
+              value={currentAddress}
+              onChange={(e) => {
+                setCurrentAddress(e.target.value);
 
-      <div className="row">
-        <FieldContainer
-          label="Current Address"
-          fieldGrid={12}
-          astric={true}
-          value={currentAddress}
-          onChange={(e) => {
-            setCurrentAddress(e.target.value);
-
-            // onBlur functionality
-            if (e.target.value === "") {
-              setMandatoryFieldsEmpty((prevState) => ({
-                ...prevState,
-                currentAddress: true,
-              }));
-            } else {
-              setMandatoryFieldsEmpty({
-                ...mandatoryFieldsEmpty,
-                currentAddress: false,
-              });
-            }
-          }}
-          required={false}
-        />
-        {mandatoryFieldsEmpty.currentAddress && (
-          <p className="form-error">Please enter Address</p>
-        )}
-        {/* <div className="form-group col-4">
+                // onBlur functionality
+                if (e.target.value === "") {
+                  setMandatoryFieldsEmpty((prevState) => ({
+                    ...prevState,
+                    currentAddress: true,
+                  }));
+                } else {
+                  setMandatoryFieldsEmpty({
+                    ...mandatoryFieldsEmpty,
+                    currentAddress: false,
+                  });
+                }
+              }}
+              required={false}
+            />
+            {mandatoryFieldsEmpty.currentAddress && (
+              <p className="form-error">Please enter Address</p>
+            )}
+            {/* <div className="form-group col-4">
           <label className="form-label">
             Current City <sup className="form-error">*</sup>
           </label>
@@ -2517,82 +2608,94 @@ const UserMaster = () => {
             onChange={(option) => setcurrentState(option ? option.value : null)}
           />
         </div> */}
-        <div className="form-group col-4 mt-3">
-          <IndianStatesMui
-            selectedState={currentState}
-            onChange={(option) => setcurrentState(option ? option : null)}
-          />
-        </div>
+            <div className="form-group col-4 mt-3">
+              <label htmlFor="">
+                {" "}
+                State <sup style={{ color: "red" }}>*</sup>
+              </label>
+              <IndianStatesMui
+                selectedState={currentState}
+                onChange={(option) => setcurrentState(option ? option : null)}
+              />
+            </div>
 
-        <div className="form-group col-4 mt-3">
-          <IndianCitiesMui
-            selectedState={currentState}
-            selectedCity={currentCity}
-            onChange={(option) => setcurrentCity(option ? option : null)}
-          />
-        </div>
+            <div className="form-group col-4 mt-3">
+              <label htmlFor="">
+                {" "}
+                City <sup style={{ color: "red" }}>*</sup>
+              </label>
 
-        <FieldContainer
-          label="Pincode"
-          type="number"
-          astric={true}
-          fieldGrid={4}
-          maxLength={6}
-          // placeholder="123456"
-          value={currentPincode}
-          onChange={(e) => {
-            const value = e.target.value;
+              <IndianCitiesMui
+                selectedState={currentState}
+                selectedCity={currentCity}
+                onChange={(option) => setcurrentCity(option ? option : null)}
+              />
+            </div>
+            <div className="">
+              <FieldContainer
+                label="Pincode"
+                type="number"
+                astric={true}
+                fieldGrid={3}
+                maxLength={6}
+                // placeholder="123456"
+                value={currentPincode}
+                onChange={(e) => {
+                  const value = e.target.value;
 
-            // Ensure that the input value consists of maximum 6 digits
-            if (/^\d{0,6}$/.test(value)) {
-              setcurrentPincode(value);
+                  // Ensure that the input value consists of maximum 6 digits
+                  if (/^\d{0,6}$/.test(value)) {
+                    setcurrentPincode(value);
 
-              // onBlur functionality
-              if (value === "") {
-                setMandatoryFieldsEmpty((prevState) => ({
-                  ...prevState,
-                  currentPincode: true,
-                }));
-              } else {
-                setMandatoryFieldsEmpty({
-                  ...mandatoryFieldsEmpty,
-                  currentPincode: false,
-                });
-              }
-            }
-          }}
-          required={false}
-        />
-        {mandatoryFieldsEmpty.currentPincode && (
-          <p className="form-error">Please enter Pincode</p>
-        )}
-        {/*  Parmanent Address here------------ */}
-        <div className="board_form form_checkbox">
-          <label className="cstm_check form-error">
-            Same as Current Addresss
-            <input
-              className="form-control"
-              type="checkbox"
-              checked={sameAsCurrent}
-              onChange={handleCheckboxChange}
+                    // onBlur functionality
+                    if (value === "") {
+                      setMandatoryFieldsEmpty((prevState) => ({
+                        ...prevState,
+                        currentPincode: true,
+                      }));
+                    } else {
+                      setMandatoryFieldsEmpty({
+                        ...mandatoryFieldsEmpty,
+                        currentPincode: false,
+                      });
+                    }
+                  }
+                }}
+                required={false}
+              />
+              {mandatoryFieldsEmpty.currentPincode && (
+                <p className="form-error">Please enter Pincode</p>
+              )}
+            </div>
+            {/*  Parmanent Address here------------ */}
+            <div className="">
+              <label className="cstm_check form-error">
+                Same as Current Addresss
+                <input
+                  className="form-control"
+                  type="checkbox"
+                  checked={sameAsCurrent}
+                  onChange={handleCheckboxChange}
+                />
+                <span className="checkmark"></span>
+              </label>
+            </div>
+          </div>
+
+          <hr className="mb-2 mt-3" />
+          <div className="row">
+            <FieldContainer
+              label="Permanent Address"
+              fieldGrid={12}
+              value={address}
+              onChange={(e) => setAddress(e.target.value)}
+              required={false}
             />
-            <span className="checkmark"></span>
-          </label>
-        </div>
-      </div>
 
-      <hr className="mb-2" />
-      <FieldContainer
-        label="Parmanent Address"
-        fieldGrid={12}
-        value={address}
-        onChange={(e) => setAddress(e.target.value)}
-        required={false}
-      />
-      {/* {mandatoryFieldsEmpty.address && (
-        <p  className="form-error">Please enter Address</p>
+            {/* {mandatoryFieldsEmpty.address && (
+        <p  className="form-error">Please Enter Address</p>
       )} */}
-      {/* <div className="form-group col-4">
+            {/* <div className="form-group col-4">
         <label className="form-label">Parmanent City</label>
         <Select
           options={cityData.map((city) => ({
@@ -2613,324 +2716,339 @@ const UserMaster = () => {
         />
       </div> */}
 
-      <div className="form-group col-6 mt-3">
-        <IndianStatesMui
-          selectedState={state}
-          onChange={(option) => setState(option ? option : null)}
-        />
-      </div>
+            <div className="form-group col-3 mt-3">
+              <label htmlFor="">Permanent State</label>
+              <IndianStatesMui
+                selectedState={state}
+                onChange={(option) => setState(option ? option : null)}
+              />
+            </div>
 
-      <div className="form-group col-6 mt-3">
-        <IndianCitiesMui
-          selectedState={state}
-          selectedCity={city}
-          onChange={(option) => setCity(option ? option : null)}
-        />
-      </div>
+            <div className="form-group col-3 mt-3">
+              <label htmlFor="">Permanent City</label>
+              <IndianCitiesMui
+                selectedState={state}
+                selectedCity={city}
+                onChange={(option) => setCity(option ? option : null)}
+              />
+            </div>
+            <div className="form-group col-3 mt-3">
+              <FieldContainer
+                label="Permanent Pincode"
+                type="number"
+                fieldGrid={4}
+                maxLength={6}
+                value={pincode}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  if (/^\d{0,6}$/.test(value)) {
+                    setPincode(value);
+                  }
+                }}
+                required={false}
+              />
+            </div>
 
-      <FieldContainer
-        label="Parmanent Pincode"
-        type="number"
-        fieldGrid={4}
-        maxLength={6}
-        value={pincode}
-        onChange={(e) => {
-          const value = e.target.value;
-          if (/^\d{0,6}$/.test(value)) {
-            setPincode(value);
-          }
-        }}
-        required={false}
-      />
-      {/* {mandatoryFieldsEmpty.pincode && (
-        <p  className="form-error">Please enter Pincode</p>
+            {/* {mandatoryFieldsEmpty.pincode && (
+        <p  className="form-error">Please Enter Pincode</p>
       )} */}
-      <div className="form-group col-3">
-        <label className="form-label">Blood Group</label>
-        <Select
-          className=""
-          options={bloodGroupData.map((option) => ({
-            value: `${option}`,
-            label: `${option}`,
-          }))}
-          value={{
-            value: bloodGroup,
-            label: `${bloodGroup}`,
-          }}
-          onChange={(e) => {
-            setBloodGroup(e.value);
-          }}
-          // onBlur={() => {
-          //   if (
-          //     bloodGroup === "" ||
-          //     bloodGroup === null ||
-          //     bloodGroup.length === 0
-          //   ) {
-          //     setMandatoryFieldsEmpty((prevState) => ({
-          //       ...prevState,
-          //       bloodGroup: true,
-          //     }));
-          //   } else {
-          //     setMandatoryFieldsEmpty({
-          //       ...mandatoryFieldsEmpty,
-          //       bloodGroup: false,
-          //     });
-          //   }
-          // }}
-          required={false}
-        />
+            <div className="form-group col-3 mt-3">
+              <label className="form-label">Blood Group</label>
+              <Select
+                className=""
+                options={bloodGroupData.map((option) => ({
+                  value: `${option}`,
+                  label: `${option}`,
+                }))}
+                value={{
+                  value: bloodGroup,
+                  label: `${bloodGroup}`,
+                }}
+                onChange={(e) => {
+                  setBloodGroup(e.value);
+                }}
+                // onBlur={() => {
+                //   if (
+                //     bloodGroup === "" ||
+                //     bloodGroup === null ||
+                //     bloodGroup.length === 0
+                //   ) {
+                //     setMandatoryFieldsEmpty((prevState) => ({
+                //       ...prevState,
+                //       bloodGroup: true,
+                //     }));
+                //   } else {
+                //     setMandatoryFieldsEmpty({
+                //       ...mandatoryFieldsEmpty,
+                //       bloodGroup: false,
+                //     });
+                //   }
+                // }}
+                required={false}
+              />
 
-        {/* {mandatoryFieldsEmpty.bloodGroup && (
+              {/* {mandatoryFieldsEmpty.bloodGroup && (
           <p className="form-error">Please enter Blood Group</p>
         )} */}
-      </div>
-      <div className="form-group col-3">
-        <label className="form-label">Hobbies</label>
-        <Select
-          isMulti
-          options={availableOptions}
-          value={hobbies}
-          onChange={handleChange}
-          isClearable={true}
-          classNamePrefix="select"
-        />
-      </div>
-      <div className="form-group col-3">
-        <label className="form-label">Spoken Languages</label>
-        <Select
-          isMulti
-          name="langauages"
-          options={colourOptions}
-          className="basic-multi-select"
-          classNamePrefix="select"
-          value={tempLanguage}
-          onChange={handleLanguageSelect}
-          // onBlur={() => {
-          //   if (
-          //     tempLanguage === "" ||
-          //     tempLanguage === null ||
-          //     tempLanguage.length === 0
-          //   ) {
-          //     return setMandatoryFieldsEmpty((prevState) => ({
-          //       ...prevState,
-          //       language: true,
-          //     }));
-          //   } else {
-          //     setMandatoryFieldsEmpty({
-          //       ...mandatoryFieldsEmpty,
-          //       language: false,
-          //     });
-          //   }
-          // }}
-        />
-        {/* {mandatoryFieldsEmpty.language && (
+            </div>
+            <div className="form-group col-3">
+              <label className="form-label">Hobbies</label>
+              <Select
+                isMulti
+                options={availableOptions}
+                value={hobbies}
+                onChange={handleChange}
+                isClearable={true}
+                classNamePrefix="select"
+              />
+            </div>
+            <div className="form-group col-3">
+              <label className="form-label">Spoken Languages</label>
+              <Select
+                isMulti
+                name="langauages"
+                options={colourOptions}
+                className="basic-multi-select"
+                classNamePrefix="select"
+                value={tempLanguage}
+                onChange={handleLanguageSelect}
+                // onBlur={() => {
+                //   if (
+                //     tempLanguage === "" ||
+                //     tempLanguage === null ||
+                //     tempLanguage.length === 0
+                //   ) {
+                //     return setMandatoryFieldsEmpty((prevState) => ({
+                //       ...prevState,
+                //       language: true,
+                //     }));
+                //   } else {
+                //     setMandatoryFieldsEmpty({
+                //       ...mandatoryFieldsEmpty,
+                //       language: false,
+                //     });
+                //   }
+                // }}
+              />
+              {/* {mandatoryFieldsEmpty.language && (
           <p className="form-error">Please enter Languages</p>
         )} */}
+            </div>
+
+            <div className="form-group col-3">
+              <label className="form-label">Category</label>
+              <Select
+                className=""
+                options={castOption.map((option) => ({
+                  value: option,
+                  label: `${option}`,
+                }))}
+                value={{
+                  value: cast,
+                  label: cast,
+                }}
+                onChange={(e) => {
+                  setCast(e.value);
+                }}
+                onBlur={() => {
+                  if (cast === "" || cast === null) {
+                    setMandatoryFieldsEmpty((prevState) => ({
+                      ...prevState,
+                      cast: true,
+                    }));
+                  } else {
+                    setMandatoryFieldsEmpty({
+                      ...mandatoryFieldsEmpty,
+                      cast: false,
+                    });
+                  }
+                }}
+                required
+              />
+            </div>
+          </div>
+
+          <div style={{ display: "flex", justifyContent: "flex-end" }}>
+            <button
+              type="button"
+              className="btn cmnbtn btn-primary mr-2"
+              onClick={handleSubmitOtherDetails}
+            >
+              Submit Other Details
+            </button>
+          </div>
+        </div>
       </div>
-      <div className="form-group col-3">
-        <label className="form-label">Category</label>
-        <Select
-          className=""
-          options={castOption.map((option) => ({
-            value: option,
-            label: `${option}`,
-          }))}
-          value={{
-            value: cast,
-            label: cast,
-          }}
-          onChange={(e) => {
-            setCast(e.value);
-          }}
-          onBlur={() => {
-            if (cast === "" || cast === null) {
-              setMandatoryFieldsEmpty((prevState) => ({
-                ...prevState,
-                cast: true,
-              }));
-            } else {
-              setMandatoryFieldsEmpty({
-                ...mandatoryFieldsEmpty,
-                cast: false,
-              });
-            }
-          }}
-          required
-        />
-      </div>
-      <div style={{ display: "flex", justifyContent: "flex-end" }}>
-        <button
-          type="button"
-          className="btn btn-primary mr-2"
-          onClick={handleSubmitOtherDetails}
-        >
-          Submit Other Details
-        </button>
-      </div>
+
       {/* Other Info Inputs------------------------End------------ */}
 
       {/* Bank Info Inputs------------------------Start------------ */}
-      <div className="personal_header">Bank Details</div>
-      <div className="form-group col-6">
-        <label className="form-label">
-          Bank Name <sup className="form-error">*</sup>
-        </label>
-        <Select
-          options={IndianBankList}
-          isClearable
-          isSearchable
-          value={
-            bankName
-              ? IndianBankList.find((bank) => bank.value === bankName)
-              : null
-          }
-          // onChange={(selectedOption) => {
-          //   setBankName(selectedOption ? selectedOption.value : null);
-          // }}
-          getOptionLabel={(option) => option.label}
-          getOptionValue={(option) => option.value}
-          onChange={(selectedOption) => {
-            setBankName(selectedOption ? selectedOption.value : null);
+      <div className="card">
+        <div className="card-header">Bank Details</div>
+        <div className="card-body row">
+          <div className="form-group col-6">
+            <label className="form-label">
+              Bank Name <sup className="form-error">*</sup>
+            </label>
+            <Select
+              options={IndianBankList}
+              isClearable
+              isSearchable
+              value={
+                bankName
+                  ? IndianBankList.find((bank) => bank.value === bankName)
+                  : null
+              }
+              // onChange={(selectedOption) => {
+              //   setBankName(selectedOption ? selectedOption.value : null);
+              // }}
+              getOptionLabel={(option) => option.label}
+              getOptionValue={(option) => option.value}
+              onChange={(selectedOption) => {
+                setBankName(selectedOption ? selectedOption.value : null);
 
-            // onBlur functionality
-            setMandatoryFieldsEmpty((prevState) => ({
-              ...prevState,
-              bankName: !selectedOption,
-            }));
-          }}
-          // onBlur={() => {
-          //   setMandatoryFieldsEmpty((prevState) => ({
-          //     ...prevState,
-          //     bankName: !bankName,
-          //   }));
-          // }}
-          required
-        />
-        {mandatoryFieldsEmpty.bankName && (
-          <p className="form-error">Please enter Bank Name</p>
-        )}
+                // onBlur functionality
+                setMandatoryFieldsEmpty((prevState) => ({
+                  ...prevState,
+                  bankName: !selectedOption,
+                }));
+              }}
+              // onBlur={() => {
+              //   setMandatoryFieldsEmpty((prevState) => ({
+              //     ...prevState,
+              //     bankName: !bankName,
+              //   }));
+              // }}
+              required
+            />
+            {mandatoryFieldsEmpty.bankName && (
+              <p className="form-error">Please enter Bank Name</p>
+            )}
+          </div>
+
+          <div className="form-group col-3">
+            <label className="form-label">
+              Bank Type <sup className="form-error">*</sup>
+            </label>
+            <Select
+              className=""
+              options={bankTypeData.map((option) => ({
+                value: `${option}`,
+                label: `${option}`,
+              }))}
+              value={{
+                value: banktype,
+                label: `${banktype}`,
+              }}
+              onChange={(e) => {
+                setBankType(e.value);
+
+                // onBlur functionality
+                if (!e.value) {
+                  setMandatoryFieldsEmpty((prevState) => ({
+                    ...prevState,
+                    banktype: true,
+                  }));
+                } else {
+                  setMandatoryFieldsEmpty({
+                    ...mandatoryFieldsEmpty,
+                    banktype: false,
+                  });
+                }
+              }}
+              required
+            />
+            {mandatoryFieldsEmpty.banktype && (
+              <p className="form-error">Please enter Bank Type</p>
+            )}
+          </div>
+
+          <FieldContainer
+            label="Bank Account Number"
+            astric={true}
+            fieldGrid={3}
+            value={bankAccountNumber}
+            onChange={(e) => {
+              const inputValue = e.target.value;
+              const onlyNumbers = /^[0-9]+$/;
+
+              if (onlyNumbers.test(inputValue)) {
+                setBankAccountNumber(inputValue);
+              } else {
+                setBankAccountNumber(""); // Clearing the input value
+              }
+              // onBlur functionality
+              if (inputValue === "") {
+                setMandatoryFieldsEmpty((prevState) => ({
+                  ...prevState,
+                  bankAccountNumber: true,
+                }));
+              } else {
+                setMandatoryFieldsEmpty({
+                  ...mandatoryFieldsEmpty,
+                  bankAccountNumber: false,
+                });
+              }
+            }}
+          />
+          {mandatoryFieldsEmpty.bankAccountNumber && (
+            <p className="form-error">Please enter Bank Account Number</p>
+          )}
+          <FieldContainer
+            astric={true}
+            label="IFSC"
+            value={IFSC}
+            // onChange={(e) => setIFSC(e.target.value.toUpperCase())}
+            onChange={(e) => {
+              const inputValue = e.target.value.toUpperCase();
+              setIFSC(inputValue.slice(0, 11)); // Limiting the input to 11 characters
+
+              // onBlur functionality
+              if (inputValue === "") {
+                setMandatoryFieldsEmpty((prevState) => ({
+                  ...prevState,
+                  IFSC: true,
+                }));
+              } else {
+                setMandatoryFieldsEmpty({
+                  ...mandatoryFieldsEmpty,
+                  IFSC: false,
+                });
+              }
+            }}
+          />
+          {mandatoryFieldsEmpty.IFSC && (
+            <p className="form-error">Please enter IFSC</p>
+          )}
+          <FieldContainer
+            label="Beneficiary"
+            value={beneficiary}
+            onChange={(e) => setBeneficiary(e.target.value)}
+          />
+          <FieldContainer
+            label="Upload Proof"
+            type="file"
+            multiple
+            accept="image/*"
+            onChange={(e) => {
+              setBankProveImage(e.target.files[0]);
+            }}
+            fieldGrid={6}
+            required={true}
+          />
+
+          <div style={{ display: "flex", justifyContent: "flex-end" }}>
+            <button
+              type="button"
+              className="btn cmnbtn btn-primary mr-2"
+              onClick={handleSubmitBank}
+            >
+              Submit Bank Details
+            </button>
+          </div>
+        </div>
       </div>
 
-      <div className="form-group col-3">
-        <label className="form-label">
-          Bank Type <sup className="form-error">*</sup>
-        </label>
-        <Select
-          className=""
-          options={bankTypeData.map((option) => ({
-            value: `${option}`,
-            label: `${option}`,
-          }))}
-          value={{
-            value: banktype,
-            label: `${banktype}`,
-          }}
-          onChange={(e) => {
-            setBankType(e.value);
-
-            // onBlur functionality
-            if (!e.value) {
-              setMandatoryFieldsEmpty((prevState) => ({
-                ...prevState,
-                banktype: true,
-              }));
-            } else {
-              setMandatoryFieldsEmpty({
-                ...mandatoryFieldsEmpty,
-                banktype: false,
-              });
-            }
-          }}
-          required
-        />
-        {mandatoryFieldsEmpty.banktype && (
-          <p className="form-error">Please enter Bank Type</p>
-        )}
-      </div>
-
-      <FieldContainer
-        label="Bank Account Number"
-        astric={true}
-        fieldGrid={3}
-        value={bankAccountNumber}
-        onChange={(e) => {
-          const inputValue = e.target.value;
-          const onlyNumbers = /^[0-9]+$/;
-
-          if (onlyNumbers.test(inputValue)) {
-            setBankAccountNumber(inputValue);
-          } else {
-            setBankAccountNumber(""); // Clearing the input value
-          }
-          // onBlur functionality
-          if (inputValue === "") {
-            setMandatoryFieldsEmpty((prevState) => ({
-              ...prevState,
-              bankAccountNumber: true,
-            }));
-          } else {
-            setMandatoryFieldsEmpty({
-              ...mandatoryFieldsEmpty,
-              bankAccountNumber: false,
-            });
-          }
-        }}
-      />
-      {mandatoryFieldsEmpty.bankAccountNumber && (
-        <p className="form-error">Please enter Bank Account Number</p>
-      )}
-      <FieldContainer
-        astric={true}
-        label="IFSC"
-        value={IFSC}
-        // onChange={(e) => setIFSC(e.target.value.toUpperCase())}
-        onChange={(e) => {
-          const inputValue = e.target.value.toUpperCase();
-          setIFSC(inputValue.slice(0, 11)); // Limiting the input to 11 characters
-
-          // onBlur functionality
-          if (inputValue === "") {
-            setMandatoryFieldsEmpty((prevState) => ({
-              ...prevState,
-              IFSC: true,
-            }));
-          } else {
-            setMandatoryFieldsEmpty({
-              ...mandatoryFieldsEmpty,
-              IFSC: false,
-            });
-          }
-        }}
-      />
-      {mandatoryFieldsEmpty.IFSC && (
-        <p className="form-error">Please enter IFSC</p>
-      )}
-      <FieldContainer
-        label="Beneficiary"
-        value={beneficiary}
-        onChange={(e) => setBeneficiary(e.target.value)}
-      />
-      <FieldContainer
-        label="Upload Proof"
-        type="file"
-        multiple
-        accept="image/*"
-        onChange={(e) => {
-          setBankProveImage(e.target.files[0]);
-        }}
-        fieldGrid={6}
-        required={true}
-      />
-
-      <div style={{ display: "flex", justifyContent: "flex-end" }}>
-        <button
-          type="button"
-          className="btn btn-primary mr-2"
-          onClick={handleSubmitBank}
-        >
-          Submit Bank Details
-        </button>
-      </div>
       {/* Bank Info Inputs------------------------End------------ */}
 
       {/* <div style={{ display: "flex", justifyContent: "space-between" }}>
@@ -2953,229 +3071,245 @@ const UserMaster = () => {
   const educationFamilyFieald = (
     <>
       {/* Family Info Inputs------------------------Start------------ */}
-      <div className="personal_header">Family Details</div>
-      {familyDetails.map((detail, index) => (
-        <div key={index} mb={2}>
+      <div className="card">
+        <div className="card-header">Family Details</div>
+        <div className="card-body">
+          {familyDetails.map((detail, index) => (
+            <div key={index} mb={2}>
+              <div className="row">
+                {Object.keys(detail).map((key) => {
+                  switch (key) {
+                    case "DOB":
+                      return (
+                        <FieldContainer
+                          key={key}
+                          fieldGrid={2}
+                          type="date"
+                          name={key}
+                          label="Date of Birth"
+                          value={detail[key]}
+                          onChange={(e) => handleFamilyDetailsChange(index, e)}
+                        />
+                      );
+                    case "Relation":
+                      return (
+                        <div className="form-group col-2">
+                          <label className="form-label">Relation</label>
+                          <Select
+                            label="Relation"
+                            placeholder="Select Relation"
+                            className=""
+                            options={familyRelationList}
+                            name={key}
+                            value={
+                              familyRelationList.find(
+                                (option) => option.value === detail.Relation
+                              ) || null
+                            }
+                            onChange={(selectedOption) =>
+                              handleFamilyDetailsChange(index, {
+                                target: {
+                                  name: key,
+                                  value: selectedOption
+                                    ? selectedOption.value
+                                    : "",
+                                },
+                              })
+                            }
+                            isClearable={true}
+                            isSearchable={true}
+                            required={false}
+                          />
+                        </div>
+                      );
+                    case "Occupation":
+                      return (
+                        <div className="form-group col-2">
+                          <label className="form-label">Occupation</label>
+                          <Select
+                            label="Occupation"
+                            placeholder="Select Occupation"
+                            className=""
+                            options={OccupationList}
+                            name={key}
+                            value={
+                              OccupationList.find(
+                                (option) => option.value === detail.Occupation
+                              ) || null
+                            }
+                            onChange={(selectedOption) =>
+                              handleFamilyDetailsChange(
+                                index,
+                                {
+                                  target: {
+                                    name: key,
+                                    value: selectedOption
+                                      ? selectedOption.value
+                                      : "",
+                                  },
+                                },
+                                true
+                              )
+                            }
+                            isClearable={true}
+                            isSearchable={true}
+                          />
+                        </div>
+                      );
+
+                    case "Contact":
+                      return (
+                        <>
+                          <FieldContainer
+                            key={key}
+                            fieldGrid={2}
+                            type="number"
+                            name={key}
+                            label={key}
+                            placeholder={key}
+                            value={detail[key]}
+                            onChange={(e) =>
+                              handleFamilyDetailsChange(index, e)
+                            }
+                          />
+                          {familyValidationErrors[`Contact-${index}`] && (
+                            <span className="form-error">
+                              {familyValidationErrors[`Contact-${index}`]}
+                            </span>
+                          )}
+                        </>
+                      );
+
+                    case "Income":
+                      return (
+                        <FieldContainer
+                          key={key}
+                          type="number"
+                          fieldGrid={2}
+                          name={key}
+                          label={key}
+                          placeholder={key}
+                          value={detail[key]}
+                          onChange={(e) => handleFamilyDetailsChange(index, e)}
+                        />
+                      );
+
+                    default:
+                      return (
+                        <FieldContainer
+                          key={key}
+                          fieldGrid={2}
+                          name={key}
+                          label={key}
+                          placeholder={key}
+                          value={detail[key]}
+                          onChange={(e) => handleFamilyDetailsChange(index, e)}
+                        />
+                      );
+                  }
+                })}
+                {familyDetails.length > 1 && (
+                  <IconButton onClick={() => handleRemoveFamilyDetails(index)}>
+                    <DeleteIcon />
+                  </IconButton>
+                )}
+              </div>
+            </div>
+          ))}
           <div className="row">
-            {Object.keys(detail).map((key) => {
-              switch (key) {
-                case "DOB":
-                  return (
-                    <FieldContainer
-                      key={key}
-                      fieldGrid={2}
-                      type="date"
-                      name={key}
-                      label="Date of Birth"
-                      value={detail[key]}
-                      onChange={(e) => handleFamilyDetailsChange(index, e)}
-                    />
-                  );
-                case "Relation":
-                  return (
-                    <div className="form-group col-2">
-                      <label className="form-label">Relation</label>
-                      <Select
-                        label="Relation"
-                        placeholder="Select Relation"
-                        className=""
-                        options={familyRelationList}
-                        name={key}
-                        value={
-                          familyRelationList.find(
-                            (option) => option.value === detail.Relation
-                          ) || null
-                        }
-                        onChange={(selectedOption) =>
-                          handleFamilyDetailsChange(index, {
-                            target: {
-                              name: key,
-                              value: selectedOption ? selectedOption.value : "",
-                            },
-                          })
-                        }
-                        isClearable={true}
-                        isSearchable={true}
-                        required={false}
-                      />
-                    </div>
-                  );
-                case "Occupation":
-                  return (
-                    <div className="form-group col-2">
-                      <label className="form-label">Occupation</label>
-                      <Select
-                        label="Occupation"
-                        placeholder="Select Occupation"
-                        className=""
-                        options={OccupationList}
-                        name={key}
-                        value={
-                          OccupationList.find(
-                            (option) => option.value === detail.Occupation
-                          ) || null
-                        }
-                        onChange={(selectedOption) =>
-                          handleFamilyDetailsChange(
-                            index,
-                            {
-                              target: {
-                                name: key,
-                                value: selectedOption
-                                  ? selectedOption.value
-                                  : "",
-                              },
-                            },
-                            true
-                          )
-                        }
-                        isClearable={true}
-                        isSearchable={true}
-                      />
-                    </div>
-                  );
-
-                case "Contact":
-                  return (
-                    <>
-                      <FieldContainer
-                        key={key}
-                        fieldGrid={2}
-                        type="number"
-                        name={key}
-                        label={key}
-                        placeholder={key}
-                        value={detail[key]}
-                        onChange={(e) => handleFamilyDetailsChange(index, e)}
-                      />
-                      {familyValidationErrors[`Contact-${index}`] && (
-                        <span className="form-error">
-                          {familyValidationErrors[`Contact-${index}`]}
-                        </span>
-                      )}
-                    </>
-                  );
-
-                case "Income":
-                  return (
-                    <FieldContainer
-                      key={key}
-                      type="number"
-                      fieldGrid={2}
-                      name={key}
-                      label={key}
-                      placeholder={key}
-                      value={detail[key]}
-                      onChange={(e) => handleFamilyDetailsChange(index, e)}
-                    />
-                  );
-
-                default:
-                  return (
-                    <FieldContainer
-                      key={key}
-                      fieldGrid={2}
-                      name={key}
-                      label={key}
-                      placeholder={key}
-                      value={detail[key]}
-                      onChange={(e) => handleFamilyDetailsChange(index, e)}
-                    />
-                  );
-              }
-            })}
-            {familyDetails.length > 1 && (
-              <IconButton onClick={() => handleRemoveFamilyDetails(index)}>
-                <DeleteIcon />
-              </IconButton>
-            )}
+            <div className="col-12">
+              {familyDetails.length < 3 && (
+                <button
+                  onClick={handleAddFamilyDetails}
+                  variant="contained"
+                  className="btn cmnbtn btn-outline-primary me-2"
+                >
+                  Add More Family Details
+                </button>
+              )}
+            </div>
+          </div>
+          <div style={{ display: "flex", justifyContent: "flex-end" }}>
+            <button
+              type="button"
+              className="btn cmnbtn btn-primary mr-2"
+              onClick={handleSubmitFamily}
+            >
+              Submit Family Details
+            </button>
           </div>
         </div>
-      ))}
-      <div className="row">
-        <div className="col-12">
-          {familyDetails.length < 3 && (
-            <button
-              onClick={handleAddFamilyDetails}
-              variant="contained"
-              className="btn btn-outline-primary me-2"
-            >
-              Add More Family Details
-            </button>
-          )}
-        </div>
       </div>
-      <div style={{ display: "flex", justifyContent: "flex-end" }}>
-        <button
-          type="button"
-          className="btn btn-primary mr-2"
-          onClick={handleSubmitFamily}
-        >
-          Submit Family Details
-        </button>
-      </div>
+
       {/* Family Info Inputs------------------------End------------ */}
 
       {/* Education Info Inputs------------------------Start------------ */}
-      <div className="personal_header">Education Details</div>
-      {educationDetails.map((detail, index) => (
-        <div key={index} mb={2}>
+      <div className="card">
+        <div className="card-header">Education Details</div>
+        <div className="card-body">
+          {educationDetails.map((detail, index) => (
+            <div key={index} mb={2}>
+              <div className="row">
+                {Object.keys(detail).map((key) =>
+                  key === "From" || key === "To" ? (
+                    <FieldContainer
+                      key={key}
+                      fieldGrid={3}
+                      type="date"
+                      name={key}
+                      required={false}
+                      label={key}
+                      value={detail[key]}
+                      onChange={(e) => handleEducationDetailsChange(index, e)}
+                    />
+                  ) : (
+                    <FieldContainer
+                      key={key}
+                      fieldGrid={3}
+                      name={key}
+                      required={false}
+                      label={key}
+                      value={detail[key]}
+                      onChange={(e) => handleEducationDetailsChange(index, e)}
+                    />
+                  )
+                )}
+                {educationDetails.length > 1 && (
+                  <IconButton
+                    onClick={() => handleRemoveEducationDetails(index)}
+                  >
+                    <DeleteIcon />
+                  </IconButton>
+                )}
+              </div>
+            </div>
+          ))}
           <div className="row">
-            {Object.keys(detail).map((key) =>
-              key === "From" || key === "To" ? (
-                <FieldContainer
-                  key={key}
-                  fieldGrid={3}
-                  type="date"
-                  name={key}
-                  required={false}
-                  label={key}
-                  value={detail[key]}
-                  onChange={(e) => handleEducationDetailsChange(index, e)}
-                />
-              ) : (
-                <FieldContainer
-                  key={key}
-                  fieldGrid={3}
-                  name={key}
-                  required={false}
-                  label={key}
-                  value={detail[key]}
-                  onChange={(e) => handleEducationDetailsChange(index, e)}
-                />
-              )
-            )}
-            {educationDetails.length > 1 && (
-              <IconButton onClick={() => handleRemoveEducationDetails(index)}>
-                <DeleteIcon />
-              </IconButton>
-            )}
+            <div className="col-12">
+              {educationDetails.length < 5 && (
+                <button
+                  type="button"
+                  onClick={(e) => handleAddEducationDetails(e)}
+                  variant="contained"
+                  className="btn cmnbtn btn-outline-primary me-2"
+                >
+                  Add More Education Details
+                </button>
+              )}
+            </div>
           </div>
-        </div>
-      ))}
-      <div className="row">
-        <div className="col-12">
-          {educationDetails.length < 5 && (
+          <div style={{ display: "flex", justifyContent: "flex-end" }}>
             <button
               type="button"
-              onClick={(e) => handleAddEducationDetails(e)}
-              variant="contained"
-              className="btn btn-outline-primary me-2"
+              className="btn cmnbtn btn-primary mr-2"
+              onClick={handleSubmitEducation}
             >
-              Add More Education Details
+              Submit Education Details
             </button>
-          )}
+          </div>
         </div>
       </div>
-      <div style={{ display: "flex", justifyContent: "flex-end" }}>
-        <button
-          type="button"
-          className="btn btn-primary mr-2"
-          onClick={handleSubmitEducation}
-        >
-          Submit Education Details
-        </button>
-      </div>
+
       {/* Education Info Inputs------------------------End------------ */}
 
       {/* <div style={{ display: "flex", justifyContent: "space-between" }}>
@@ -3190,9 +3324,72 @@ const UserMaster = () => {
   );
 
   return (
-    <>
+    <div>
+      <FormContainer mainTitle={"User"} link={true} />
+
+      <div className="user-tab w-100 mb-4">
+        {accordionButtons.map((button, index) => (
+          <div className="flex-row align-items-center w-100 gap-4">
+            <button
+              className={`tab ${
+                activeAccordionIndex === index
+                  ? "active"
+                  : userResID !== ""
+                  ? "completed"
+                  : "disabled"
+              }`}
+              onClick={() => handleAccordionButtonClick(index)}
+            >
+              <div className="gap-1 flex-row">
+                {activeAccordionIndex === index
+                  ? indicator.active
+                  : userResID !== ""
+                  ? indicator.completed
+                  : indicator.disabled}
+                <p>{button}</p>
+              </div>
+              {accordionButtonstitle[index]}
+            </button>
+            <svg
+              className="arrow"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill=""
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <g id="Component 2">
+                <path
+                  id="Vector (Stroke)"
+                  fill-rule="evenodd"
+                  clip-rule="evenodd"
+                  d="M6.51171 4.43057C6.8262 4.161 7.29968 4.19743 7.56924 4.51192L13.5692 11.5119C13.81 11.7928 13.81 12.2072 13.5692 12.4881L7.56924 19.4881C7.29968 19.8026 6.8262 19.839 6.51171 19.5695C6.19721 19.2999 6.16079 18.8264 6.43036 18.5119L12.012 12L6.43036 5.48811C6.16079 5.17361 6.19721 4.70014 6.51171 4.43057ZM10.5119 4.43068C10.8264 4.16111 11.2999 4.19753 11.5694 4.51202L17.5694 11.512C17.8102 11.7929 17.8102 12.2073 17.5694 12.4882L11.5694 19.4882C11.2999 19.8027 10.8264 19.8391 10.5119 19.5696C10.1974 19.3 10.161 18.8265 10.4306 18.512L16.0122 12.0001L10.4306 5.48821C10.161 5.17372 10.1974 4.70024 10.5119 4.43068Z"
+                  fill={`${
+                    activeAccordionIndex === index ? "var(--primary)" : ""
+                  }`}
+                />
+              </g>
+            </svg>
+          </div>
+        ))}
+      </div>
+      {activeAccordionIndex === 0 && genralFields}
+      {isGeneralSubmitted && activeAccordionIndex === 1 && othersFields}
+      {isGeneralSubmitted &&
+        activeAccordionIndex === 2 &&
+        educationFamilyFieald}
+
       <div className="mb-2 " style={{}}>
         <ToastContainer />
+        <div className="profloat">
+          <div className="progress-bar">
+            <Circle percent={progress} strokeWidth={10} strokeColor="#16B364" />
+            <div className="progress-value">
+              <p>{progress.toFixed(0)} %</p>
+            </div>
+          </div>
+        </div>
+
         <div
           style={{
             marginTop: 20,
@@ -3201,7 +3398,7 @@ const UserMaster = () => {
             borderRadius: "10px",
           }}
         >
-          <div
+          {/* <div
             className="progress-bar"
             style={{
               width: `${progress}%`,
@@ -3212,10 +3409,10 @@ const UserMaster = () => {
             }}
           >
             {progress.toFixed(0)}%
-          </div>
+          </div> */}
         </div>
       </div>
-      <FormContainer
+      {/* <FormContainer
         mainTitle="User"
         title="User Registration"
         submitButton={false}
@@ -3229,8 +3426,8 @@ const UserMaster = () => {
         {isGeneralSubmitted &&
           activeAccordionIndex === 2 &&
           educationFamilyFieald}
-      </FormContainer>
-    </>
+      </FormContainer> */}
+    </div>
   );
 };
 

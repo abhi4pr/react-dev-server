@@ -124,16 +124,17 @@ body {
   display: none;
 }
 
-    
-  .loader {
-display: flex;
-justify-content: center;
-align-items: center;
-gap: calc(var(--dot-size) / 2);
-block-size: var(--max-block-size);
-div{
-  background-image: none;
-}
+
+.loader {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: calc(var(--dot-size) / 2);
+  block-size: var(--max-block-size);
+
+  div {
+    background-image: none;
+  }
 }
 
 .dot {
@@ -142,17 +143,18 @@ div{
   border-radius: calc(var(--dot-size) / 2);
   background: var(--dot-color);
   -webkit-animation: y-grow 2s infinite ease-in-out;
-          animation: y-grow 2s infinite ease-in-out;
+  animation: y-grow 2s infinite ease-in-out;
   -webkit-animation-delay: calc(var(--delay) * 1ms);
-          animation-delay: calc(var(--delay) * 1ms);
+  animation-delay: calc(var(--delay) * 1ms);
 }
 
 @keyframes y-grow {
-25% {
-  block-size: var(--max-block-size);
-  background-color: var(--dot-color-transition-1);
-}
-50% {
+  25% {
+    block-size: var(--max-block-size);
+    background-color: var(--dot-color-transition-1);
+  }
+
+  50% {
     block-size: var(--dot-size);
     background-color: var(--dot-color-transition-2);
   }
@@ -16135,6 +16137,47 @@ body[theme="dark"] .blurBg {
 
 }
 
+.hover-lab {
+  position: absolute;
+  width: 100%;
+  height: 20px;
+  background-color: var(--primary);
+  color: var(--white);
+  bottom: -20px;
+  border-radius: 0 0 10px 10px;
+  text-align: center;
+  transition: bottom 0.3s ease;
+
+}
+
+.hover-label {
+  position: relative;
+  width: max-content;
+  overflow: hidden;
+
+  &:hover {
+    .hover-lab {
+      bottom: 0;
+    }
+
+    transition: bottom 0.3s ease;
+  }
+}
+
+.profile-holder-1 {
+  height: 100px;
+  width: 100px;
+  border-radius: 10px;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  object-fit: cover;
+  background-color: var(--dark);
+  color: var(--Gray-Color-600);
+  margin-left: 0 !important;
+}
+
 .profile-holder {
   height: 50px;
   width: 50px;
@@ -16422,6 +16465,130 @@ body[theme="dark"] .blurBg {
     }
   }
 }
+
 div:where(.swal2-container) {
-  z-index:1400 !important;
+  z-index: 1400 !important;
+}
+
+.user-tab {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+  gap: 40px;
+  border-radius: 6px;
+
+  .tab {
+    display: flex;
+    padding: 8px 12px;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    margin-bottom: 0px !important;
+    gap: 6px;
+    flex: 1 0 0;
+    border-radius: 6px;
+    border: 1px solid var(--Border, #CFD6DC);
+    cursor: pointer;
+  }
+
+  .disabled {
+    color: var(--medium);
+
+    background: var(--body-bg);
+
+    p {
+      color: var(--medium) !important;
+    }
+  }
+
+  .completed {
+    border-radius: 6px;
+    border: 1px solid var(--Border, #CFD6DC);
+    background: rgba(120, 43, 228, 0.10);
+
+    color: #958EEA;
+
+    p {
+      color: var(--dark) !important;
+    }
+
+  }
+
+  .active {
+    background: var(--primary);
+    color: #D6D9DC;
+
+    p {
+      color: var(--white) !important;
+    }
+
+  }
+}
+
+.progress-bar {
+  position: relative;
+  width: 100px;
+  height: 100px;
+  background-color: transparent !important;
+}
+
+.progress-value {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  position: absolute;
+  background-color: #e1fbea66;
+  top: 10px;
+  right: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  p {
+    font-size: 20px;
+    font-weight: 600;
+    color: #00B74A !important;
+    ;
+  }
+}
+
+.profloat {
+  pointer-events: none;
+  position: absolute;
+  top: 87%;
+  right: 0;
+  transform: translate(-50%, -50%);
+}
+
+.underlined {
+  text-decoration: underline;
+}
+
+.ol-table {
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+
+  table {
+    width: 70%;
+  }
+
+  th {
+    background-color: #000;
+    color: white;
+    text-align: center;
+
+  }
+
+  tr {
+    border: 1px solid #000;
+  }
+
+  td {
+    border-left: 1px solid #000;
+    padding-left: 10px;
+  }
 }

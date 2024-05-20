@@ -1041,13 +1041,32 @@ export default function PendingPaymentRequest() {
     },
   ];
 
-  console.log(filterData, "FDFDFDF------------------------");
+  // console.log(phpRemainderData, "FDFDFDF------------------------");
+  // console.log(filterData, "FDFDFDF------------------------");
+
+  const getStatusText = (status) => {
+    switch (status) {
+        case "0":
+            return "Pending";
+        case "1":
+            return "Paid";
+        case "2":
+            return "Discard";
+        case "3":
+            return "Partial";
+        default:
+            return "";
+    }
+};
+
+
   const columns = [
     {
       field: "S.NO",
       headerName: "S.NO",
-      width: 90,
+      width: 70,
       editable: false,
+      valueGetter: (params) => filterData.indexOf(params.row) + 1,
       renderCell: (params) => {
         // const rowIndex = filterData.indexOf(params.row);
         const rowIndex =
@@ -1098,7 +1117,7 @@ export default function PendingPaymentRequest() {
           />
         );
       },
-      width: 250,
+      width: 130,
     },
     {
       field: "invc_no",
@@ -1145,6 +1164,12 @@ export default function PendingPaymentRequest() {
       field: "Reminder",
       headerName: "Reminder",
       width: 150,
+      valueGetter: (params) => {
+        const reminder = phpRemainderData.filter(
+            (item) => item.request_id == params.row.request_id
+        );
+        return reminder.length;
+    },
       renderCell: (params) => {
         const reminder = phpRemainderData.filter(
           (item) => item.request_id == params.row.request_id
@@ -1157,10 +1182,10 @@ export default function PendingPaymentRequest() {
                 <Badge badgeContent={reminder.length} color="primary">
                   <NotificationsActiveTwoToneIcon
                     onClick={() => handleRemainderModal(reminder)}
-                  />{" "}
+                  />
                 </Badge>
               ) : (
-                ""
+                0
               )}
             </span>
           </>
@@ -1209,6 +1234,12 @@ export default function PendingPaymentRequest() {
       field: "total_paid",
       headerName: "Total Paid",
       width: 150,
+      valueGetter: (params) => {
+        const totalPaid = nodeData
+            .filter((e) => e.vendor_name === params.row.vendor_name && e.status == 1)
+            .reduce((acc, item) => acc + +item.payment_amount, 0);
+        return totalPaid;
+    },
       renderCell: (params) => {
         return nodeData.filter((e) => e.vendor_name === params.row.vendor_name)
           .length > 0 ? (
@@ -1241,56 +1272,82 @@ export default function PendingPaymentRequest() {
       field: "F.Y",
       headerName: "F.Y",
       width: 150,
-      renderCell: (params) => {
+      valueGetter: (params) => {
         const isCurrentMonthGreaterThanMarch = new Date().getMonth() + 1 > 3;
         const currentYear = new Date().getFullYear();
         const startDate = new Date(
-          `04/01/${
-            isCurrentMonthGreaterThanMarch ? currentYear : currentYear - 1
-          }`
+            `04/01/${isCurrentMonthGreaterThanMarch ? currentYear : currentYear - 1}`
         );
         const endDate = new Date(
-          `03/31/${
-            isCurrentMonthGreaterThanMarch ? currentYear + 1 : currentYear
-          }`
+            `03/31/${isCurrentMonthGreaterThanMarch ? currentYear + 1 : currentYear}`
         );
         const dataFY = nodeData.filter((e) => {
-          const paymentDate = new Date(e.request_date);
-          return (
-            paymentDate >= startDate &&
-            paymentDate <= endDate &&
-            e.vendor_name === params.row.vendor_name &&
-            e.status !== 0 &&
-            e.status !== 2
-          );
+            const paymentDate = new Date(e.request_date);
+            return (
+                paymentDate >= startDate &&
+                paymentDate <= endDate &&
+                e.vendor_name === params.row.vendor_name &&
+                e.status !== 0 &&
+                e.status !== 2
+            );
         });
-        return nodeData.filter((e) => e.vendor_name === params.row.vendor_name)
-          .length > 0 ? (
-          <h5
-            onClick={() => handleOpenPaymentHistory(params.row, "FY")}
-            style={{ cursor: "pointer" }}
-            className="fs-5 col-3  font-sm lead  text-decoration-underline text-black-50"
-          >
-            {/* Financial Year */}
-
-            {dataFY.reduce(
-              (acc, item) => acc + parseFloat(item.payment_amount),
-              0
-            )}
-          </h5>
-        ) : (
-          <h5
-            style={{ cursor: "pointer" }}
-            className="fs-5 col-3  font-sm lead  text-decoration-underline text-black-50"
-          >
+        const totalFY = dataFY.reduce(
+            (acc, item) => acc + parseFloat(item.payment_amount),
             0
-          </h5>
         );
-      },
+        return totalFY;
+    },
+      // renderCell: (params) => {
+      //   const isCurrentMonthGreaterThanMarch = new Date().getMonth() + 1 > 3;
+      //   const currentYear = new Date().getFullYear();
+      //   const startDate = new Date(
+      //     `04/01/${
+      //       isCurrentMonthGreaterThanMarch ? currentYear : currentYear - 1
+      //     }`
+      //   );
+      //   const endDate = new Date(
+      //     `03/31/${
+      //       isCurrentMonthGreaterThanMarch ? currentYear + 1 : currentYear
+      //     }`
+      //   );
+      //   const dataFY = nodeData.filter((e) => {
+      //     const paymentDate = new Date(e.request_date);
+      //     return (
+      //       paymentDate >= startDate &&
+      //       paymentDate <= endDate &&
+      //       e.vendor_name === params.row.vendor_name &&
+      //       e.status !== 0 &&
+      //       e.status !== 2
+      //     );
+      //   });
+      //   return nodeData.filter((e) => e.vendor_name === params.row.vendor_name)
+      //     .length > 0 ? (
+      //     <h5
+      //       onClick={() => handleOpenPaymentHistory(params.row, "FY")}
+      //       style={{ cursor: "pointer" }}
+      //       className="fs-5 col-3  font-sm lead  text-decoration-underline text-black-50"
+      //     >
+      //       {/* Financial Year */}
+
+      //       {dataFY.reduce(
+      //         (acc, item) => acc + parseFloat(item.payment_amount),
+      //         0
+      //       )}
+      //     </h5>
+      //   ) : (
+      //     <h5
+      //       style={{ cursor: "pointer" }}
+      //       className="fs-5 col-3  font-sm lead  text-decoration-underline text-black-50"
+      //     >
+      //       0
+      //     </h5>
+      //   );
+      // },
     },
     {
       field: "Pan Img",
       headerName: "Pan Img",
+      valueGetter: (params) => params.row.pan_img.includes("uploads") ? params.row.pan_img : "NA",
       renderCell: (params) => {
         const ImgUrl = `https://purchase.creativefuel.io/${params.row.pan_img}`;
         return params.row.pan_img.includes("uploads") ? (
@@ -1394,27 +1451,48 @@ export default function PendingPaymentRequest() {
       field: "aging",
       headerName: "Aging",
       width: 150,
-      renderCell: (params) => {
-        // const paymentDate = nodeData.filter(
-        //   (dateData) => dateData.request_id === params.row.request_id
-        // );
-        return (
-          <p>
-            {" "}
-            {Math.round(
-              (
-                calculateHours(params.row.request_date, new Date()) / 24
-              ).toFixed(1)
-            )}{" "}
-            Days
-          </p>
-        );
+      valueGetter: (params) => {
+          const hours = calculateHours(params.row.request_date, new Date());
+          const days = Math.round(hours / 24);
+          // console.log(`Calculating aging for request_date ${params.row.request_date}: ${hours} hours, ${days} days`);
+          return `${days} Days`;
       },
-    },
+      // renderCell: (params) => (
+      //     <p>
+      //         {Math.round(
+      //             (calculateHours(params.row.request_date, new Date()) / 24).toFixed(1)
+      //         )}{" "}
+      //         Days
+      //     </p>
+      // ),
+  },
+    // {
+    //   field: "aging",
+    //   headerName: "Aging",
+    //   width: 150,
+     
+    //   renderCell: (params) => {
+    //     // const paymentDate = nodeData.filter(
+    //     //   (dateData) => dateData.request_id === params.row.request_id
+    //     // );
+    //     return (
+    //       <p>
+    //         {" "}
+    //         {Math.round(
+    //           (
+    //             calculateHours(params.row.request_date, new Date()) / 24
+    //           ).toFixed(1)
+    //         )}
+    //         Days
+    //       </p>
+    //     );
+    //   },
+    // },
     {
       field: "Status",
       headerName: "Status",
       width: 150,
+      valueGetter: (params) => getStatusText(params.row.status),
       renderCell: (params) => (
         <div>
           {params.row.status === "0"
@@ -1617,7 +1695,7 @@ export default function PendingPaymentRequest() {
   }, [data]);
 
   const handleRowSelectionModelChange = async (rowIds) => {
-    console.log(rowIds, "-----------------");
+    // console.log(rowIds, "-----------------");
     setRowSelectionModel(rowIds);
   };
 
@@ -1628,7 +1706,7 @@ export default function PendingPaymentRequest() {
     await Promise.all(
       rowSelectionModel.map(async (rowId) => {
         const rowData = filterData[rowId]; // Access the row data using rowId
-        console.log(rowData, "RD-------------");
+        // console.log(rowData, "RD-------------");
         if (rowData) {
           const pdf = new jsPDF();
 
@@ -1720,7 +1798,7 @@ export default function PendingPaymentRequest() {
     setAdjustAmount(formattedAdjustmentAmt);
   }, [rowData, paymentAmout]);
 
-  console.log(filterData, "filterData>>>>>>>>>>>>>", rowData, "rowData");
+  // console.log(filterData, "filterData>>>>>>>>>>>>>", rowData, "rowData");
   return (
     <div>
       <FormContainer
@@ -2260,7 +2338,7 @@ export default function PendingPaymentRequest() {
                 }}
                 onRowSelectionModelChange={(rowIds) => {
                   handleRowSelectionModelChange(rowIds);
-                  console.log(rowIds, "IDS");
+                  // console.log(rowIds, "IDS");
                 }}
                 rowSelectionModel={rowSelectionModel}
               />
@@ -2295,7 +2373,7 @@ export default function PendingPaymentRequest() {
                 }}
                 onRowSelectionModelChange={(rowIds) => {
                   handleRowSelectionModelChange(rowIds);
-                  console.log(rowIds, "IDS");
+                  // console.log(rowIds, "IDS");
                 }}
                 rowSelectionModel={rowSelectionModel}
               />
@@ -2327,7 +2405,7 @@ export default function PendingPaymentRequest() {
                 }}
                 onRowSelectionModelChange={(rowIds) => {
                   handleRowSelectionModelChange(rowIds);
-                  console.log(rowIds, "IDS");
+                  // console.log(rowIds, "IDS");
                 }}
                 rowSelectionModel={rowSelectionModel}
               />
