@@ -26,7 +26,7 @@ const FamilyFields = () => {
 
   const familyFieldLabels = {
     name: "Full Name",
-    DOB: "Date of Birth",
+    // DOB: "Date of Birth",
     contact: "Contact Number",
     occupation: "Occupation",
     annual_income: "Annual Income",
