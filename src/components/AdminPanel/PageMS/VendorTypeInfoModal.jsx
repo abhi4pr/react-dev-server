@@ -18,10 +18,12 @@ import {
   useGetPmsPayCycleQuery,
   useGetPmsPaymentMethodQuery,
   useGetPmsPlatformQuery,
+  useGetVendorWhatsappLinkTypeQuery,
 } from "../../Store/reduxBaseURL";
 import { useEffect, useState } from "react";
 import { FaEdit } from "react-icons/fa";
 import DeleteButton from "../DeleteButton";
+import { set } from "date-fns";
 
 export default function VendorTypeInfoModal() {
   const dispatch = useDispatch();
@@ -63,6 +65,13 @@ export default function VendorTypeInfoModal() {
     refetch: payCycleRefetch,
   } = useGetPmsPayCycleQuery();
 
+  const {
+    data: whatsappLinkData,
+    isLoading: whatsappLinkIsLoading,
+    error: whatsappLinkError,
+    refetch: whatsappLinkRefetch,
+  } = useGetVendorWhatsappLinkTypeQuery();
+
   const handleClose = () => {
     dispatch(handleChangeVendorInfoModal());
   };
@@ -91,8 +100,24 @@ export default function VendorTypeInfoModal() {
     dispatch(setVendorRowData(row));
   };
 
+  const handleWhatsappGroupLinkRowData = (row) => {
+    dispatch(setShowAddVendorModal());
+    dispatch(setModalType("updateWhatsappLinkType"));
+    dispatch(setVendorRowData(row));
+  };
+
   const getData = () => {
-    vendorRefetch();
+    if (modalType == "Vendor") {
+      vendorRefetch();
+    } else if (modalType == "Platform") {
+      platformRefetch();
+    } else if (modalType == "PaymentMethod") {
+      paymentRefetch();
+    } else if (modalType == "PayCycle") {
+      payCycleRefetch();
+    } else if (modalType == "WhatsappLinkType") {
+      whatsappLinkRefetch();
+    }
     handleClose();
   };
 
@@ -128,7 +153,7 @@ export default function VendorTypeInfoModal() {
             <FaEdit />{" "}
           </button>
           <DeleteButton
-            endpoint="deleteVendor"
+            endpoint="v1/vendor_type"
             id={row._id}
             getData={getData}
           />
@@ -169,7 +194,8 @@ export default function VendorTypeInfoModal() {
             <FaEdit />{" "}
           </button>
           <DeleteButton
-            endpoint="deletePlatform"
+            // endpoint="deletePlatform"
+            endpoint="v1/vendor_platform"
             id={row._id}
             getData={getData}
           />
@@ -209,7 +235,11 @@ export default function VendorTypeInfoModal() {
           >
             <FaEdit />{" "}
           </button>
-          <DeleteButton endpoint="deletePay" id={row._id} getData={getData} />
+          <DeleteButton
+            endpoint="v1/payment_method/"
+            id={row._id}
+            getData={getData}
+          />
         </>
       ),
     },
@@ -246,8 +276,45 @@ export default function VendorTypeInfoModal() {
           >
             <FaEdit />{" "}
           </button>
+          <DeleteButton endpoint="v1/paycycle" id={row._id} getData={getData} />
+        </>
+      ),
+    },
+  ];
+
+  const whatsappGrouplinkType = [
+    {
+      name: "S.NO",
+      selector: (row, index) => <div>{index + 1}</div>,
+      sortable: true,
+    },
+    {
+      name: "Link Type",
+      selector: (row) => row.link_type,
+    },
+    {
+      name: "Description",
+      selector: (row) => row.description,
+    },
+    {
+      name: "Created By",
+      selector: (row) => row.created_by_name,
+    },
+    {
+      name: "Action",
+      cell: (row) => (
+        <>
+          <button
+            title="Edit"
+            className="btn btn-outline-primary btn-sm user-button"
+            onClick={() => handleWhatsappGroupLinkRowData(row)}
+            data-toggle="modal"
+            data-target="#myModal"
+          >
+            <FaEdit />{" "}
+          </button>
           <DeleteButton
-            endpoint="deletePayCycle"
+            endpoint="v1/group_link_type"
             id={row._id}
             getData={getData}
           />
@@ -255,7 +322,6 @@ export default function VendorTypeInfoModal() {
       ),
     },
   ];
-
   useEffect(() => {
     if (modalType == "Vendor") {
       vendorRefetch();
@@ -281,6 +347,12 @@ export default function VendorTypeInfoModal() {
       setTitle("Pay Cycle Overview");
       setData(payCycle);
       setLoading(payCycleIsLoading);
+    } else if (modalType == "WhatsappLinkType") {
+      whatsappLinkRefetch();
+      setColumns(whatsappGrouplinkType);
+      setTitle("Whatsapp Link Type Overview");
+      setData(whatsappLinkData);
+      setLoading(whatsappLinkIsLoading);
     }
   }, [modalType]);
 

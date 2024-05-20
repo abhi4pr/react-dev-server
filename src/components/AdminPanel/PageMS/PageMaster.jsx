@@ -12,7 +12,8 @@ import { IconButton } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import InfoIcon from "@mui/icons-material/Info";
 import { useDispatch, useSelector } from "react-redux";
-import { setOpenShowAddModal } from "../../Store/PageMaster";
+import { setModalType, setOpenShowAddModal } from "../../Store/PageMaster";
+import PageAddMasterModal from "./PageAddMasterModal";
 
 const PageMaster = () => {
   const { toastAlert, toastError } = useGlobalContext();
@@ -58,8 +59,8 @@ const PageMaster = () => {
   const userID = decodedToken.id;
 
   const dispatch = useDispatch();
-  const showAddModal= useSelector(state=>state.pageMaster.showAddModal)
-console.log(showAddModal,"showAddModal")
+  // const showAddModal = useSelector((state) => state.pageMaster.showAddModal);
+
   const PageLevels = [
     { value: "Level 1 (High)", label: "Level 1 (High)" },
     { value: "Level 2 (Medium)", label: "Level 2 (Medium)" },
@@ -83,7 +84,7 @@ console.log(showAddModal,"showAddModal")
 
   const handleAddProfileTypeClick = () => {
     dispatch(setOpenShowAddModal());
-
+    dispatch(setModalType("Profile Type"));
   };
 
   const getData = () => {
@@ -702,6 +703,7 @@ console.log(showAddModal,"showAddModal")
           </div>
         </div>
       </FormContainer>
+      <PageAddMasterModal />
     </>
   );
 };

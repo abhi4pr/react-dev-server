@@ -28,6 +28,7 @@ import {
   useGetPmsPayCycleQuery,
   useGetPmsPaymentMethodQuery,
   useGetPmsPlatformQuery,
+  useGetVendorWhatsappLinkTypeQuery,
 } from "../../Store/reduxBaseURL";
 import InfoIcon from "@mui/icons-material/Info";
 import VendorTypeInfoModal from "./VendorTypeInfoModal";
@@ -532,6 +533,12 @@ const VendorMaster = () => {
     data: cycleQueryData,
   } = useGetPmsPayCycleQuery();
 
+  const {
+    isLoading,
+    error,
+    data: whatsappLinkType,
+  } = useGetVendorWhatsappLinkTypeQuery();
+
   const cycleData = cycleQueryData?.data;
 
   const handleRemarkChange = (i, value) => {
@@ -625,6 +632,15 @@ const VendorMaster = () => {
     setWhatsappLink(link);
   };
 
+  const handleAddWhatsappGroupLinkTypeClick=()=>{
+    dispatch(setShowAddVendorModal());
+    dispatch(setModalType("WhatsappLinkType"));
+  }
+
+  const handleWhatsappGroupLinkTypeInfoClick=()=>{
+    dispatch(handleChangeVendorInfoModal());
+    dispatch(setModalType("WhatsappLinkType"));
+  }
   if (_id) {
     axios.get(baseUrl + "vendorAllData").then((res) => {
       const data = res.data.tmsVendorkMastList.filter((e) => e._id === _id);
@@ -1359,7 +1375,7 @@ const VendorMaster = () => {
             />
             <FieldContainer
               key={index.remark}
-              label={`Remark`}
+              label={`Group Purpose`}
               value={link.remark}
               required={false}
               onChange={(e) => handleRemarkChange(index, e.target.value)}
@@ -1370,21 +1386,46 @@ const VendorMaster = () => {
                 Type <sup style={{ color: "red" }}>*</sup>
               </label>
               <Select
-                options={["Execution", "Payment"].map((option) => ({
-                  label: option,
-                  value: option,
+                // options={["Execution", "Payment"].map((option) => ({
+                //   label: option,
+                //   value: option,
+                // }))}
+                options={whatsappLinkType?.data?.map((option) => ({
+                  label: option.link_type,
+                  value: option._id,
                 }))}
                 required={true}
                 value={{
-                  value: link.type,
-                  label: link.type,
+                  value: link.link_type,
+                  label: link._id,
                 }}
                 onChange={(e) => {
                   let updatedLinks = [...whatsappLink];
                   updatedLinks[index].type = e.value;
                   setWhatsappLink(updatedLinks);
                 }}
-              ></Select>
+              />
+              {index == 0 && (
+                <>
+                  {" "}
+                  <IconButton
+                    onClick={handleAddWhatsappGroupLinkTypeClick}
+                    variant="contained"
+                    color="primary"
+                    aria-label="Add Pay Cycle.."
+                  >
+                    <AddIcon />
+                  </IconButton>
+                  <IconButton
+                    onClick={handleWhatsappGroupLinkTypeInfoClick}
+                    variant="contained"
+                    color="primary"
+                    aria-label="Pay Cycle Info.."
+                  >
+                    <InfoIcon />
+                  </IconButton>
+                </>
+              )}
             </div>
 
             {index > 0 && (
