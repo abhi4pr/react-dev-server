@@ -60,7 +60,6 @@ import FamilyFields from "./FamilyFields";
 import EducationFields from "./EducationFields";
 import CocTabPreonboarding from "./CocTabPreonboarding";
 import { baseUrl } from "../../utils/config";
-import { set } from "date-fns";
 import ImageSelector from "./ImageSelector";
 import RocketAnimation from "./RocketAnimation";
 import { FormatName } from "../../utils/FormatName";
@@ -570,7 +569,9 @@ const PreOnboardingUserMaster = () => {
 
   useEffect(() => {
     // const approveCount = documentData.filter((doc) => doc.status == "Approved" ).length;
-    const approveCount = documentData.filter((doc) => doc.status == "Verification Pending").length;
+    const approveCount = documentData.filter(
+      (doc) => doc.status == "Verification Pending"
+    ).length;
 
     const documentPercentageTemp = Math.ceil(
       (approveCount / documentData.length) * 100
@@ -1311,6 +1312,7 @@ const PreOnboardingUserMaster = () => {
     });
   };
 
+  // position: window.innerWidth < 768 ? 'bottom' : 'right',
   const steps = [
     {
       selector: "#sidebarFormBox",
@@ -1791,6 +1793,7 @@ const PreOnboardingUserMaster = () => {
                       <div className="welcome_board_heading">
                         <h1>Welcome </h1>
                         <h2>{loginUserName}</h2>
+                        <h1>To start your onboarding please click the form</h1>
                       </div>
                       {/* <button
                       className="btn btn-success d-block w-100"

@@ -13,12 +13,14 @@ const DigitalSignature = ({
 }) => {
   const { toastAlert } = useGlobalContext();
   const [signature, setSignature] = useState();
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleClear = () => {
     signature.clear();
   };
 
   const handleGenerate = async () => {
+    setIsSubmitting(true);
     const canvas = signature.getTrimmedCanvas();
     canvas.toBlob(async (blob) => {
       if (blob) {
@@ -57,6 +59,7 @@ const DigitalSignature = ({
             },
           });
 
+          setIsSubmitting(false);
           closeModal();
           toastAlert("Submitted");
           signature.clear();
@@ -89,7 +92,7 @@ const DigitalSignature = ({
           className="btn onboardBtn btn_secondary"
           onClick={handleGenerate}
         >
-          Save
+          {isSubmitting ? "Submitting...." : "Save"}
         </button>
       </div>
     </>
