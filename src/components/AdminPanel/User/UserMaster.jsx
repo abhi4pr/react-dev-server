@@ -514,153 +514,90 @@ const UserMaster = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (username == "") {
-      setMandatoryFieldsEmpty((perv) => ({ ...perv, fullName: true }));
+  
+    const errors = {};
+  
+    if (!username) {
+      errors.fullName = true;
     }
-    if (personalEmail == "") {
-      setMandatoryFieldsEmpty((perv) => ({ ...perv, personalEmail: true }));
+    if (!personalEmail) {
+      errors.personalEmail = true;
     }
-    if (personalContact == "") {
-      setMandatoryFieldsEmpty((prev) => ({
-        ...prev,
-        personalContact: true,
-      }));
+    if (!personalContact) {
+      errors.personalContact = true;
     }
-    if (alternateContact == "") {
-      setMandatoryFieldsEmpty((prev) => ({
-        ...prev,
-        alternateContact: true,
-      }));
+    if (!alternateContact) {
+      errors.alternateContact = true;
     }
-    if (gender == "") {
-      setMandatoryFieldsEmpty((prev) => ({
-        ...prev,
-        gender: true,
-      }));
+    if (!gender) {
+      errors.gender = true;
     }
-    if (dateOfBirth == "") {
-      setMandatoryFieldsEmpty((prev) => ({
-        ...prev,
-        DOB: true,
-      }));
+    if (!dateOfBirth) {
+      errors.DOB = true;
     }
-    if (maritialStatus == "") {
-      setMandatoryFieldsEmpty((prev) => ({
-        ...prev,
-        maritialStatus: true,
-      }));
+    if (!maritialStatus) {
+      errors.maritialStatus = true;
     }
-    if (jobType == "") {
-      setMandatoryFieldsEmpty((prev) => ({
-        ...prev,
-        jobType: true,
-      }));
-    }
-    if (department == "") {
-      setMandatoryFieldsEmpty((prev) => ({
-        ...prev,
-        department: true,
-      }));
-    }
-    if (subDepartment == "") {
-      setMandatoryFieldsEmpty((prev) => ({
-        ...prev,
-        subDepartment: true,
-      }));
-    }
-    if (designation == "") {
-      setMandatoryFieldsEmpty((prev) => ({
-        ...prev,
-        designation: true,
-      }));
-      // alert('designation  ')
-    }
-    if (reportL1 == "") {
-      setMandatoryFieldsEmpty((prev) => ({
-        ...prev,
-        reportL1: true,
-      }));
-    }
-    if (loginId == "") {
-      setMandatoryFieldsEmpty((prev) => ({
-        ...prev,
-        loginId: true,
-      }));
-    }
-    if (password == "") {
-      setMandatoryFieldsEmpty((prev) => ({
-        ...prev,
-        password: true,
-      }));
-    }
-    if (joiningDate == "") {
-      setMandatoryFieldsEmpty((prev) => ({
-        ...prev,
-        joiningDate: true,
-      }));
-    }
-    if (dobValidate < 15 || dobValidate > 100) {
-      setDobError("Age should be greater than 15 and less than 100");
-    }
-
     if (!jobType) {
-      // console.log("job type");
-      toastError("Fill the Mandatory fields");
-    } else if (!department || department == "") {
-      toastError("Fill the Mandatory fields");
-    } else if (
-      !subDepartment ||
-      subDepartment == "" ||
-      subDepartment.length === 0
-    ) {
-      toastError("Fill the Mandatory fields");
-    } else if (!designation || designation == "") {
-      toastError("Fill the Mandatory fields");
-    } else if (!roles || roles == "") {
-      toastError("Fill the Mandatory fields");
-    } else if (!reportL1 || reportL1 == "") {
-      return toastError("Fill the Mandatory fields");
-    } else if (!personalEmail || personalEmail == "") {
-      toastError("Fill the Mandatory fields");
-    } else if (
-      !personalContact ||
-      personalContact == "" ||
-      personalContact.length !== 10
-    ) {
-      toastError("Personal Contact is Required and  must be 10 digits");
-    } else if (
-      !alternateContact ||
-      alternateContact == "" ||
-      alternateContact.length !== 10
-    ) {
-      toastError("Alternate Contact is Required and  must be 10 digits");
-    } else if (!loginId || loginId == "") {
-      toastError("Fill the Mandatory fields");
-    } else if (!password || password == "") {
-      toastError("Fill the Mandatory fields");
-    } else if (!gender || gender == "") {
-      toastError("Fill the Mandatory fields");
-    } else if (!nationality || nationality == "") {
-      toastError("Fill the Mandatory fields");
-    } else if (!dateOfBirth || dateOfBirth == "") {
-      toastError("Fill the Mandatory fields");
-    } else if (
-      !maritialStatus ||
-      maritialStatus == "" ||
-      maritialStatus.length == 0
-    ) {
-      toastError("Fill the Mandatory fields");
-    } else if (!joiningDate || joiningDate == "") {
-      toastError("Fill the Mandatory fields");
-    } else if (!status || status == "") {
-      toastError("Fill the Mandatory fields");
-    } else if (!username || username == "") {
-      toastError("Fill the Mandatory fields");
+      errors.jobType = true;
     }
-    // if (!joiningDate || joiningDate == "") {
-    //   toastError("Fill the Mandatory fields");
-    // }
-
+    if (!department) {
+      errors.department = true;
+    }
+    if (!subDepartment) {
+      errors.subDepartment = true;
+    }
+    if (!designation) {
+      errors.designation = true;
+    }
+    if (!reportL1) {
+      errors.reportL1 = true;
+    }
+    if (!loginId) {
+      errors.loginId = true;
+    }
+    if (!password) {
+      errors.password = true;
+    }
+    if (!joiningDate) {
+      errors.joiningDate = true;
+    }
+    if (!dateOfBirth) {
+      errors.dateOfBirth = true;
+    }
+  
+    // Check for additional mandatory fields
+    const mandatoryFields = [
+      jobType, department, subDepartment, designation, roles, 
+      reportL1, personalEmail, personalContact, alternateContact,
+      loginId, password, gender, nationality, dateOfBirth, 
+      maritialStatus, joiningDate, status, username
+    ];
+  
+    const isMandatoryFieldEmpty = mandatoryFields.some(field => !field);
+  
+    if (isMandatoryFieldEmpty) {
+      toastError("Fill the Mandatory fields");
+      setMandatoryFieldsEmpty(errors);
+      return; // Prevent form submission
+    }
+  
+    if (personalContact.length !== 10) {
+      toastError("Personal Contact must be 10 digits");
+      return; // Prevent form submission
+    }
+  
+    if (alternateContact.length !== 10) {
+      toastError("Alternate Contact must be 10 digits");
+      return; // Prevent form submission
+    }
+  
+    setMandatoryFieldsEmpty(errors); // Update state with errors
+  
+    if (Object.keys(errors).length > 0) {
+      return; // Prevent form submission
+    }
+  
     const formData = new FormData();
     formData.append("created_by", loginUserId);
     // personal info payload Start
@@ -677,7 +614,7 @@ const UserMaster = () => {
     formData.append("DateofMarriage", dateOfMarraige);
     formData.append("spouse_name", spouseName);
     // personal info payload End
-
+  
     //offcial info payload Start
     formData.append("job_type", jobType);
     formData.append("dept_id", department);
@@ -693,134 +630,94 @@ const UserMaster = () => {
     formData.append("user_login_password", password);
     formData.append("user_status", status);
     formData.append("sitting_id", sitting);
-
-    // formData.append(
-    //   "room_id",
-    //   jobType === "WFH" || jobType === "WFHD" ? "1" : roomId.room_id
-    // );
     formData.append("room_id", 1);
     formData.append("joining_date", joiningDate);
     formData.append("user_credit_limit", creditLimit);
     //offcial info payload End
-
-    if (personalEmail && personalContact) {
-      try {
-        const isLoginIdExists = usersData.some(
-          (user) =>
-            user.user_login_id.toLocaleLowerCase() ===
-            loginId.toLocaleLowerCase()
-        );
-        const contactNumberExists = usersData.some(
-          (user) => user.user_contact_no == personalContact
-        );
-
-        const emailIdExists = usersData.some(
-          (user) =>
-            user.user_email_id?.toLocaleLowerCase() ==
-            personalEmail?.toLocaleLowerCase()
-        );
-
-        if (isLoginIdExists) {
-          alert("this login ID already exists");
-        } else if (contactNumberExists) {
-          alert("Personal Contact Already Exists");
-        } else if (emailIdExists) {
-          alert("Personal Email Already Exists");
+  
+    try {
+      const isLoginIdExists = usersData.some(
+        (user) => user.user_login_id.toLocaleLowerCase() === loginId.toLocaleLowerCase()
+      );
+      const contactNumberExists = usersData.some(
+        (user) => user.user_contact_no == personalContact
+      );
+      const emailIdExists = usersData.some(
+        (user) => user.user_email_id?.toLocaleLowerCase() == personalEmail?.toLocaleLowerCase()
+      );
+  
+      if (isLoginIdExists) {
+        alert("this login ID already exists");
+      } else if (contactNumberExists) {
+        alert("Personal Contact Already Exists");
+      } else if (emailIdExists) {
+        alert("Personal Email Already Exists");
+      } else {
+        setIsLoading(true);
+        const res = await axios.post(baseUrl + "add_user_for_general_information", formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        });
+  
+        if (res.status === 200) {
+          const userResponseID = res.data.simv.user_id;
+          setUserResID(userResponseID);
+          setIsFormSubmitted(true);
+          setIsLoading(false);
+          setIsGeneralSubmitted(true);
+          setActiveAccordionIndex((prev) => prev + 1);
         } else {
-          setIsLoading(true);
-          await axios
-            .post(baseUrl + "add_user_for_general_information", formData, {
-              headers: {
-                "Content-Type": "multipart/form-data",
-              },
-            })
-
-            .then((res) => {
-              if (res.status == 200) {
-                const userResponseID = res.data.simv.user_id;
-                setUserResID(userResponseID);
-                setIsFormSubmitted(true);
-                // toastAlert(res.data.simv.emp_id + " " + "Employee Registerd");
-                setIsLoading(false);
-              } else {
-                toastError("Sorry User is Not Created, Please try again later");
-                setIsLoading(false);
-              }
-              setIsGeneralSubmitted(true);
-              setActiveAccordionIndex((prev) => prev + 1);
-            })
-            .catch((err) => {
-              toastError(err.message);
-              setIsLoading(false);
-            });
-
-          axios
-            .post(baseUrl + "add_send_user_mail", {
-              email: personalEmail,
-              subject: "User Registration",
-              text: "A new user has been registered.",
-              attachment: selectedImage,
-              login_id: loginId,
-              name: username,
-              password: password,
-              status: "onboarded",
-            })
-            .then((res) => {
-              // console.log("Email sent successfully:", res.data);
-            })
-            .catch((error) => {
-              // console.log("Failed to send email:", error);
-            });
-
-          if (reportL1 !== "") {
-            axios
-              .post(baseUrl + "add_send_user_mail", {
-                email: personalEmail,
-                subject: "User Registration",
-                text: "A new user has been registered.",
-                attachment: selectedImage,
-                login_id: loginId,
-                name: username,
-                password: password,
-                status: "reportTo",
-                name2: reportL1Email,
-              })
-              .then((res) => {
-                // console.log("Email sent successfully:", res.data);
-              })
-              .catch((error) => {
-                // console.log("Failed to send email:", error);
-              });
-
-            whatsappApi.callWhatsAPI(
-              "Extend Date by User",
-              JSON.stringify(personalContact),
-              username,
-              ["You have assinge Report L1", "ok"]
-            );
-          }
-
+          toastError("Sorry User is Not Created, Please try again later");
+          setIsLoading(false);
+        }
+  
+        await axios.post(baseUrl + "add_send_user_mail", {
+          email: personalEmail,
+          subject: "User Registration",
+          text: "A new user has been registered.",
+          attachment: selectedImage,
+          login_id: loginId,
+          name: username,
+          password: password,
+          status: "onboarded",
+        });
+  
+        if (reportL1) {
+          await axios.post(baseUrl + "add_send_user_mail", {
+            email: personalEmail,
+            subject: "User Registration",
+            text: "A new user has been registered.",
+            attachment: selectedImage,
+            login_id: loginId,
+            name: username,
+            password: password,
+            status: "reportTo",
+            name2: reportL1Email,
+          });
+  
           whatsappApi.callWhatsAPI(
-            "userMng",
+            "Extend Date by User",
             JSON.stringify(personalContact),
             username,
-            [username, loginId, password]
+            ["You have assigned Report L1", "ok"]
           );
-          setFamilyDetails([initialFamilyDetailsGroup]);
-          setEducationDetails([initialEducationDetailsGroup]);
         }
-      } catch (error) {
-        console.error("Failed to submit form", error);
+  
+        whatsappApi.callWhatsAPI(
+          "userMng",
+          JSON.stringify(personalContact),
+          username,
+          [username, loginId, password]
+        );
+        setFamilyDetails([initialFamilyDetailsGroup]);
+        setEducationDetails([initialEducationDetailsGroup]);
       }
-    } else {
-      if (contact.length > 10) {
-        if (isValidcontact == false)
-          toastError("Enter Phone Number in Proper Format");
-      } else if (validEmail != true) {
-        alert("Enter Valid Email");
-      }
+    } catch (error) {
+      console.error("Failed to submit form", error);
     }
   };
+  
 
   const handleSubmitOtherDetails = async (e) => {
     e.preventDefault();
@@ -1335,19 +1232,13 @@ const UserMaster = () => {
     const age = calculateAge(selectedDate);
     const ageDays = calculateAgeInDays(selectedDate);
 
-    if (validateAge < 15) {
-      setDobError("Age must be at least 15 years.");
+    if(validateAge < 15 || validateAge > 100){
+      setDobError("Age can't less than 15 or greater than 100 years.");
       setDateOfBirth("");
     }
-    if (validateAge > 100) {
-      setDobError("Age can not more than 100 years");
-      setDateOfBirth("");
-    }
-    // else {
     setDateOfBirth(selectedDate);
     setAge(age);
     setAgeCalculate(ageDays);
-    // }
   };
 
   function addMore() {
@@ -1726,38 +1617,7 @@ const UserMaster = () => {
             <label className="form-label">
               DOB <sup className="form-error">*</sup>
             </label>
-            {/* <div className="pack" style={{ position: "relative" }}>
-          <input
-            label="DOB"
-            type="date"
-            className="form-control"
-            style={{ width: "100%" }}
-            max={today}
-            value={dateOfBirth}
-            onChange={handleDateChange}
-          />
-          <div
-            className="custom-btn-2"
-            style={{
-              pointereEvents: "none",
-              position: "absolute",
-              bottom: "7px",
-              right: "5px",
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              fontSize: "16px",
-              color: "var(--medium)",
-              height: "34px",
-              width: "42px",
-              borderRadius: "0  12px 12px 0",
-              borderLeft: "1px solid var(--border)",
-              backgroundColor: "var(--white)",
-            }}
-          >
-            <i class="bi bi-calendar-week"></i>
-          </div>
-        </div> */}
+            
             <LocalizationProvider dateAdapter={AdapterDayjs}>
               <DatePicker
                 value={dateOfBirth}
@@ -1766,7 +1626,7 @@ const UserMaster = () => {
                 renderInput={(params) => <TextField {...params} />}
               />
             </LocalizationProvider>
-            {<p style={{ color: "red" }}>{dobError}</p>}
+            {<p className="form-error">{dobError}</p>}
           </div>
           {dateOfBirth !== "" && (
             <FieldContainer fieldGrid={3} label="Age" value={age} />
@@ -1789,19 +1649,7 @@ const UserMaster = () => {
               onChange={(e) => {
                 setNationality(e.value);
               }}
-              // onBlur={() => {
-              //   if (nationality === "" || nationality === null) {
-              //     setMandatoryFieldsEmpty((prevState) => ({
-              //       ...prevState,
-              //       nationality: true,
-              //     }));
-              //   } else {
-              //     setMandatoryFieldsEmpty({
-              //       ...mandatoryFieldsEmpty,
-              //       nationality: false,
-              //     });
-              //   }
-              // }}
+              
               required
             />
             {mandatoryFieldsEmpty.nationality && (
@@ -1809,33 +1657,6 @@ const UserMaster = () => {
             )}
           </div>
 
-          {/* <FieldContainer
-        label="Nationality"
-        astric={true}
-        fieldGrid={3}
-        value={nationality}
-        onChange={(e) => setNationality(e.target.value)}
-        onBlur={() => {
-          if (
-            nationality === "" ||
-            nationality == null ||
-            nationality.length == 0
-          ) {
-            setMandatoryFieldsEmpty((prevState) => ({
-              ...prevState,
-              nationality: true,
-            }));
-          } else {
-            setMandatoryFieldsEmpty({
-              ...mandatoryFieldsEmpty,
-              nationality: false,
-            });
-          }
-        }}
-      />
-      {mandatoryFieldsEmpty.nationality && (
-        <p  className="form-error">Please Enter Nationality</p>
-      )} */}
           <div className="form-group col-3">
             <label className="form-label">
               Marital Status <sup className="form-error">*</sup>
@@ -1883,15 +1704,7 @@ const UserMaster = () => {
             />
           )}
           {maritialStatus == "Married" && (
-            // <FieldContainer
-            //   type="date"
-            //   fieldGrid={3}
-            //   label="Date Of Marraige"
-            //   value={dateOfMarraige}
-            //   onChange={(e) => setDateOfMarraige(e.target.value)}
-            //   max={today}
-            //   required={false}
-            // />
+            //
             <div className="col-3">
               <label className="form-label">
                 Date Of Marraige <sup className="form-error">*</sup>
