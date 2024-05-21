@@ -1766,7 +1766,7 @@ const UserMaster = () => {
                 renderInput={(params) => <TextField {...params} />}
               />
             </LocalizationProvider>
-            {<p style={{ color: "red !important" }}>{dobError}</p>}
+            {<p style={{ color: "red" }}>{dobError}</p>}
           </div>
           {dateOfBirth !== "" && (
             <FieldContainer fieldGrid={3} label="Age" value={age} />

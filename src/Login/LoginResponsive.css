@@ -6767,46 +6767,73 @@
   display: flex;
 }
 
-.signature-img{
+.signature-img {
   width: 150px;
 }
-.bold{
+.bold {
   font-weight: 700 !important;
   /* font-size: 10px !important; */
 }
-p{
+p {
   color: black !important;
 }
-.footer-letter{
-  gap:0px !important;
+.footer-letter {
+  gap: 0px !important;
 }
 .footer-letter {
   transform: scale(0.8);
 }
-.header-letter,.footer-letter {
+.header-letter,
+.footer-letter {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   padding: 10px;
 
- gap: 1px;
- .brandtext {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-  font-size: 22px;
-  font-weight: 600;
-  color: var(--dark);
-  span {
-    font-weight: 400;
+  gap: 1px;
+  .brandtext {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--dark);
+    span {
+      font-weight: 400;
+    }
+  }
+  img {
+    width: 60px;
   }
 }
- img{
-  width: 60px;
- }
+.ol-table {
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
 
+  table {
+    width: 70%;
+  }
+
+  th {
+    background-color: #000;
+    color: white;
+    text-align: center;
+  }
+
+  tr {
+    border: 1px solid #000;
+    line-height: 35px;
+  }
+
+  td {
+    border-left: 1px solid #000;
+    padding-left: 10px;
+  }
 }
 /*[ Position ]
 -----------------------------------------------------------
