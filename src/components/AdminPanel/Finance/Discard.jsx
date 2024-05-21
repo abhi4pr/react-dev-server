@@ -274,8 +274,8 @@ export default function Discard() {
               {item.status == 0
                 ? "Pending"
                 : item.status == 2
-                ? "Discarded"
-                : "Paid"}
+                  ? "Discarded"
+                  : "Paid"}
             </p>
           ));
         } else {
@@ -624,7 +624,7 @@ export default function Discard() {
                 setViewImgSrc(imgUrl);
               }}
               src={imgUrl}
-              style={{ width: "100px", height: "100px" }}
+              style={{ width: "100px", height: "45px" }}
               title="PDF Preview"
             />
           ) : (
@@ -756,13 +756,11 @@ export default function Discard() {
         const isCurrentMonthGreaterThanMarch = new Date().getMonth() + 1 > 3;
         const currentYear = new Date().getFullYear();
         const startDate = new Date(
-          `04/01/${
-            isCurrentMonthGreaterThanMarch ? currentYear : currentYear - 1
+          `04/01/${isCurrentMonthGreaterThanMarch ? currentYear : currentYear - 1
           }`
         );
         const endDate = new Date(
-          `03/31/${
-            isCurrentMonthGreaterThanMarch ? currentYear + 1 : currentYear
+          `03/31/${isCurrentMonthGreaterThanMarch ? currentYear + 1 : currentYear
           }`
         );
         const dataFY = nodeData.filter((e) => {

@@ -677,8 +677,8 @@ export default function PaymentDone() {
               {item.status == 0
                 ? "Pending"
                 : item.status == 2
-                ? "Discarded"
-                : "Paid"}
+                  ? "Discarded"
+                  : "Paid"}
             </p>
           ));
         } else {
@@ -715,7 +715,7 @@ export default function PaymentDone() {
         const imgUrl = `https://purchase.creativefuel.io/${params.row.invc_img}`;
         return isPdf ? (
           <div
-            style={{ position: "relative" }}
+            style={{ position: "relative", overflow: "hidden", height: "40px" }}
             onClick={() => {
               console.log("clicked");
               setOpenImageDialog(true);
@@ -889,13 +889,11 @@ export default function PaymentDone() {
         const isCurrentMonthGreaterThanMarch = new Date().getMonth() + 1 > 3;
         const currentYear = new Date().getFullYear();
         const startDate = new Date(
-          `04/01/${
-            isCurrentMonthGreaterThanMarch ? currentYear : currentYear - 1
+          `04/01/${isCurrentMonthGreaterThanMarch ? currentYear : currentYear - 1
           }`
         );
         const endDate = new Date(
-          `03/31/${
-            isCurrentMonthGreaterThanMarch ? currentYear + 1 : currentYear
+          `03/31/${isCurrentMonthGreaterThanMarch ? currentYear + 1 : currentYear
           }`
         );
         const dataFY = nodeData.filter((e) => {
@@ -1090,6 +1088,7 @@ export default function PaymentDone() {
     {
       field: "gstHold",
       headerName: "GST Hold",
+      width: 150,
       renderCell: (params) => {
         return params.row.gstHold == 1 ? "Yes" : "No";
       },
@@ -1097,6 +1096,7 @@ export default function PaymentDone() {
     {
       field: "TDSDeduction",
       headerName: "TDS Deduction",
+      width: 150,
       renderCell: (params) => {
         return params.row.TDSDeduction == 1 ? "Yes" : "No";
       },

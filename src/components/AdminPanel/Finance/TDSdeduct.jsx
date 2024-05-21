@@ -575,8 +575,8 @@ export default function TDSdeduct() {
               {item.status == 0
                 ? "Pending"
                 : item.status == 2
-                ? "Discarded"
-                : "Paid"}
+                  ? "Discarded"
+                  : "Paid"}
             </p>
           ));
         } else {
@@ -624,7 +624,7 @@ export default function TDSdeduct() {
               allowFullScreen={true}
               src={imgUrl}
               title="PDF Preview"
-              style={{ width: "80px", height: "80px" }}
+              style={{ width: "80px", height: "45px" }}
             />
             <div
               onClick={() => {
@@ -748,13 +748,11 @@ export default function TDSdeduct() {
         const isCurrentMonthGreaterThanMarch = new Date().getMonth() + 1 > 3;
         const currentYear = new Date().getFullYear();
         const startDate = new Date(
-          `04/01/${
-            isCurrentMonthGreaterThanMarch ? currentYear : currentYear - 1
+          `04/01/${isCurrentMonthGreaterThanMarch ? currentYear : currentYear - 1
           }`
         );
         const endDate = new Date(
-          `03/31/${
-            isCurrentMonthGreaterThanMarch ? currentYear + 1 : currentYear
+          `03/31/${isCurrentMonthGreaterThanMarch ? currentYear + 1 : currentYear
           }`
         );
         const dataFY = nodeData.filter((e) => {
