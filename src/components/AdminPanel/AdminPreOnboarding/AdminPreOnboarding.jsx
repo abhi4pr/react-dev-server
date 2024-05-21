@@ -111,6 +111,7 @@ const AdminPreOnboarding = () => {
     personalEmail: false,
     personalContact: false,
     subDepartment: false,
+    password: false,
   });
 
   useEffect(() => {
@@ -211,6 +212,9 @@ const AdminPreOnboarding = () => {
     }
     if (subDepartment == "") {
       setIsRequired((perv) => ({ ...perv, subDepartment: true }));
+    }
+    if (password == "") {
+      setIsRequired((perv) => ({ ...perv, password: true }));
     }
 
     if (!username) {
@@ -492,6 +496,9 @@ const AdminPreOnboarding = () => {
       generatePassword += charset[randomIndex];
     }
     setPassword(generatePassword);
+    if (generatePassword.length > 0) {
+      setIsRequired({ ...isRequired, password: false });
+    }
   };
 
   const generateLoginId = async () => {
@@ -536,12 +543,12 @@ const AdminPreOnboarding = () => {
 
   const handleLoginIdChange = (event) => {
     const selectedLoginId = event.target.value;
-    setLoginId(selectedLoginId);
-    if (selectedLoginId === "") {
+    if (selectedLoginId == "") {
       setIsRequired((prev) => ({ ...prev, loginId: true }));
     } else {
       setIsRequired((prev) => ({ ...prev, loginId: false }));
     }
+    setLoginId(selectedLoginId);
   };
 
   const calculateAge = (dob) => {
@@ -809,7 +816,7 @@ const AdminPreOnboarding = () => {
             // }}
           />
           {isRequired.reportL1 && (
-            <p className="form-error">*Please select Report L1</p>
+            <p className="form-error">Please select Report L1</p>
           )}
         </div>
 
@@ -824,10 +831,10 @@ const AdminPreOnboarding = () => {
             onChange={handlePersonalEmailChange}
           />
           {!validPersonalEmail && (
-            <p className="form-error">*Please Enter valid email</p>
+            <p className="form-error">Please Enter valid email</p>
           )}
           {isRequired.personalEmail && (
-            <p className="form-error">*Please select Personal Email</p>
+            <p className="form-error">Please select Personal Email</p>
           )}
         </div>
         <div className="col-md-3">
@@ -843,10 +850,10 @@ const AdminPreOnboarding = () => {
           />
           {(isContactTouched1 || personalContact.length >= 10) &&
             !isValidcontact1 && (
-              <p className="form-error">*Please Enter a valid Number</p>
+              <p className="form-error">Please Enter a valid Number</p>
             )}
           {isRequired.personalContact && (
-            <p className="form-error">*Please select Personal Contact</p>
+            <p className="form-error">Please select Personal Contact</p>
           )}
         </div>
         {/* <FieldContainer
@@ -915,7 +922,7 @@ const AdminPreOnboarding = () => {
               // setUserCtc(e.target.value);
               const value = e.target.value;
               // Limit input to 6 digits
-              if (/^\d{0,6}$/.test(value)) {
+              if (/^\d{0,7}$/.test(value)) {
                 setUserCtc(value);
               }
 
@@ -1015,7 +1022,7 @@ const AdminPreOnboarding = () => {
                 onChange={handleLoginIdChange}
                 onBlur={() => {
                   if (loginId === "") {
-                    setIsRequired((prev) => ({
+                    return setIsRequired((prev) => ({
                       ...prev,
                       loginId: true,
                     }));
@@ -1038,7 +1045,7 @@ const AdminPreOnboarding = () => {
               </div>
             </div>
             {/* {isRequired.loginId && (
-              <p className="form-error">*Please select a LoginId</p>
+              <p className="form-error">Please select a LoginId</p>
             )} */}
           </div>
         </div>
@@ -1065,6 +1072,9 @@ const AdminPreOnboarding = () => {
               </div>
             </div>
           </div>
+          {isRequired.password && (
+            <p className="form-error">Please select a Password</p>
+          )}
         </div>
 
         <div className="form-group col-3">
@@ -1100,7 +1110,7 @@ const AdminPreOnboarding = () => {
             }}
           />
           {isRequired.roles && (
-            <p className="form-error">*Please select a Role</p>
+            <p className="form-error">Please select a Role</p>
           )}
         </div>
         <div className="col-md-3">
@@ -1122,7 +1132,7 @@ const AdminPreOnboarding = () => {
             />
           </LocalizationProvider>
           {isRequired.joiningDate && (
-            <p className="form-error">*Please select a Joining Date</p>
+            <p className="form-error">Please select a Joining Date</p>
           )}
         </div>
         {/* <FieldContainer
@@ -1146,7 +1156,7 @@ const AdminPreOnboarding = () => {
             />
           </LocalizationProvider>
           {isRequired.dateOfBirth && (
-            <p className="form-error">*Please select a DOB</p>
+            <p className="form-error">Please select a DOB</p>
           )}
         </div>
         {/* <FieldContainer
@@ -1184,7 +1194,7 @@ const AdminPreOnboarding = () => {
             required
           />
           {isRequired.gender && (
-            <p className="form-error">*Please select a Gender</p>
+            <p className="form-error">Please select a Gender</p>
           )}
         </div>
       </FormContainer>

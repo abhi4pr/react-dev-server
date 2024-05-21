@@ -142,7 +142,7 @@ const UserMaster = () => {
   const [department, setDepartment] = useState("");
   const [departmentdata, getDepartmentData] = useState([]);
   const [subDepartmentData, setSubDepartmentData] = useState([]);
-  const [subDepartment, setSubDeparment] = useState([]);
+  const [subDepartment, setSubDeparment] = useState("");
   const [designation, setDesignation] = useState("");
   const [designationData, setDesignationData] = useState([]);
   const [reportL1, setReportL1] = useState("");
@@ -270,6 +270,7 @@ const UserMaster = () => {
     email: false,
     banktype: false,
     jobType: false,
+    dateOfBirth: false,
   });
   const [jobTypeData, setJobTypeData] = useState([]);
 
@@ -514,9 +515,9 @@ const UserMaster = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
+
     const errors = {};
-  
+
     if (!username) {
       errors.fullName = true;
     }
@@ -565,39 +566,53 @@ const UserMaster = () => {
     if (!dateOfBirth) {
       errors.dateOfBirth = true;
     }
-  
+
     // Check for additional mandatory fields
     const mandatoryFields = [
-      jobType, department, subDepartment, designation, roles, 
-      reportL1, personalEmail, personalContact, alternateContact,
-      loginId, password, gender, nationality, dateOfBirth, 
-      maritialStatus, joiningDate, status, username
+      jobType,
+      department,
+      subDepartment,
+      designation,
+      roles,
+      reportL1,
+      personalEmail,
+      personalContact,
+      alternateContact,
+      loginId,
+      password,
+      gender,
+      nationality,
+      dateOfBirth,
+      maritialStatus,
+      joiningDate,
+      status,
+      username,
     ];
-  
-    const isMandatoryFieldEmpty = mandatoryFields.some(field => !field);
-  
+
+    const isMandatoryFieldEmpty = mandatoryFields.some((field) => !field);
+
     if (isMandatoryFieldEmpty) {
       toastError("Fill the Mandatory fields");
       setMandatoryFieldsEmpty(errors);
       return; // Prevent form submission
     }
-  
+
     if (personalContact.length !== 10) {
       toastError("Personal Contact must be 10 digits");
       return; // Prevent form submission
     }
-  
+
     if (alternateContact.length !== 10) {
       toastError("Alternate Contact must be 10 digits");
       return; // Prevent form submission
     }
-  
+
     setMandatoryFieldsEmpty(errors); // Update state with errors
-  
+
     if (Object.keys(errors).length > 0) {
       return; // Prevent form submission
     }
-  
+
     const formData = new FormData();
     formData.append("created_by", loginUserId);
     // personal info payload Start
@@ -614,7 +629,7 @@ const UserMaster = () => {
     formData.append("DateofMarriage", dateOfMarraige);
     formData.append("spouse_name", spouseName);
     // personal info payload End
-  
+
     //offcial info payload Start
     formData.append("job_type", jobType);
     formData.append("dept_id", department);
@@ -634,18 +649,21 @@ const UserMaster = () => {
     formData.append("joining_date", joiningDate);
     formData.append("user_credit_limit", creditLimit);
     //offcial info payload End
-  
+
     try {
       const isLoginIdExists = usersData.some(
-        (user) => user.user_login_id.toLocaleLowerCase() === loginId.toLocaleLowerCase()
+        (user) =>
+          user.user_login_id.toLocaleLowerCase() === loginId.toLocaleLowerCase()
       );
       const contactNumberExists = usersData.some(
         (user) => user.user_contact_no == personalContact
       );
       const emailIdExists = usersData.some(
-        (user) => user.user_email_id?.toLocaleLowerCase() == personalEmail?.toLocaleLowerCase()
+        (user) =>
+          user.user_email_id?.toLocaleLowerCase() ==
+          personalEmail?.toLocaleLowerCase()
       );
-  
+
       if (isLoginIdExists) {
         alert("this login ID already exists");
       } else if (contactNumberExists) {
@@ -654,12 +672,16 @@ const UserMaster = () => {
         alert("Personal Email Already Exists");
       } else {
         setIsLoading(true);
-        const res = await axios.post(baseUrl + "add_user_for_general_information", formData, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        });
-  
+        const res = await axios.post(
+          baseUrl + "add_user_for_general_information",
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
+
         if (res.status === 200) {
           const userResponseID = res.data.simv.user_id;
           setUserResID(userResponseID);
@@ -671,7 +693,7 @@ const UserMaster = () => {
           toastError("Sorry User is Not Created, Please try again later");
           setIsLoading(false);
         }
-  
+
         await axios.post(baseUrl + "add_send_user_mail", {
           email: personalEmail,
           subject: "User Registration",
@@ -682,7 +704,7 @@ const UserMaster = () => {
           password: password,
           status: "onboarded",
         });
-  
+
         if (reportL1) {
           await axios.post(baseUrl + "add_send_user_mail", {
             email: personalEmail,
@@ -695,7 +717,7 @@ const UserMaster = () => {
             status: "reportTo",
             name2: reportL1Email,
           });
-  
+
           whatsappApi.callWhatsAPI(
             "Extend Date by User",
             JSON.stringify(personalContact),
@@ -703,7 +725,7 @@ const UserMaster = () => {
             ["You have assigned Report L1", "ok"]
           );
         }
-  
+
         whatsappApi.callWhatsAPI(
           "userMng",
           JSON.stringify(personalContact),
@@ -717,7 +739,6 @@ const UserMaster = () => {
       console.error("Failed to submit form", error);
     }
   };
-  
 
   const handleSubmitOtherDetails = async (e) => {
     e.preventDefault();
@@ -1232,9 +1253,11 @@ const UserMaster = () => {
     const age = calculateAge(selectedDate);
     const ageDays = calculateAgeInDays(selectedDate);
 
-    if(validateAge < 15 || validateAge > 100){
+    if (validateAge < 15 || validateAge > 100) {
       setDobError("Age can't less than 15 or greater than 100 years.");
       setDateOfBirth("");
+    } else {
+      setDobError("");
     }
     setDateOfBirth(selectedDate);
     setAge(age);
@@ -1300,14 +1323,33 @@ const UserMaster = () => {
     ]);
   };
 
+  // const handleEducationDetailsChange = (index, e) => {
+  //   const updatedEducationDetails = educationDetails.map((detail, i) => {
+  //     if (i === index) {
+  //       return { ...detail, [e.target.name]: e.target.value };
+  //     }
+  //     return detail;
+  //   });
+  //   setEducationDetails(updatedEducationDetails);
+  // };
   const handleEducationDetailsChange = (index, e) => {
-    const updatedEducationDetails = educationDetails.map((detail, i) => {
-      if (i === index) {
-        return { ...detail, [e.target.name]: e.target.value };
+    const { name, value } = e.target;
+    const updatedDetails = [...educationDetails];
+
+    if (name === "Percentage") {
+      // Ensure percentage is a number and between 0 and 100
+      let percentageValue = Number(value);
+      if (percentageValue > 100) {
+        percentageValue = 100;
+      } else if (percentageValue < 0) {
+        percentageValue = 0;
       }
-      return detail;
-    });
-    setEducationDetails(updatedEducationDetails);
+      updatedDetails[index][name] = percentageValue.toString(); // Update percentage
+    } else {
+      updatedDetails[index][name] = value; // Update other fields
+    }
+
+    setEducationDetails(updatedDetails);
   };
 
   const handleRemoveEducationDetails = (index) => {
@@ -1442,14 +1484,14 @@ const UserMaster = () => {
     }
   };
 
-    // to disable admin and super admin in role dropdown start
-    const modifiedRoleData = roledata.map((option) => ({
-      value: option.role_id,
-      label: option.Role_name,
-      isDisabled: ROLEID === 1 && (option.role_id === 1 || option.role_id === 6),
-    }));
-    const selectedRole = roledata.find((role) => role.role_id === roles);
-    // to disable admin and super admin in role dropdown end
+  // to disable admin and super admin in role dropdown start
+  const modifiedRoleData = roledata.map((option) => ({
+    value: option.role_id,
+    label: option.Role_name,
+    isDisabled: ROLEID === 1 && (option.role_id === 1 || option.role_id === 6),
+  }));
+  const selectedRole = roledata.find((role) => role.role_id === roles);
+  // to disable admin and super admin in role dropdown end
 
   const genralFields = (
     <>
@@ -1617,7 +1659,7 @@ const UserMaster = () => {
             <label className="form-label">
               DOB <sup className="form-error">*</sup>
             </label>
-            
+
             <LocalizationProvider dateAdapter={AdapterDayjs}>
               <DatePicker
                 value={dateOfBirth}
@@ -1626,6 +1668,9 @@ const UserMaster = () => {
                 renderInput={(params) => <TextField {...params} />}
               />
             </LocalizationProvider>
+            {mandatoryFieldsEmpty?.fullName && (
+              <p className="form-error">Please Enter DOB</p>
+            )}
             {<p className="form-error">{dobError}</p>}
           </div>
           {dateOfBirth !== "" && (
@@ -1649,7 +1694,6 @@ const UserMaster = () => {
               onChange={(e) => {
                 setNationality(e.value);
               }}
-              
               required
             />
             {mandatoryFieldsEmpty.nationality && (
@@ -1706,9 +1750,7 @@ const UserMaster = () => {
           {maritialStatus == "Married" && (
             //
             <div className="col-3">
-              <label className="form-label">
-                Date Of Marraige <sup className="form-error">*</sup>
-              </label>
+              <label className="form-label">Date Of Marraige</label>
               <LocalizationProvider dateAdapter={AdapterDayjs}>
                 <DatePicker
                   value={dateOfMarraige}
@@ -1828,11 +1870,7 @@ const UserMaster = () => {
                 setSubDeparment(e.value);
 
                 // onBlur functionality
-                if (
-                  e.value === "" ||
-                  e.value === null ||
-                  e.value.length === 0
-                ) {
+                if (e.value === "" || e.value === null) {
                   setMandatoryFieldsEmpty((prevState) => ({
                     ...prevState,
                     subDepartment: true,
@@ -1980,7 +2018,14 @@ const UserMaster = () => {
             </label>
             <Select
               options={modifiedRoleData}
-              value={selectedRole ? { value: selectedRole.role_id, label: selectedRole.Role_name } : null}
+              value={
+                selectedRole
+                  ? {
+                      value: selectedRole.role_id,
+                      label: selectedRole.Role_name,
+                    }
+                  : null
+              }
               onChange={(e) => {
                 setRoles(e.value);
               }}
@@ -2445,7 +2490,7 @@ const UserMaster = () => {
                 onChange={(option) => setcurrentCity(option ? option : null)}
               />
             </div>
-            <div className="">
+            <div className="col-3">
               <FieldContainer
                 label="Pincode"
                 type="number"
@@ -2834,7 +2879,7 @@ const UserMaster = () => {
           {mandatoryFieldsEmpty.IFSC && (
             <p className="form-error">Please Enter IFSC</p>
           )}
-          <FieldContainer
+          {/* <FieldContainer
             label="Beneficiary"
             value={beneficiary}
             onChange={(e) => setBeneficiary(e.target.value)}
@@ -2849,7 +2894,7 @@ const UserMaster = () => {
             }}
             fieldGrid={6}
             required={true}
-          />
+          /> */}
 
           <div style={{ display: "flex", justifyContent: "flex-end" }}>
             <button
@@ -3016,7 +3061,7 @@ const UserMaster = () => {
                           name={key}
                           label={key}
                           placeholder={key}
-                          value={FormatName (detail[key])}
+                          value={FormatName(detail[key])}
                           onChange={(e) => handleFamilyDetailsChange(index, e)}
                         />
                       );
@@ -3164,26 +3209,28 @@ const UserMaster = () => {
               </div>
               {accordionButtonstitle[index]}
             </button>
-            <svg
-              className="arrow"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill=""
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <g id="Component 2">
-                <path
-                  id="Vector (Stroke)"
-                  fill-rule="evenodd"
-                  clip-rule="evenodd"
-                  d="M6.51171 4.43057C6.8262 4.161 7.29968 4.19743 7.56924 4.51192L13.5692 11.5119C13.81 11.7928 13.81 12.2072 13.5692 12.4881L7.56924 19.4881C7.29968 19.8026 6.8262 19.839 6.51171 19.5695C6.19721 19.2999 6.16079 18.8264 6.43036 18.5119L12.012 12L6.43036 5.48811C6.16079 5.17361 6.19721 4.70014 6.51171 4.43057ZM10.5119 4.43068C10.8264 4.16111 11.2999 4.19753 11.5694 4.51202L17.5694 11.512C17.8102 11.7929 17.8102 12.2073 17.5694 12.4882L11.5694 19.4882C11.2999 19.8027 10.8264 19.8391 10.5119 19.5696C10.1974 19.3 10.161 18.8265 10.4306 18.512L16.0122 12.0001L10.4306 5.48821C10.161 5.17372 10.1974 4.70024 10.5119 4.43068Z"
-                  fill={`${
-                    activeAccordionIndex === index ? "var(--primary)" : ""
-                  }`}
-                />
-              </g>
-            </svg>
+            {index !== accordionButtons.length - 1 && (
+              <svg
+                className="arrow"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill=""
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <g id="Component 2">
+                  <path
+                    id="Vector (Stroke)"
+                    fill-rule="evenodd"
+                    clip-rule="evenodd"
+                    d="M6.51171 4.43057C6.8262 4.161 7.29968 4.19743 7.56924 4.51192L13.5692 11.5119C13.81 11.7928 13.81 12.2072 13.5692 12.4881L7.56924 19.4881C7.29968 19.8026 6.8262 19.839 6.51171 19.5695C6.19721 19.2999 6.16079 18.8264 6.43036 18.5119L12.012 12L6.43036 5.48811C6.16079 5.17361 6.19721 4.70014 6.51171 4.43057ZM10.5119 4.43068C10.8264 4.16111 11.2999 4.19753 11.5694 4.51202L17.5694 11.512C17.8102 11.7929 17.8102 12.2073 17.5694 12.4882L11.5694 19.4882C11.2999 19.8027 10.8264 19.8391 10.5119 19.5696C10.1974 19.3 10.161 18.8265 10.4306 18.512L16.0122 12.0001L10.4306 5.48821C10.161 5.17372 10.1974 4.70024 10.5119 4.43068Z"
+                    fill={`${
+                      activeAccordionIndex === index ? "var(--primary)" : ""
+                    }`}
+                  />
+                </g>
+              </svg>
+            )}
           </div>
         ))}
       </div>

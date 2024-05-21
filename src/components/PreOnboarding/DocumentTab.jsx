@@ -32,7 +32,7 @@ const DocumentTab = ({
       var joiningDate = new Date(res.data?.joining_date);
       var difference = joiningDate - currentDate;
       var daysDifference = Math.floor(difference / (1000 * 3600 * 24));
-      setDiffDate(daysDifference); 
+      setDiffDate(daysDifference);
     });
   };
 
@@ -147,27 +147,27 @@ const DocumentTab = ({
   const handleDragStart = (e, documentId) => {
     e.dataTransfer.setData("text/plain", documentId);
   };
-  
+
   const handleDragOver = (e) => {
     e.preventDefault();
   };
 
   function findDocumentIdByParentId(parentId, responseArray) {
     for (const item of responseArray) {
-        if (item._id === parentId) {
-            return item.document._id;
-        }
+      if (item._id === parentId) {
+        return item.document._id;
+      }
     }
   }
 
   function findOrderNumberByParentId(parentId, responseArray) {
     for (const item of responseArray) {
-        if (item._id === parentId) {
-            return item.document.order_number;
-        }
+      if (item._id === parentId) {
+        return item.document.order_number;
+      }
     }
   }
-  
+
   const handleDrop = async (e) => {
     e.preventDefault();
     const droppedDocumentId = e.dataTransfer.getData("text/plain");
@@ -178,7 +178,7 @@ const DocumentTab = ({
     const targetDocumentIndex = documentData.findIndex(
       (item) => item._id === targetDocumentId
     );
-  
+
     const reorderedDocuments = Array.from(documentData);
     const [draggedDocument] = reorderedDocuments.splice(
       draggedDocumentIndex,
@@ -188,14 +188,14 @@ const DocumentTab = ({
 
     const data = {
       _id: draggedDocument.document._id,
-      order_number: targetDocumentIndex + 1 
+      order_number: targetDocumentIndex + 1,
     };
-    
+
     const replaceData = {
       _id: findDocumentIdByParentId(targetDocumentId, documentData),
-      order_number: findOrderNumberByParentId(droppedDocumentId, documentData)
-    }
-  
+      order_number: findOrderNumberByParentId(droppedDocumentId, documentData),
+    };
+
     try {
       await axios.put(`${baseUrl}edit_document_order`, data);
       await axios.put(`${baseUrl}edit_document_order`, replaceData);
@@ -239,52 +239,59 @@ const DocumentTab = ({
                 </thead>
                 <tbody>
                   {documentData
-                  .slice()
-                  .sort((a, b) => {
-                    if (a.document.isRequired && !b.document.isRequired) {
-                      return -1;
-                    } else if (!a.document.isRequired && b.document.isRequired) {
-                      return 1;
-                    } else {
-                      return a.document.order_number - b.document.order_number;
-                    }
-                  })
-                  .map((item) => (
-                    <tr
-                      draggable="true"
-                      onDragStart={(e) => handleDragStart(e, item._id)}
-                      onDragOver={handleDragOver}
-                      onDrop={handleDrop}
-                      data-id={item._id}
-                      key={item._id}
-                    >
-                      <td style={{ width: "20%" }}>
-                        {item.document.doc_name}
-                        {item.document.isRequired && (
-                          <span style={{ color: "red" }}> * </span>
-                        )}
-                      </td>
-                      <td scope="row">{item.document.doc_type}</td>
-                      <td>{item.document.period} days</td>
-                      {/* <td>1 Day</td> */}
-                      <td>{diffDate  < 0 ? "Please Upload Docs" : diffDate}</td>
-                      <td>
-                        <div className="uploadDocBtn">
-                          <span>
-                            <i className="bi bi-cloud-arrow-up" /> Upload
-                          </span>
-                          <input
-                            type="file"
-                            onChange={(e) =>
-                              handleFileUpload(e.target.files[0], item._id)
-                            }
-                          />
-                        </div>
-                      </td>
-                      <td>
-                        <div className="docStatus">
-                          <span
-                            className={`warning_badges 
+                    .slice()
+                    .sort((a, b) => {
+                      if (a.document?.isRequired && !b.document?.isRequired) {
+                        return -1;
+                      } else if (
+                        !a.document?.isRequired &&
+                        b.document?.isRequired
+                      ) {
+                        return 1;
+                      } else {
+                        return (
+                          a.document?.order_number - b.document?.order_number
+                        );
+                      }
+                    })
+                    .map((item) => (
+                      <tr
+                        draggable="true"
+                        onDragStart={(e) => handleDragStart(e, item._id)}
+                        onDragOver={handleDragOver}
+                        onDrop={handleDrop}
+                        data-id={item._id}
+                        key={item._id}
+                      >
+                        <td style={{ width: "20%" }}>
+                          {item.document.doc_name}
+                          {item.document.isRequired && (
+                            <span style={{ color: "red" }}> * </span>
+                          )}
+                        </td>
+                        <td scope="row">{item.document.doc_type}</td>
+                        <td>{item.document.period} days</td>
+                        {/* <td>1 Day</td> */}
+                        <td>
+                          {diffDate < 0 ? "Please Upload Docs" : diffDate}
+                        </td>
+                        <td>
+                          <div className="uploadDocBtn">
+                            <span>
+                              <i className="bi bi-cloud-arrow-up" /> Upload
+                            </span>
+                            <input
+                              type="file"
+                              onChange={(e) =>
+                                handleFileUpload(e.target.files[0], item._id)
+                              }
+                            />
+                          </div>
+                        </td>
+                        <td>
+                          <div className="docStatus">
+                            <span
+                              className={`warning_badges 
                         ${item.status == "" && "not_uploaded"}
                         ${
                           item.status == "Document Uploaded" &&
@@ -294,44 +301,45 @@ const DocumentTab = ({
                         ${item.status == "Approved" && "approve"}
                         ${item.status == "Rejected" && "reject"}
                         `}
-                          >
-                            <h4>
-                              {item.status == "" && "Not Uploaded"}
-                              {item.status !== "" && item.status}
-                            </h4>
-                            {item.status == "Rejected" && (
-                              <i
-                                className="bi bi-exclamation-circle-fill"
-                                title={item.reject_reason}
-                              />
-                            )}
-                            {item.status == "Approved" && (
-                              <button
-                                type="button"
-                                style={{ borderRadius: 17, padding: 7 }}
-                                className="btn btn-danger btn-sm"
-                                onClick={() => handleDocDelete(item)}
-                              >
-                                Unapprove
-                              </button>
-                            )}
-                            {item?.status == "Not Available" || item?.status !== '' ? (
-                              ""
-                            ) : (
-                              <button
-                                type="button"
-                                style={{ borderRadius: 17, padding: 7 }}
-                                className="btn btn-danger btn-sm"
-                                onClick={() => handleNotAvail(item)}
-                              >
-                              Not Available
-                              </button>
-                            )}
-                          </span>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
+                            >
+                              <h4>
+                                {item.status == "" && "Not Uploaded"}
+                                {item.status !== "" && item.status}
+                              </h4>
+                              {item.status == "Rejected" && (
+                                <i
+                                  className="bi bi-exclamation-circle-fill"
+                                  title={item.reject_reason}
+                                />
+                              )}
+                              {/* {item.status == "Approved" && (
+                                <button
+                                  type="button"
+                                  style={{ borderRadius: 17, padding: 7 }}
+                                  className="btn btn-danger btn-sm"
+                                  onClick={() => handleDocDelete(item)}
+                                >
+                                  Unapprove
+                                </button>
+                              )} */}
+                              {item?.status == "Not Available" ||
+                              item?.status !== "" ? (
+                                ""
+                              ) : (
+                                <button
+                                  type="button"
+                                  style={{ borderRadius: 17, padding: 7 }}
+                                  className="btn btn-danger btn-sm"
+                                  onClick={() => handleNotAvail(item)}
+                                >
+                                  Not Available
+                                </button>
+                              )}
+                            </span>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
                 </tbody>
               </table>
             </div>

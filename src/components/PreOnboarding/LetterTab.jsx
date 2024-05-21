@@ -111,8 +111,8 @@ const LetterTab = ({ allUserData, gettingData }) => {
           pdf.output("blob"),
           `${allUserData.user_name}_offer_letter.pdf`
         );
-        console.log(allUserData.PersonalEmail, "personal email");
         pdfData.append("email_id", allUserData.PersonalEmail);
+        setIsLoading(false);
         axios
           .post(baseUrl + "offer_letter_send_in_mail", pdfData, {
             headers: {
@@ -120,7 +120,6 @@ const LetterTab = ({ allUserData, gettingData }) => {
             },
           })
           .then(function (response) {
-            setIsLoading(false);
             console.log(response);
           })
           .catch(function (error) {
@@ -547,6 +546,7 @@ const LetterTab = ({ allUserData, gettingData }) => {
                   className="signature-img"
                   src={`data:image/png;base64,${image64}`}
                   alt=""
+                  width={60}
                 />
                 <br />
                 <p className="bold">
@@ -757,10 +757,18 @@ const LetterTab = ({ allUserData, gettingData }) => {
                 {/* {monthlySalary <= 21000 && ( */}
                 <tr>
                   <td>ESIC</td>
-                  <td>{monthlySalary <= 21000 ? monthlySalary * 0.0075 : 0}</td>
+                  <td>
+                    INR
+                    {(monthlySalary <= 21000
+                      ? monthlySalary * 0.0075
+                      : 0
+                    ).toFixed(0)}
+                  </td>
                   <td>
                     INR{" "}
-                    {(monthlySalary <= 21000 ? monthlySalary * 0.0075 : 0) * 12}
+                    {(
+                      (monthlySalary <= 21000 ? monthlySalary * 0.0075 : 0) * 12
+                    ).toFixed(0)}
                   </td>
                 </tr>
                 {/* )} */}
