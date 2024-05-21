@@ -25,7 +25,6 @@ import IndianStatesMui from "../../ReusableComponents/IndianStatesMui";
 import IndianCitiesMui from "../../ReusableComponents/IndianCitiesMui";
 import { Line, Circle } from "rc-progress";
 
-
 const castOption = ["General", "OBC", "SC", "ST"];
 const colourOptions = [
   { value: "English", label: "English" },
@@ -1404,10 +1403,8 @@ const UserUpdate = () => {
   const genralFields = (
     <>
       <div className="card">
-
         <div className="card-header">Personal Details</div>
         <div className="card-body row">
-
           <FieldContainer
             label="Full Name"
             astric={true}
@@ -1547,17 +1544,14 @@ const UserUpdate = () => {
             />
           )}
         </div>
-
       </div>
 
       {/* Other Info Inputs------------------------End------------ */}
 
       {/* Official Info Inputs------------------------Start------------ */}
       <div className="card">
-
         <div className="card-header">Official Details</div>
         <div className="card-body row">
-
           <div className="form-group col-3">
             <label className="form-label">
               Job Type <sup style={{ color: "red" }}>*</sup>
@@ -1658,8 +1652,8 @@ const UserUpdate = () => {
               value={{
                 value: reportL1,
                 label:
-                  usersData.find((user) => user.user_id === reportL1)?.user_name ||
-                  "",
+                  usersData.find((user) => user.user_id === reportL1)
+                    ?.user_name || "",
               }}
               onChange={(e) => {
                 setReportL1(e.value);
@@ -1678,8 +1672,8 @@ const UserUpdate = () => {
               value={{
                 value: reportL2,
                 label:
-                  usersData.find((user) => user.user_id === reportL2)?.user_name ||
-                  "",
+                  usersData.find((user) => user.user_id === reportL2)
+                    ?.user_name || "",
               }}
               onChange={(e) => {
                 setReportL2(e.value);
@@ -1699,8 +1693,8 @@ const UserUpdate = () => {
               value={{
                 value: reportL3,
                 label:
-                  usersData.find((user) => user.user_id === reportL3)?.user_name ||
-                  "",
+                  usersData.find((user) => user.user_id === reportL3)
+                    ?.user_name || "",
               }}
               onChange={(e) => {
                 setReportL3(e.value);
@@ -1720,7 +1714,8 @@ const UserUpdate = () => {
               value={{
                 value: roles,
                 label:
-                  roledata.find((role) => role.role_id === roles)?.Role_name || "",
+                  roledata.find((role) => role.role_id === roles)?.Role_name ||
+                  "",
               }}
               onChange={(e) => {
                 setRoles(e.value);
@@ -1736,7 +1731,9 @@ const UserUpdate = () => {
             value={email}
             onChange={handleEmailChange}
           />
-          {!validEmail && <p style={{ color: "red" }}>*Please enter valid email</p>}
+          {!validEmail && (
+            <p style={{ color: "red" }}>*Please enter valid email</p>
+          )}
 
           <FieldContainer
             label="Official Contact"
@@ -1767,12 +1764,13 @@ const UserUpdate = () => {
               </label>
               <div className="input-group">
                 <input
-                  className={`form-control ${loginId
-                    ? loginResponse === "login id available"
-                      ? "login-success-border"
-                      : "login-error-border"
-                    : ""
-                    }`}
+                  className={`form-control ${
+                    loginId
+                      ? loginResponse === "login id available"
+                        ? "login-success-border"
+                        : "login-error-border"
+                      : ""
+                  }`}
                   value={loginId}
                   disabled
                   onChange={handleLoginIdChange}
@@ -1854,8 +1852,6 @@ const UserUpdate = () => {
           onChange={(e) => setReleavingDate(e.target.value)}
         />
       )} */}
-
-
         </div>
       </div>
       <div style={{ display: "flex", justifyContent: "flex-end" }}>
@@ -1883,7 +1879,6 @@ const UserUpdate = () => {
     <>
       {/* Other Info Inputs------------------------Start------------ */}
       <div className="card">
-
         <div className="card-header">Other Details</div>
         {/* Current Address input-- */}
 
@@ -1927,7 +1922,9 @@ const UserUpdate = () => {
           />
         </div> */}
           <div className="form-group col-3 mt-3">
-            <label className="form-label" >State / UT <sup className="form-error">*</sup></label>
+            <label className="form-label">
+              State / UT <sup className="form-error">*</sup>
+            </label>
 
             <IndianStatesMui
               selectedState={currentState}
@@ -1936,7 +1933,9 @@ const UserUpdate = () => {
           </div>
 
           <div className="form-group col-3 mt-3">
-            <label className="form-label" >City <sup className="form-error">*</sup></label>
+            <label className="form-label">
+              City <sup className="form-error">*</sup>
+            </label>
             <IndianCitiesMui
               selectedState={currentState}
               selectedCity={currentCity}
@@ -1944,7 +1943,6 @@ const UserUpdate = () => {
             />
           </div>
           <div className="col-3 mt-3">
-
             <FieldContainer
               label="Current Pincode"
               type="number"
@@ -1978,7 +1976,6 @@ const UserUpdate = () => {
         </div>
         <hr className="mb-3" />
         <div className=" body-padding row">
-
           <FieldContainer
             label="Parmanent Address"
             fieldGrid={12}
@@ -2014,7 +2011,9 @@ const UserUpdate = () => {
         />
       </div> */}
           <div className="form-group col-3 mt-3">
-            <label className="form-label" >State /UT <sup className="form-error">*</sup></label>
+            <label className="form-label">
+              State /UT <sup className="form-error">*</sup>
+            </label>
 
             <IndianStatesMui
               selectedState={currentState}
@@ -2023,7 +2022,9 @@ const UserUpdate = () => {
           </div>
 
           <div className="form-group col-3 mt-3">
-            <label className="form-label" >City <sup className="form-error">*</sup></label>
+            <label className="form-label">
+              City <sup className="form-error">*</sup>
+            </label>
 
             <IndianCitiesMui
               selectedState={currentState}
@@ -2137,7 +2138,6 @@ const UserUpdate = () => {
         onChange={(e) => setBankName(e.target.value)}
       /> */}
         <div className="card-body row">
-
           <div className="form-group col-6">
             <label className="form-label">
               Bank Name <sup style={{ color: "red" }}>*</sup>
@@ -2278,7 +2278,9 @@ const UserUpdate = () => {
                             handleFamilyDetailsChange(index, {
                               target: {
                                 name: key,
-                                value: selectedOption ? selectedOption.value : "",
+                                value: selectedOption
+                                  ? selectedOption.value
+                                  : "",
                               },
                             })
                           }
@@ -2306,7 +2308,9 @@ const UserUpdate = () => {
                             handleFamilyDetailsChange(index, {
                               target: {
                                 name: key,
-                                value: selectedOption ? selectedOption.value : "",
+                                value: selectedOption
+                                  ? selectedOption.value
+                                  : "",
                               },
                             })
                           }
@@ -2373,10 +2377,8 @@ const UserUpdate = () => {
               )}
             </div>
           </div>
-
         ))}
         <div className="card-body">
-
           <div className="row">
             <div className="col-12">
               {familyDetails.length < 3 && (
@@ -2421,7 +2423,6 @@ const UserUpdate = () => {
 
       {/* Education Info Inputs------------------------Start------------ */}
       <div className="card">
-
         <div className="card-header">Education Details</div>
         {educationDetails?.map((detail, index) => (
           <div key={index} mb={2}>
@@ -2478,8 +2479,6 @@ const UserUpdate = () => {
           <ArrowBackIosIcon />
         </button>
       </div> */}
-
-
         </div>
       </div>
       <div style={{ display: "flex", justifyContent: "flex-end" }}>
@@ -2567,7 +2566,6 @@ const UserUpdate = () => {
   const documentFieldsNew = (
     <>
       <div className="table-wrap-user">
-
         <DocumentTab
           documentData={documentData}
           setDocumentData={setDocumentData}
@@ -2580,42 +2578,48 @@ const UserUpdate = () => {
   );
   return (
     <div>
-      <FormContainer
-        mainTitle="User Update"
-        link={true}
-      />
+      <FormContainer mainTitle="User Update" link={true} />
       <div className="user-tab w-100 mb-4">
         {accordionButtons.map((button, index) => (
           <div className="flex-row align-items-center w-100 gap-4">
             <button
-              className={`tab ${activeAccordionIndex === index ? "active" : "disabled"}`}
+              className={`tab ${
+                activeAccordionIndex === index ? "active" : "disabled"
+              }`}
               onClick={() => handleAccordionButtonClick(index)}
             >
               <div className="gap-1 flex-row">
-                {indicator[activeAccordionIndex === index ? "active" : "disabled"]}
+                {
+                  indicator[
+                    activeAccordionIndex === index ? "active" : "disabled"
+                  ]
+                }
                 <p>{button}</p>
               </div>
               {accordionButtonstitle[index]}
             </button>
-            <svg
-              className="arrow"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill=""
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <g id="Component 2">
-                <path
-                  id="Vector (Stroke)"
-                  fill-rule="evenodd"
-                  clip-rule="evenodd"
-                  d="M6.51171 4.43057C6.8262 4.161 7.29968 4.19743 7.56924 4.51192L13.5692 11.5119C13.81 11.7928 13.81 12.2072 13.5692 12.4881L7.56924 19.4881C7.29968 19.8026 6.8262 19.839 6.51171 19.5695C6.19721 19.2999 6.16079 18.8264 6.43036 18.5119L12.012 12L6.43036 5.48811C6.16079 5.17361 6.19721 4.70014 6.51171 4.43057ZM10.5119 4.43068C10.8264 4.16111 11.2999 4.19753 11.5694 4.51202L17.5694 11.512C17.8102 11.7929 17.8102 12.2073 17.5694 12.4882L11.5694 19.4882C11.2999 19.8027 10.8264 19.8391 10.5119 19.5696C10.1974 19.3 10.161 18.8265 10.4306 18.512L16.0122 12.0001L10.4306 5.48821C10.161 5.17372 10.1974 4.70024 10.5119 4.43068Z"
-                  fill={`${activeAccordionIndex === index ? "var(--primary)" : ""
+            {index !== accordionButtons.length - 1 && (
+              <svg
+                className="arrow"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill=""
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <g id="Component 2">
+                  <path
+                    id="Vector (Stroke)"
+                    fill-rule="evenodd"
+                    clip-rule="evenodd"
+                    d="M6.51171 4.43057C6.8262 4.161 7.29968 4.19743 7.56924 4.51192L13.5692 11.5119C13.81 11.7928 13.81 12.2072 13.5692 12.4881L7.56924 19.4881C7.29968 19.8026 6.8262 19.839 6.51171 19.5695C6.19721 19.2999 6.16079 18.8264 6.43036 18.5119L12.012 12L6.43036 5.48811C6.16079 5.17361 6.19721 4.70014 6.51171 4.43057ZM10.5119 4.43068C10.8264 4.16111 11.2999 4.19753 11.5694 4.51202L17.5694 11.512C17.8102 11.7929 17.8102 12.2073 17.5694 12.4882L11.5694 19.4882C11.2999 19.8027 10.8264 19.8391 10.5119 19.5696C10.1974 19.3 10.161 18.8265 10.4306 18.512L16.0122 12.0001L10.4306 5.48821C10.161 5.17372 10.1974 4.70024 10.5119 4.43068Z"
+                    fill={`${
+                      activeAccordionIndex === index ? "var(--primary)" : ""
                     }`}
-                />
-              </g>
-            </svg>
+                  />
+                </g>
+              </svg>
+            )}
           </div>
         ))}
       </div>
@@ -2637,13 +2641,16 @@ const UserUpdate = () => {
         >
           <div className="profloat">
             <div className="progress-bar">
-              <Circle percent={progress} strokeWidth={10} strokeColor="#16B364" />
+              <Circle
+                percent={progress}
+                strokeWidth={10}
+                strokeColor="#16B364"
+              />
               <div className="progress-value">
                 <p>{progress.toFixed(0)} %</p>
               </div>
             </div>
           </div>
-
         </div>
       </div>
       {/* <FormContainer

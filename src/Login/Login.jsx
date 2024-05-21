@@ -61,7 +61,7 @@ const Login = () => {
           </div>
           <div className="authform_area">
             <div className="authform_head">
-              <h2>Login</h2>
+              <h2 style={{ color: "black" }}>Login</h2>
             </div>
             <form onSubmit={handleSubmit}>
               <div className="authform">

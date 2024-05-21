@@ -6,7 +6,7 @@ import classes from "./forgetPassword.module.css";
 import SendIcon from "@mui/icons-material/Send";
 import loginlogo from "../../assets/img/logo/logo_login1.png";
 import { Link } from "react-router-dom";
-import {baseUrl} from '../../utils/config'
+import { baseUrl } from "../../utils/config";
 
 export default function ForgetPassword() {
   const [email, setEmail] = useState("");
@@ -21,7 +21,7 @@ export default function ForgetPassword() {
       return;
     } else {
       axios
-        .post(baseUrl+"forgot_pass", {
+        .post(baseUrl + "forgot_pass", {
           user_email_id: email,
         })
         .then((res) => {
@@ -94,7 +94,7 @@ export default function ForgetPassword() {
           </div>
           <div className="authform_area">
             <div className="authform_head">
-              <h2>Forgot Password</h2>
+              <h2 style={{ color: "black" }}>Forgot Password</h2>
               <p>Please fill associated email id to get your password</p>
             </div>
 
@@ -103,7 +103,7 @@ export default function ForgetPassword() {
                 handleSubmit(e);
               }}
             >
-              <div className="authform">
+              <div className="authform mb-5">
                 <div className="form-group">
                   <input
                     type="text"
