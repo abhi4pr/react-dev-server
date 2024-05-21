@@ -74,10 +74,10 @@ const colourOptions = [
 const initialFamilyDetailsGroup = {
   Relation: "",
   Name: "",
-  DOB: "",
+  // DOB: "",
   Contact: "",
   Occupation: "",
-  Income: "",
+  // Income: "",
 };
 
 const initialEducationDetailsGroup = {
@@ -573,6 +573,7 @@ const UserMaster = () => {
         ...prev,
         designation: true,
       }));
+      // alert('designation  ')
     }
     if (reportL1 == "") {
       setMandatoryFieldsEmpty((prev) => ({
@@ -955,11 +956,11 @@ const UserMaster = () => {
           const response = axios.put(baseUrl + "update_family", {
             user_id: userResID,
             name: elements.Name,
-            DOB: elements.DOB,
+            // DOB: elements.DOB,
             relation: elements.Relation,
             contact: elements.Contact,
             occupation: elements.Occupation,
-            annual_income: elements.Income,
+            // annual_income: elements.Income,
           });
         }
       }
@@ -1575,7 +1576,7 @@ const UserMaster = () => {
             />
             <div className="h-100 w-100">
               {mandatoryFieldsEmpty?.fullName && (
-                <p className="form-error">Please enter Full Name</p>
+                <p className="form-error">Please Enter Full Name</p>
               )}
             </div>
           </div>
@@ -1605,10 +1606,10 @@ const UserMaster = () => {
               }}
             />
             {!isPersonalEmailValid && personalEmail && (
-              <p className="form-error">*Please enter valid email</p>
+              <p className="form-error">*Please Enter valid email</p>
             )}
             {mandatoryFieldsEmpty.personalEmail && (
-              <p className="form-error">Please enter Personal Email</p>
+              <p className="form-error">Please Enter Personal Email</p>
             )}
           </div>
 
@@ -1627,11 +1628,11 @@ const UserMaster = () => {
               !isValidcontact1 &&
               mandatoryFieldsEmpty.personalContact && (
                 <p className="form-error">
-                  Please enter a valid Contact Number
+                  Please Enter a valid Contact Number
                 </p>
               )}
             {mandatoryFieldsEmpty.personalContact && (
-              <p className="form-error">Please enter Personal Contact</p>
+              <p className="form-error">Please Enter Personal Contact</p>
             )}
           </div>
           <div className="col-xl-3 col-lg-3 col-md-3 col-sm-12">
@@ -1680,10 +1681,10 @@ const UserMaster = () => {
             {(isAlternateTouched1 || alternateContact.length >= 10) &&
               !isValidcontact3 &&
               !mandatoryFieldsEmpty.alternateContact && (
-                <p className="form-error">Please enter a valid Number</p>
+                <p className="form-error">Please Enter a valid Number</p>
               )}
             {mandatoryFieldsEmpty.alternateContact && (
-              <p className="form-error">Please enter Alternate Contact</p>
+              <p className="form-error">Please Enter Alternate Contact</p>
             )}
           </div>
           <div className="form-group col-3">
@@ -1718,7 +1719,7 @@ const UserMaster = () => {
               required
             />
             {mandatoryFieldsEmpty.gender && (
-              <p className="form-error">Please enter Gender</p>
+              <p className="form-error">Please Enter Gender</p>
             )}
           </div>
           <div className="from-group col-3">
@@ -1765,7 +1766,7 @@ const UserMaster = () => {
                 renderInput={(params) => <TextField {...params} />}
               />
             </LocalizationProvider>
-            {<p style={{ color: "red !important" }}>{dobError}</p>}
+            {<p style={{ color: "red" }}>{dobError}</p>}
           </div>
           {dateOfBirth !== "" && (
             <FieldContainer fieldGrid={3} label="Age" value={age} />
@@ -1804,7 +1805,7 @@ const UserMaster = () => {
               required
             />
             {mandatoryFieldsEmpty.nationality && (
-              <p className="form-error">Please enter nationality</p>
+              <p className="form-error">Please Enter nationality</p>
             )}
           </div>
 
@@ -1868,7 +1869,7 @@ const UserMaster = () => {
               required={false}
             />
             {mandatoryFieldsEmpty.maritialStatus && (
-              <p className="form-error">Please enter Maritial Status</p>
+              <p className="form-error">Please Enter Maritial Status</p>
             )}
           </div>
 
@@ -1947,7 +1948,7 @@ const UserMaster = () => {
             />
             <div className="">
               {mandatoryFieldsEmpty.jobType && (
-                <p className="form-error">Please enter Job Type</p>
+                <p className="form-error">Please Enter Job Type</p>
               )}
             </div>
           </div>
@@ -1988,7 +1989,7 @@ const UserMaster = () => {
             />
             <div className="">
               {mandatoryFieldsEmpty.department && (
-                <p className="form-error">Please enter Department</p>
+                <p className="form-error">Please Enter Department</p>
               )}
             </div>
           </div>
@@ -2034,7 +2035,7 @@ const UserMaster = () => {
             />
             <div className="">
               {mandatoryFieldsEmpty.subDepartment && (
-                <p className="form-error">Please enter Sub Department</p>
+                <p className="form-error">Please Enter Sub Department</p>
               )}
             </div>
           </div>
@@ -2073,7 +2074,7 @@ const UserMaster = () => {
             />
             <div className="">
               {mandatoryFieldsEmpty.designation && (
-                <p className="form-error">Please enter Designation</p>
+                <p className="form-error">Please Enter Designation</p>
               )}
             </div>
           </div>
@@ -2113,7 +2114,7 @@ const UserMaster = () => {
             />
             <div className="">
               {mandatoryFieldsEmpty.reportL1 && (
-                <p className="form-error">Please enter Report L1</p>
+                <p className="form-error">Please Enter Report L1</p>
               )}
             </div>
           </div>
@@ -2196,7 +2197,7 @@ const UserMaster = () => {
               }}
             />
             {!validEmail && (
-              <p className="form-error">*Please enter valid email</p>
+              <p className="form-error">*Please Enter valid email</p>
             )}
           </div>
           <div className="col-xl-3 col-lg-3 col-md-3 col-sm-12">
@@ -2264,7 +2265,7 @@ const UserMaster = () => {
               </div>
             </div>
             {mandatoryFieldsEmpty.loginId && (
-              <p className="form-error">Please enter Login ID</p>
+              <p className="form-error">Please Enter Login ID</p>
             )}
           </div>
           <div className="col-xl-3 col-lg-3 col-md-3 col-sm-12">
@@ -2306,7 +2307,7 @@ const UserMaster = () => {
               </div>
             </div>
             {mandatoryFieldsEmpty.password && (
-              <p className="form-error">Please enter Password</p>
+              <p className="form-error">Please Enter Password</p>
             )}
           </div>
           <div className="form-group col-3">
@@ -2342,7 +2343,7 @@ const UserMaster = () => {
               required
             />
             {mandatoryFieldsEmpty.status && (
-              <p className="form-error">Please enter Status</p>
+              <p className="form-error">Please Enter Status</p>
             )}
           </div>
           <div className="from-group col-3">
@@ -2403,7 +2404,7 @@ const UserMaster = () => {
               />
             </LocalizationProvider>
             {mandatoryFieldsEmpty.joiningDate && (
-              <p className="form-error">Please enter Joining Date</p>
+              <p className="form-error">Please Enter Joining Date</p>
             )}
           </div>
 
@@ -2584,7 +2585,7 @@ const UserMaster = () => {
               required={false}
             />
             {mandatoryFieldsEmpty.currentAddress && (
-              <p className="form-error">Please enter Address</p>
+              <p className="form-error">Please Enter Address</p>
             )}
             {/* <div className="form-group col-4">
           <label className="form-label">
@@ -2664,7 +2665,7 @@ const UserMaster = () => {
                 required={false}
               />
               {mandatoryFieldsEmpty.currentPincode && (
-                <p className="form-error">Please enter Pincode</p>
+                <p className="form-error">Please Enter Pincode</p>
               )}
             </div>
             {/*  Parmanent Address here------------ */}
@@ -2788,7 +2789,7 @@ const UserMaster = () => {
               />
 
               {/* {mandatoryFieldsEmpty.bloodGroup && (
-          <p className="form-error">Please enter Blood Group</p>
+          <p className="form-error">Please Enter Blood Group</p>
         )} */}
             </div>
             <div className="form-group col-3">
@@ -2831,7 +2832,7 @@ const UserMaster = () => {
                 // }}
               />
               {/* {mandatoryFieldsEmpty.language && (
-          <p className="form-error">Please enter Languages</p>
+          <p className="form-error">Please Enter Languages</p>
         )} */}
             </div>
 
@@ -2922,7 +2923,7 @@ const UserMaster = () => {
               required
             />
             {mandatoryFieldsEmpty.bankName && (
-              <p className="form-error">Please enter Bank Name</p>
+              <p className="form-error">Please Enter Bank Name</p>
             )}
           </div>
 
@@ -2959,7 +2960,7 @@ const UserMaster = () => {
               required
             />
             {mandatoryFieldsEmpty.banktype && (
-              <p className="form-error">Please enter Bank Type</p>
+              <p className="form-error">Please Enter Bank Type</p>
             )}
           </div>
 
@@ -2992,7 +2993,7 @@ const UserMaster = () => {
             }}
           />
           {mandatoryFieldsEmpty.bankAccountNumber && (
-            <p className="form-error">Please enter Bank Account Number</p>
+            <p className="form-error">Please Enter Bank Account Number</p>
           )}
           <FieldContainer
             astric={true}
@@ -3018,7 +3019,7 @@ const UserMaster = () => {
             }}
           />
           {mandatoryFieldsEmpty.IFSC && (
-            <p className="form-error">Please enter IFSC</p>
+            <p className="form-error">Please Enter IFSC</p>
           )}
           <FieldContainer
             label="Beneficiary"
@@ -3079,21 +3080,21 @@ const UserMaster = () => {
               <div className="row">
                 {Object.keys(detail).map((key) => {
                   switch (key) {
-                    case "DOB":
-                      return (
-                        <FieldContainer
-                          key={key}
-                          fieldGrid={2}
-                          type="date"
-                          name={key}
-                          label="Date of Birth"
-                          value={detail[key]}
-                          onChange={(e) => handleFamilyDetailsChange(index, e)}
-                        />
-                      );
+                    // case "DOB":
+                    //   return (
+                    //     <FieldContainer
+                    //       key={key}
+                    //       fieldGrid={2}
+                    //       type="date"
+                    //       name={key}
+                    //       label="Date of Birth"
+                    //       value={detail[key]}
+                    //       onChange={(e) => handleFamilyDetailsChange(index, e)}
+                    //     />
+                    //   );
                     case "Relation":
                       return (
-                        <div className="form-group col-2">
+                        <div className="form-group col-3">
                           <label className="form-label">Relation</label>
                           <Select
                             label="Relation"
@@ -3124,7 +3125,7 @@ const UserMaster = () => {
                       );
                     case "Occupation":
                       return (
-                        <div className="form-group col-2">
+                        <div className="form-group col-3">
                           <label className="form-label">Occupation</label>
                           <Select
                             label="Occupation"
@@ -3162,7 +3163,7 @@ const UserMaster = () => {
                         <>
                           <FieldContainer
                             key={key}
-                            fieldGrid={2}
+                            fieldGrid={3}
                             type="number"
                             name={key}
                             label={key}
@@ -3180,29 +3181,29 @@ const UserMaster = () => {
                         </>
                       );
 
-                    case "Income":
-                      return (
-                        <FieldContainer
-                          key={key}
-                          type="number"
-                          fieldGrid={2}
-                          name={key}
-                          label={key}
-                          placeholder={key}
-                          value={detail[key]}
-                          onChange={(e) => handleFamilyDetailsChange(index, e)}
-                        />
-                      );
+                    // case "Income":
+                    //   return (
+                    //     <FieldContainer
+                    //       key={key}
+                    //       type="number"
+                    //       fieldGrid={2}
+                    //       name={key}
+                    //       label={key}
+                    //       placeholder={key}
+                    //       value={detail[key]}
+                    //       onChange={(e) => handleFamilyDetailsChange(index, e)}
+                    //     />
+                    //   );
 
                     default:
                       return (
                         <FieldContainer
                           key={key}
-                          fieldGrid={2}
+                          fieldGrid={3}
                           name={key}
                           label={key}
                           placeholder={key}
-                          value={detail[key]}
+                          value={FormatName (detail[key])}
                           onChange={(e) => handleFamilyDetailsChange(index, e)}
                         />
                       );
