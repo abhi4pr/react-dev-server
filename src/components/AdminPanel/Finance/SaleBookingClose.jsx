@@ -38,7 +38,7 @@ const SaleBookingClose = ({
   const [search, setSearch] = useState("");
   const [contextData, setDatas] = useState([]);
   const [filterData, setFilterData] = useState([]);
-  const [tdsStatus, setTdsStatus] = useState(0);
+  const [tdsStatus, setTdsStatus] = useState(null);
   const [aboutToClose, setAboutToClose] = useState(false);
   const [customerName, setCustomerName] = useState("");
   const [salesExecutive, setSalesExecutive] = useState("");
@@ -97,7 +97,7 @@ const SaleBookingClose = ({
 
     let formData = new FormData();
     formData.append("loggedin_user_id", 36);
-    formData.append("tds_status", tdsStatus);
+    // formData.append("tds_status", tdsStatus);
 
     axios
       .post(
@@ -156,17 +156,22 @@ const SaleBookingClose = ({
   //   setTdsStatus(0);
   //   setAboutToClose(true);
   // };
+  console.log(datas, "--------RES");
 
   const open = (e) => {
     e.preventDefault();
-    setTdsStatus(0);
-    setAboutToClose(false);
+    // setTdsStatus(0);
+    const filteredData = datas.filter((item) => item.show_fstatus === "Open");
+    console.log(filteredData, "------open");
+    setFilterData(filteredData);
   };
 
   const close = (e) => {
     e.preventDefault();
-    setTdsStatus(1);
-    setAboutToClose(false);
+    // setTdsStatus(1);
+    const filteredData = datas.filter((item) => item.show_fstatus === "Closed");
+    console.log(filteredData, "------close");
+    setFilterData(filteredData);
   };
 
   useEffect(() => {
@@ -998,18 +1003,23 @@ const SaleBookingClose = ({
   };
 
   useEffect(() => {
-    const openCount = filterData.filter(
+    const openCount = datas.filter(
       (item) => item.show_fstatus === "Open"
     ).length;
     setOpenBtnCount(openCount);
     // setOpencount(openCount);
 
-    const closeCount = filterData.filter(
+    const closeCount = datas.filter(
       (item) => item.show_fstatus === "Closed"
     ).length;
     setCloseBtnCount(closeCount);
     // setclosecount(closeCount);
-  }, [filterData]);
+
+    const initialFilteredData = datas.filter(
+      (item) => item.show_fstatus === "Open"
+    );
+    setFilterData(initialFilteredData);
+  }, [datas]);
 
   console.log(filterData, "filterData>");
   return (

@@ -21,7 +21,7 @@ import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
 import moment from "moment";
 
-const AllTransactions = () => {
+const ApprovedList = () => {
   const { toastAlert } = useGlobalContext();
   const [displaySeq, setDisplaySeq] = useState("");
   const [isFormSubmitted, setIsFormSubmitted] = useState(false);
@@ -50,9 +50,12 @@ const AllTransactions = () => {
   function getData() {
     axios.post(baseUrl + "add_php_payment_acc_data_in_node").then((res) => {});
     axios.get(baseUrl + "get_all_php_finance_data").then((res) => {
-      setData(res.data.data);
-      setFilterData(res.data.data);
-      const custData = res.data.data;
+      const ApprovedStatus = res.data.data.filter(
+        (data) => data.payment_approval_status === "1"
+      );
+      setData(ApprovedStatus);
+      setFilterData(ApprovedStatus);
+      const custData = ApprovedStatus;
       const uniqueCustomers = new Set(custData.map((item) => item.cust_name));
       setUniqueCustomerCount(uniqueCustomers.size);
       const uniqueCustomerData = Array.from(uniqueCustomers).map(
@@ -62,20 +65,15 @@ const AllTransactions = () => {
       );
       setUniqueCustomerData(uniqueCustomerData);
 
-      const dateFilterData = filterDataBasedOnSelection(res.data.data);
+      const dateFilterData = filterDataBasedOnSelection(ApprovedStatus);
       setFilterData(dateFilterData);
     });
 
     axios.get(baseUrl + "get_all_php_payment_acc_data").then((res) => {
-      setPaymetMethod(res.data.data);
-      // let x =res.data.data.map(e=>{
-      //   setPaymetMethod(prev=>[...prev,{payment_type:e.payment_type}])
-      // })
-      // console.log(res.data.data.map(e=>{
-      //  return e.payment_type})
-      // )
+      setPaymetMethod(ApprovedStatus);
     });
   }
+  console.log(filterData, "filterData --------------------");
   function convertDateToDDMMYYYY(dateString) {
     if (String(dateString).startsWith("0000-00-00")) {
       return " ";
@@ -238,12 +236,7 @@ const AllTransactions = () => {
 
   // Call the function to get the total sum of requested amount
   const requestedAmountTotal = calculateRequestedAmountTotal();
-  console.log(
-    "Total Requested Amount Total:",
-    requestedAmountTotal,
-    filterData
-  );
-  console.log(filterData, "filterData >>>");
+
   // Counts According to status:-
   const pendingCount = filterData.filter(
     (item) => item.payment_approval_status === "0"
@@ -254,8 +247,6 @@ const AllTransactions = () => {
   const rejectedCount = filterData.filter(
     (item) => item.payment_approval_status === "2"
   ).length;
-
-  // Rejected Data------------
 
   const sameCustomerColumn = [
     {
@@ -746,7 +737,7 @@ const AllTransactions = () => {
 
   const handlePendingClick = () => {
     const filtered = datas.filter(
-      (item) => item.payment_approval_status === "0"
+      (item) => item.payment_approval_status === " 0"
     );
     setFilterData(filtered);
   };
@@ -757,8 +748,8 @@ const AllTransactions = () => {
     setFilterData(filtered);
   };
   const handleRejectedClick = () => {
-    const filtered = datas.filter(
-      (item) => item.payment_approval_status === "2"
+    const filtered = datas?.filter(
+      (item) => item?.payment_approval_status === "2"
     );
     setFilterData(filtered);
   };
@@ -979,7 +970,7 @@ const AllTransactions = () => {
                 ₹
                 {datas.length > 0
                   ? datas
-                      .filter((item) => item.payment_approval_status == 0)
+                      .filter((item) => item.payment_approval_status == "0")
                       .reduce((total, currentItem) => {
                         return total + currentItem.payment_amount_show * 1;
                       }, 0)
@@ -988,7 +979,7 @@ const AllTransactions = () => {
             </div>
           </div>
         </div>
-        {/* <div className="col-xl-4 col-lg-4 col-md-4 col-sm-12 col-12">
+        <div className="col-xl-4 col-lg-4 col-md-4 col-sm-12 col-12">
           <div className="card">
             <div className="card-header">
               <h5 className="card-title w-100 flexCenterBetween">
@@ -1014,8 +1005,8 @@ const AllTransactions = () => {
               </h4>
             </div>
           </div>
-        </div> */}
-        <div className="col-xl-4 col-lg-4 col-md-4 col-sm-12 col-12">
+        </div>
+        {/* <div className="col-xl-4 col-lg-4 col-md-4 col-sm-12 col-12">
           <div className="card">
             <div className="card-header">
               <h5 className="card-title w-100 flexCenterBetween">
@@ -1033,7 +1024,7 @@ const AllTransactions = () => {
                 ₹
                 {datas.length > 0
                   ? datas
-                      .filter((item) => item.payment_approval_status == 2)
+                      .filter((item) => item.payment_approval_status == "2")
                       .reduce((total, currentItem) => {
                         return total + currentItem.payment_amount_show * 1;
                       }, 0)
@@ -1041,7 +1032,7 @@ const AllTransactions = () => {
               </h4>
             </div>
           </div>
-        </div>
+        </div> */}
       </div>
       <div className="row">
         <div className="col-12">
@@ -1286,11 +1277,7 @@ const AllTransactions = () => {
           <div className="card" style={{ height: "600px" }}>
             <div className="card-body thm_table">
               <DataGrid
-                rows={filterData?.filter(
-                  (data) =>
-                    data.payment_approval_status === "1" ||
-                    data.payment_approval_status === "2"
-                )}
+                rows={filterData}
                 columns={columns}
                 pageSize={5}
                 rowsPerPageOptions={[5]}
@@ -1317,4 +1304,4 @@ const AllTransactions = () => {
   );
 };
 
-export default AllTransactions;
+export default ApprovedList;
