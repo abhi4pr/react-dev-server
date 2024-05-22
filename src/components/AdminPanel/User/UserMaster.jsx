@@ -1089,6 +1089,46 @@ const UserMaster = () => {
     return correctedUserName;
   }
 
+  // const generateLoginId = async () => {
+  //   const userName = username.trim().toLowerCase().split(" ");
+
+  //   // Extracting last 4 and 6 digits from personal contact
+  //   const personalContactLast4 = personalContact.slice(-4);
+  //   const personalContactLast6 = personalContact.slice(-6);
+
+  //   // Define login ID options
+  //   let loginIdOptions = [
+  //     userName[0], // lalit
+  //     trimeUserName(username),
+  //     // userName.join("."), // lalit.gour
+  //     userName[0] + personalContactLast4, // lalit5413
+  //     userName[0] + personalContactLast6, // lalit815413
+  //   ];
+
+  //   if (userName.length > 1) {
+  //     loginIdOptions.push(
+  //       userName[0].charAt(0) + userName[1], // lgour
+  //       userName.join("") // lalitgour
+  //     );
+  //   }
+
+  //   const nextIndex = (lastIndexUsed + 1) % loginIdOptions.length;
+  //   setLastIndexUsed(nextIndex);
+  //   const generatedLoginId = loginIdOptions[nextIndex];
+  //   setLoginId(generatedLoginId);
+
+  //   await axios
+  //     .post(baseUrl + `check_login_exist`, {
+  //       user_login_id: loginId,
+  //     })
+  //     .then((res) => {
+  //       setLoginResponse(res.data.message);
+  //     });
+
+  //   if (generatedLoginId?.length > 0) {
+  //     setMandatoryFieldsEmpty({ ...mandatoryFieldsEmpty, loginId: false });
+  //   }
+  // };
   const generateLoginId = async () => {
     const userName = username.trim().toLowerCase().split(" ");
 
@@ -1099,8 +1139,7 @@ const UserMaster = () => {
     // Define login ID options
     let loginIdOptions = [
       userName[0], // lalit
-      trimeUserName(username),
-      // userName.join("."), // lalit.gour
+      userName.join("."), // lalit.gour
       userName[0] + personalContactLast4, // lalit5413
       userName[0] + personalContactLast6, // lalit815413
     ];
@@ -1114,19 +1153,37 @@ const UserMaster = () => {
 
     const nextIndex = (lastIndexUsed + 1) % loginIdOptions.length;
     setLastIndexUsed(nextIndex);
-    const generatedLoginId = loginIdOptions[nextIndex];
-    setLoginId(generatedLoginId);
+    let generatedLoginId = loginIdOptions[nextIndex];
 
-    await axios
-      .post(baseUrl + `check_login_exist`, {
-        user_login_id: loginId,
-      })
-      .then((res) => {
-        setLoginResponse(res.data.message);
-      });
+    // Check if the generated login ID already exists
+    const response = await axios.post(baseUrl + `check_login_exist`, {
+      user_login_id: generatedLoginId,
+    });
+
+    if (response.data.message === "login id not available") {
+      // If login ID already exists, find the next available one
+      let index = 1;
+      while (true) {
+        const nextGeneratedLoginId = `${generatedLoginId}_${index}`;
+        const checkExistenceResponse = await axios.post(
+          baseUrl + `check_login_exist`,
+          {
+            user_login_id: nextGeneratedLoginId,
+          }
+        );
+        if (checkExistenceResponse.data.message === "login id available") {
+          generatedLoginId = nextGeneratedLoginId;
+          break;
+        }
+        index++;
+      }
+    }
+
+    setLoginId(generatedLoginId);
+    setLoginResponse(response.data.message);
 
     if (generatedLoginId?.length > 0) {
-      setMandatoryFieldsEmpty({ ...mandatoryFieldsEmpty, loginId: false });
+      setMandatoryFieldsEmpty((prev) => ({ ...prev, loginId: false }));
     }
   };
 
@@ -1361,22 +1418,69 @@ const UserMaster = () => {
 
   // const accordionButtons = ["General", "Others", "Education & Family"];
   const accordionButtons = ["General", "Others", "Education & Family"];
-  const accordionButtonstitle = ["Personal & Official Details", "Other & Bank Details", "Upload Document"];
+  const accordionButtonstitle = [
+    "Personal & Official Details",
+    "Other & Bank Details",
+    "Upload Document",
+  ];
   const indicator = {
-    completed: <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <rect width="20" height="20" rx="10" fill="#782BE4" />
-      <path d="M9 11.793L7.3535 10.1465L6.6465 10.8535L9 13.207L13.8535 8.35348L13.1465 7.64648L9 11.793Z" fill="var(--bg-white)" />
-    </svg>,
-    active: <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <rect x="0.5" y="0.5" width="19" height="19" rx="9.5" fill="#782BE4" />
-      <rect x="0.5" y="0.5" width="19" height="19" rx="9.5" stroke="white" />
-      <rect x="6" y="6" width="8" height="8" rx="4" fill="white" />
-    </svg>,
-    disabled: <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <rect x="0.25" y="0.25" width="19.5" height="19.5" rx="9.75" fill="#ABB7C2" fill-opacity="0.1" />
-      <rect x="0.25" y="0.25" width="19.5" height="19.5" rx="9.75" stroke="#CFD6DC" stroke-width="0.5" />
-    </svg>,
-  }
+    completed: (
+      <svg
+        width="20"
+        height="20"
+        viewBox="0 0 20 20"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <rect width="20" height="20" rx="10" fill="#782BE4" />
+        <path
+          d="M9 11.793L7.3535 10.1465L6.6465 10.8535L9 13.207L13.8535 8.35348L13.1465 7.64648L9 11.793Z"
+          fill="var(--bg-white)"
+        />
+      </svg>
+    ),
+    active: (
+      <svg
+        width="20"
+        height="20"
+        viewBox="0 0 20 20"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <rect x="0.5" y="0.5" width="19" height="19" rx="9.5" fill="#782BE4" />
+        <rect x="0.5" y="0.5" width="19" height="19" rx="9.5" stroke="white" />
+        <rect x="6" y="6" width="8" height="8" rx="4" fill="white" />
+      </svg>
+    ),
+    disabled: (
+      <svg
+        width="20"
+        height="20"
+        viewBox="0 0 20 20"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <rect
+          x="0.25"
+          y="0.25"
+          width="19.5"
+          height="19.5"
+          rx="9.75"
+          fill="#ABB7C2"
+          fill-opacity="0.1"
+        />
+        <rect
+          x="0.25"
+          y="0.25"
+          width="19.5"
+          height="19.5"
+          rx="9.75"
+          stroke="#CFD6DC"
+          stroke-width="0.5"
+        />
+      </svg>
+    ),
+  };
   // if (userResID) {
   // accordionButtons.push();
   // }
@@ -1452,8 +1556,6 @@ const UserMaster = () => {
       <div className="card">
         <div className="card-header">Personal Details</div>
         <div className="card-body row">
-
-
           <div className=" col-3">
             <FieldContainer
               label="Full Name"
@@ -1510,7 +1612,7 @@ const UserMaster = () => {
               value={personalContact}
               required={false}
               onChange={handlePersonalContactChange}
-            // onBlur={(e) => handleContentBlur(e, "personalContact")}
+              // onBlur={(e) => handleContentBlur(e, "personalContact")}
             />
             {(isContactTouched1 || personalContact.length >= 10) &&
               !isValidcontact1 &&
@@ -1564,7 +1666,7 @@ const UserMaster = () => {
               value={alternateContact}
               required={false}
               onChange={handleAlternateContactChange}
-            // onBlur={(e) => handleAlternateBlur(e, "alternateContact")}
+              // onBlur={(e) => handleAlternateBlur(e, "alternateContact")}
             />
             {(isAlternateTouched1 || alternateContact.length >= 10) &&
               !isValidcontact3 &&
@@ -1976,9 +2078,9 @@ const UserMaster = () => {
               value={
                 selectedRole
                   ? {
-                    value: selectedRole.role_id,
-                    label: selectedRole.Role_name,
-                  }
+                      value: selectedRole.role_id,
+                      label: selectedRole.Role_name,
+                    }
                   : null
               }
               onChange={(e) => {
@@ -2022,7 +2124,7 @@ const UserMaster = () => {
               value={contact}
               required={true}
               onChange={handleContactChange}
-            // onBlur={handleContentBlur}
+              // onBlur={handleContentBlur}
             />
           </div>
 
@@ -2042,12 +2144,14 @@ const UserMaster = () => {
               </label>
               <div className="input-group">
                 <input
-                  className={`form-control ${loginId
-                      ? loginResponse === "login id available"
-                        ? "login-success-border"
-                        : "login-error-border"
-                      : ""
-                    }`}
+                  className="form-control"
+                  // className={`form-control ${
+                  //   loginId
+                  //     ? loginResponse === "login id available"
+                  //       ? "login-success-border"
+                  //       : "login-error-border"
+                  //     : ""
+                  // }`}
                   value={loginId}
                   disabled
                   onChange={handleLoginIdChange}
@@ -2625,23 +2729,23 @@ const UserMaster = () => {
                 classNamePrefix="select"
                 value={tempLanguage}
                 onChange={handleLanguageSelect}
-              // onBlur={() => {
-              //   if (
-              //     tempLanguage === "" ||
-              //     tempLanguage === null ||
-              //     tempLanguage.length === 0
-              //   ) {
-              //     return setMandatoryFieldsEmpty((prevState) => ({
-              //       ...prevState,
-              //       language: true,
-              //     }));
-              //   } else {
-              //     setMandatoryFieldsEmpty({
-              //       ...mandatoryFieldsEmpty,
-              //       language: false,
-              //     });
-              //   }
-              // }}
+                // onBlur={() => {
+                //   if (
+                //     tempLanguage === "" ||
+                //     tempLanguage === null ||
+                //     tempLanguage.length === 0
+                //   ) {
+                //     return setMandatoryFieldsEmpty((prevState) => ({
+                //       ...prevState,
+                //       language: true,
+                //     }));
+                //   } else {
+                //     setMandatoryFieldsEmpty({
+                //       ...mandatoryFieldsEmpty,
+                //       language: false,
+                //     });
+                //   }
+                // }}
               />
               {/* {mandatoryFieldsEmpty.language && (
           <p className="form-error">Please Enter Languages</p>
@@ -3144,20 +3248,21 @@ const UserMaster = () => {
         {accordionButtons.map((button, index) => (
           <div className="flex-row align-items-center w-100 gap-4">
             <button
-              className={`tab ${activeAccordionIndex === index
+              className={`tab ${
+                activeAccordionIndex === index
                   ? "active"
                   : userResID !== ""
-                    ? "completed"
-                    : "disabled"
-                }`}
+                  ? "completed"
+                  : "disabled"
+              }`}
               onClick={() => handleAccordionButtonClick(index)}
             >
               <div className="gap-1 flex-row">
                 {activeAccordionIndex === index
                   ? indicator.active
                   : userResID !== ""
-                    ? indicator.completed
-                    : indicator.disabled}
+                  ? indicator.completed
+                  : indicator.disabled}
                 <p>{button}</p>
               </div>
               {accordionButtonstitle[index]}
@@ -3177,8 +3282,9 @@ const UserMaster = () => {
                     fill-rule="evenodd"
                     clip-rule="evenodd"
                     d="M6.51171 4.43057C6.8262 4.161 7.29968 4.19743 7.56924 4.51192L13.5692 11.5119C13.81 11.7928 13.81 12.2072 13.5692 12.4881L7.56924 19.4881C7.29968 19.8026 6.8262 19.839 6.51171 19.5695C6.19721 19.2999 6.16079 18.8264 6.43036 18.5119L12.012 12L6.43036 5.48811C6.16079 5.17361 6.19721 4.70014 6.51171 4.43057ZM10.5119 4.43068C10.8264 4.16111 11.2999 4.19753 11.5694 4.51202L17.5694 11.512C17.8102 11.7929 17.8102 12.2073 17.5694 12.4882L11.5694 19.4882C11.2999 19.8027 10.8264 19.8391 10.5119 19.5696C10.1974 19.3 10.161 18.8265 10.4306 18.512L16.0122 12.0001L10.4306 5.48821C10.161 5.17372 10.1974 4.70024 10.5119 4.43068Z"
-                    fill={`${activeAccordionIndex === index ? "var(--primary)" : ""
-                      }`}
+                    fill={`${
+                      activeAccordionIndex === index ? "var(--primary)" : ""
+                    }`}
                   />
                 </g>
               </svg>
