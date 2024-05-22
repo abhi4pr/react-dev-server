@@ -124,6 +124,7 @@ body {
   display: none;
 }
 
+
 .loader {
   display: flex;
   justify-content: center;
@@ -16153,6 +16154,47 @@ body[theme="dark"] .blurBg {
   margin-left: 0 !important;
 }
 
+.hover-lab {
+  position: absolute;
+  width: 100%;
+  height: 20px;
+  background-color: var(--primary);
+  color: var(--white);
+  bottom: -20px;
+  border-radius: 0 0 10px 10px;
+  text-align: center;
+  transition: bottom 0.3s ease;
+
+}
+
+.hover-label {
+  position: relative;
+  width: max-content;
+  overflow: hidden;
+
+  &:hover {
+    .hover-lab {
+      bottom: 0;
+    }
+
+    transition: bottom 0.3s ease;
+  }
+}
+
+.profile-holder-1 {
+  height: 100px;
+  width: 100px;
+  border-radius: 10px;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  object-fit: cover;
+  background-color: var(--dark);
+  color: var(--Gray-Color-600);
+  margin-left: 0 !important;
+}
+
 .profile-holder {
   height: 50px;
   width: 50px;
@@ -16487,7 +16529,7 @@ div:where(.swal2-container) {
 
   .active {
     background: var(--primary);
-    color: #d6d9dc;
+    color: #D6D9DC;
 
     p {
       color: var(--white) !important;
@@ -16507,7 +16549,7 @@ div:where(.swal2-container) {
   height: 80px;
   border-radius: 50%;
   position: absolute;
-  background-color: #e1fbeaa6;
+  background-color: #e1fbea66;
   top: 10px;
   right: 10px;
   display: flex;
@@ -16517,15 +16559,16 @@ div:where(.swal2-container) {
   p {
     font-size: 20px;
     font-weight: 600;
-    color: #00b74a !important;
+    color: #00B74A !important;
+    ;
   }
 }
 
 .profloat {
   pointer-events: none;
   position: absolute;
-  bottom: 5px;
-  right: -40px;
+  top: 87%;
+  right: 0;
   transform: translate(-50%, -50%);
 }
 
@@ -16571,5 +16614,32 @@ div:where(.swal2-container) {
     color: var(--medium) !important;
     border-right: 1px solid var(--border) !important;
   }
+}
 
+.ol-table {
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+
+  table {
+    width: 70%;
+  }
+
+  th {
+    background-color: #000;
+    color: white;
+    text-align: center;
+
+  }
+
+  tr {
+    border: 1px solid #000;
+  }
+
+  td {
+    border-left: 1px solid #000;
+    padding-left: 10px;
+  }
 }
