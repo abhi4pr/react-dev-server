@@ -541,7 +541,7 @@ const PreOnboardingUserMaster = () => {
 
   useEffect(() => {
     const MandatoryDocuments = documentData.filter(
-      (doc) => doc.document?.isRequired == true
+      (doc) => doc.document.isRequired == true
     );
 
     const MandatoryDocumentsFilledCount = MandatoryDocuments.filter(
@@ -554,7 +554,7 @@ const PreOnboardingUserMaster = () => {
     setShowMandotaryPer(ManDocFilledPer);
 
     const nonManDocs = documentData.filter(
-      (doc) => doc.document?.isRequired == false
+      (doc) => doc.document.isRequired == false
     );
 
     const nonMandatoryFilledCount = nonManDocs.filter(
