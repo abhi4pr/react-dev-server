@@ -137,7 +137,7 @@ const SalesServicesCreate = () => {
           onChange={(e) => setServiceName(e.target.value)}
         />
         <DynamicSelect
-          lable="Post Type"
+          label="Post Type"
           astric={true}
           data={PostTypeData}
           value={postType}
@@ -145,7 +145,7 @@ const SalesServicesCreate = () => {
           onChange={(e) => setPostType(e.value)}
         />
         <DynamicSelect
-          lable="Excel Upload"
+          label="Excel Upload"
           astric={true}
           data={ExcelUploadData}
           value={excelUpload}
@@ -153,7 +153,7 @@ const SalesServicesCreate = () => {
           onChange={(e) => setExcelUpload(e.value)}
         />
         <DynamicSelect
-          lable="Amount"
+          label="Amount"
           astric={true}
           data={AmountData}
           value={amount}
@@ -161,7 +161,7 @@ const SalesServicesCreate = () => {
           onChange={(e) => setAmount(e.value)}
         />
         <DynamicSelect
-          lable="Number Hours"
+          label="Number Hours"
           astric={true}
           data={NumberHoursData}
           value={numberHours}
@@ -169,7 +169,7 @@ const SalesServicesCreate = () => {
           onChange={(e) => setNumberHours(e.value)}
         />
         <DynamicSelect
-          lable="Goal"
+          label="Goal"
           astric={true}
           data={GoalData}
           value={goal}
@@ -177,7 +177,7 @@ const SalesServicesCreate = () => {
           onChange={(e) => setGoal(e.value)}
         />
         <DynamicSelect
-          lable="Day"
+          label="Day"
           astric={true}
           data={DayData}
           value={day}
@@ -185,7 +185,7 @@ const SalesServicesCreate = () => {
           onChange={(e) => setDay(e.value)}
         />
         <DynamicSelect
-          lable="Quantity"
+          label="Quantity"
           astric={true}
           data={QuantityData}
           value={quantity}
@@ -193,7 +193,7 @@ const SalesServicesCreate = () => {
           onChange={(e) => setQuantity(e.value)}
         />
         <DynamicSelect
-          lable="Brand Name"
+          label="Brand Name"
           astric={true}
           data={BrandNameData}
           value={brandName}
@@ -201,7 +201,7 @@ const SalesServicesCreate = () => {
           onChange={(e) => setBrandName(e.value)}
         />
         <DynamicSelect
-          lable="HasTag"
+          label="HasTag"
           astric={true}
           data={HashtagData}
           value={hashTag}
@@ -209,7 +209,7 @@ const SalesServicesCreate = () => {
           onChange={(e) => setHashTag(e.value)}
         />
         <DynamicSelect
-          lable="Individual Amount"
+          label="Individual Amount"
           astric={true}
           data={IndividualAmountData}
           value={individual}
@@ -217,7 +217,7 @@ const SalesServicesCreate = () => {
           onChange={(e) => setIndividual(e.value)}
         />
         <DynamicSelect
-          lable="Number Of Creators"
+          label="Number Of Creators"
           astric={true}
           data={NumberOfCreatorData}
           value={numberOfCreators}
@@ -225,7 +225,7 @@ const SalesServicesCreate = () => {
           onChange={(e) => setNumberOfCreators(e.value)}
         />
         <DynamicSelect
-          lable="Start End Date"
+          label="Start End Date"
           astric={true}
           data={StartEndDateData}
           value={startEndDate}
@@ -233,7 +233,7 @@ const SalesServicesCreate = () => {
           onChange={(e) => setStartEndDate(e.value)}
         />
         <DynamicSelect
-          lable="Per Month Amount"
+          label="Per Month Amount"
           astric={true}
           data={PerMonthAmountData}
           value={perMonthAmount}
@@ -241,7 +241,7 @@ const SalesServicesCreate = () => {
           onChange={(e) => setPerMonthAmount(e.value)}
         />
         <DynamicSelect
-          lable="Deliverables Info "
+          label="Deliverables Info "
           astric={true}
           data={DeliverablesInfoData}
           value={deliverables}

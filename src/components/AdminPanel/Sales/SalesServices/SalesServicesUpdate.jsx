@@ -139,7 +139,7 @@ const SalesServicesUpdate = () => {
           required={false}
         />
         <DynamicSelect
-          lable="Post Type"
+          label="Post Type"
           astric={true}
           data={PostTypeData}
           value={postType}
@@ -147,7 +147,7 @@ const SalesServicesUpdate = () => {
           onChange={(e) => setPostType(e.value)}
         />
         <DynamicSelect
-          lable="Excel Upload"
+          label="Excel Upload"
           astric={true}
           data={ExcelUploadData}
           value={excelUpload}
@@ -155,7 +155,7 @@ const SalesServicesUpdate = () => {
           onChange={(e) => setExcelUpload(e.value)}
         />
         <DynamicSelect
-          lable="Amount"
+          label="Amount"
           astric={true}
           data={AmountData}
           value={amount}
@@ -163,7 +163,7 @@ const SalesServicesUpdate = () => {
           onChange={(e) => setAmount(e.value)}
         />
         <DynamicSelect
-          lable="Number Hours"
+          label="Number Hours"
           astric={true}
           data={NumberHoursData}
           value={numberHours}
@@ -171,7 +171,7 @@ const SalesServicesUpdate = () => {
           onChange={(e) => setNumberHours(e.value)}
         />
         <DynamicSelect
-          lable="Goal"
+          label="Goal"
           astric={true}
           data={GoalData}
           value={goal}
@@ -179,7 +179,7 @@ const SalesServicesUpdate = () => {
           onChange={(e) => setGoal(e.value)}
         />
         <DynamicSelect
-          lable="Day"
+          label="Day"
           astric={true}
           data={DayData}
           value={day}
@@ -187,7 +187,7 @@ const SalesServicesUpdate = () => {
           onChange={(e) => setDay(e.value)}
         />
         <DynamicSelect
-          lable="Quantity"
+          label="Quantity"
           astric={true}
           data={QuantityData}
           value={quantity}
@@ -195,7 +195,7 @@ const SalesServicesUpdate = () => {
           onChange={(e) => setQuantity(e.value)}
         />
         <DynamicSelect
-          lable="Brand Name"
+          label="Brand Name"
           astric={true}
           data={BrandNameData}
           value={brandName}
@@ -203,7 +203,7 @@ const SalesServicesUpdate = () => {
           onChange={(e) => setBrandName(e.value)}
         />
         <DynamicSelect
-          lable="HasTag"
+          label="HasTag"
           astric={true}
           data={HashtagData}
           value={hashTag}
@@ -211,7 +211,7 @@ const SalesServicesUpdate = () => {
           onChange={(e) => setHashTag(e.value)}
         />
         <DynamicSelect
-          lable="Individual Amount"
+          label="Individual Amount"
           astric={true}
           data={IndividualAmountData}
           value={individual}
@@ -219,7 +219,7 @@ const SalesServicesUpdate = () => {
           onChange={(e) => setIndividual(e.value)}
         />
         <DynamicSelect
-          lable="Number Of Creators"
+          label="Number Of Creators"
           astric={true}
           data={NumberOfCreatorData}
           value={numberOfCreators}
@@ -227,7 +227,7 @@ const SalesServicesUpdate = () => {
           onChange={(e) => setNumberOfCreators(e.value)}
         />
         <DynamicSelect
-          lable="Start End Date"
+          label="Start End Date"
           astric={true}
           data={StartEndDateData}
           value={startEndDate}
@@ -235,7 +235,7 @@ const SalesServicesUpdate = () => {
           onChange={(e) => setStartEndDate(e.value)}
         />
         <DynamicSelect
-          lable="Per Month Amount"
+          label="Per Month Amount"
           astric={true}
           data={PerMonthAmountData}
           value={perMonthAmount}
@@ -243,7 +243,7 @@ const SalesServicesUpdate = () => {
           onChange={(e) => setPerMonthAmount(e.value)}
         />
         <DynamicSelect
-          lable="Deliverables Info "
+          label="Deliverables Info "
           astric={true}
           data={DeliverablesInfoData}
           value={deliverables}
