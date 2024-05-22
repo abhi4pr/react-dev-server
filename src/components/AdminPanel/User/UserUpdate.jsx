@@ -1132,11 +1132,6 @@ const UserUpdate = () => {
     }
   }
 
-  // After form submittion navigate
-  if (isFormSubmitted) {
-    // return <Navigate to="/admin/user-overview" />;
-  }
-
   // Password Auto Genrate
   const generatePassword = () => {
     const length = 8;
@@ -1191,27 +1186,6 @@ const UserUpdate = () => {
       setMandatoryFieldsEmpty({ ...mandatoryFieldsEmpty, loginId: false });
     }
   };
-  // const generateLoginId = () => {
-  //   const userName = username.trim().toLowerCase().split(" ");
-
-  //   const loginIdOption1 = userName[0] + userName[1].charAt(0);
-
-  //   const loginIdOption2 = userName[0].charAt(0) + userName[1];
-
-  //   const loginIdOption3 = userName.join(".");
-
-  //   // Randomly choose one of the options
-  //   const randomIndex = Math.floor(Math.random() * 3);
-  //   const generatedLoginId = [loginIdOption1, loginIdOption2, loginIdOption3][
-  //     randomIndex
-  //   ];
-
-  //   setLoginId(generatedLoginId);
-
-  //   if (generatedLoginId.length > 0) {
-  //     setMandatoryFieldsEmpty({ ...mandatoryFieldsEmpty, loginId: false });
-  //   }
-  // };
 
   const handleLoginIdChange = (event) => {
     const selectedLoginId = event.target.value;
@@ -1764,13 +1738,14 @@ const UserUpdate = () => {
               </label>
               <div className="input-group">
                 <input
-                  className={`form-control ${
-                    loginId
-                      ? loginResponse === "login id available"
-                        ? "login-success-border"
-                        : "login-error-border"
-                      : ""
-                  }`}
+                  className="form-control"
+                  // className={`form-control ${
+                  //   loginId
+                  //     ? loginResponse === "login id available"
+                  //       ? "login-success-border"
+                  //       : "login-error-border"
+                  //     : ""
+                  // }`}
                   value={loginId}
                   disabled
                   onChange={handleLoginIdChange}
