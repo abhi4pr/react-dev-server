@@ -115,7 +115,7 @@ const LetterTab = ({ allUserData, gettingData }) => {
         pdfData.append("user_id", parseInt(allUserData.user_id));
         setIsLoading(false);
         axios
-          .post(baseUrl + "offer_letter_send_in_mail", pdfData, {
+          .post(baseUrl + "offer_letter_send_in_mail",  pdfData, {
             headers: {
               "Content-Type": "multipart/form-data",
             },
