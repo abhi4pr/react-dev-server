@@ -510,19 +510,37 @@ const AdminPreOnboarding = () => {
 
     const nextIndex = (lastIndexUsed + 1) % loginIdOptions.length;
     setLastIndexUsed(nextIndex);
-    const generatedLoginId = loginIdOptions[nextIndex];
-    setLoginId(generatedLoginId);
+    let generatedLoginId = loginIdOptions[nextIndex];
 
-    await axios
-      .post(baseUrl + `check_login_exist`, {
-        user_login_id: loginId,
-      })
-      .then((res) => {
-        setLoginResponse(res.data.message);
-      });
+    // Check if the generated login ID already exists
+    const response = await axios.post(baseUrl + `check_login_exist`, {
+      user_login_id: generatedLoginId,
+    });
+
+    if (response.data.message === "login id not available") {
+      // If login ID already exists, find the next available one
+      let index = 1;
+      while (true) {
+        const nextGeneratedLoginId = `${generatedLoginId}_${index}`;
+        const checkExistenceResponse = await axios.post(
+          baseUrl + `check_login_exist`,
+          {
+            user_login_id: nextGeneratedLoginId,
+          }
+        );
+        if (checkExistenceResponse.data.message === "login id available") {
+          generatedLoginId = nextGeneratedLoginId;
+          break;
+        }
+        index++;
+      }
+    }
+
+    setLoginId(generatedLoginId);
+    setLoginResponse(response.data.message);
 
     if (generatedLoginId?.length > 0) {
-      setIsRequired({ ...isRequired, loginId: false });
+      setIsRequired((prev) => ({ ...prev, loginId: false }));
     }
   };
 
@@ -995,13 +1013,16 @@ const AdminPreOnboarding = () => {
             <sup className="form-error">*</sup>
             <div className="input-group">
               <input
-                className={`form-control ${
-                  loginId
-                    ? loginResponse === "login id available"
-                      ? "login-success-border"
-                      : "login-error-border"
-                    : ""
-                }`}
+                className="form-control"
+                // className={`form-control
+                // ${
+                //   loginId
+                //     ? loginResponse === "login id available"
+                //       ? "login-success-border"
+                //       : "login-error-border"
+                //     : ""
+                // }
+                // `}
                 value={loginId}
                 disabled
                 onChange={handleLoginIdChange}
