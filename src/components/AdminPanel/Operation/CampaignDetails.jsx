@@ -123,17 +123,17 @@ const CampaignDetails = ({
             commitData.map((comm, index) => {
               // commitForValidate.push()
               return  <>
-              <Grid item xs={12} sm={6} sx={{ mb: 2 }}>
+              <Grid  sx={{ m: 2 }}>
                 <TextField
                   InputProps={{
                     readOnly: true,
                   }}
                   fullWidth
-                  label="Commitment"
-                  value={comm.cmtName}
+                  label={comm.cmtName}
+                  value={campaignData?.commitment[index]?.textValue}
                 />
               </Grid>
-              <Grid item xs={12} sm={6} sx={{ mb: 2 }}>
+              {/* <Grid item xs={12} sm={6} sx={{ mb: 2 }}>
                
                 <TextField
                   InputProps={{
@@ -143,7 +143,7 @@ const CampaignDetails = ({
                   label="value"
                   value={campaignData?.commitment[index]?.textValue}
                 />
-              </Grid>
+              </Grid> */}
             </>
             })}
         </Grid>

@@ -410,9 +410,10 @@ export default function RegisteredCampaigns() {
       headerName: "Campaign Name",
       width: 170,
       renderCell: (params) => {
-        return campignData.filter((e) => {
-          return e.exeCmpId == params.row.exeCmpId;
-        })[0]?.exeCmpName;
+        const campaign = campignData.find(
+          (e) => e.exeCmpId === params.row.exeCmpId
+        );
+        return campaign ? capitalizeFirstWord(campaign.exeCmpName) : "";
       },
     },
     {
@@ -461,7 +462,9 @@ export default function RegisteredCampaigns() {
       field: "hashtags",
       headerName: "Hashtag",
       width: 200,
+      renderCell: (params) => capitalizeFirstWord(params.row.hashtags)
     },
+    
     {
       field: "campaignclosedby",
       headerName: "Campaign Closed By",
@@ -471,11 +474,14 @@ export default function RegisteredCampaigns() {
       field: "captions",
       headerName: "Caption",
       width: 200,
+
     },
     {
       field: "detailing",
       headerName: "Detail",
       width: 200,
+      renderCell: (params) => capitalizeFirstWord(params.row.detailing)
+
     },
     {
       field: "commits",
@@ -484,7 +490,11 @@ export default function RegisteredCampaigns() {
       renderCell: (params) => {
         return (
           <div>
-            <button className="icon-1" onClick={() => handleOpen2(params)} variant="text">
+            <button
+              className="icon-1"
+              onClick={() => handleOpen2(params)}
+              variant="text"
+            >
               <i className="bi bi-chat-left-text"></i>
             </button>
           </div>
@@ -559,10 +569,7 @@ export default function RegisteredCampaigns() {
       renderCell: (params) => {
         return (
           <div>
-            <button
-              className="icon-1"
-              onClick={() => handleDeleteRow(params)}
-            >
+            <button className="icon-1" onClick={() => handleDeleteRow(params)}>
               <i className="bi bi-trash"></i>
             </button>
           </div>
@@ -845,11 +852,13 @@ export default function RegisteredCampaigns() {
             activeAccordionIndex={activeAccordionIndex}
             onAccordionButtonClick={handleAccordionButtonClick}
           />
-
         </div>
         <div className="action_btns ">
           <Link to="/admin/op-register-campaign">
-            <button type="button" className="btn cmnbtn btn_sm btn-outline-primary btn-sm">
+            <button
+              type="button"
+              className="btn cmnbtn btn_sm btn-outline-primary btn-sm"
+            >
               Add campagin{" "}
             </button>
           </Link>
@@ -862,13 +871,19 @@ export default function RegisteredCampaigns() {
 
       <div className="card">
         <div className="card-header sb">
-
+          <div className="search-bar">
+            <TextField
+              type="text"
+              label="Search Campaign"
+              // value={searchQuery}
+              // onChange={handleSearch}
+            />
+          </div>
           <div className="card-title">Count: {filteredTable1DataLength}</div>
+
           <div className="pack w-75 ">
             <FormControl className="w-25">
-              <InputLabel id="date-filter-select-label">
-                Date Filter
-              </InputLabel>
+              <InputLabel id="date-filter-select-label">Date Filter</InputLabel>
               <Select
                 labelId="date-filter-select-label"
                 id="date-filter-select"
@@ -883,9 +898,7 @@ export default function RegisteredCampaigns() {
                 <MenuItem value="thisYear"> Year</MenuItem>
               </Select>
             </FormControl>
-
           </div>
-
         </div>
         <div className="card-body body-padding fx-head thm_table">
           {activeAccordionIndex === 0 && tab1}
@@ -1040,18 +1053,21 @@ export default function RegisteredCampaigns() {
                   {videoType?.filter(
                     (e) => !fields?.map((e) => e.selectValue).includes(e)
                   ).length > 0 && (
-                      <button
-                        className="btn btn_sm btn-outline-primary mb-2"
-                        variant="outlined"
-                        onClick={handleAddField}
-                      >
-                        Add Row
-                      </button>
-                    )}
+                    <button
+                      className="btn btn_sm btn-outline-primary mb-2"
+                      variant="outlined"
+                      onClick={handleAddField}
+                    >
+                      Add Row
+                    </button>
+                  )}
                 </div>
               </div>
               <div className="d-flex justify-content-between">
-                <button className="btn cmnbtn btn_sm btn-outline-danger" onClick={handleClose}>
+                <button
+                  className="btn cmnbtn btn_sm btn-outline-danger"
+                  onClick={handleClose}
+                >
                   Cancel
                 </button>
                 <button
@@ -1085,8 +1101,7 @@ export default function RegisteredCampaigns() {
           >
             Commits
           </Typography>
-          <div id="modal-modal-description" className=" mt-4" >
-
+          <div id="modal-modal-description" className=" mt-4">
             <div className="card">
               <DataGrid
                 rows={commitmentModalData}
@@ -1098,11 +1113,9 @@ export default function RegisteredCampaigns() {
             <button
               className="btn cmnbtn btn-outline-primary btn_sm mt-2"
               onClick={handleClose2}
-
             >
               Cancel
             </button>
-
           </div>
         </Box>
       </Modal>
@@ -1131,11 +1144,19 @@ const PlanCreationComponent = ({ row, handlePlan, handleShowPlan }) => {
   return (
     <div className="d-flex text-center align-item-center justify-content-center">
       {!planData?.data?.data.length > 0 ? (
-        <button className="icon-1" type="button" onClick={() => handlePlan(row)}>
+        <button
+          className="icon-1"
+          type="button"
+          onClick={() => handlePlan(row)}
+        >
           <i className="bi bi-send"></i>
         </button>
       ) : (
-        <Button className="btn cmnbtn btn-outline-primary btn_sm" variant="outlined" onClick={() => handleShowPlan(row)}>
+        <Button
+          className="btn cmnbtn btn-outline-primary btn_sm"
+          variant="outlined"
+          onClick={() => handleShowPlan(row)}
+        >
           Show plan
         </Button>
       )}
@@ -1163,7 +1184,11 @@ const PhaseCreationComponent = ({ row, handlePhase }) => {
   return (
     <div className="d-flex text-center align-item-center justify-content-center">
       {planData?.data?.data.length > 0 ? (
-        <button className="icon-1" type="button" onClick={() => handlePhase(row)}>
+        <button
+          className="icon-1"
+          type="button"
+          onClick={() => handlePhase(row)}
+        >
           <i className="bi bi-send"></i>
         </button>
       ) : (
