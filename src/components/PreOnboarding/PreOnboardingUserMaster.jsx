@@ -1978,7 +1978,7 @@ const PreOnboardingUserMaster = () => {
                                   getOptionLabel={(option) => option.label}
                                   InputLabelProps={{ shrink: true }}
                                   renderInput={(params) => (
-                                    <TextField {...params} label="Hobbie" />
+                                    <TextField {...params} label="Hobbies" />
                                   )}
                                   onChange={categoryChangeHandler}
                                   value={hobbies}

@@ -109,6 +109,7 @@ export default function PendingPaymentRequest() {
   const [isTDSMandatory, setIsTDSMandatory] = useState(false);
   const [isTDSDeducted, setIsTDSDeducted] = useState(false);
   const [netAmount, setNetAmount] = useState("");
+  const [tdsDeductedCount, setTdsDeductedCount] = useState(0);
   const accordionButtons = ["All", "Partial", "Instant"];
 
   var handleAcknowledgeClick = () => {
@@ -226,6 +227,7 @@ export default function PendingPaymentRequest() {
             if (!aReminder && bReminder) return 1;
             // Add aging sorting logic if required
             return new Date(a.request_date) - new Date(b.request_date);
+            // return new Date(a.request_date) < new Date(b.request_date) ? -1 : 1;
           });
 
           setData(mergedArray);
@@ -259,6 +261,12 @@ export default function PendingPaymentRequest() {
           // calculate Partial Data :-
           const dateFilterData = filterDataBasedOnSelection(mergedArray);
           setFilterData(dateFilterData);
+
+          const tdsCount = mergedArray?.filter(
+            (data) => data?.TDSDeduction === "1" || data?.TDSDeduction === null
+          );
+          console.log(tdsCount, "tdsCount--------------");
+          setTdsDeductedCount(tdsCount);
         });
     });
 
@@ -274,7 +282,6 @@ export default function PendingPaymentRequest() {
     setReminderData(reaminderData);
     setRemainderDialog(true);
   };
-  console.log(paymentModeData, "payment mode data ----------------------");
 
   useEffect(() => {
     callApi();
@@ -344,16 +351,6 @@ export default function PendingPaymentRequest() {
     filterRowsButtonText: "Filter",
     filterGridToolbarButton: "Filter",
   };
-
-  // function calculateDays(date1, date2) {
-  //   const oneDay = 24 * 60 * 60 * 1000; // hours * minutes * seconds * milliseconds
-  //   const firstDate = new Date(date1);
-  //   const secondDate = new Date(date2);
-
-  //   const diffDays = Math.round(Math.abs((firstDate - secondDate) / oneDay));
-
-  //   return diffDays;
-  // }
 
   function calculateHours(date1, date2) {
     const oneHour = 60 * 60 * 1000; // minutes * seconds * milliseconds
@@ -452,7 +449,7 @@ export default function PendingPaymentRequest() {
             );
           });
 
-        setPaymentMode("");
+        setPaymentMode("Razor Pay");
         setPayRemark("");
         setPayMentProof("");
         handleClosePayDialog();
@@ -591,7 +588,7 @@ export default function PendingPaymentRequest() {
   };
   const handleClosePayDialog = () => {
     setPayDialog(false);
-    setPaymentMode("");
+    setPaymentMode("Razor Pay");
     setPayRemark("");
     setPayMentProof("");
     setPaymentAmount("");
@@ -601,28 +598,33 @@ export default function PendingPaymentRequest() {
   };
 
   const handlePayClick = (e, row) => {
+    console.log(row, "handle pay row data ------------------");
     e.preventDefault();
+
     let x = phpRemainderData.filter(
-      (item) => item.request_id == row.request_id
+      (item) => item?.request_id == row?.request_id
     );
     if (x.length > 0) {
       toastError(
-        `You can't pay this request as it has been reminded ${x.length} times`
+        `You can't pay this request as it has been reminded ${x?.length} times`
       );
       return;
     }
-
     const enrichedRow = {
       ...row,
-      totalFY: calculateTotalFY(row, nodeData),
+      totalFY: calculateTotalFY(row),
     };
+
+    console.log(enrichedRow, "enriched row---------------");
     setRowData(enrichedRow);
 
     // setRowData(row);
-    setPaymentAmount(row.balance_amount);
-    setNetAmount(row.balance_amount);
+    setPaymentAmount(row?.balance_amount);
+    setNetAmount(row?.balance_amount);
 
-    setBaseAmount(row.base_amount != 0 ? row.base_amount : row.request_amount);
+    setBaseAmount(
+      row?.base_amount != 0 ? row?.base_amount : row?.request_amount
+    );
     setLoading(true);
     setPayDialog(true);
   };
@@ -1108,16 +1110,7 @@ export default function PendingPaymentRequest() {
 
     return totalFY;
   };
-
-  // useEffect(() => {
-  //   const RD = data?.map((row) => ({
-  //     ...row,
-  //     totalFY: calculateTotalFY(row, nodeData),
-  //   }));
-
-  //   setRowData(RD);
-  // }, [data, rowData]);
-
+  console.log(filterData, "filter Data------");
   const columns = [
     {
       field: "S.NO",
@@ -1518,6 +1511,14 @@ export default function PendingPaymentRequest() {
       },
     },
     {
+      field: "TDSDeduction",
+      headerName: "TDS Deducted ",
+      width: 150,
+      renderCell: (params) => {
+        return <p> &#8377; {params.row.TDSDeduction === "1" ? "Yes" : "No"}</p>;
+      },
+    },
+    {
       field: "aging",
       headerName: "Aging",
       width: 150,
@@ -1700,9 +1701,6 @@ export default function PendingPaymentRequest() {
     (total, item) => total + parseFloat(item.balance_amount),
     0
   );
-  // const balanceAmountPartial = formatAmount(balanceAmountPart);
-
-  // console.log(balanceAmountPartial);
   const nonGstPartialCount = partialData?.filter((gst) => gst.gstHold === "0");
 
   const withInvcPartialImage = partialData?.filter(
@@ -1711,6 +1709,9 @@ export default function PendingPaymentRequest() {
 
   const withoutInvcPartialImage = partialData?.filter(
     (item) => !item.invc_img || item.invc_img.length === 0
+  );
+  const partialTDSDeduction = partialData?.filter(
+    (item) => item?.TDSDeduction === "1" || item?.TDSDeduction === null
   );
   // ===================================================================
   // For Instant tab :-
@@ -1732,6 +1733,9 @@ export default function PendingPaymentRequest() {
   );
   const withoutInvcInstantImage = instantData?.filter(
     (item) => !item.invc_img || item.invc_img.length === 0
+  );
+  const instantTDSDeduction = instantData?.filter(
+    (item) => item?.TDSDeduction === "1" || item?.TDSDeduction === null
   );
   // ===================================================================
 
@@ -1880,15 +1884,15 @@ export default function PendingPaymentRequest() {
   //   setIsTDSDeducted(isTDSDeducted);
   // }, [rowData]);
   useEffect(() => {
-    const isTDSMandatory =
-      rowData?.totalFY > 100000 || rowData?.totalFY > 25000;
-    const isTDSDeducted = rowData?.TDSDeduction === "1";
-    setIsTDSMandatory(isTDSMandatory);
-    setIsTDSDeducted(isTDSDeducted);
+    const tdsMandatory = rowData?.totalFY > 100000 || rowData?.totalFY > 25000;
+    const isTdsDeductedData = rowData?.TDSDeduction === "1";
+    setIsTDSMandatory(tdsMandatory);
+    setIsTDSDeducted(isTdsDeductedData);
 
-    if (isTDSMandatory && !isTDSDeducted) {
-      setTDSDeduction(true);
-    }
+    // if (tdsMandatory && !isTdsDeductedData) {
+    //   setTDSDeduction(true);
+    // }
+    setTDSDeduction(tdsMandatory || isTdsDeductedData);
   }, [rowData]);
 
   console.log(
@@ -1929,6 +1933,9 @@ export default function PendingPaymentRequest() {
         handleOpenUniqueVendorClick={handleOpenUniqueVendorClick}
         includeAdditionalTitles={true}
         pendingpaymentRemainder={phpRemainderData.length}
+        tdsDeductedCount={tdsDeductedCount}
+        partialTDSDeduction={partialTDSDeduction}
+        instantTDSDeduction={instantTDSDeduction}
       />
       {/* Bank Details 14 */}
       <Dialog
@@ -2435,7 +2442,7 @@ export default function PendingPaymentRequest() {
                     showQuickFilter: true,
                   },
                 }}
-                getRowId={(row) => filterData?.indexOf(row)}
+                getRowId={(row) => row?.request_id}
                 // onRowSelectionModelChange={(rowIds) => {
                 //   handleRowSelectionModelChange(rowIds);
                 //   console.log(rowIds, "IDS");
@@ -2699,7 +2706,7 @@ export default function PendingPaymentRequest() {
                         autoFocus
                         readOnly
                         margin="dense"
-                        variant="outline"
+                        variant="outlined"
                         id="name"
                         label="TDS Amount"
                         disable={true}
@@ -2736,7 +2743,7 @@ export default function PendingPaymentRequest() {
                         margin="dense"
                         id="name"
                         label=" Net Amount *"
-                        variant="outline"
+                        variant="outlined"
                         fullWidth
                         value={netAmount}
                       />
@@ -2839,7 +2846,7 @@ export default function PendingPaymentRequest() {
                   />
                 </LocalizationProvider>
                 <Autocomplete
-                  onChange={(e, value) => setPaymentMode(value)}
+                  onChange={(e, value) => setPaymentMode(value || null)}
                   disablePortal
                   className="col mt-1"
                   id="combo-box-demo"
@@ -2848,7 +2855,7 @@ export default function PendingPaymentRequest() {
                       ? paymentModeData?.map((item) => item.payment_mode)
                       : []
                   }
-                  fullWidth={true}
+                  value={paymentMode}
                   renderInput={(params) => (
                     <TextField
                       {...params}

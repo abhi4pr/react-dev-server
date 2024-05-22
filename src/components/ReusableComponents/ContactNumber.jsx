@@ -49,9 +49,9 @@ const ContactNumber = ({
         onChange={handleContactChange}
         onBlur={handleContactBlur}
       />
-      {(isContactTouched || contact?.length >= 10) && !isValidcontact && (
+      {/* {(isContactTouched || contact?.length >= 10) && !isValidcontact && (
         <p className="validation_message error">*Please enter valid number</p>
-      )}
+      )} */}
     </>
   );
 };
