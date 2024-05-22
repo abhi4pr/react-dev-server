@@ -31,8 +31,8 @@ const LetterTab = ({ allUserData, gettingData }) => {
     monthlySalary < 9000
       ? 0
       : monthlySalary >= 9000 && monthlySalary < 15000
-        ? monthlySalary * 0.12
-        : 1800;
+      ? monthlySalary * 0.12
+      : 1800;
   const yearCalPf = monthPf * 12;
   const totalMonthearning =
     basicMonthSal + hraMonthSal + advanceMonthSal + monthLeaveEnhance - monthPf;
@@ -968,8 +968,8 @@ const LetterTab = ({ allUserData, gettingData }) => {
                         Date{" "}
                         {allUserData?.joining_date
                           ? new Date(
-                            allUserData.joining_date
-                          ).toLocaleDateString()
+                              allUserData.joining_date
+                            ).toLocaleDateString()
                           : ""}
                       </p>
 
