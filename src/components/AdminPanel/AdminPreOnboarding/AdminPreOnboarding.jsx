@@ -247,79 +247,69 @@ const AdminPreOnboarding = () => {
       return toastError("Fill the Mandatory fields");
     }
 
-    const formData = new FormData();
-    formData.append("created_by", loginUserId);
-    formData.append("user_name", validateAndCorrectUserName(username));
-    formData.append("role_id", roles);
-    formData.append("image", selectedImage);
-    formData.append("ctc", userCtc);
-    formData.append("Age", Number(age));
-    // formData.append(
-    //   "offer_letter_send",
-    //   sendLetter.value ? Boolean(sendLetter.value) : false
-    // );
-    formData.append("offer_letter_send", true);
+    const payload = {
+      created_by: loginUserId,
+      user_name: validateAndCorrectUserName(username),
+      role_id: roles,
+      image: selectedImage,
+      ctc: userCtc,
+      Age: Number(age),
+      offer_letter_send: true,
+      tds_applicable: tdsApplicable,
+      tds_per: tdsPercentage,
+      user_login_id: loginId,
+      user_login_password: password,
+      sitting_id: 183,
+      room_id: roomId,
+      dept_id: department,
+      sub_dept_id: subDepartment,
+      Gender: gender,
+      job_type: jobType,
+      DOB: dateOfBirth,
+      user_contact_no: personalContact,
+      personal_number: personalContact,
+      user_email_id: personalEmail,
+      Personal_email: personalEmail,
+      report_L1: reportL1,
+      report_L2: reportL2,
+      report_L3: reportL3,
+      user_designation: designation,
+      UID: uid,
+      pan: panUpload,
+      highest_upload: highestUpload,
+      other_upload: otherUpload,
+      joining_date: joiningDate,
+      releaving_date: releavingDate,
+      salary: Number(salary),
+      onboard_status: onBoardStatus,
+    };
 
-    // formData.append("annexure_pdf", annexurePdf);
-    formData.append("tds_applicable", tdsApplicable);
-    formData.append("tds_per", tdsPercentage);
-    formData.append("user_login_id", loginId);
-    formData.append("user_login_password", password);
-    formData.append("sitting_id", 183);
-    formData.append("room_id", roomId);
-    formData.append("dept_id", department);
-    formData.append("sub_dept_id", subDepartment);
-    formData.append("Gender", gender);
-    formData.append("job_type", jobType);
-    formData.append("DOB", dateOfBirth);
-
-    formData.append("user_contact_no", personalContact);
-    formData.append("personal_number", personalContact);
-    // formData.append("pe", personalContact);
-
-    formData.append("user_email_id", personalEmail);
-    formData.append("Personal_email", personalEmail);
-    // formData.append("PersonalEmail", personalEmail);
-
-    formData.append("report_L1", reportL1);
-    formData.append("report_L2", reportL2);
-    formData.append("report_L3", reportL3);
-    formData.append("user_designation", designation);
-    formData.append("UID", uid);
-    formData.append("pan", panUpload);
-    formData.append("highest_upload", highestUpload);
-    formData.append("other_upload", otherUpload);
-    formData.append("joining_date", joiningDate);
-    formData.append("releaving_date", releavingDate);
-    formData.append("salary", Number(salary));
-    formData.append("onboard_status", onBoardStatus);
-
-    // if (isValidcontact1 == true && validEmail == true) {
     try {
       const isLoginIdExists = usersData.some(
         (user) =>
-          user.user_login_id.toLocaleLowerCase() === loginId.toLocaleLowerCase()
+          user.user_login_id?.toLocaleLowerCase() ===
+          loginId?.toLocaleLowerCase()
       );
       const contactNumberExists = usersData.some(
         (user) => user.user_contact_no == personalContact
       );
-
       const emailIdExists = usersData.some(
         (user) =>
           user.user_email_id?.toLocaleLowerCase() ==
           personalEmail?.toLocaleLowerCase()
       );
+
       if (isLoginIdExists) {
-        alert("this login ID already exists");
+        alert("This login ID already exists");
       } else if (contactNumberExists) {
-        alert(" Contact Already Exists");
+        alert("Contact Already Exists");
       } else if (emailIdExists) {
-        alert(" Email Already Exists");
+        alert("Email Already Exists");
       } else {
         setLoading(true);
-        await axios.post(baseUrl + "add_user", formData, {
+        await axios.post(baseUrl + "add_user", payload, {
           headers: {
-            "Content-Type": "multipart/form-data",
+            "Content-Type": "application/json",
           },
         });
         whatsappApi.callWhatsAPI(
@@ -337,10 +327,7 @@ const AdminPreOnboarding = () => {
             login_id: loginId,
             name: username,
             password: password,
-          })
-          .then((res) => {
-            // setLoading(true);
-            console.log("Email sent successfully:", res.data);
+            status: "onboarded",
           })
           .then((res) => {
             if (res.status == 200) {
@@ -368,10 +355,8 @@ const AdminPreOnboarding = () => {
         setDepartment("");
         setSitting("");
         setRoomId("");
-        setPersonalContact("");
         setSendLetter("");
         setAnnexurePdf("");
-        setPersonalEmail("");
         setJobType("");
         setReportL1("");
         setReportL2("");
@@ -537,7 +522,7 @@ const AdminPreOnboarding = () => {
       });
 
     if (generatedLoginId?.length > 0) {
-      setMandatoryFieldsEmpty({ ...mandatoryFieldsEmpty, loginId: false });
+      setIsRequired({ ...isRequired, loginId: false });
     }
   };
 
@@ -1044,9 +1029,9 @@ const AdminPreOnboarding = () => {
                 </button>
               </div>
             </div>
-            {/* {isRequired.loginId && (
+            {isRequired.loginId && (
               <p className="form-error">Please select a LoginId</p>
-            )} */}
+            )}
           </div>
         </div>
 
