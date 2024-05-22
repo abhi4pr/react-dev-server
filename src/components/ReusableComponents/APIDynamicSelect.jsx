@@ -1,11 +1,11 @@
 import React from "react";
 import Select from "react-select";
 
-const APIDynamicSelect = ({ data, value, onChange, cols, lable, astric }) => {
+const APIDynamicSelect = ({ data, value, onChange, cols, label, astric }) => {
   return (
     <div className="form-group col-6">
       <label className="form-label">
-        {lable} <sup style={{ color: "red" }}>*</sup>
+        {label} <sup style={{ color: "red" }}>*</sup>
       </label>
       <Select
         options={data?.map((opt) => ({

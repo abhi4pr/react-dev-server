@@ -335,6 +335,7 @@ import PendingCreditApproval from "./Finance/CreditApproval/CreditApproval";
 import CreditApproval from "./Finance/CreditApproval/CreditApproval";
 import ViewPaymentUpdate from "./Sales/PaymentUpdate/ViewPaymentUpdate";
 import { FinanceContextComponent } from "../../Context/FinanceContext";
+import CreateSalesAccount from "./Sales/Account/CreateSalesAccount";
 
 const Admin = () => {
   const [contextData, setData] = useState([]);
@@ -1538,6 +1539,10 @@ const Admin = () => {
                   <Route path="/record-servcies" element={<RecordServices />} />
 
                   <Route path="/credit-approval" element={<CreditApproval />} />
+                  <Route
+                    path="/create-sales-account"
+                    element={<CreateSalesAccount />}
+                  />
 
                   {/* Harshal */}
                   <Route
