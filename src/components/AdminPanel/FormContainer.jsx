@@ -24,6 +24,9 @@ const FormContainer = ({
   uniqueNonInvoiceSalesExecutiveCount,
   balanceAmountPartial,
   balanceAmountInstant,
+  tdsDeductedCount,
+  partialTDSDeduction,
+  instantTDSDeduction,
   // openCount,
   // closeCount,
   // aboutToCloseCount,
@@ -143,6 +146,9 @@ const FormContainer = ({
               <h2>
                 Without Invoice Count : <a href="#"> {nonInvoiceCount}</a>
               </h2>
+              <h2>
+                TDS Deducted Count : <a href="#"> {tdsDeductedCount?.length}</a>
+              </h2>
               {/* <h2>
                 Reminder : <a href="#">{pendingpaymentRemainder}</a>
               </h2> */}
@@ -171,6 +177,10 @@ const FormContainer = ({
               <h2>
                 Without Invoice Count :{" "}
                 <a href="#"> {withoutInvcPartialImage?.length}</a>
+              </h2>
+              <h2>
+                TDS Deducted Count :{" "}
+                <a href="#"> {partialTDSDeduction?.length}</a>
               </h2>
               {/* <h2>
                 Reminder : <a href="#">{pendingpaymentRemainder}</a>
@@ -201,6 +211,10 @@ const FormContainer = ({
               <h2>
                 Without Invoice Count :{" "}
                 <a href="#"> {withoutInvcInstantImage?.length}</a>
+              </h2>
+              <h2>
+                TDS Deducted Count :{" "}
+                <a href="#"> {instantTDSDeduction?.length}</a>
               </h2>
               {/* <h2>
                 Reminder : <a href="#">{pendingpaymentRemainder}</a>
