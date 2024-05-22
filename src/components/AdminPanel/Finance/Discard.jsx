@@ -255,9 +255,7 @@ export default function Discard() {
       headerName: "Aging",
       width: 150,
       renderCell: (params) => {
-        return (
-          <p> {calculateDays(params.row.request_date, new Date())} Days</p>
-        );
+        return <p> {params.row.aging} Days</p>;
       },
     },
     {
@@ -1319,7 +1317,7 @@ export default function Discard() {
                 pageSize={5}
                 rowsPerPageOptions={[5]}
                 disableSelectionOnClick
-                checkboxSelection
+                // checkboxSelection
                 autoHeight
                 slots={{ toolbar: GridToolbar }}
                 slotProps={{
@@ -1328,11 +1326,11 @@ export default function Discard() {
                   },
                 }}
                 getRowId={(row) => filterData.indexOf(row)}
-                onRowSelectionModelChange={(rowIds) => {
-                  handleRowSelectionModelChange(rowIds);
-                  console.log(rowIds, "IDS");
-                }}
-                rowSelectionModel={rowSelectionModel}
+                // onRowSelectionModelChange={(rowIds) => {
+                //   handleRowSelectionModelChange(rowIds);
+                //   console.log(rowIds, "IDS");
+                // }}
+                // rowSelectionModel={rowSelectionModel}
               />
               {/* <TableData
                 setColumnsData={setColumnsData}

@@ -556,9 +556,7 @@ export default function TDSdeduct() {
       headerName: "Aging",
       width: 150,
       renderCell: (params) => {
-        return (
-          <p> {calculateDays(params.row.request_date, new Date())} Days</p>
-        );
+        return <p> {params.row.aging} Days</p>;
       },
     },
     {
@@ -1359,7 +1357,7 @@ export default function TDSdeduct() {
                 pageSize={5}
                 rowsPerPageOptions={[5]}
                 disableSelectionOnClick
-                checkboxSelection
+                // checkboxSelection
                 slots={{ toolbar: GridToolbar, columnMenu: CustomColumnMenu }}
                 slotProps={{
                   toolbar: {
@@ -1367,11 +1365,11 @@ export default function TDSdeduct() {
                   },
                 }}
                 getRowId={(row) => filterData.indexOf(row)}
-                onRowSelectionModelChange={(rowIds) => {
-                  handleRowSelectionModelChange(rowIds);
-                  console.log(rowIds, "IDS");
-                }}
-                rowSelectionModel={rowSelectionModel}
+                // onRowSelectionModelChange={(rowIds) => {
+                //   handleRowSelectionModelChange(rowIds);
+                //   console.log(rowIds, "IDS");
+                // }}
+                // rowSelectionModel={rowSelectionModel}
               />
               {openImageDialog && (
                 <ImageView

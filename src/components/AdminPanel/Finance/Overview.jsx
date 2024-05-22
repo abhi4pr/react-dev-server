@@ -1,10 +1,26 @@
 import React, { useState, useEffect } from "react";
-import { useLocation } from "react-router-dom";
+import { DataGrid, GridToolbar } from "@mui/x-data-grid";
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  FormControlLabel,
+  TextField,
+  InputAdornment,
+} from "@mui/material";
+import pdf from "./pdf-file.png";
+import IconButton from "@mui/material/IconButton";
+import CloseIcon from "@mui/icons-material/Close";
 
 const Overview = (props) => {
-  const { data } = props;
+  const { data, columns } = props;
   console.log(data, "data >>>");
-  // const [filteredData, setFilteredData] = useState([]);
+  const [overviewListDialog, setOverviewListDialog] = useState(false);
+  const [overviewListData, setOverviewListData] = useState(false);
+  const [openImageDialog, setOpenImageDialog] = useState(false);
+  const [viewImgSrc, setViewImgSrc] = useState("");
 
   // const filterData = () => {
   //   switch (selectedRange) {
@@ -46,6 +62,15 @@ const Overview = (props) => {
     );
   };
 
+  const handleOpenUniqueVendorClick = (data) => {
+    setOverviewListData(data);
+    setOverviewListDialog(true);
+  };
+
+  const handleCloseOverviewList = () => {
+    setOverviewListDialog(false);
+  };
+
   return (
     <div>
       <div className="card" style={{ height: "600px" }}>
@@ -61,8 +86,25 @@ const Overview = (props) => {
             <tbody>
               <tr>
                 <td>0-10k</td>
-                <td>
-                  {data?.filter((item) => item.balance_amount <= 10000).length}
+                <td
+                  onClick={() =>
+                    handleOpenUniqueVendorClick(
+                      data.filter((item) => item.balance_amount <= 10000)
+                    )
+                  }
+                >
+                  <a
+                    style={{
+                      cursor: "pointer",
+                      marginRight: "20px",
+                      color: "blue",
+                    }}
+                  >
+                    {
+                      data?.filter((item) => item.balance_amount <= 10000)
+                        .length
+                    }
+                  </a>
                 </td>
                 <td>
                   {" "}
@@ -73,14 +115,33 @@ const Overview = (props) => {
               </tr>
               <tr>
                 <td>10k-20k</td>
-                <td>
-                  {
-                    data?.filter(
-                      (item) =>
-                        item.balance_amount >= 10000 &&
-                        item.balance_amount <= 20000
-                    ).length
+                <td
+                  onClick={() =>
+                    handleOpenUniqueVendorClick(
+                      data?.filter(
+                        (item) =>
+                          item.balance_amount >= 10000 &&
+                          item.balance_amount <= 20000
+                      )
+                    )
                   }
+                >
+                  <a
+                    style={{
+                      cursor: "pointer",
+                      marginRight: "20px",
+                      color: "blue",
+                    }}
+                  >
+                    {" "}
+                    {
+                      data?.filter(
+                        (item) =>
+                          item.balance_amount >= 10000 &&
+                          item.balance_amount <= 20000
+                      ).length
+                    }
+                  </a>
                 </td>
                 <td>
                   {" "}
@@ -95,14 +156,33 @@ const Overview = (props) => {
               </tr>
               <tr>
                 <td>20k-30k</td>
-                <td>
-                  {
-                    data?.filter(
-                      (item) =>
-                        item.balance_amount >= 20000 &&
-                        item.balance_amount <= 30000
-                    ).length
+                <td
+                  onClick={() =>
+                    handleOpenUniqueVendorClick(
+                      data?.filter(
+                        (item) =>
+                          item.balance_amount >= 20000 &&
+                          item.balance_amount <= 30000
+                      )
+                    )
                   }
+                >
+                  <a
+                    style={{
+                      cursor: "pointer",
+                      marginRight: "20px",
+                      color: "blue",
+                    }}
+                  >
+                    {" "}
+                    {
+                      data?.filter(
+                        (item) =>
+                          item.balance_amount >= 20000 &&
+                          item.balance_amount <= 30000
+                      ).length
+                    }
+                  </a>
                 </td>
                 <td>
                   {" "}
@@ -117,14 +197,32 @@ const Overview = (props) => {
               </tr>
               <tr>
                 <td>30k-40k</td>
-                <td>
-                  {
-                    data?.filter(
-                      (item) =>
-                        item.balance_amount >= 30000 &&
-                        item.balance_amount <= 40000
-                    ).length
+                <td
+                  onClick={() =>
+                    handleOpenUniqueVendorClick(
+                      data?.filter(
+                        (item) =>
+                          item.balance_amount >= 30000 &&
+                          item.balance_amount <= 40000
+                      )
+                    )
                   }
+                >
+                  <a
+                    style={{
+                      cursor: "pointer",
+                      marginRight: "20px",
+                      color: "blue",
+                    }}
+                  >
+                    {
+                      data?.filter(
+                        (item) =>
+                          item.balance_amount >= 30000 &&
+                          item.balance_amount <= 40000
+                      ).length
+                    }
+                  </a>
                 </td>
                 <td>
                   {" "}
@@ -139,14 +237,33 @@ const Overview = (props) => {
               </tr>
               <tr>
                 <td>40k-50k</td>
-                <td>
-                  {
-                    data?.filter(
-                      (item) =>
-                        item.balance_amount >= 40000 &&
-                        item.balance_amount <= 50000
-                    ).length
+                <td
+                  onClick={() =>
+                    handleOpenUniqueVendorClick(
+                      data?.filter(
+                        (item) =>
+                          item.balance_amount >= 40000 &&
+                          item.balance_amount <= 50000
+                      )
+                    )
                   }
+                >
+                  <a
+                    style={{
+                      cursor: "pointer",
+                      marginRight: "20px",
+                      color: "blue",
+                    }}
+                  >
+                    {" "}
+                    {
+                      data?.filter(
+                        (item) =>
+                          item.balance_amount >= 40000 &&
+                          item.balance_amount <= 50000
+                      ).length
+                    }
+                  </a>
                 </td>
                 <td>
                   {" "}
@@ -161,14 +278,33 @@ const Overview = (props) => {
               </tr>
               <tr>
                 <td>50k-100k</td>
-                <td>
-                  {
-                    data?.filter(
-                      (item) =>
-                        item.balance_amount >= 50000 &&
-                        item.balance_amount <= 100000
-                    ).length
+                <td
+                  onClick={() =>
+                    handleOpenUniqueVendorClick(
+                      data?.filter(
+                        (item) =>
+                          item.balance_amount >= 50000 &&
+                          item.balance_amount <= 100000
+                      )
+                    )
                   }
+                >
+                  <a
+                    style={{
+                      cursor: "pointer",
+                      marginRight: "20px",
+                      color: "blue",
+                    }}
+                  >
+                    {" "}
+                    {
+                      data?.filter(
+                        (item) =>
+                          item.balance_amount >= 50000 &&
+                          item.balance_amount <= 100000
+                      ).length
+                    }
+                  </a>
                 </td>
                 <td>
                   {" "}
@@ -184,8 +320,25 @@ const Overview = (props) => {
 
               <tr>
                 <td>100k-above</td>
-                <td>
-                  {data?.filter((item) => item.balance_amount >= 100000).length}
+                <td
+                  onClick={() =>
+                    handleOpenUniqueVendorClick(
+                      data?.filter((item) => item.balance_amount >= 100000)
+                    )
+                  }
+                >
+                  <a
+                    style={{
+                      cursor: "pointer",
+                      marginRight: "20px",
+                      color: "blue",
+                    }}
+                  >
+                    {
+                      data?.filter((item) => item.balance_amount >= 100000)
+                        .length
+                    }
+                  </a>
                 </td>
                 <td>
                   {" "}
@@ -198,6 +351,61 @@ const Overview = (props) => {
           </table>
         </div>
       </div>
+
+      <Dialog
+        open={overviewListDialog}
+        onClose={handleCloseOverviewList}
+        fullWidth={"md"}
+        maxWidth={"md"}
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <DialogTitle>Overview List</DialogTitle>
+        <IconButton
+          aria-label="close"
+          onClick={handleCloseOverviewList}
+          sx={{
+            position: "absolute",
+            right: 8,
+            top: 8,
+            color: (theme) => theme.palette.grey[500],
+          }}
+        >
+          <CloseIcon />
+        </IconButton>
+        <DialogContent
+          dividers={true}
+          sx={{ maxHeight: "80vh", overflowY: "auto" }}
+        >
+          <DataGrid
+            rows={overviewListData}
+            columns={columns}
+            pageSize={5}
+            rowsPerPageOptions={[5]}
+            disableSelectionOnClick
+            autoHeight
+            slots={{ toolbar: GridToolbar }}
+            slotProps={{
+              toolbar: {
+                showQuickFilter: true,
+              },
+            }}
+            getRowId={(row) => overviewListData.indexOf(row)}
+          />
+          {openImageDialog && (
+            <ImageView
+              viewImgSrc={viewImgSrc}
+              fullWidth={true}
+              maxWidth={"md"}
+              setViewImgDialog={setOpenImageDialog}
+              openImageDialog={openImageDialog}
+            />
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

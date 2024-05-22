@@ -1,12 +1,27 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { baseUrl } from "../../../../utils/config";
+import { Autocomplete, Button, TextField } from "@mui/material";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import gifone from "../../../../assets/img/finance/gifone.gif";
 import giftwo from "../../../../assets/img/finance/giftwo.gif";
 import gifthree from "../../../../assets/img/finance/gifthree.gif";
+import dayjs from "dayjs";
+import FormattedNumberWithTooltip from "../FormateNumWithTooltip/FormattedNumberWithTooltip";
+
+const filterOptions = [
+  "Today",
+  "Current Month",
+  "Last Month",
+  "Last 3 Months",
+  "Last 6 Months",
+  "Last 1 Year",
+  "Custom Date",
+]; // Mapping the array to the required format
+
 const PurchaseDashboard = () => {
+  const [filterValue, setFilterValue] = useState();
   const [pendingReqData, setPendingReqData] = useState([]);
   const [filterPendingReqData, setFilterPendingReqData] = useState([]);
   const [paymentDoneData, setPaymentDoneData] = useState([]);
@@ -17,9 +32,120 @@ const PurchaseDashboard = () => {
   const [filterTdsData, setFilterTDSData] = useState([]);
   const [discardData, setDiscardData] = useState([]);
   const [filterDiscardData, setFilterDiscardData] = useState([]);
-  const [selectedRange, setSelectedRange] = useState("0-10k");
+  const [startDate, setStartDate] = useState(dayjs());
+  const [endDate, setEndDate] = useState(dayjs(new Date()));
   const navigate = useNavigate();
 
+  const handleResetClick = () => {
+    setFilterValue();
+    setStartDate(dayjs());
+    setEndDate(dayjs(new Date()));
+    setPendingReqData(filterPendingReqData);
+    setPaymentDoneData(filterPaymentDoneData);
+    setGSTData(filterGstData);
+    setTDSData(filterTdsData);
+    setDiscardData(filterDiscardData);
+  };
+
+  const handleFilterChange = (e) => {
+    setFilterValue(e);
+    const filterValue = e;
+
+    let startFilterDate;
+    let endFilterDate = new Date();
+
+    switch (filterValue) {
+      case "Today":
+        startFilterDate = new Date();
+        startFilterDate.setHours(0, 0, 0, 0); // Set to the start of the day
+        endFilterDate.setHours(23, 59, 59, 999); // Set to the end of the day
+        break;
+      case "Current Month":
+        startFilterDate = new Date(
+          endFilterDate.getFullYear(),
+          endFilterDate.getMonth(),
+          1
+        );
+        endFilterDate = new Date();
+        break;
+      case "Last Month":
+        startFilterDate = new Date(
+          endFilterDate.getFullYear(),
+          endFilterDate.getMonth() - 1,
+          1
+        );
+        endFilterDate = new Date(
+          endFilterDate.getFullYear(),
+          endFilterDate.getMonth(),
+          0
+        );
+        break;
+      case "Last 3 Months":
+        startFilterDate = new Date(
+          endFilterDate.getFullYear(),
+          endFilterDate.getMonth() - 2,
+          1
+        );
+        endFilterDate = new Date();
+        break;
+      case "Last 6 Months":
+        startFilterDate = new Date(
+          endFilterDate.getFullYear(),
+          endFilterDate.getMonth() - 5,
+          1
+        );
+        endFilterDate = new Date();
+        break;
+      case "Last 1 Year":
+        startFilterDate = new Date(
+          endFilterDate.getFullYear() - 1,
+          endFilterDate.getMonth(),
+          1
+        );
+        endFilterDate = new Date();
+        break;
+      case "search":
+        startFilterDate = new Date(startDate);
+        endFilterDate = new Date(endDate);
+        break;
+      default:
+      case "Custom Date":
+        return;
+    }
+
+    const filteredData = filterPendingReqData.filter((item) => {
+      const itemDate = new Date(item.request_date);
+      return itemDate >= startFilterDate && itemDate <= endFilterDate;
+    });
+    setPendingReqData(filteredData);
+
+    const filteredData1 = filterPaymentDoneData.filter((item) => {
+      const itemDate = new Date(item.request_date);
+      return itemDate >= startFilterDate && itemDate <= endFilterDate;
+    });
+    setPaymentDoneData(filteredData1);
+
+    const filteredData2 = filterGstData.filter((item) => {
+      const itemDate = new Date(item.request_date);
+      return itemDate >= startFilterDate && itemDate <= endFilterDate;
+    });
+
+    setGSTData(filteredData2);
+
+    const filteredData3 = filterTdsData.filter((item) => {
+      const itemDate = new Date(item.request_date);
+      return itemDate >= startFilterDate && itemDate <= endFilterDate;
+    });
+
+    setTDSData(filteredData3);
+
+    const filteredData4 = filterDiscardData.filter((item) => {
+      const itemDate = new Date(item.request_date);
+      return itemDate >= startFilterDate && itemDate <= endFilterDate;
+    });
+
+    setDiscardData(filteredData4);
+  };
   useEffect(() => {
     handlePendingReqData();
   }, []);
@@ -208,92 +334,90 @@ const PurchaseDashboard = () => {
 
   return (
     <div className="card body-padding">
-      {/* <div className="pack flex-row" style={{ gap: "16px" }}>
-        <div className="fin-card w-50">
-          <div
-            className="pack flex-row w-100"
-            style={{ gap: "32px", padding: "20px" }}
-          >
-            <div className="fd-circle">
+      <div className="card">
+        <div className="card-body flex-row gap4">
+          <div className="row thm_form w-100">
+            <div className="col-md-2_5">
+              <Autocomplete
+                disablePortal
+                value={filterValue}
+                id="combo-box-demo"
+                options={filterOptions}
+                onChange={(event, value) => {
+                  handleFilterChange(value);
+                }}
+                sx={{ width: 300 }}
+                renderInput={(params) => (
+                  <TextField {...params} label="Filter" />
+                )}
+              />
             </div>
-            <div className="pack d-flex flex-column" style={{ gap: "15px" }}>
-              <h4>Pending Payment Request</h4>
-              <div className="scroll-con">
-                <div className="scroller">
-                  <h1>0</h1>
-                  {pendingReqData?.map((item, index) => (
-                    <h1>{index + 1}</h1>
-                  ))}
+
+            {filterValue === "Custom Date" && (
+              <>
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                  <div className="col-md-2_5">
+                    <DatePicker
+                      label="Start Date"
+                      format="DD/MM/YYYY"
+                      disableFuture
+                      value={startDate}
+                      onChange={(newValue) => {
+                        setStartDate(newValue);
+                      }}
+                    />
+                  </div>
+                  <div className="col-md-2_5">
+                    <DatePicker
+                      label="End Date"
+                      format="DD/MM/YYYY"
+                      value={endDate}
+                      shouldDisableDate={(day) =>
+                        dayjs(day).isBefore(startDate)
+                      }
+                      onChange={(newValue) => {
+                        setEndDate(newValue);
+                      }}
+                    />
+                  </div>
+                </LocalizationProvider>
+                <div className="col-md-2_5">
+                  <button
+                    onClick={() => handleFilterChange("search")}
+                    className="btn cmnbtn btn-outline-primary w-100 "
+                  >
+                    Filter
+                  </button>
                 </div>
-              </div>
+              </>
+            )}
+            <div className="col-md-2_5">
+              <button
+                onClick={handleResetClick}
+                className="btn cmnbtn btn-outline-primary w-100"
+              >
+                Reset
+              </button>
             </div>
           </div>
-          <div
-            className="pack d-flex flex-column w-100"
-            style={{ gap: "10px", padding: "20px" }}
-          >
-            <div className="pack sb">
-              <h6>Requested Amount</h6>{" "}
-              <h6>
-                {" "}
-                {pendingReqData?.reduce(
-                  (total, item) => total + parseFloat(item.request_amount),
-                  0
-                )}
-              </h6>
-            </div>
-            <div className="pack sb">
-              <h6>Balance Amount</h6>
-              <h6>
-                {" "}
-                {pendingReqData?.reduce(
-                  (total, item) => total + parseFloat(item.balance_amount),
-                  0
-                )}
-              </h6>
-            </div>
-            <div className="pack sb">
-              <h6>Base Amount</h6>
-              <h6>
-                {pendingReqData?.reduce(
-                  (total, item) => total + parseFloat(item.base_amount),
-                  0
-                )}
-              </h6>
-            </div>
-            <div className="pack sb">
-              <h6>Paid Amount</h6>
-              <h6>
-                {" "}
-                {pendingReqData?.reduce(
-                  (total, item) => total + parseFloat(item.paid_amount),
-                  0
-                )}
-              </h6>
-            </div>
-            <div className="pack sb">
-              <h6>GST Amount</h6>
-              <h6>
-                {" "}
-                {pendingReqData?.reduce(
-                  (total, item) => total + parseFloat(item.gst_amount),
-                  0
-                )}
-              </h6>
-            </div>
-            <div className="pack sb">
-              <h6>Outstanding</h6>
-              <h6>
-                {" "}
-                {pendingReqData?.reduce(
-                  (total, item) => total + parseFloat(item.outstandings),
-                  0
-                )}
-              </h6>
-            </div>
+          <div className=" flex-row d-flex" style={{ gap: "20px" }}>
+            <i
+              className="bi bi-list-ul"
+              style={{ cursor: "pointer" }}
+              onClick={() => {
+                setgraph(0);
+              }}
+            ></i>
+            <i
+              className="bi bi-bar-chart-fill"
+              style={{ cursor: "pointer" }}
+              onClick={() => {
+                setgraph(1);
+              }}
+            ></i>
           </div>
         </div>
-      </div> */}
+      </div>
       <div className="cardGrdnt orangeGrdnt">
         <Link to="/admin/finance-pruchasemanagement-pendingpaymentrequest">
           <div className="row align-items-center p-2">
@@ -316,50 +440,19 @@ const PurchaseDashboard = () => {
               </div>
             </div>
             <div className="col-md-6 financeCardBox">
-              {/* <div className="financeCardBoxIn p0">
-              <div className="financeCardBoxDetails">
-                <ul className="pl32">
-                  <li
-                    style={{ cursor: "pointer" }}
-                    onClick={() => handleClick("0-10k")}
-                  >
-                    0-10K
-                  </li>
-
-                  <li
-                    style={{ cursor: "pointer" }}
-                    onClick={() => handleClick("10k-50k")}
-                  >
-                    10k-50k
-                  </li>
-
-                  <li
-                    style={{ cursor: "pointer" }}
-                    onClick={() => handleClick("50k-100k")}
-                  >
-                    50k-100k
-                  </li>
-
-                  <li
-                    style={{ cursor: "pointer" }}
-                    onClick={() => handleClick("100k-above")}
-                  >
-                    100k-above
-                  </li>
-                </ul>
-              </div>
-            </div> */}
               <div className="financeCardBoxDetails">
                 <ul className="pl32">
                   <li>
                     Request Amount
                     <span>
                       <span>&#8377; </span>
-                      {pendingReqData?.reduce(
-                        (total, item) =>
-                          total + parseFloat(item.request_amount),
-                        0
-                      )}
+                      <FormattedNumberWithTooltip
+                        value={pendingReqData?.reduce(
+                          (total, item) =>
+                            total + parseFloat(item?.request_amount),
+                          0
+                        )}
+                      />
                     </span>
                   </li>
 
@@ -367,51 +460,64 @@ const PurchaseDashboard = () => {
                     Balance Release
                     <span>
                       <span>&#8377; </span>
-                      {pendingReqData?.reduce(
-                        (total, item) =>
-                          total + parseFloat(item.balance_amount),
-                        0
-                      )}
+                      <FormattedNumberWithTooltip
+                        value={pendingReqData?.reduce(
+                          (total, item) =>
+                            total + parseFloat(item?.balance_amount),
+                          0
+                        )}
+                      />
                     </span>
                   </li>
                   <li>
                     Base Amount
                     <span>
                       <span>&#8377; </span>
-                      {pendingReqData?.reduce(
-                        (total, item) => total + parseFloat(item.base_amount),
-                        0
-                      )}
+                      {/* <FormattedNumberWithTooltip> */}
+                      <FormattedNumberWithTooltip
+                        value={pendingReqData?.reduce(
+                          (total, item) => total + parseFloat(item.base_amount),
+                          0
+                        )}
+                      />
+                      {/* </FormattedNumberWithTooltip> */}
                     </span>
                   </li>
                   <li>
                     Paid Amount
                     <span>
                       <span>&#8377; </span>
-                      {pendingReqData?.reduce(
-                        (total, item) => total + parseFloat(item.paid_amount),
-                        0
-                      )}
+                      <FormattedNumberWithTooltip
+                        value={pendingReqData?.reduce(
+                          (total, item) => total + parseFloat(item.paid_amount),
+                          0
+                        )}
+                      />
                     </span>
                   </li>
                   <li>
                     GST Amount
                     <span>
                       <span>&#8377; </span>
-                      {pendingReqData?.reduce(
-                        (total, item) => total + parseFloat(item.gst_amount),
-                        0
-                      )}
+                      <FormattedNumberWithTooltip
+                        value={pendingReqData?.reduce(
+                          (total, item) => total + parseFloat(item.gst_amount),
+                          0
+                        )}
+                      />
                     </span>
                   </li>
                   <li>
                     OutStanding
                     <span>
                       <span>&#8377; </span>
-                      {pendingReqData?.reduce(
-                        (total, item) => total + parseFloat(item.outstandings),
-                        0
-                      )}
+                      <FormattedNumberWithTooltip
+                        value={pendingReqData?.reduce(
+                          (total, item) =>
+                            total + parseFloat(item.outstandings),
+                          0
+                        )}
+                      />
                     </span>
                   </li>
                 </ul>
@@ -457,39 +563,47 @@ const PurchaseDashboard = () => {
                   <h6>Requested Amount</h6>{" "}
                   <h6>
                     {" "}
-                    {paymentDoneData?.reduce(
-                      (total, item) => total + parseFloat(item.request_amount),
-                      0
-                    )}
+                    <FormattedNumberWithTooltip
+                      value={paymentDoneData?.reduce(
+                        (total, item) =>
+                          total + parseFloat(item.request_amount),
+                        0
+                      )}
+                    />
                   </h6>
                 </div>
                 <div className="pack sb">
                   <h6>Base Amount</h6>
                   <h6>
-                    {" "}
-                    {paymentDoneData?.reduce(
-                      (total, item) => total + parseFloat(item.base_amount),
-                      0
-                    )}
+                    <FormattedNumberWithTooltip
+                      value={paymentDoneData?.reduce(
+                        (total, item) => total + parseFloat(item.base_amount),
+                        0
+                      )}
+                    />{" "}
                   </h6>
                 </div>
                 <div className="pack sb">
                   <h6>GST Amount</h6>
                   <h6>
-                    {paymentDoneData?.reduce(
-                      (total, item) => total + parseFloat(item.gst_amount),
-                      0
-                    )}
+                    <FormattedNumberWithTooltip
+                      value={paymentDoneData?.reduce(
+                        (total, item) => total + parseFloat(item.gst_amount),
+                        0
+                      )}
+                    />
                   </h6>
                 </div>
                 <div className="pack sb">
                   <h6>Outstanding</h6>
                   <h6>
                     {" "}
-                    {paymentDoneData?.reduce(
-                      (total, item) => total + parseFloat(item.outstandings),
-                      0
-                    )}
+                    <FormattedNumberWithTooltip
+                      value={paymentDoneData?.reduce(
+                        (total, item) => total + parseFloat(item.outstandings),
+                        0
+                      )}
+                    />
                   </h6>
                 </div>
               </div>
@@ -529,39 +643,48 @@ const PurchaseDashboard = () => {
                   <h6>Requested Amount</h6>{" "}
                   <h6>
                     {" "}
-                    {gstData?.reduce(
-                      (total, item) => total + parseFloat(item.request_amount),
-                      0
-                    )}
+                    <FormattedNumberWithTooltip
+                      value={gstData?.reduce(
+                        (total, item) =>
+                          total + parseFloat(item.request_amount),
+                        0
+                      )}
+                    />
                   </h6>
                 </div>
                 <div className="pack sb">
                   <h6>Base Amount</h6>
                   <h6>
                     {" "}
-                    {gstData?.reduce(
-                      (total, item) => total + parseFloat(item.base_amount),
-                      0
-                    )}
+                    <FormattedNumberWithTooltip
+                      value={gstData?.reduce(
+                        (total, item) => total + parseFloat(item.base_amount),
+                        0
+                      )}
+                    />
                   </h6>
                 </div>
                 <div className="pack sb">
                   <h6>GST Amount</h6>
                   <h6>
-                    {gstData?.reduce(
-                      (total, item) => total + parseFloat(item.gst_amount),
-                      0
-                    )}
+                    <FormattedNumberWithTooltip
+                      value={gstData?.reduce(
+                        (total, item) => total + parseFloat(item.gst_amount),
+                        0
+                      )}
+                    />
                   </h6>
                 </div>
                 <div className="pack sb">
                   <h6>Outstanding</h6>
                   <h6>
                     {" "}
-                    {gstData?.reduce(
-                      (total, item) => total + parseFloat(item.outstandings),
-                      0
-                    )}
+                    <FormattedNumberWithTooltip
+                      value={gstData?.reduce(
+                        (total, item) => total + parseFloat(item.outstandings),
+                        0
+                      )}
+                    />
                   </h6>
                 </div>
               </div>
@@ -601,39 +724,48 @@ const PurchaseDashboard = () => {
                   <h6>Requested Amount</h6>{" "}
                   <h6>
                     {" "}
-                    {tdsData?.reduce(
-                      (total, item) => total + parseFloat(item.request_amount),
-                      0
-                    )}
+                    <FormattedNumberWithTooltip
+                      value={tdsData?.reduce(
+                        (total, item) =>
+                          total + parseFloat(item.request_amount),
+                        0
+                      )}
+                    />
                   </h6>
                 </div>
                 <div className="pack sb">
                   <h6>Base Amount</h6>
                   <h6>
                     {" "}
-                    {tdsData?.reduce(
-                      (total, item) => total + parseFloat(item.base_amount),
-                      0
-                    )}
+                    <FormattedNumberWithTooltip
+                      value={tdsData?.reduce(
+                        (total, item) => total + parseFloat(item.base_amount),
+                        0
+                      )}
+                    />
                   </h6>
                 </div>
                 <div className="pack sb">
                   <h6>GST Amount</h6>
                   <h6>
-                    {tdsData?.reduce(
-                      (total, item) => total + parseFloat(item.gst_amount),
-                      0
-                    )}
+                    <FormattedNumberWithTooltip
+                      value={tdsData?.reduce(
+                        (total, item) => total + parseFloat(item.gst_amount),
+                        0
+                      )}
+                    />
                   </h6>
                 </div>
                 <div className="pack sb">
                   <h6>Outstanding</h6>
                   <h6>
                     {" "}
-                    {tdsData?.reduce(
-                      (total, item) => total + parseFloat(item.outstandings),
-                      0
-                    )}
+                    <FormattedNumberWithTooltip
+                      value={tdsData?.reduce(
+                        (total, item) => total + parseFloat(item.outstandings),
+                        0
+                      )}
+                    />
                   </h6>
                 </div>
               </div>
@@ -676,39 +808,48 @@ const PurchaseDashboard = () => {
                   <h6>Requested Amount</h6>{" "}
                   <h6>
                     {" "}
-                    {discardData?.reduce(
-                      (total, item) => total + parseFloat(item.request_amount),
-                      0
-                    )}
+                    <FormattedNumberWithTooltip
+                      value={discardData?.reduce(
+                        (total, item) =>
+                          total + parseFloat(item.request_amount),
+                        0
+                      )}
+                    />
                   </h6>
                 </div>
                 <div className="pack sb">
                   <h6>Base Amount</h6>
                   <h6>
                     {" "}
-                    {discardData?.reduce(
-                      (total, item) => total + parseFloat(item.base_amount),
-                      0
-                    )}
+                    <FormattedNumberWithTooltip
+                      value={discardData?.reduce(
+                        (total, item) => total + parseFloat(item.base_amount),
+                        0
+                      )}
+                    />
                   </h6>
                 </div>
                 <div className="pack sb">
                   <h6>GST Amount</h6>
                   <h6>
-                    {discardData?.reduce(
-                      (total, item) => total + parseFloat(item.gst_amount),
-                      0
-                    )}
+                    <FormattedNumberWithTooltip
+                      value={discardData?.reduce(
+                        (total, item) => total + parseFloat(item.gst_amount),
+                        0
+                      )}
+                    />
                   </h6>
                 </div>
                 <div className="pack sb">
                   <h6>Outstanding</h6>
                   <h6>
                     {" "}
-                    {discardData?.reduce(
-                      (total, item) => total + parseFloat(item.outstandings),
-                      0
-                    )}
+                    <FormattedNumberWithTooltip
+                      value={discardData?.reduce(
+                        (total, item) => total + parseFloat(item.outstandings),
+                        0
+                      )}
+                    />
                   </h6>
                 </div>
               </div>

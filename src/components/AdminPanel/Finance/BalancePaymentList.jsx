@@ -3,8 +3,7 @@ import axios from "axios";
 import jwtDecode from "jwt-decode";
 import FormContainer from "../FormContainer";
 import { useGlobalContext } from "../../../Context/Context";
-import DataTable from "react-data-table-component";
-import { Alert, Autocomplete, Button, TextField } from "@mui/material";
+import { Autocomplete, Button, TextField } from "@mui/material";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { styled } from "@mui/material/styles";
 import Dialog from "@mui/material/Dialog";
@@ -26,6 +25,8 @@ import dayjs from "dayjs";
 import { Link } from "react-router-dom";
 import Tab from "../../Tab/Tab";
 import PendingApprovalUpdate from "./PendingApprovalsUpdate";
+import ApprovedList from "./ApprovedList";
+import FormattedNumberWithTooltip from "./FormateNumWithTooltip/FormattedNumberWithTooltip";
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   "& .MuiDialogContent-root": {
@@ -97,8 +98,6 @@ const BalancePaymentList = () => {
     useState("");
   const [dateFilter, setDateFilter] = useState("");
   const [closeDialog, setCloseDialog] = useState(false);
-  // const [TDSPercentage, setTDSPercetage] = useState("");
-  // const [TDSValue, setTDSValue] = useState("");
   const [tdsFieldSaleBookingId, setTDSFieldSaleBookingId] = useState("");
   const [discardSaleBookingId, setDiscardSaleBookingId] = useState("");
   const [paidPercentage, setPaidPercentage] = useState("");
@@ -116,8 +115,13 @@ const BalancePaymentList = () => {
   const [discardDialog, setDiscardDialog] = useState(false);
   const [invoiceDateDialog, setInvoiceDateDialog] = useState(false);
   const [invoiceDateData, setInvoiceDate] = useState(dayjs(new Date()));
+  const [totalCount, setTotalCount] = useState(0);
 
-  const accordionButtons = ["Invoice Created", "Non Invoice Created"];
+  const accordionButtons = [
+    "Invoice Created",
+    "Non Invoice Created",
+    "Approved",
+  ];
 
   const token = sessionStorage.getItem("token");
   const decodedToken = jwtDecode(token);
@@ -286,8 +290,16 @@ const BalancePaymentList = () => {
       });
   };
 
+  function pendingApprovalApi() {
+    axios.post(baseUrl + "add_php_finance_data_in_node").then((res) => {
+      const pedingAppData = res.data.data;
+      setTotalCount(pedingAppData?.length);
+    });
+  }
+  console.log(totalCount, "totalCount>>>-------------");
   useEffect(() => {
     getData();
+    pendingApprovalApi();
   }, [dateFilter]);
 
   const getDropdownData = async () => {
@@ -1703,781 +1715,809 @@ const BalancePaymentList = () => {
 
   return (
     <div>
-      <FormContainer
-        mainTitle="Sale Booking - Outstanding Payment"
-        link="/admin/balance-payment-list"
-        buttonAccess={
-          contextData &&
-          contextData[2] &&
-          contextData[2].insert_value === 1 &&
-          false
-        }
-        uniqueCustomerCount={uniqueCustomerCount}
-        uniqueNonInvoiceCustomerCount={uniqueNonInvoiceCustomerCount}
-        uniqueNonInvoiceSalesExecutiveCount={
-          uniqueNonInvoiceSalesExecutiveCount
-        }
-        accIndex={activeAccordionIndex}
-        balanceAmountTotal={balanceAmountTotal}
-        nonInvcbalanceAmountTotal={nonInvcbalanceAmountTotal}
-        approvedCount={approvedCount}
-        rejectedCount={rejectedCount}
-        handleOpenUniqueSalesExecutive={handleOpenUniqueSalesExecutive}
-        uniqueSalesExecutiveCount={uniqueSalesExecutiveCount}
-        handleOpenUniqueCustomerClick={handleOpenUniqueCustomerClick}
-        balancePaymentAdditionalTitles={true}
-      />
+      {activeAccordionIndex === 2 ? (
+        ""
+      ) : (
+        <>
+          <FormContainer
+            mainTitle="Sale Booking - Outstanding Payment"
+            link="/admin/balance-payment-list"
+            buttonAccess={
+              contextData &&
+              contextData[2] &&
+              contextData[2].insert_value === 1 &&
+              false
+            }
+            uniqueCustomerCount={uniqueCustomerCount}
+            uniqueNonInvoiceCustomerCount={uniqueNonInvoiceCustomerCount}
+            uniqueNonInvoiceSalesExecutiveCount={
+              uniqueNonInvoiceSalesExecutiveCount
+            }
+            accIndex={activeAccordionIndex}
+            balanceAmountTotal={balanceAmountTotal}
+            nonInvcbalanceAmountTotal={nonInvcbalanceAmountTotal}
+            approvedCount={approvedCount}
+            rejectedCount={rejectedCount}
+            handleOpenUniqueSalesExecutive={handleOpenUniqueSalesExecutive}
+            uniqueSalesExecutiveCount={uniqueSalesExecutiveCount}
+            handleOpenUniqueCustomerClick={handleOpenUniqueCustomerClick}
+            balancePaymentAdditionalTitles={true}
+          />
 
-      <Button variant="contained" className="mb-4">
-        <Link to="/admin/finance-pendingapproveupdate">Pending Approval</Link>
-      </Button>
+          <Button variant="contained" className="mb-4">
+            <Link to="/admin/finance-pendingapproveupdate/">
+              Pending Approval ({totalCount})
+            </Link>
+          </Button>
 
-      {/* Add Icon TDS */}
-      <Dialog
-        open={closeDialog}
-        onClose={handleCloseTDSFields}
-        fullWidth={"md"}
-        maxWidth={"md"}
-        sx={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
-        <DialogTitle>TDS</DialogTitle>
-        <IconButton
-          aria-label="close"
-          s
-          onClick={handleCloseTDSFields}
-          sx={{
-            position: "absolute",
-            right: 8,
-            top: 8,
-            color: (theme) => theme.palette.grey[500],
-          }}
-        >
-          <CloseIcon />
-        </IconButton>
-        <DialogContent
-          dividers={true}
-          sx={{ maxHeight: "80vh", overflowY: "auto" }}
-        >
-          <div className="row">
-            <div className="col-md-12 ">
-              <div className="form-group">
-                <label htmlFor="images">TDS Amount</label>
-                <input
-                  type="number"
-                  className="form-control"
-                  id="TDS Amount"
-                  name="TDS Amount"
-                  value={balAmount - paidAmount}
-                  readOnly
-                  // onChange={(e) => e.target.value}
-                  required
-                />
+          {/* Add Icon TDS */}
+          <Dialog
+            open={closeDialog}
+            onClose={handleCloseTDSFields}
+            fullWidth={"md"}
+            maxWidth={"md"}
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <DialogTitle>TDS</DialogTitle>
+            <IconButton
+              aria-label="close"
+              s
+              onClick={handleCloseTDSFields}
+              sx={{
+                position: "absolute",
+                right: 8,
+                top: 8,
+                color: (theme) => theme.palette.grey[500],
+              }}
+            >
+              <CloseIcon />
+            </IconButton>
+            <DialogContent
+              dividers={true}
+              sx={{ maxHeight: "80vh", overflowY: "auto" }}
+            >
+              <div className="row">
+                <div className="col-md-12 ">
+                  <div className="form-group">
+                    <label htmlFor="images">TDS Amount</label>
+                    <input
+                      type="number"
+                      className="form-control"
+                      id="TDS Amount"
+                      name="TDS Amount"
+                      value={balAmount - paidAmount}
+                      readOnly
+                      // onChange={(e) => e.target.value}
+                      required
+                    />
+                  </div>
+                </div>
+                <div className="col-md-12 ">
+                  <div className="form-group">
+                    <label htmlFor="images">TDS Percentage</label>
+                    <input
+                      type="number"
+                      className="form-control"
+                      id="TDS Percentage"
+                      name="TDS Percentage"
+                      value={tdsPercentage}
+                      readOnly
+                      required
+                    />
+                  </div>
+                </div>
               </div>
-            </div>
-            <div className="col-md-12 ">
-              <div className="form-group">
-                <label htmlFor="images">TDS Percentage</label>
-                <input
-                  type="number"
-                  className="form-control"
-                  id="TDS Percentage"
-                  name="TDS Percentage"
-                  value={tdsPercentage}
-                  readOnly
-                  required
-                />
+              <div className="pack w-100 mt-3 sb">
+                <div></div>
+                <div className="pack gap16">
+                  <Button variant="contained" onClick={(e) => handleSaveTDS(e)}>
+                    YES
+                  </Button>
+                  <Button variant="contained" onClick={handleCloseTDSFields}>
+                    NO
+                  </Button>
+                </div>
               </div>
-            </div>
-          </div>
-          <div className="pack w-100 mt-3 sb">
-            <div></div>
-            <div className="pack gap16">
-              <Button variant="contained" onClick={(e) => handleSaveTDS(e)}>
-                YES
+            </DialogContent>
+          </Dialog>
+          {/* Dialog For Discard */}
+          <Dialog
+            open={discardDialog}
+            onClose={handleDiscardCloseDialog}
+            fullWidth={true}
+            maxWidth="md"
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <DialogTitle>TDS</DialogTitle>
+            <IconButton
+              aria-label="close"
+              onClick={handleDiscardCloseDialog}
+              sx={{
+                position: "absolute",
+                right: 8,
+                top: 8,
+                color: (theme) => theme.palette.grey[500],
+              }}
+            >
+              <CloseIcon />
+            </IconButton>
+            <DialogContent
+              dividers={true}
+              sx={{ maxHeight: "80vh", overflowY: "auto" }}
+            >
+              <TextField
+                multiline
+                label="Reason for Discard"
+                onChange={(e) => setReason(e.target.value)}
+                fullWidth
+              />
+              <div className="pack w-100 mt-3 sb">
+                <div></div>
+                <div className="pack gap16">
+                  <Button variant="contained" onClick={(e) => handleDiscard(e)}>
+                    Submit
+                  </Button>
+                </div>
+              </div>
+            </DialogContent>
+          </Dialog>
+          {/* Edit Party Name Column field */}
+          <Dialog
+            open={partyNameDialog}
+            onClose={handleCloseEditPartyField}
+            fullWidth={"md"}
+            maxWidth={"md"}
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <DialogTitle>Edit Column</DialogTitle>
+            <IconButton
+              aria-label="close"
+              onClick={handleCloseEditPartyField}
+              sx={{
+                position: "absolute",
+                right: 8,
+                top: 8,
+                color: (theme) => theme.palette.grey[500],
+              }}
+            >
+              <CloseIcon />
+            </IconButton>
+            <DialogContent
+              dividers={true}
+              sx={{ maxHeight: "80vh", overflowY: "auto" }}
+            >
+              <TextField
+                id="outlined-basic"
+                label="Party Name"
+                variant="outlined"
+                onChange={(e) => setPartyName(e.target.value)}
+              />
+              <Button variant="contained" onClick={handleUpdatePartyName}>
+                Update
               </Button>
-              <Button variant="contained" onClick={handleCloseTDSFields}>
-                NO
+            </DialogContent>
+          </Dialog>
+          {/* Edit Invoice Number Column */}
+          <Dialog
+            open={invoiceNumberDialog}
+            onClose={handleCloseEditInvoiceField}
+            fullWidth={"md"}
+            maxWidth={"md"}
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <DialogTitle>Edit Column</DialogTitle>
+            <IconButton
+              aria-label="close"
+              onClick={handleCloseEditInvoiceField}
+              sx={{
+                position: "absolute",
+                right: 8,
+                top: 8,
+                color: (theme) => theme.palette.grey[500],
+              }}
+            >
+              <CloseIcon />
+            </IconButton>
+            <DialogContent
+              dividers={true}
+              sx={{ maxHeight: "80vh", overflowY: "auto" }}
+            >
+              <TextField
+                id="outlined-basic"
+                label="Invoice Number"
+                variant="outlined"
+                onChange={(e) => setInvoiceNumber(e.target.value)}
+              />
+              <Button variant="contained" onClick={handleUpdateInvoiceNumber}>
+                Update
               </Button>
-            </div>
-          </div>
-        </DialogContent>
-      </Dialog>
-      {/* Dialog For Discard */}
-      <Dialog
-        open={discardDialog}
-        onClose={handleDiscardCloseDialog}
-        fullWidth={true}
-        maxWidth="md"
-        sx={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
-        <DialogTitle>TDS</DialogTitle>
-        <IconButton
-          aria-label="close"
-          onClick={handleDiscardCloseDialog}
-          sx={{
-            position: "absolute",
-            right: 8,
-            top: 8,
-            color: (theme) => theme.palette.grey[500],
-          }}
-        >
-          <CloseIcon />
-        </IconButton>
-        <DialogContent
-          dividers={true}
-          sx={{ maxHeight: "80vh", overflowY: "auto" }}
-        >
-          <TextField
-            multiline
-            label="Reason for Discard"
-            onChange={(e) => setReason(e.target.value)}
-            fullWidth
-          />
-          <div className="pack w-100 mt-3 sb">
-            <div></div>
-            <div className="pack gap16">
-              <Button variant="contained" onClick={(e) => handleDiscard(e)}>
-                Submit
-              </Button>
-            </div>
-          </div>
-        </DialogContent>
-      </Dialog>
-      {/* Edit Party Name Column field */}
-      <Dialog
-        open={partyNameDialog}
-        onClose={handleCloseEditPartyField}
-        fullWidth={"md"}
-        maxWidth={"md"}
-        sx={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
-        <DialogTitle>Edit Column</DialogTitle>
-        <IconButton
-          aria-label="close"
-          onClick={handleCloseEditPartyField}
-          sx={{
-            position: "absolute",
-            right: 8,
-            top: 8,
-            color: (theme) => theme.palette.grey[500],
-          }}
-        >
-          <CloseIcon />
-        </IconButton>
-        <DialogContent
-          dividers={true}
-          sx={{ maxHeight: "80vh", overflowY: "auto" }}
-        >
-          <TextField
-            id="outlined-basic"
-            label="Party Name"
-            variant="outlined"
-            onChange={(e) => setPartyName(e.target.value)}
-          />
-          <Button variant="contained" onClick={handleUpdatePartyName}>
-            Update
-          </Button>
-        </DialogContent>
-      </Dialog>
-      {/* Edit Invoice Number Column */}
-      <Dialog
-        open={invoiceNumberDialog}
-        onClose={handleCloseEditInvoiceField}
-        fullWidth={"md"}
-        maxWidth={"md"}
-        sx={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
-        <DialogTitle>Edit Column</DialogTitle>
-        <IconButton
-          aria-label="close"
-          onClick={handleCloseEditInvoiceField}
-          sx={{
-            position: "absolute",
-            right: 8,
-            top: 8,
-            color: (theme) => theme.palette.grey[500],
-          }}
-        >
-          <CloseIcon />
-        </IconButton>
-        <DialogContent
-          dividers={true}
-          sx={{ maxHeight: "80vh", overflowY: "auto" }}
-        >
-          <TextField
-            id="outlined-basic"
-            label="Invoice Number"
-            variant="outlined"
-            onChange={(e) => setInvoiceNumber(e.target.value)}
-          />
-          <Button variant="contained" onClick={handleUpdateInvoiceNumber}>
-            Update
-          </Button>
-        </DialogContent>
-      </Dialog>
-      {/* Edit Invoice Date Column */}
-      <Dialog
-        open={invoiceDateDialog}
-        onClose={handleCloseEditDateField}
-        fullWidth={"md"}
-        maxWidth={"md"}
-        sx={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
-        <DialogTitle>Edit Column</DialogTitle>
-        <IconButton
-          aria-label="close"
-          onClick={handleCloseEditDateField}
-          sx={{
-            position: "absolute",
-            right: 8,
-            top: 8,
-            color: (theme) => theme.palette.grey[500],
-          }}
-        >
-          <CloseIcon />
-        </IconButton>
-        <DialogContent
-          dividers={true}
-          sx={{ maxHeight: "80vh", overflowY: "auto" }}
-        >
-          {/* <TextField
+            </DialogContent>
+          </Dialog>
+          {/* Edit Invoice Date Column */}
+          <Dialog
+            open={invoiceDateDialog}
+            onClose={handleCloseEditDateField}
+            fullWidth={"md"}
+            maxWidth={"md"}
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <DialogTitle>Edit Column</DialogTitle>
+            <IconButton
+              aria-label="close"
+              onClick={handleCloseEditDateField}
+              sx={{
+                position: "absolute",
+                right: 8,
+                top: 8,
+                color: (theme) => theme.palette.grey[500],
+              }}
+            >
+              <CloseIcon />
+            </IconButton>
+            <DialogContent
+              dividers={true}
+              sx={{ maxHeight: "80vh", overflowY: "auto" }}
+            >
+              {/* <TextField
             id="outlined-basic"
             label="Invoice Number"
             variant="outlined"
             onChange={(e) => setInvoiceDate(e.target.value)}
           /> */}
 
-          <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <DatePicker
-              className="form-control mt-3"
-              label="Payment Date"
-              value={invoiceDateData}
-              format="DD/MM/YYYY"
-              onChange={(e) => setInvoiceDate(e.target.value)}
-            />
-          </LocalizationProvider>
-          <Button
-            variant="contained"
-            className="mt-4"
-            onClick={handleUpdateInvoiceDate}
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <DatePicker
+                  className="form-control mt-3"
+                  label="Payment Date"
+                  value={invoiceDateData}
+                  format="DD/MM/YYYY"
+                  onChange={(e) => setInvoiceDate(e.target.value)}
+                />
+              </LocalizationProvider>
+              <Button
+                variant="contained"
+                className="mt-4"
+                onClick={handleUpdateInvoiceDate}
+              >
+                Update
+              </Button>
+            </DialogContent>
+          </Dialog>
+          {/* Same Sales Executive Dialog Box */}
+          <Dialog
+            open={sameSalesExecutiveDialog}
+            onClose={handleCloseSameSalesExecutive}
+            fullWidth={"md"}
+            maxWidth={"md"}
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
           >
-            Update
-          </Button>
-        </DialogContent>
-      </Dialog>
-      {/* Same Sales Executive Dialog Box */}
-      <Dialog
-        open={sameSalesExecutiveDialog}
-        onClose={handleCloseSameSalesExecutive}
-        fullWidth={"md"}
-        maxWidth={"md"}
-        sx={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
-        <DialogTitle>Same Sales Executive</DialogTitle>
-        <IconButton
-          aria-label="close"
-          onClick={handleCloseSameSalesExecutive}
-          sx={{
-            position: "absolute",
-            right: 8,
-            top: 8,
-            color: (theme) => theme.palette.grey[500],
-          }}
-        >
-          <CloseIcon />
-        </IconButton>
-        <DialogContent
-          dividers={true}
-          sx={{ maxHeight: "80vh", overflowY: "auto" }}
-        >
-          <DataGrid
-            rows={sameSalesExecutiveData}
-            columns={sameSalesExecutivecolumn}
-            pageSize={5}
-            rowsPerPageOptions={[5]}
-            disableSelectionOnClick
-            autoHeight
-            slots={{ toolbar: GridToolbar }}
-            slotProps={{
-              toolbar: {
-                showQuickFilter: true,
-              },
+            <DialogTitle>Same Sales Executive</DialogTitle>
+            <IconButton
+              aria-label="close"
+              onClick={handleCloseSameSalesExecutive}
+              sx={{
+                position: "absolute",
+                right: 8,
+                top: 8,
+                color: (theme) => theme.palette.grey[500],
+              }}
+            >
+              <CloseIcon />
+            </IconButton>
+            <DialogContent
+              dividers={true}
+              sx={{ maxHeight: "80vh", overflowY: "auto" }}
+            >
+              <DataGrid
+                rows={sameSalesExecutiveData}
+                columns={sameSalesExecutivecolumn}
+                pageSize={5}
+                rowsPerPageOptions={[5]}
+                disableSelectionOnClick
+                autoHeight
+                slots={{ toolbar: GridToolbar }}
+                slotProps={{
+                  toolbar: {
+                    showQuickFilter: true,
+                  },
+                }}
+                getRowId={(row) => sameSalesExecutiveData.indexOf(row)}
+              />
+            </DialogContent>
+          </Dialog>
+          {/* Unique Sales Executive Dialog Box */}
+          <Dialog
+            open={uniqueSalesExecutiveDialog}
+            onClose={handleCloseUniquesalesExecutive}
+            fullWidth={"md"}
+            maxWidth={"md"}
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
             }}
-            getRowId={(row) => sameSalesExecutiveData.indexOf(row)}
-          />
-        </DialogContent>
-      </Dialog>
-      {/* Unique Sales Executive Dialog Box */}
-      <Dialog
-        open={uniqueSalesExecutiveDialog}
-        onClose={handleCloseUniquesalesExecutive}
-        fullWidth={"md"}
-        maxWidth={"md"}
-        sx={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
-        <DialogTitle>Unique Sales Executive</DialogTitle>
-        <IconButton
-          aria-label="close"
-          onClick={handleCloseUniquesalesExecutive}
-          sx={{
-            position: "absolute",
-            right: 8,
-            top: 8,
-            color: (theme) => theme.palette.grey[500],
-          }}
-        >
-          <CloseIcon />
-        </IconButton>
-        <DialogContent
-          dividers={true}
-          sx={{ maxHeight: "80vh", overflowY: "auto" }}
-        >
-          <DataGrid
-            rows={uniqueSalesExecutiveData}
-            columns={uniqueSalesExecutivecolumn}
-            pageSize={5}
-            rowsPerPageOptions={[5]}
-            disableSelectionOnClick
-            autoHeight
-            slots={{ toolbar: GridToolbar }}
-            slotProps={{
-              toolbar: {
-                showQuickFilter: true,
-              },
+          >
+            <DialogTitle>Unique Sales Executive</DialogTitle>
+            <IconButton
+              aria-label="close"
+              onClick={handleCloseUniquesalesExecutive}
+              sx={{
+                position: "absolute",
+                right: 8,
+                top: 8,
+                color: (theme) => theme.palette.grey[500],
+              }}
+            >
+              <CloseIcon />
+            </IconButton>
+            <DialogContent
+              dividers={true}
+              sx={{ maxHeight: "80vh", overflowY: "auto" }}
+            >
+              <DataGrid
+                rows={uniqueSalesExecutiveData}
+                columns={uniqueSalesExecutivecolumn}
+                pageSize={5}
+                rowsPerPageOptions={[5]}
+                disableSelectionOnClick
+                autoHeight
+                slots={{ toolbar: GridToolbar }}
+                slotProps={{
+                  toolbar: {
+                    showQuickFilter: true,
+                  },
+                }}
+                getRowId={(row) => uniqueSalesExecutiveData.indexOf(row)}
+              />
+            </DialogContent>
+          </Dialog>
+          {/* Same Customer Dialog */}
+          <Dialog
+            open={sameCustomerDialog}
+            onClose={handleCloseSameCustomer}
+            fullWidth={"md"}
+            maxWidth={"md"}
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
             }}
-            getRowId={(row) => uniqueSalesExecutiveData.indexOf(row)}
-          />
-        </DialogContent>
-      </Dialog>
-      {/* Same Customer Dialog */}
-      <Dialog
-        open={sameCustomerDialog}
-        onClose={handleCloseSameCustomer}
-        fullWidth={"md"}
-        maxWidth={"md"}
-        sx={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
-        <DialogTitle>Same Vendors</DialogTitle>
-        <IconButton
-          aria-label="close"
-          onClick={handleCloseSameCustomer}
-          sx={{
-            position: "absolute",
-            right: 8,
-            top: 8,
-            color: (theme) => theme.palette.grey[500],
-          }}
-        >
-          <CloseIcon />
-        </IconButton>
-        <DialogContent
-          dividers={true}
-          sx={{ maxHeight: "80vh", overflowY: "auto" }}
-        >
-          <DataGrid
-            rows={sameCustomerData}
-            columns={sameCustomercolumn}
-            pageSize={5}
-            rowsPerPageOptions={[5]}
-            disableSelectionOnClick
-            autoHeight
-            slots={{ toolbar: GridToolbar }}
-            slotProps={{
-              toolbar: {
-                showQuickFilter: true,
-              },
+          >
+            <DialogTitle>Same Vendors</DialogTitle>
+            <IconButton
+              aria-label="close"
+              onClick={handleCloseSameCustomer}
+              sx={{
+                position: "absolute",
+                right: 8,
+                top: 8,
+                color: (theme) => theme.palette.grey[500],
+              }}
+            >
+              <CloseIcon />
+            </IconButton>
+            <DialogContent
+              dividers={true}
+              sx={{ maxHeight: "80vh", overflowY: "auto" }}
+            >
+              <DataGrid
+                rows={sameCustomerData}
+                columns={sameCustomercolumn}
+                pageSize={5}
+                rowsPerPageOptions={[5]}
+                disableSelectionOnClick
+                autoHeight
+                slots={{ toolbar: GridToolbar }}
+                slotProps={{
+                  toolbar: {
+                    showQuickFilter: true,
+                  },
+                }}
+                getRowId={(row) => sameCustomerData.indexOf(row)}
+              />
+            </DialogContent>
+          </Dialog>
+          {/* Unique Customer Dialog Box */}
+          <Dialog
+            open={uniqueCustomerDialog}
+            onClose={handleCloseUniqueCustomer}
+            fullWidth={"md"}
+            maxWidth={"md"}
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
             }}
-            getRowId={(row) => sameCustomerData.indexOf(row)}
-          />
-        </DialogContent>
-      </Dialog>
-      {/* Unique Customer Dialog Box */}
-      <Dialog
-        open={uniqueCustomerDialog}
-        onClose={handleCloseUniqueCustomer}
-        fullWidth={"md"}
-        maxWidth={"md"}
-        sx={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
-        <DialogTitle>Unique Customers</DialogTitle>
-        <IconButton
-          aria-label="close"
-          onClick={handleCloseUniqueCustomer}
-          sx={{
-            position: "absolute",
-            right: 8,
-            top: 8,
-            color: (theme) => theme.palette.grey[500],
-          }}
-        >
-          <CloseIcon />
-        </IconButton>
-        <DialogContent
-          dividers={true}
-          sx={{ maxHeight: "80vh", overflowY: "auto" }}
-        >
-          <DataGrid
-            rows={uniqueCustomerData}
-            columns={uniqueCustomercolumn}
-            pageSize={5}
-            rowsPerPageOptions={[5]}
-            disableSelectionOnClick
-            autoHeight
-            slots={{ toolbar: GridToolbar }}
-            slotProps={{
-              toolbar: {
-                showQuickFilter: true,
-              },
-            }}
-            getRowId={(row) => uniqueCustomerData.indexOf(row)}
-          />
-        </DialogContent>
-      </Dialog>
+          >
+            <DialogTitle>Unique Customers</DialogTitle>
+            <IconButton
+              aria-label="close"
+              onClick={handleCloseUniqueCustomer}
+              sx={{
+                position: "absolute",
+                right: 8,
+                top: 8,
+                color: (theme) => theme.palette.grey[500],
+              }}
+            >
+              <CloseIcon />
+            </IconButton>
+            <DialogContent
+              dividers={true}
+              sx={{ maxHeight: "80vh", overflowY: "auto" }}
+            >
+              <DataGrid
+                rows={uniqueCustomerData}
+                columns={uniqueCustomercolumn}
+                pageSize={5}
+                rowsPerPageOptions={[5]}
+                disableSelectionOnClick
+                autoHeight
+                slots={{ toolbar: GridToolbar }}
+                slotProps={{
+                  toolbar: {
+                    showQuickFilter: true,
+                  },
+                }}
+                getRowId={(row) => uniqueCustomerData.indexOf(row)}
+              />
+            </DialogContent>
+          </Dialog>
 
-      <div className="row">
-        <div className="col-md-6">
-          <div className="card">
-            <div className="card-header">
-              <h5 className="card-title w-100 flexCenterBetween">
-                Invoice Created
-              </h5>
-            </div>
-            <div className="card-body flex-row sb">
-              <div>
-                <h5 className="mediumText">Invoice Count</h5>
-                <h4
-                  className="font-weight-bold mt8"
-                  style={{ color: "var(--orange)" }}
-                >
-                  {invoiceCounts?.length}
-                </h4>
-              </div>
-              <div>
-                <h5 className="mediumText"> Total Balance Amount</h5>
-                <h4
-                  className="font-weight-bold mt8"
-                  style={{ color: "var(--yellow)" }}
-                >
-                  ₹{totalInvoiceBalanceAmount}
-                </h4>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div className="col-md-6">
-          <div className="card">
-            <div className="card-header">
-              <h5 className="card-title w-100 flexCenterBetween">
-                Non Invoice Created
-              </h5>
-            </div>
-            <div className="card-body flex-row sb">
-              <div>
-                <h5 className="mediumText">Non Invoice Count</h5>
-                <h4
-                  className="font-weight-bold mt8"
-                  style={{ color: "var(--orange)" }}
-                >
-                  {nonInvoiceCounts?.length}
-                </h4>
-              </div>
-              <div>
-                <h5 className="mediumText">Total Balance Amount</h5>
-                <h4
-                  className="font-weight-bold mt8"
-                  style={{ color: "var(--yellow)" }}
-                >
-                  ₹{totalNonInvoiceBalanceAmount}
-                </h4>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div className="col-md-6">
-          <div className="card">
-            <div className="card-header">
-              <h5 className="card-title w-100 flexCenterBetween">GST</h5>
-            </div>
-            <div className="card-body flex-row sb">
-              <div>
-                <h5 className="mediumText">GST Count</h5>
-                <h4
-                  className="font-weight-bold mt8"
-                  style={{ color: "var(--orange)" }}
-                >
-                  {gstCounts?.length}
-                </h4>
-              </div>
-
-              <div>
-                <h5 className="mediumText">Total Balance Amount</h5>
-                <h4
-                  className="font-weight-bold mt8"
-                  style={{ color: "var(--yellow)" }}
-                >
-                  {" "}
-                  ₹ {totalGstBalanceAmount}
-                </h4>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div className="col-md-6">
-          <div className="card">
-            <div className="card-header">
-              <h5 className="card-title w-100 flexCenterBetween">Non GST</h5>
-            </div>
-            <div className="card-body flex-row sb">
-              <div>
-                <h5 className="mediumText">Non GST Count</h5>
-                <h4
-                  className="font-weight-bold mt8"
-                  style={{ color: "var(--orange)" }}
-                >
-                  {nonGstCounts?.length}
-                </h4>
-              </div>
-              <div>
-                <h5 className="mediumText"> Total Balance Amount</h5>
-                <h4
-                  className="font-weight-bold mt8"
-                  style={{ color: "var(--bs-yellow)" }}
-                >
-                  ₹{totalNonGstBalanceAmount}
-                </h4>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div className="row">
-        <div className="col-12">
-          <div className="card">
-            <div className="card-header flexCenterBetween">
-              <h5 className="card-title">Search by filter</h5>
-              <div className="flexCenter colGap12">
-                <div className="form-group flexCenter colGap8">
-                  <label className="w-100 m0">Select Date Range:</label>
-                  <select
-                    className="form-control form_sm"
-                    value={dateFilter}
-                    onChange={(e) => setDateFilter(e.target.value)}
-                  >
-                    <option value="">All</option>
-                    <option value="thisWeek">This Week</option>
-                    <option value="nextMonth">Next Month</option>
-                    <option value="thisMonth">This Month</option>
-                  </select>
+          <div className="row">
+            <div className="col-md-6">
+              <div className="card">
+                <div className="card-header">
+                  <h5 className="card-title w-100 flexCenterBetween">
+                    Invoice Created
+                  </h5>
+                </div>
+                <div className="card-body flex-row sb">
+                  <div>
+                    <h5 className="mediumText">Invoice Count</h5>
+                    <h4
+                      className="font-weight-bold mt8"
+                      style={{ color: "var(--orange)" }}
+                    >
+                      {invoiceCounts?.length}
+                    </h4>
+                  </div>
+                  <div>
+                    <h5 className="mediumText"> Total Balance Amount</h5>
+                    <h4
+                      className="font-weight-bold mt8"
+                      style={{ color: "var(--yellow)" }}
+                    >
+                      ₹{" "}
+                      <FormattedNumberWithTooltip
+                        value={totalInvoiceBalanceAmount}
+                      />
+                    </h4>
+                  </div>
                 </div>
               </div>
             </div>
-            <div className="card-body pb4">
-              <div className="row thm_form">
-                <div className="col-md-4 col-sm-12">
-                  <div className="form-group">
-                    <label>Customer Name</label>
-                    <Autocomplete
-                      value={customerName}
-                      onChange={(event, newValue) => setCustomerName(newValue)}
-                      options={customerList?.map((e) => {
-                        return e;
-                      })}
-                      renderInput={(params) => (
-                        <TextField
-                          {...params}
-                          label="customer Name"
-                          type="text"
-                          variant="outlined"
-                          InputProps={{
-                            ...params.InputProps,
-                            className: "form-control",
+            <div className="col-md-6">
+              <div className="card">
+                <div className="card-header">
+                  <h5 className="card-title w-100 flexCenterBetween">
+                    Non Invoice Created
+                  </h5>
+                </div>
+                <div className="card-body flex-row sb">
+                  <div>
+                    <h5 className="mediumText">Non Invoice Count</h5>
+                    <h4
+                      className="font-weight-bold mt8"
+                      style={{ color: "var(--orange)" }}
+                    >
+                      {nonInvoiceCounts?.length}
+                    </h4>
+                  </div>
+                  <div>
+                    <h5 className="mediumText">Total Balance Amount</h5>
+                    <h4
+                      className="font-weight-bold mt8"
+                      style={{ color: "var(--yellow)" }}
+                    >
+                      ₹
+                      <FormattedNumberWithTooltip
+                        value={totalNonInvoiceBalanceAmount}
+                      />
+                    </h4>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="col-md-6">
+              <div className="card">
+                <div className="card-header">
+                  <h5 className="card-title w-100 flexCenterBetween">GST</h5>
+                </div>
+                <div className="card-body flex-row sb">
+                  <div>
+                    <h5 className="mediumText">GST Count</h5>
+                    <h4
+                      className="font-weight-bold mt8"
+                      style={{ color: "var(--orange)" }}
+                    >
+                      {gstCounts?.length}
+                    </h4>
+                  </div>
+
+                  <div>
+                    <h5 className="mediumText">Total Balance Amount</h5>
+                    <h4
+                      className="font-weight-bold mt8"
+                      style={{ color: "var(--yellow)" }}
+                    >
+                      {" "}
+                      ₹{" "}
+                      <FormattedNumberWithTooltip
+                        value={totalGstBalanceAmount}
+                      />
+                    </h4>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="col-md-6">
+              <div className="card">
+                <div className="card-header">
+                  <h5 className="card-title w-100 flexCenterBetween">
+                    Non GST
+                  </h5>
+                </div>
+                <div className="card-body flex-row sb">
+                  <div>
+                    <h5 className="mediumText">Non GST Count</h5>
+                    <h4
+                      className="font-weight-bold mt8"
+                      style={{ color: "var(--orange)" }}
+                    >
+                      {nonGstCounts?.length}
+                    </h4>
+                  </div>
+                  <div>
+                    <h5 className="mediumText"> Total Balance Amount</h5>
+                    <h4
+                      className="font-weight-bold mt8"
+                      style={{ color: "var(--bs-yellow)" }}
+                    >
+                      ₹{" "}
+                      <FormattedNumberWithTooltip
+                        value={totalNonGstBalanceAmount}
+                      />
+                    </h4>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="row">
+            <div className="col-12">
+              <div className="card">
+                <div className="card-header flexCenterBetween">
+                  <h5 className="card-title">Search by filter</h5>
+                  <div className="flexCenter colGap12">
+                    <div className="form-group flexCenter colGap8">
+                      <label className="w-100 m0">Select Date Range:</label>
+                      <select
+                        className="form-control form_sm"
+                        value={dateFilter}
+                        onChange={(e) => setDateFilter(e.target.value)}
+                      >
+                        <option value="">All</option>
+                        <option value="thisWeek">This Week</option>
+                        <option value="nextMonth">Next Month</option>
+                        <option value="thisMonth">This Month</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+                <div className="card-body pb4">
+                  <div className="row thm_form">
+                    <div className="col-md-4 col-sm-12">
+                      <div className="form-group">
+                        <label>Customer Name</label>
+                        <Autocomplete
+                          value={customerName}
+                          onChange={(event, newValue) =>
+                            setCustomerName(newValue)
+                          }
+                          options={customerList?.map((e) => {
+                            return e;
+                          })}
+                          renderInput={(params) => (
+                            <TextField
+                              {...params}
+                              label="customer Name"
+                              type="text"
+                              variant="outlined"
+                              InputProps={{
+                                ...params.InputProps,
+                                className: "form-control",
+                              }}
+                            />
+                          )}
+                        />
+                      </div>
+                    </div>
+                    <div className="col-md-4 col-sm-12">
+                      <div className="form-group">
+                        <label>Sales Executive Name</label>
+                        <Autocomplete
+                          value={salesExecutiveName}
+                          onChange={(event, newValue) =>
+                            setSalesExecutiveName(newValue)
+                          }
+                          options={salesExecutiveList?.map((e) => {
+                            return e;
+                          })}
+                          renderInput={(params) => (
+                            <TextField
+                              {...params}
+                              label="Sales Executive Name"
+                              type="text"
+                              variant="outlined"
+                              InputProps={{
+                                ...params.InputProps,
+                                className: "form-control",
+                              }}
+                            />
+                          )}
+                        />
+                      </div>
+                    </div>
+                    <div className="col-md-4 col-sm-12">
+                      <div className="form-group">
+                        <label>From Date</label>
+                        <input
+                          value={fromDate}
+                          type="date"
+                          className="form-control"
+                          onChange={(e) => setFromDate(e.target.value)}
+                        />
+                      </div>
+                    </div>
+                    <div className="col-md-4 col-sm-12">
+                      <div className="form-group">
+                        <label>To Date</label>
+                        <input
+                          value={toDate}
+                          type="date"
+                          className="form-control"
+                          onChange={(e) => {
+                            setToDate(e.target.value);
                           }}
                         />
-                      )}
-                    />
-                  </div>
-                </div>
-                <div className="col-md-4 col-sm-12">
-                  <div className="form-group">
-                    <label>Sales Executive Name</label>
-                    <Autocomplete
-                      value={salesExecutiveName}
-                      onChange={(event, newValue) =>
-                        setSalesExecutiveName(newValue)
-                      }
-                      options={salesExecutiveList?.map((e) => {
-                        return e;
-                      })}
-                      renderInput={(params) => (
-                        <TextField
-                          {...params}
-                          label="Sales Executive Name"
-                          type="text"
-                          variant="outlined"
-                          InputProps={{
-                            ...params.InputProps,
-                            className: "form-control",
+                      </div>
+                    </div>
+                    <div className="col-md-4 col-sm-12">
+                      <div className="form-group">
+                        <label>Campaign Amount Filter</label>
+                        <select
+                          value={campaignAmountFilter}
+                          className="form-control"
+                          onChange={(e) =>
+                            setCampaignAmountFilter(e.target.value)
+                          }
+                        >
+                          <option value="">Select Amount</option>
+                          <option value="greaterThan">Greater Than</option>
+                          <option value="lessThan">Less Than</option>
+                          <option value="equalTo">Equal To</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div className="col-md-4 col-sm-12">
+                      <div className="form-group">
+                        <label>Campaign Amount</label>
+                        <input
+                          value={campaignAmountField}
+                          type="number"
+                          placeholder="Request Amount"
+                          className="form-control"
+                          onChange={(e) => {
+                            setCampaignAmountField(e.target.value);
                           }}
                         />
-                      )}
-                    />
+                      </div>
+                    </div>
+                    <div className="col-md-4 col-sm-12">
+                      <div className="form-group">
+                        <label>Balance Amount Filter</label>
+                        <select
+                          value={balanceAmountFilter}
+                          className="form-control"
+                          onChange={(e) =>
+                            setBalanceAmountFilter(e.target.value)
+                          }
+                        >
+                          <option value="">Select Amount</option>
+                          <option value="greaterThan">Greater Than</option>
+                          <option value="lessThan">Less Than</option>
+                          <option value="equalTo">Equal To</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div className="col-md-4 col-sm-12">
+                      <div className="form-group">
+                        <label>Balance Amount</label>
+                        <input
+                          value={balanceAmountField}
+                          type="number"
+                          placeholder="Request Amount"
+                          className="form-control"
+                          onChange={(e) => {
+                            setBalanceAmountField(e.target.value);
+                          }}
+                        />
+                      </div>
+                    </div>
+                    <div className="col-md-4 col-sm-12">
+                      <div className="form-group">
+                        <label>GST</label>
+                        <select
+                          value={gstNonGstData}
+                          className="form-control"
+                          onChange={(e) => setGstNonGstData(e.target.value)}
+                        >
+                          <option value="">Select GST</option>
+                          <option value="GST">GST</option>
+                          <option value="Non GST">Non GST</option>
+                        </select>
+                      </div>
+                    </div>
                   </div>
                 </div>
-                <div className="col-md-4 col-sm-12">
-                  <div className="form-group">
-                    <label>From Date</label>
-                    <input
-                      value={fromDate}
-                      type="date"
-                      className="form-control"
-                      onChange={(e) => setFromDate(e.target.value)}
-                    />
-                  </div>
-                </div>
-                <div className="col-md-4 col-sm-12">
-                  <div className="form-group">
-                    <label>To Date</label>
-                    <input
-                      value={toDate}
-                      type="date"
-                      className="form-control"
-                      onChange={(e) => {
-                        setToDate(e.target.value);
-                      }}
-                    />
-                  </div>
-                </div>
-                <div className="col-md-4 col-sm-12">
-                  <div className="form-group">
-                    <label>Campaign Amount Filter</label>
-                    <select
-                      value={campaignAmountFilter}
-                      className="form-control"
-                      onChange={(e) => setCampaignAmountFilter(e.target.value)}
+                <div className="card-footer">
+                  <div className="flexCenter colGap16">
+                    <Button
+                      variant="contained"
+                      onClick={handleAllFilters}
+                      className="btn cmnbtn btn-primary"
                     >
-                      <option value="">Select Amount</option>
-                      <option value="greaterThan">Greater Than</option>
-                      <option value="lessThan">Less Than</option>
-                      <option value="equalTo">Equal To</option>
-                    </select>
-                  </div>
-                </div>
-                <div className="col-md-4 col-sm-12">
-                  <div className="form-group">
-                    <label>Campaign Amount</label>
-                    <input
-                      value={campaignAmountField}
-                      type="number"
-                      placeholder="Request Amount"
-                      className="form-control"
-                      onChange={(e) => {
-                        setCampaignAmountField(e.target.value);
-                      }}
-                    />
-                  </div>
-                </div>
-                <div className="col-md-4 col-sm-12">
-                  <div className="form-group">
-                    <label>Balance Amount Filter</label>
-                    <select
-                      value={balanceAmountFilter}
-                      className="form-control"
-                      onChange={(e) => setBalanceAmountFilter(e.target.value)}
+                      <i className="fas fa-search"></i> Search
+                    </Button>
+                    <Button
+                      variant="contained"
+                      onClick={handleClearAllFilter}
+                      className="btn cmnbtn btn-secondary"
                     >
-                      <option value="">Select Amount</option>
-                      <option value="greaterThan">Greater Than</option>
-                      <option value="lessThan">Less Than</option>
-                      <option value="equalTo">Equal To</option>
-                    </select>
+                      Clear
+                    </Button>
                   </div>
                 </div>
-                <div className="col-md-4 col-sm-12">
-                  <div className="form-group">
-                    <label>Balance Amount</label>
-                    <input
-                      value={balanceAmountField}
-                      type="number"
-                      placeholder="Request Amount"
-                      className="form-control"
-                      onChange={(e) => {
-                        setBalanceAmountField(e.target.value);
-                      }}
-                    />
-                  </div>
-                </div>
-                <div className="col-md-4 col-sm-12">
-                  <div className="form-group">
-                    <label>GST</label>
-                    <select
-                      value={gstNonGstData}
-                      className="form-control"
-                      onChange={(e) => setGstNonGstData(e.target.value)}
-                    >
-                      <option value="">Select GST</option>
-                      <option value="GST">GST</option>
-                      <option value="Non GST">Non GST</option>
-                    </select>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div className="card-footer">
-              <div className="flexCenter colGap16">
-                <Button
-                  variant="contained"
-                  onClick={handleAllFilters}
-                  className="btn cmnbtn btn-primary"
-                >
-                  <i className="fas fa-search"></i> Search
-                </Button>
-                <Button
-                  variant="contained"
-                  onClick={handleClearAllFilter}
-                  className="btn cmnbtn btn-secondary"
-                >
-                  Clear
-                </Button>
               </div>
             </div>
           </div>
-        </div>
-      </div>
+        </>
+      )}
       <Tab
         tabName={accordionButtons}
         activeTabindex={activeAccordionIndex}
@@ -2517,6 +2557,7 @@ const BalancePaymentList = () => {
               getRowId={(row) => filterData.indexOf(row)}
             />
           )}
+          {activeAccordionIndex === 2 && <ApprovedList />}
         </div>
       </div>
 

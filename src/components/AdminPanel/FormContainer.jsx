@@ -1,6 +1,8 @@
 import { Link, useLocation } from "react-router-dom";
 import { FaUserPlus } from "react-icons/fa";
 import titleimg from "/bg-img.png";
+import FormattedNumberWithTooltip from "./Finance/FormateNumWithTooltip/FormattedNumberWithTooltip";
+
 const FormContainer = ({
   mainTitle,
   title,
@@ -113,12 +115,21 @@ const FormContainer = ({
               <h2 onClick={handleOpenUniqueVendorClick}>
                 Unique Vendor : <a href="#">{uniqueVendorCount}</a>
               </h2>
-              <h2>
+              {/* <h2>
                 Pending Request Amount : <a href="#"> {totalPendingAmount}</a>
+              </h2> */}
+              <h2>
+                Pending Request Amount :{" "}
+                <a href="#">
+                  <FormattedNumberWithTooltip value={totalPendingAmount} />
+                </a>
               </h2>
 
               <h2>
-                Balance Amount : <a href="#"> {totalBalanceAmount}</a>
+                Balance Amount :{" "}
+                <a href="#">
+                  <FormattedNumberWithTooltip value={totalBalanceAmount} />
+                </a>
               </h2>
               <h2>
                 Pending Request : <a href="#"> {pendingRequestCount}</a>
@@ -358,7 +369,10 @@ const FormContainer = ({
                 <a href="#">{uniqueSalesExecutiveCount}</a>
               </h2>
               <h2>
-                Balance Amount : <a href="#">{balanceAmountTotal}</a>
+                Balance Amount :{" "}
+                <a href="#">
+                  <FormattedNumberWithTooltip value={balanceAmountTotal} />
+                </a>
               </h2>
             </div>
           ) : (
@@ -373,7 +387,12 @@ const FormContainer = ({
                   <a href="#">{uniqueNonInvoiceSalesExecutiveCount}</a>
                 </h2>
                 <h2>
-                  Balance Amount : <a href="#">{nonInvcbalanceAmountTotal}</a>
+                  Balance Amount :{" "}
+                  <a href="#">
+                    <FormattedNumberWithTooltip
+                      value={nonInvcbalanceAmountTotal}
+                    />
+                  </a>
                 </h2>
               </div>
             )
