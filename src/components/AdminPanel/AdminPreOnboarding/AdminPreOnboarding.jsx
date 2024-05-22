@@ -111,6 +111,7 @@ const AdminPreOnboarding = () => {
     personalEmail: false,
     personalContact: false,
     subDepartment: false,
+    password: false,
   });
 
   useEffect(() => {
@@ -212,6 +213,12 @@ const AdminPreOnboarding = () => {
     if (subDepartment == "") {
       setIsRequired((perv) => ({ ...perv, subDepartment: true }));
     }
+    if (password == "") {
+      setIsRequired((perv) => ({ ...perv, password: true }));
+    }
+    if (personalContact == "") {
+      setIsRequired((perv) => ({ ...perv, personalContact: true }));
+    }
 
     if (!username) {
       return toastError("Fill the Mandatory fields");
@@ -226,11 +233,11 @@ const AdminPreOnboarding = () => {
     } else if (!personalEmail || personalEmail == "") {
       return toastError("Fill the Mandatory fields");
     } else if (!personalContact || personalContact == "") {
-      return toastError("Contact is Required and should be equal to 10");
+      return toastError("Fill the Mandatory fields");
     } else if (!loginId || loginId == "") {
-      return toastError("Login ID is Required");
+      return toastError("Fill the Mandatory fields");
     } else if (!password || password == "") {
-      return toastError("Password is Required");
+      return toastError("Fill the Mandatory fields");
     } else if (!roles || roles == "") {
       return toastError("Fill the Mandatory fields");
     } else if (!joiningDate || joiningDate == "") {
@@ -243,79 +250,69 @@ const AdminPreOnboarding = () => {
       return toastError("Fill the Mandatory fields");
     }
 
-    const formData = new FormData();
-    formData.append("created_by", loginUserId);
-    formData.append("user_name", validateAndCorrectUserName(username));
-    formData.append("role_id", roles);
-    formData.append("image", selectedImage);
-    formData.append("ctc", userCtc);
-    formData.append("Age", Number(age));
-    // formData.append(
-    //   "offer_letter_send",
-    //   sendLetter.value ? Boolean(sendLetter.value) : false
-    // );
-    formData.append("offer_letter_send", true);
+    const payload = {
+      created_by: loginUserId,
+      user_name: validateAndCorrectUserName(username),
+      role_id: roles,
+      image: selectedImage,
+      ctc: userCtc,
+      Age: Number(age),
+      offer_letter_send: true,
+      tds_applicable: tdsApplicable,
+      tds_per: tdsPercentage,
+      user_login_id: loginId,
+      user_login_password: password,
+      sitting_id: 183,
+      room_id: roomId,
+      dept_id: department,
+      sub_dept_id: subDepartment,
+      Gender: gender,
+      job_type: jobType,
+      DOB: dateOfBirth,
+      user_contact_no: personalContact,
+      personal_number: personalContact,
+      user_email_id: personalEmail,
+      Personal_email: personalEmail,
+      report_L1: reportL1,
+      report_L2: reportL2,
+      report_L3: reportL3,
+      user_designation: designation,
+      UID: uid,
+      pan: panUpload,
+      highest_upload: highestUpload,
+      other_upload: otherUpload,
+      joining_date: joiningDate,
+      releaving_date: releavingDate,
+      salary: Number(salary),
+      onboard_status: onBoardStatus,
+    };
 
-    // formData.append("annexure_pdf", annexurePdf);
-    formData.append("tds_applicable", tdsApplicable);
-    formData.append("tds_per", tdsPercentage);
-    formData.append("user_login_id", loginId);
-    formData.append("user_login_password", password);
-    formData.append("sitting_id", 183);
-    formData.append("room_id", roomId);
-    formData.append("dept_id", department);
-    formData.append("sub_dept_id", subDepartment);
-    formData.append("Gender", gender);
-    formData.append("job_type", jobType);
-    formData.append("DOB", dateOfBirth);
-
-    formData.append("user_contact_no", personalContact);
-    formData.append("personal_number", personalContact);
-    // formData.append("pe", personalContact);
-
-    formData.append("user_email_id", personalEmail);
-    formData.append("Personal_email", personalEmail);
-    // formData.append("PersonalEmail", personalEmail);
-
-    formData.append("report_L1", reportL1);
-    formData.append("report_L2", reportL2);
-    formData.append("report_L3", reportL3);
-    formData.append("user_designation", designation);
-    formData.append("UID", uid);
-    formData.append("pan", panUpload);
-    formData.append("highest_upload", highestUpload);
-    formData.append("other_upload", otherUpload);
-    formData.append("joining_date", joiningDate);
-    formData.append("releaving_date", releavingDate);
-    formData.append("salary", Number(salary));
-    formData.append("onboard_status", onBoardStatus);
-
-    // if (isValidcontact1 == true && validEmail == true) {
     try {
       const isLoginIdExists = usersData.some(
         (user) =>
-          user.user_login_id.toLocaleLowerCase() === loginId.toLocaleLowerCase()
+          user.user_login_id?.toLocaleLowerCase() ===
+          loginId?.toLocaleLowerCase()
       );
       const contactNumberExists = usersData.some(
         (user) => user.user_contact_no == personalContact
       );
-
       const emailIdExists = usersData.some(
         (user) =>
           user.user_email_id?.toLocaleLowerCase() ==
           personalEmail?.toLocaleLowerCase()
       );
+
       if (isLoginIdExists) {
-        alert("this login ID already exists");
+        alert("This login ID already exists");
       } else if (contactNumberExists) {
-        alert(" Contact Already Exists");
+        alert("Contact Already Exists");
       } else if (emailIdExists) {
-        alert(" Email Already Exists");
+        alert("Email Already Exists");
       } else {
         setLoading(true);
-        await axios.post(baseUrl + "add_user", formData, {
+        await axios.post(baseUrl + "add_user", payload, {
           headers: {
-            "Content-Type": "multipart/form-data",
+            "Content-Type": "application/json",
           },
         });
         whatsappApi.callWhatsAPI(
@@ -333,10 +330,7 @@ const AdminPreOnboarding = () => {
             login_id: loginId,
             name: username,
             password: password,
-          })
-          .then((res) => {
-            // setLoading(true);
-            console.log("Email sent successfully:", res.data);
+            status: "onboarded",
           })
           .then((res) => {
             if (res.status == 200) {
@@ -364,10 +358,8 @@ const AdminPreOnboarding = () => {
         setDepartment("");
         setSitting("");
         setRoomId("");
-        setPersonalContact("");
         setSendLetter("");
         setAnnexurePdf("");
-        setPersonalEmail("");
         setJobType("");
         setReportL1("");
         setReportL2("");
@@ -445,27 +437,53 @@ const AdminPreOnboarding = () => {
 
   //personal Contact validation
 
-  function handlePersonalContactChange(event) {
-    if (event.target.value.length <= 10) {
-      const newContact1 = event.target.value;
-      setPersonalContact(newContact1);
+  // function handlePersonalContactChange(event) {
+  //   if (event.target.value.length <= 10) {
+  //     const newContact1 = event.target.value;
+  //     setPersonalContact(newContact1);
 
+  //     if (
+  //       newContact1 === "" ||
+  //       (newContact1.length === 1 && parseInt(newContact1) < 6)
+  //     ) {
+  //       setPersonalContact("");
+  //     } else {
+  //       setPersonalContact(newContact1);
+  //     }
+
+  //     if (newContact1 === "") {
+  //       setValidContact1(false);
+  //     } else {
+  //       setValidContact1(
+  //         /^(\+91[ \-\s]?)?[0]?(91)?[6789]\d{9}$/.test(newContact1)
+  //       );
+  //     }
+  //   }
+  // }
+  function handlePersonalContactChange(event) {
+    const newContact1 = event.target.value;
+
+    if (newContact1.length <= 10) {
       if (
         newContact1 === "" ||
         (newContact1.length === 1 && parseInt(newContact1) < 6)
       ) {
         setPersonalContact("");
+        setValidContact1(false);
+        setIsRequired({ ...isRequired, personalContact: true });
       } else {
         setPersonalContact(newContact1);
-      }
+        setIsRequired({ ...isRequired, personalContact: false });
 
-      if (newContact1 === "") {
-        setValidContact1(false);
-      } else {
         setValidContact1(
           /^(\+91[ \-\s]?)?[0]?(91)?[6789]\d{9}$/.test(newContact1)
         );
       }
+    }
+
+    setisContactTouched1(true);
+    if (newContact1.length < 10) {
+      setValidContact1(false);
     }
   }
 
@@ -492,6 +510,9 @@ const AdminPreOnboarding = () => {
       generatePassword += charset[randomIndex];
     }
     setPassword(generatePassword);
+    if (generatePassword.length > 0) {
+      setIsRequired({ ...isRequired, password: false });
+    }
   };
 
   const generateLoginId = async () => {
@@ -518,30 +539,48 @@ const AdminPreOnboarding = () => {
 
     const nextIndex = (lastIndexUsed + 1) % loginIdOptions.length;
     setLastIndexUsed(nextIndex);
-    const generatedLoginId = loginIdOptions[nextIndex];
-    setLoginId(generatedLoginId);
+    let generatedLoginId = loginIdOptions[nextIndex];
 
-    await axios
-      .post(baseUrl + `check_login_exist`, {
-        user_login_id: loginId,
-      })
-      .then((res) => {
-        setLoginResponse(res.data.message);
-      });
+    // Check if the generated login ID already exists
+    const response = await axios.post(baseUrl + `check_login_exist`, {
+      user_login_id: generatedLoginId,
+    });
+
+    if (response.data.message === "login id not available") {
+      // If login ID already exists, find the next available one
+      let index = 1;
+      while (true) {
+        const nextGeneratedLoginId = `${generatedLoginId}_${index}`;
+        const checkExistenceResponse = await axios.post(
+          baseUrl + `check_login_exist`,
+          {
+            user_login_id: nextGeneratedLoginId,
+          }
+        );
+        if (checkExistenceResponse.data.message === "login id available") {
+          generatedLoginId = nextGeneratedLoginId;
+          break;
+        }
+        index++;
+      }
+    }
+
+    setLoginId(generatedLoginId);
+    setLoginResponse(response.data.message);
 
     if (generatedLoginId?.length > 0) {
-      setMandatoryFieldsEmpty({ ...mandatoryFieldsEmpty, loginId: false });
+      setIsRequired((prev) => ({ ...prev, loginId: false }));
     }
   };
 
   const handleLoginIdChange = (event) => {
     const selectedLoginId = event.target.value;
-    setLoginId(selectedLoginId);
-    if (selectedLoginId === "") {
+    if (selectedLoginId == "") {
       setIsRequired((prev) => ({ ...prev, loginId: true }));
     } else {
       setIsRequired((prev) => ({ ...prev, loginId: false }));
     }
+    setLoginId(selectedLoginId);
   };
 
   const calculateAge = (dob) => {
@@ -809,7 +848,7 @@ const AdminPreOnboarding = () => {
             // }}
           />
           {isRequired.reportL1 && (
-            <p className="form-error">*Please select Report L1</p>
+            <p className="form-error">Please select Report L1</p>
           )}
         </div>
 
@@ -824,10 +863,10 @@ const AdminPreOnboarding = () => {
             onChange={handlePersonalEmailChange}
           />
           {!validPersonalEmail && (
-            <p className="form-error">*Please Enter valid email</p>
+            <p className="form-error">Please Enter valid email</p>
           )}
           {isRequired.personalEmail && (
-            <p className="form-error">*Please select Personal Email</p>
+            <p className="form-error">Please select Personal Email</p>
           )}
         </div>
         <div className="col-md-3">
@@ -839,14 +878,14 @@ const AdminPreOnboarding = () => {
             value={personalContact}
             required={false}
             onChange={handlePersonalContactChange}
-            onBlur={handlePersonalContactBlur}
+            // onBlur={handlePersonalContactBlur}
           />
           {(isContactTouched1 || personalContact.length >= 10) &&
             !isValidcontact1 && (
-              <p className="form-error">*Please Enter a valid Number</p>
+              <p className="form-error">Please Enter a valid Number</p>
             )}
           {isRequired.personalContact && (
-            <p className="form-error">*Please select Personal Contact</p>
+            <p className="form-error">Please select Personal Contact</p>
           )}
         </div>
         {/* <FieldContainer
@@ -915,7 +954,7 @@ const AdminPreOnboarding = () => {
               // setUserCtc(e.target.value);
               const value = e.target.value;
               // Limit input to 6 digits
-              if (/^\d{0,6}$/.test(value)) {
+              if (/^\d{0,7}$/.test(value)) {
                 setUserCtc(value);
               }
 
@@ -1003,19 +1042,22 @@ const AdminPreOnboarding = () => {
             <sup className="form-error">*</sup>
             <div className="input-group">
               <input
-                className={`form-control ${
-                  loginId
-                    ? loginResponse === "login id available"
-                      ? "login-success-border"
-                      : "login-error-border"
-                    : ""
-                }`}
+                className="form-control"
+                // className={`form-control
+                // ${
+                //   loginId
+                //     ? loginResponse === "login id available"
+                //       ? "login-success-border"
+                //       : "login-error-border"
+                //     : ""
+                // }
+                // `}
                 value={loginId}
                 disabled
                 onChange={handleLoginIdChange}
                 onBlur={() => {
                   if (loginId === "") {
-                    setIsRequired((prev) => ({
+                    return setIsRequired((prev) => ({
                       ...prev,
                       loginId: true,
                     }));
@@ -1037,9 +1079,9 @@ const AdminPreOnboarding = () => {
                 </button>
               </div>
             </div>
-            {/* {isRequired.loginId && (
-              <p className="form-error">*Please select a LoginId</p>
-            )} */}
+            {isRequired.loginId && (
+              <p className="form-error">Please select a LoginId</p>
+            )}
           </div>
         </div>
 
@@ -1065,6 +1107,9 @@ const AdminPreOnboarding = () => {
               </div>
             </div>
           </div>
+          {isRequired.password && (
+            <p className="form-error">Please select a Password</p>
+          )}
         </div>
 
         <div className="form-group col-3">
@@ -1100,7 +1145,7 @@ const AdminPreOnboarding = () => {
             }}
           />
           {isRequired.roles && (
-            <p className="form-error">*Please select a Role</p>
+            <p className="form-error">Please select a Role</p>
           )}
         </div>
         <div className="col-md-3">
@@ -1122,7 +1167,7 @@ const AdminPreOnboarding = () => {
             />
           </LocalizationProvider>
           {isRequired.joiningDate && (
-            <p className="form-error">*Please select a Joining Date</p>
+            <p className="form-error">Please select a Joining Date</p>
           )}
         </div>
         {/* <FieldContainer
@@ -1146,7 +1191,7 @@ const AdminPreOnboarding = () => {
             />
           </LocalizationProvider>
           {isRequired.dateOfBirth && (
-            <p className="form-error">*Please select a DOB</p>
+            <p className="form-error">Please select a DOB</p>
           )}
         </div>
         {/* <FieldContainer
@@ -1184,7 +1229,7 @@ const AdminPreOnboarding = () => {
             required
           />
           {isRequired.gender && (
-            <p className="form-error">*Please select a Gender</p>
+            <p className="form-error">Please select a Gender</p>
           )}
         </div>
       </FormContainer>

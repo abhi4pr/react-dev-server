@@ -56,7 +56,7 @@ const PendingApprovalUpdate = () => {
   const [nonGstCount, setNonGstCount] = useState(0);
   const [loading, setLoading] = useState(false);
   const [dateFilter, setDateFilter] = useState("");
-  // const []
+
   const token = sessionStorage.getItem("token");
   const decodedToken = jwtDecode(token);
   const loginUserId = decodedToken.id;
@@ -80,8 +80,6 @@ const PendingApprovalUpdate = () => {
       return `${day}/${month}/${year}`;
     }
   };
-
-  console.log(filterData, "filter Data fo rpending approval");
 
   const handleStatusChange = async (row, selectedStatus) => {
     console.log(row, "Row Data >>>");
@@ -117,45 +115,37 @@ const PendingApprovalUpdate = () => {
 
   function getData() {
     setLoading(true);
-    axios.post(baseUrl + "add_php_finance_data_in_node").then(() => {
-      setTimeout(() => {
-        axios.get(baseUrl + "get_all_php_finance_data_pending").then((res) => {
-          const custData = res.data.data;
-          setData(res.data.data);
-          setFilterData(res.data.data);
-          setLoading(false);
-          const uniqueCustomers = new Set(
-            custData.map((item) => item.cust_name)
-          );
-          setUniqueCustomerCount(uniqueCustomers.size);
-          const uniqueCustomerData = Array.from(uniqueCustomers).map(
-            (customerName) => {
-              return custData.find((item) => item.cust_name === customerName);
-            }
-          );
-          setUniqueCustomerData(uniqueCustomerData);
+    axios.post(baseUrl + "add_php_finance_data_in_node").then((res) => {
+      const custData = res.data.data;
+      setData(res.data.data);
+      setFilterData(res.data.data);
+      setLoading(false);
+      const uniqueCustomers = new Set(custData.map((item) => item.cust_name));
+      setUniqueCustomerCount(uniqueCustomers.size);
+      const uniqueCustomerData = Array.from(uniqueCustomers).map(
+        (customerName) => {
+          return custData.find((item) => item.cust_name === customerName);
+        }
+      );
+      setUniqueCustomerData(uniqueCustomerData);
 
-          const nonGstCount = custData.filter((gst) => gst.gst_status === "0");
-          setNonGstCount(nonGstCount.length);
+      const nonGstCount = custData.filter((gst) => gst.gst_status === "0");
+      setNonGstCount(nonGstCount.length);
 
-          const withInvoiceImage = custData.filter(
-            (item) =>
-              item.payment_screenshot && item.payment_screenshot.length > 0
-          );
-          const withoutInvoiceImage = custData.filter(
-            (item) =>
-              !item.payment_screenshot || item.payment_screenshot.length === 0
-          );
-          setInvoiceCount(withInvoiceImage.length);
-          setNonInvoiceCount(withoutInvoiceImage.length);
+      const withInvoiceImage = custData.filter(
+        (item) => item.payment_screenshot && item.payment_screenshot.length > 0
+      );
+      const withoutInvoiceImage = custData.filter(
+        (item) =>
+          !item.payment_screenshot || item.payment_screenshot.length === 0
+      );
+      setInvoiceCount(withInvoiceImage.length);
+      setNonInvoiceCount(withoutInvoiceImage.length);
 
-          const dateFilterData = filterDataBasedOnSelection(res.data.data);
-          setFilterData(dateFilterData);
-        });
-      }, 1000);
+      const dateFilterData = filterDataBasedOnSelection(res.data.data);
+      setFilterData(dateFilterData);
     });
   }
-
   function convertDateToDDMMYYYY(dateString) {
     const date = new Date(dateString);
     const day = String(date.getDate()).padStart(2, "0");
@@ -321,7 +311,6 @@ const PendingApprovalUpdate = () => {
   //   });
   //   return totalAmount;
   // };
-
   // Call the function to get the total sum of requested amount
   const requestedAmountTotal = filterData.reduce(
     (total, item) => total + parseFloat(item.payment_amount_show),
@@ -946,6 +935,7 @@ const PendingApprovalUpdate = () => {
         return apiData; // No filter applied
     }
   };
+
   return (
     <div>
       <FormContainer

@@ -556,9 +556,7 @@ export default function TDSdeduct() {
       headerName: "Aging",
       width: 150,
       renderCell: (params) => {
-        return (
-          <p> {calculateDays(params.row.request_date, new Date())} Days</p>
-        );
+        return <p> {params.row.aging} Days</p>;
       },
     },
     {
@@ -575,8 +573,8 @@ export default function TDSdeduct() {
               {item.status == 0
                 ? "Pending"
                 : item.status == 2
-                ? "Discarded"
-                : "Paid"}
+                  ? "Discarded"
+                  : "Paid"}
             </p>
           ));
         } else {
@@ -624,7 +622,7 @@ export default function TDSdeduct() {
               allowFullScreen={true}
               src={imgUrl}
               title="PDF Preview"
-              style={{ width: "80px", height: "80px" }}
+              style={{ width: "80px", height: "45px" }}
             />
             <div
               onClick={() => {
@@ -748,13 +746,11 @@ export default function TDSdeduct() {
         const isCurrentMonthGreaterThanMarch = new Date().getMonth() + 1 > 3;
         const currentYear = new Date().getFullYear();
         const startDate = new Date(
-          `04/01/${
-            isCurrentMonthGreaterThanMarch ? currentYear : currentYear - 1
+          `04/01/${isCurrentMonthGreaterThanMarch ? currentYear : currentYear - 1
           }`
         );
         const endDate = new Date(
-          `03/31/${
-            isCurrentMonthGreaterThanMarch ? currentYear + 1 : currentYear
+          `03/31/${isCurrentMonthGreaterThanMarch ? currentYear + 1 : currentYear
           }`
         );
         const dataFY = nodeData.filter((e) => {
@@ -1361,7 +1357,7 @@ export default function TDSdeduct() {
                 pageSize={5}
                 rowsPerPageOptions={[5]}
                 disableSelectionOnClick
-                checkboxSelection
+                // checkboxSelection
                 slots={{ toolbar: GridToolbar, columnMenu: CustomColumnMenu }}
                 slotProps={{
                   toolbar: {
@@ -1369,11 +1365,11 @@ export default function TDSdeduct() {
                   },
                 }}
                 getRowId={(row) => filterData.indexOf(row)}
-                onRowSelectionModelChange={(rowIds) => {
-                  handleRowSelectionModelChange(rowIds);
-                  console.log(rowIds, "IDS");
-                }}
-                rowSelectionModel={rowSelectionModel}
+                // onRowSelectionModelChange={(rowIds) => {
+                //   handleRowSelectionModelChange(rowIds);
+                //   console.log(rowIds, "IDS");
+                // }}
+                // rowSelectionModel={rowSelectionModel}
               />
               {openImageDialog && (
                 <ImageView

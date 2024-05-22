@@ -52,9 +52,8 @@ const PaymentMode = () => {
     toastAlert("Coc created");
     setIsFormSubmitted(true);
   };
-
   function getData() {
-    axios.post(baseUrl + "add_php_payment_acc_data_in_node").then((res) => {});
+    // axios.post(baseUrl + "add_php_payment_acc_data_in_node").then((res) => {});
     axios.get(baseUrl + "get_all_php_payment_acc_data").then((res) => {
       setData(res.data.data);
       setFilterData(res.data.data);

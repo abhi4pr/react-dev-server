@@ -142,7 +142,7 @@ const UserMaster = () => {
   const [department, setDepartment] = useState("");
   const [departmentdata, getDepartmentData] = useState([]);
   const [subDepartmentData, setSubDepartmentData] = useState([]);
-  const [subDepartment, setSubDeparment] = useState([]);
+  const [subDepartment, setSubDeparment] = useState("");
   const [designation, setDesignation] = useState("");
   const [designationData, setDesignationData] = useState([]);
   const [reportL1, setReportL1] = useState("");
@@ -270,6 +270,7 @@ const UserMaster = () => {
     email: false,
     banktype: false,
     jobType: false,
+    dateOfBirth: false,
   });
   const [jobTypeData, setJobTypeData] = useState([]);
 
@@ -514,152 +515,103 @@ const UserMaster = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (username == "") {
-      setMandatoryFieldsEmpty((perv) => ({ ...perv, fullName: true }));
+
+    const errors = {};
+
+    if (!username) {
+      errors.fullName = true;
     }
-    if (personalEmail == "") {
-      setMandatoryFieldsEmpty((perv) => ({ ...perv, personalEmail: true }));
+    if (!personalEmail) {
+      errors.personalEmail = true;
     }
-    if (personalContact == "") {
-      setMandatoryFieldsEmpty((prev) => ({
-        ...prev,
-        personalContact: true,
-      }));
+    if (!personalContact) {
+      errors.personalContact = true;
     }
-    if (alternateContact == "") {
-      setMandatoryFieldsEmpty((prev) => ({
-        ...prev,
-        alternateContact: true,
-      }));
+    if (!alternateContact) {
+      errors.alternateContact = true;
     }
-    if (gender == "") {
-      setMandatoryFieldsEmpty((prev) => ({
-        ...prev,
-        gender: true,
-      }));
+    if (!gender) {
+      errors.gender = true;
     }
-    if (dateOfBirth == "") {
-      setMandatoryFieldsEmpty((prev) => ({
-        ...prev,
-        DOB: true,
-      }));
+    if (!dateOfBirth) {
+      errors.DOB = true;
     }
-    if (maritialStatus == "") {
-      setMandatoryFieldsEmpty((prev) => ({
-        ...prev,
-        maritialStatus: true,
-      }));
+    if (!maritialStatus) {
+      errors.maritialStatus = true;
     }
-    if (jobType == "") {
-      setMandatoryFieldsEmpty((prev) => ({
-        ...prev,
-        jobType: true,
-      }));
+    if (!jobType) {
+      errors.jobType = true;
     }
-    if (department == "") {
-      setMandatoryFieldsEmpty((prev) => ({
-        ...prev,
-        department: true,
-      }));
+    if (!department) {
+      errors.department = true;
     }
-    if (subDepartment == "") {
-      setMandatoryFieldsEmpty((prev) => ({
-        ...prev,
-        subDepartment: true,
-      }));
+    if (!subDepartment) {
+      errors.subDepartment = true;
     }
-    if (designation == "") {
-      setMandatoryFieldsEmpty((prev) => ({
-        ...prev,
-        designation: true,
-      }));
-      // alert('designation  ')
+    if (!designation) {
+      errors.designation = true;
     }
-    if (reportL1 == "") {
-      setMandatoryFieldsEmpty((prev) => ({
-        ...prev,
-        reportL1: true,
-      }));
+    if (!reportL1) {
+      errors.reportL1 = true;
     }
-    if (loginId == "") {
-      setMandatoryFieldsEmpty((prev) => ({
-        ...prev,
-        loginId: true,
-      }));
+    if (!loginId) {
+      errors.loginId = true;
     }
-    if (password == "") {
-      setMandatoryFieldsEmpty((prev) => ({
-        ...prev,
-        password: true,
-      }));
+    if (!password) {
+      errors.password = true;
     }
-    if (joiningDate == "") {
-      setMandatoryFieldsEmpty((prev) => ({
-        ...prev,
-        joiningDate: true,
-      }));
+    if (!joiningDate) {
+      errors.joiningDate = true;
     }
-    if (dobValidate < 15 || dobValidate > 100) {
-      setDobError("Age should be greater than 15 and less than 100");
+    if (!dateOfBirth) {
+      errors.dateOfBirth = true;
     }
 
-    if (!jobType) {
-      // console.log("job type");
+    // Check for additional mandatory fields
+    const mandatoryFields = [
+      jobType,
+      department,
+      subDepartment,
+      designation,
+      roles,
+      reportL1,
+      personalEmail,
+      personalContact,
+      alternateContact,
+      loginId,
+      password,
+      gender,
+      nationality,
+      dateOfBirth,
+      maritialStatus,
+      joiningDate,
+      status,
+      username,
+    ];
+
+    const isMandatoryFieldEmpty = mandatoryFields.some((field) => !field);
+
+    if (isMandatoryFieldEmpty) {
       toastError("Fill the Mandatory fields");
-    } else if (!department || department == "") {
-      toastError("Fill the Mandatory fields");
-    } else if (
-      !subDepartment ||
-      subDepartment == "" ||
-      subDepartment.length === 0
-    ) {
-      toastError("Fill the Mandatory fields");
-    } else if (!designation || designation == "") {
-      toastError("Fill the Mandatory fields");
-    } else if (!roles || roles == "") {
-      toastError("Fill the Mandatory fields");
-    } else if (!reportL1 || reportL1 == "") {
-      return toastError("Fill the Mandatory fields");
-    } else if (!personalEmail || personalEmail == "") {
-      toastError("Fill the Mandatory fields");
-    } else if (
-      !personalContact ||
-      personalContact == "" ||
-      personalContact.length !== 10
-    ) {
-      toastError("Personal Contact is Required and  must be 10 digits");
-    } else if (
-      !alternateContact ||
-      alternateContact == "" ||
-      alternateContact.length !== 10
-    ) {
-      toastError("Alternate Contact is Required and  must be 10 digits");
-    } else if (!loginId || loginId == "") {
-      toastError("Fill the Mandatory fields");
-    } else if (!password || password == "") {
-      toastError("Fill the Mandatory fields");
-    } else if (!gender || gender == "") {
-      toastError("Fill the Mandatory fields");
-    } else if (!nationality || nationality == "") {
-      toastError("Fill the Mandatory fields");
-    } else if (!dateOfBirth || dateOfBirth == "") {
-      toastError("Fill the Mandatory fields");
-    } else if (
-      !maritialStatus ||
-      maritialStatus == "" ||
-      maritialStatus.length == 0
-    ) {
-      toastError("Fill the Mandatory fields");
-    } else if (!joiningDate || joiningDate == "") {
-      toastError("Fill the Mandatory fields");
-    } else if (!status || status == "") {
-      toastError("Fill the Mandatory fields");
-    } else if (!username || username == "") {
-      toastError("Fill the Mandatory fields");
+      setMandatoryFieldsEmpty(errors);
+      return; // Prevent form submission
     }
-    // if (!joiningDate || joiningDate == "") {
-    //   toastError("Fill the Mandatory fields");
-    // }
+
+    if (personalContact.length !== 10) {
+      toastError("Fill the Mandatory fields");
+      return; // Prevent form submission
+    }
+
+    if (alternateContact.length !== 10) {
+      toastError("Fill the Mandatory fields");
+      return; // Prevent form submission
+    }
+
+    setMandatoryFieldsEmpty(errors); // Update state with errors
+
+    if (Object.keys(errors).length > 0) {
+      return; // Prevent form submission
+    }
 
     const formData = new FormData();
     formData.append("created_by", loginUserId);
@@ -693,159 +645,126 @@ const UserMaster = () => {
     formData.append("user_login_password", password);
     formData.append("user_status", status);
     formData.append("sitting_id", sitting);
-
-    // formData.append(
-    //   "room_id",
-    //   jobType === "WFH" || jobType === "WFHD" ? "1" : roomId.room_id
-    // );
     formData.append("room_id", 1);
     formData.append("joining_date", joiningDate);
     formData.append("user_credit_limit", creditLimit);
     //offcial info payload End
 
-    if (personalEmail && personalContact) {
-      try {
-        const isLoginIdExists = usersData.some(
-          (user) =>
-            user.user_login_id.toLocaleLowerCase() ===
-            loginId.toLocaleLowerCase()
-        );
-        const contactNumberExists = usersData.some(
-          (user) => user.user_contact_no == personalContact
-        );
+    try {
+      const isLoginIdExists = usersData.some(
+        (user) =>
+          user.user_login_id?.toLocaleLowerCase() ===
+          loginId?.toLocaleLowerCase()
+      );
+      const contactNumberExists = usersData.some(
+        (user) => user.user_contact_no == personalContact
+      );
+      const emailIdExists = usersData.some(
+        (user) =>
+          user.user_email_id?.toLocaleLowerCase() ==
+          personalEmail?.toLocaleLowerCase()
+      );
 
-        const emailIdExists = usersData.some(
-          (user) =>
-            user.user_email_id?.toLocaleLowerCase() ==
-            personalEmail?.toLocaleLowerCase()
-        );
-
-        if (isLoginIdExists) {
-          alert("this login ID already exists");
-        } else if (contactNumberExists) {
-          alert("Personal Contact Already Exists");
-        } else if (emailIdExists) {
-          alert("Personal Email Already Exists");
-        } else {
-          setIsLoading(true);
-          await axios
-            .post(baseUrl + "add_user_for_general_information", formData, {
-              headers: {
-                "Content-Type": "multipart/form-data",
-              },
-            })
-
-            .then((res) => {
-              if (res.status == 200) {
-                const userResponseID = res.data.simv.user_id;
-                setUserResID(userResponseID);
-                setIsFormSubmitted(true);
-                // toastAlert(res.data.simv.emp_id + " " + "Employee Registerd");
-                setIsLoading(false);
-              } else {
-                toastError("Sorry User is Not Created, Please try again later");
-                setIsLoading(false);
-              }
-              setIsGeneralSubmitted(true);
-              setActiveAccordionIndex((prev) => prev + 1);
-            })
-            .catch((err) => {
-              toastError(err.message);
-              setIsLoading(false);
-            });
-
-          axios
-            .post(baseUrl + "add_send_user_mail", {
-              email: personalEmail,
-              subject: "User Registration",
-              text: "A new user has been registered.",
-              attachment: selectedImage,
-              login_id: loginId,
-              name: username,
-              password: password,
-              status: "onboarded",
-            })
-            .then((res) => {
-              // console.log("Email sent successfully:", res.data);
-            })
-            .catch((error) => {
-              // console.log("Failed to send email:", error);
-            });
-
-          if (reportL1 !== "") {
-            axios
-              .post(baseUrl + "add_send_user_mail", {
-                email: personalEmail,
-                subject: "User Registration",
-                text: "A new user has been registered.",
-                attachment: selectedImage,
-                login_id: loginId,
-                name: username,
-                password: password,
-                status: "reportTo",
-                name2: reportL1Email,
-              })
-              .then((res) => {
-                // console.log("Email sent successfully:", res.data);
-              })
-              .catch((error) => {
-                // console.log("Failed to send email:", error);
-              });
-
-            whatsappApi.callWhatsAPI(
-              "Extend Date by User",
-              JSON.stringify(personalContact),
-              username,
-              ["You have assinge Report L1", "ok"]
-            );
+      if (isLoginIdExists) {
+        alert("this login ID already exists");
+      } else if (contactNumberExists) {
+        alert("Personal Contact Already Exists");
+      } else if (emailIdExists) {
+        alert("Personal Email Already Exists");
+      } else {
+        setIsLoading(true);
+        const res = await axios.post(
+          baseUrl + "add_user_for_general_information",
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
           }
+        );
+
+        if (res.status === 200) {
+          const userResponseID = res.data.simv.user_id;
+          setUserResID(userResponseID);
+          setIsFormSubmitted(true);
+          setIsLoading(false);
+          setIsGeneralSubmitted(true);
+          setActiveAccordionIndex((prev) => prev + 1);
+        } else {
+          toastError("Sorry User is Not Created, Please try again later");
+          setIsLoading(false);
+        }
+
+        await axios.post(baseUrl + "add_send_user_mail", {
+          email: personalEmail,
+          subject: "User Registration",
+          text: "A new user has been registered.",
+          attachment: selectedImage,
+          login_id: loginId,
+          name: username,
+          password: password,
+          status: "onboarded",
+        });
+
+        if (reportL1) {
+          await axios.post(baseUrl + "add_send_user_mail", {
+            email: personalEmail,
+            subject: "User Registration",
+            text: "A new user has been registered.",
+            attachment: selectedImage,
+            login_id: loginId,
+            name: username,
+            password: password,
+            status: "reportTo",
+            name2: reportL1Email,
+          });
 
           whatsappApi.callWhatsAPI(
-            "userMng",
+            "Extend Date by User",
             JSON.stringify(personalContact),
             username,
-            [username, loginId, password]
+            ["You have assigned Report L1", "ok"]
           );
-          setFamilyDetails([initialFamilyDetailsGroup]);
-          setEducationDetails([initialEducationDetailsGroup]);
         }
-      } catch (error) {
-        console.error("Failed to submit form", error);
+
+        whatsappApi.callWhatsAPI(
+          "userMng",
+          JSON.stringify(personalContact),
+          username,
+          [username, loginId, password]
+        );
+        setFamilyDetails([initialFamilyDetailsGroup]);
+        setEducationDetails([initialEducationDetailsGroup]);
       }
-    } else {
-      if (contact.length > 10) {
-        if (isValidcontact == false)
-          toastError("Enter Phone Number in Proper Format");
-      } else if (validEmail != true) {
-        alert("Enter Valid Email");
-      }
+    } catch (error) {
+      console.error("Failed to submit form", error);
     }
   };
 
   const handleSubmitOtherDetails = async (e) => {
     e.preventDefault();
-    if (currentAddress == "") {
-      setMandatoryFieldsEmpty((prev) => ({
-        ...prev,
-        currentAddress: true,
-      }));
-    }
-    if (currentPincode == "") {
-      setMandatoryFieldsEmpty((prev) => ({
-        ...prev,
-        currentPincode: true,
-      }));
-    }
+    // if (currentAddress == "") {
+    //   setMandatoryFieldsEmpty((prev) => ({
+    //     ...prev,
+    //     currentAddress: true,
+    //   }));
+    // }
+    // if (currentPincode == "") {
+    //   setMandatoryFieldsEmpty((prev) => ({
+    //     ...prev,
+    //     currentPincode: true,
+    //   }));
+    // }
 
-    if (!currentAddress || currentAddress == "") {
-      return toastError("Fill the Mandatory fields");
-    } else if (!currentCity || currentCity == "") {
-      return toastError("Current city is required");
-    } else if (!currentState || currentState == "") {
-      return toastError("Current state is required");
-    } else if (!currentPincode || currentPincode == "") {
-      return toastError("Fill the Mandatory fields");
-    }
+    // if (!currentAddress || currentAddress == "") {
+    //   return toastError("Fill the Mandatory fields");
+    // } else if (!currentCity || currentCity == "") {
+    //   return toastError("Current city is required");
+    // } else if (!currentState || currentState == "") {
+    //   return toastError("Current state is required");
+    // } else if (!currentPincode || currentPincode == "") {
+    //   return toastError("Fill the Mandatory fields");
+    // }
     try {
       const response = await axios.put(
         baseUrl + `update_user_for_other_details/${userResID}`,
@@ -1066,6 +985,10 @@ const UserMaster = () => {
         });
       }
     }
+    setisContactTouched1(true);
+    if (newContact.length < 10) {
+      setValidContact1(false);
+    }
   }
 
   function handleAlternateContactChange(event) {
@@ -1089,6 +1012,10 @@ const UserMaster = () => {
           alternateContact: false,
         });
       }
+    }
+    setisAlternateTouched1(true);
+    if (newContact.length < 10) {
+      setValidContact3(false);
     }
   }
 
@@ -1171,6 +1098,46 @@ const UserMaster = () => {
     return correctedUserName;
   }
 
+  // const generateLoginId = async () => {
+  //   const userName = username.trim().toLowerCase().split(" ");
+
+  //   // Extracting last 4 and 6 digits from personal contact
+  //   const personalContactLast4 = personalContact.slice(-4);
+  //   const personalContactLast6 = personalContact.slice(-6);
+
+  //   // Define login ID options
+  //   let loginIdOptions = [
+  //     userName[0], // lalit
+  //     trimeUserName(username),
+  //     // userName.join("."), // lalit.gour
+  //     userName[0] + personalContactLast4, // lalit5413
+  //     userName[0] + personalContactLast6, // lalit815413
+  //   ];
+
+  //   if (userName.length > 1) {
+  //     loginIdOptions.push(
+  //       userName[0].charAt(0) + userName[1], // lgour
+  //       userName.join("") // lalitgour
+  //     );
+  //   }
+
+  //   const nextIndex = (lastIndexUsed + 1) % loginIdOptions.length;
+  //   setLastIndexUsed(nextIndex);
+  //   const generatedLoginId = loginIdOptions[nextIndex];
+  //   setLoginId(generatedLoginId);
+
+  //   await axios
+  //     .post(baseUrl + `check_login_exist`, {
+  //       user_login_id: loginId,
+  //     })
+  //     .then((res) => {
+  //       setLoginResponse(res.data.message);
+  //     });
+
+  //   if (generatedLoginId?.length > 0) {
+  //     setMandatoryFieldsEmpty({ ...mandatoryFieldsEmpty, loginId: false });
+  //   }
+  // };
   const generateLoginId = async () => {
     const userName = username.trim().toLowerCase().split(" ");
 
@@ -1181,8 +1148,7 @@ const UserMaster = () => {
     // Define login ID options
     let loginIdOptions = [
       userName[0], // lalit
-      trimeUserName(username),
-      // userName.join("."), // lalit.gour
+      userName.join("."), // lalit.gour
       userName[0] + personalContactLast4, // lalit5413
       userName[0] + personalContactLast6, // lalit815413
     ];
@@ -1196,19 +1162,37 @@ const UserMaster = () => {
 
     const nextIndex = (lastIndexUsed + 1) % loginIdOptions.length;
     setLastIndexUsed(nextIndex);
-    const generatedLoginId = loginIdOptions[nextIndex];
-    setLoginId(generatedLoginId);
+    let generatedLoginId = loginIdOptions[nextIndex];
 
-    await axios
-      .post(baseUrl + `check_login_exist`, {
-        user_login_id: loginId,
-      })
-      .then((res) => {
-        setLoginResponse(res.data.message);
-      });
+    // Check if the generated login ID already exists
+    const response = await axios.post(baseUrl + `check_login_exist`, {
+      user_login_id: generatedLoginId,
+    });
+
+    if (response.data.message === "login id not available") {
+      // If login ID already exists, find the next available one
+      let index = 1;
+      while (true) {
+        const nextGeneratedLoginId = `${generatedLoginId}_${index}`;
+        const checkExistenceResponse = await axios.post(
+          baseUrl + `check_login_exist`,
+          {
+            user_login_id: nextGeneratedLoginId,
+          }
+        );
+        if (checkExistenceResponse.data.message === "login id available") {
+          generatedLoginId = nextGeneratedLoginId;
+          break;
+        }
+        index++;
+      }
+    }
+
+    setLoginId(generatedLoginId);
+    setLoginResponse(response.data.message);
 
     if (generatedLoginId?.length > 0) {
-      setMandatoryFieldsEmpty({ ...mandatoryFieldsEmpty, loginId: false });
+      setMandatoryFieldsEmpty((prev) => ({ ...prev, loginId: false }));
     }
   };
 
@@ -1335,19 +1319,15 @@ const UserMaster = () => {
     const age = calculateAge(selectedDate);
     const ageDays = calculateAgeInDays(selectedDate);
 
-    if (validateAge < 15) {
-      setDobError("Age must be at least 15 years.");
+    if (validateAge < 15 || validateAge > 100) {
+      setDobError("Age can't less than 15 or greater than 100 years.");
       setDateOfBirth("");
+    } else {
+      setDobError("");
     }
-    if (validateAge > 100) {
-      setDobError("Age can not more than 100 years");
-      setDateOfBirth("");
-    }
-    // else {
     setDateOfBirth(selectedDate);
     setAge(age);
     setAgeCalculate(ageDays);
-    // }
   };
 
   function addMore() {
@@ -1380,8 +1360,7 @@ const UserMaster = () => {
 
     if (name === "Contact") {
       if (!/^(\+91[ \-\s]?)?[0]?(91)?[6789]\d{9}$/.test(value)) {
-        errors[`${name}-${index}`] =
-          "Invalid contact number. Please Enter a valid phone number.";
+        errors[`${name}-${index}`] = "Please Enter a valid phone number.";
       } else {
         delete errors[`${name}-${index}`];
       }
@@ -1409,14 +1388,33 @@ const UserMaster = () => {
     ]);
   };
 
+  // const handleEducationDetailsChange = (index, e) => {
+  //   const updatedEducationDetails = educationDetails.map((detail, i) => {
+  //     if (i === index) {
+  //       return { ...detail, [e.target.name]: e.target.value };
+  //     }
+  //     return detail;
+  //   });
+  //   setEducationDetails(updatedEducationDetails);
+  // };
   const handleEducationDetailsChange = (index, e) => {
-    const updatedEducationDetails = educationDetails.map((detail, i) => {
-      if (i === index) {
-        return { ...detail, [e.target.name]: e.target.value };
+    const { name, value } = e.target;
+    const updatedDetails = [...educationDetails];
+
+    if (name === "Percentage") {
+      // Ensure percentage is a number and between 0 and 100
+      let percentageValue = Number(value);
+      if (percentageValue > 100) {
+        percentageValue = 100;
+      } else if (percentageValue < 0) {
+        percentageValue = 0;
       }
-      return detail;
-    });
-    setEducationDetails(updatedEducationDetails);
+      updatedDetails[index][name] = percentageValue.toString(); // Update percentage
+    } else {
+      updatedDetails[index][name] = value; // Update other fields
+    }
+
+    setEducationDetails(updatedDetails);
   };
 
   const handleRemoveEducationDetails = (index) => {
@@ -1551,14 +1549,14 @@ const UserMaster = () => {
     }
   };
 
-    // to disable admin and super admin in role dropdown start
-    const modifiedRoleData = roledata.map((option) => ({
-      value: option.role_id,
-      label: option.Role_name,
-      isDisabled: ROLEID === 1 && (option.role_id === 1 || option.role_id === 6),
-    }));
-    const selectedRole = roledata.find((role) => role.role_id === roles);
-    // to disable admin and super admin in role dropdown end
+  // to disable admin and super admin in role dropdown start
+  const modifiedRoleData = roledata.map((option) => ({
+    value: option.role_id,
+    label: option.Role_name,
+    isDisabled: ROLEID === 1 && (option.role_id === 1 || option.role_id === 6),
+  }));
+  const selectedRole = roledata.find((role) => role.role_id === roles);
+  // to disable admin and super admin in role dropdown end
 
   const genralFields = (
     <>
@@ -1625,8 +1623,7 @@ const UserMaster = () => {
               // onBlur={(e) => handleContentBlur(e, "personalContact")}
             />
             {(isContactTouched1 || personalContact.length >= 10) &&
-              !isValidcontact1 &&
-              mandatoryFieldsEmpty.personalContact && (
+              !isValidcontact1 && (
                 <p className="form-error">
                   Please Enter a valid Contact Number
                 </p>
@@ -1679,8 +1676,7 @@ const UserMaster = () => {
               // onBlur={(e) => handleAlternateBlur(e, "alternateContact")}
             />
             {(isAlternateTouched1 || alternateContact.length >= 10) &&
-              !isValidcontact3 &&
-              !mandatoryFieldsEmpty.alternateContact && (
+              !isValidcontact3 && (
                 <p className="form-error">Please Enter a valid Number</p>
               )}
             {mandatoryFieldsEmpty.alternateContact && (
@@ -1726,38 +1722,7 @@ const UserMaster = () => {
             <label className="form-label">
               DOB <sup className="form-error">*</sup>
             </label>
-            {/* <div className="pack" style={{ position: "relative" }}>
-          <input
-            label="DOB"
-            type="date"
-            className="form-control"
-            style={{ width: "100%" }}
-            max={today}
-            value={dateOfBirth}
-            onChange={handleDateChange}
-          />
-          <div
-            className="custom-btn-2"
-            style={{
-              pointereEvents: "none",
-              position: "absolute",
-              bottom: "7px",
-              right: "5px",
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              fontSize: "16px",
-              color: "var(--medium)",
-              height: "34px",
-              width: "42px",
-              borderRadius: "0  12px 12px 0",
-              borderLeft: "1px solid var(--border)",
-              backgroundColor: "var(--white)",
-            }}
-          >
-            <i class="bi bi-calendar-week"></i>
-          </div>
-        </div> */}
+
             <LocalizationProvider dateAdapter={AdapterDayjs}>
               <DatePicker
                 value={dateOfBirth}
@@ -1766,7 +1731,10 @@ const UserMaster = () => {
                 renderInput={(params) => <TextField {...params} />}
               />
             </LocalizationProvider>
-            {<p style={{ color: "red !important" }}>{dobError}</p>}
+            {mandatoryFieldsEmpty?.fullName && (
+              <p className="form-error">Please Enter DOB</p>
+            )}
+            {<p className="form-error">{dobError}</p>}
           </div>
           {dateOfBirth !== "" && (
             <FieldContainer fieldGrid={3} label="Age" value={age} />
@@ -1789,19 +1757,6 @@ const UserMaster = () => {
               onChange={(e) => {
                 setNationality(e.value);
               }}
-              // onBlur={() => {
-              //   if (nationality === "" || nationality === null) {
-              //     setMandatoryFieldsEmpty((prevState) => ({
-              //       ...prevState,
-              //       nationality: true,
-              //     }));
-              //   } else {
-              //     setMandatoryFieldsEmpty({
-              //       ...mandatoryFieldsEmpty,
-              //       nationality: false,
-              //     });
-              //   }
-              // }}
               required
             />
             {mandatoryFieldsEmpty.nationality && (
@@ -1809,33 +1764,6 @@ const UserMaster = () => {
             )}
           </div>
 
-          {/* <FieldContainer
-        label="Nationality"
-        astric={true}
-        fieldGrid={3}
-        value={nationality}
-        onChange={(e) => setNationality(e.target.value)}
-        onBlur={() => {
-          if (
-            nationality === "" ||
-            nationality == null ||
-            nationality.length == 0
-          ) {
-            setMandatoryFieldsEmpty((prevState) => ({
-              ...prevState,
-              nationality: true,
-            }));
-          } else {
-            setMandatoryFieldsEmpty({
-              ...mandatoryFieldsEmpty,
-              nationality: false,
-            });
-          }
-        }}
-      />
-      {mandatoryFieldsEmpty.nationality && (
-        <p  className="form-error">Please Enter Nationality</p>
-      )} */}
           <div className="form-group col-3">
             <label className="form-label">
               Marital Status <sup className="form-error">*</sup>
@@ -1883,19 +1811,9 @@ const UserMaster = () => {
             />
           )}
           {maritialStatus == "Married" && (
-            // <FieldContainer
-            //   type="date"
-            //   fieldGrid={3}
-            //   label="Date Of Marraige"
-            //   value={dateOfMarraige}
-            //   onChange={(e) => setDateOfMarraige(e.target.value)}
-            //   max={today}
-            //   required={false}
-            // />
+            //
             <div className="col-3">
-              <label className="form-label">
-                Date Of Marraige <sup className="form-error">*</sup>
-              </label>
+              <label className="form-label">Date Of Marraige</label>
               <LocalizationProvider dateAdapter={AdapterDayjs}>
                 <DatePicker
                   value={dateOfMarraige}
@@ -2015,11 +1933,7 @@ const UserMaster = () => {
                 setSubDeparment(e.value);
 
                 // onBlur functionality
-                if (
-                  e.value === "" ||
-                  e.value === null ||
-                  e.value.length === 0
-                ) {
+                if (e.value === "" || e.value === null) {
                   setMandatoryFieldsEmpty((prevState) => ({
                     ...prevState,
                     subDepartment: true,
@@ -2167,7 +2081,14 @@ const UserMaster = () => {
             </label>
             <Select
               options={modifiedRoleData}
-              value={selectedRole ? { value: selectedRole.role_id, label: selectedRole.Role_name } : null}
+              value={
+                selectedRole
+                  ? {
+                      value: selectedRole.role_id,
+                      label: selectedRole.Role_name,
+                    }
+                  : null
+              }
               onChange={(e) => {
                 setRoles(e.value);
               }}
@@ -2229,13 +2150,14 @@ const UserMaster = () => {
               </label>
               <div className="input-group">
                 <input
-                  className={`form-control ${
-                    loginId
-                      ? loginResponse === "login id available"
-                        ? "login-success-border"
-                        : "login-error-border"
-                      : ""
-                  }`}
+                  className="form-control"
+                  // className={`form-control ${
+                  //   loginId
+                  //     ? loginResponse === "login id available"
+                  //       ? "login-success-border"
+                  //       : "login-error-border"
+                  //     : ""
+                  // }`}
                   value={loginId}
                   disabled
                   onChange={handleLoginIdChange}
@@ -2564,7 +2486,7 @@ const UserMaster = () => {
             <FieldContainer
               label="Current Address"
               fieldGrid={12}
-              astric={true}
+              // astric={true}
               value={currentAddress}
               onChange={(e) => {
                 setCurrentAddress(e.target.value);
@@ -2584,9 +2506,9 @@ const UserMaster = () => {
               }}
               required={false}
             />
-            {mandatoryFieldsEmpty.currentAddress && (
+            {/* {mandatoryFieldsEmpty.currentAddress && (
               <p className="form-error">Please Enter Address</p>
-            )}
+            )} */}
             {/* <div className="form-group col-4">
           <label className="form-label">
             Current City <sup className="form-error">*</sup>
@@ -2610,10 +2532,7 @@ const UserMaster = () => {
           />
         </div> */}
             <div className="form-group col-4 mt-3">
-              <label htmlFor="">
-                {" "}
-                State <sup style={{ color: "red" }}>*</sup>
-              </label>
+              <label htmlFor=""> State</label>
               <IndianStatesMui
                 selectedState={currentState}
                 onChange={(option) => setcurrentState(option ? option : null)}
@@ -2621,10 +2540,7 @@ const UserMaster = () => {
             </div>
 
             <div className="form-group col-4 mt-3">
-              <label htmlFor="">
-                {" "}
-                City <sup style={{ color: "red" }}>*</sup>
-              </label>
+              <label htmlFor=""> City</label>
 
               <IndianCitiesMui
                 selectedState={currentState}
@@ -2632,11 +2548,11 @@ const UserMaster = () => {
                 onChange={(option) => setcurrentCity(option ? option : null)}
               />
             </div>
-            <div className="">
+            <div className="col-3">
               <FieldContainer
                 label="Pincode"
                 type="number"
-                astric={true}
+                // astric={true}
                 fieldGrid={3}
                 maxLength={6}
                 // placeholder="123456"
@@ -2664,9 +2580,9 @@ const UserMaster = () => {
                 }}
                 required={false}
               />
-              {mandatoryFieldsEmpty.currentPincode && (
+              {/* {mandatoryFieldsEmpty.currentPincode && (
                 <p className="form-error">Please Enter Pincode</p>
-              )}
+              )} */}
             </div>
             {/*  Parmanent Address here------------ */}
             <div className="">
@@ -2963,38 +2879,42 @@ const UserMaster = () => {
               <p className="form-error">Please Enter Bank Type</p>
             )}
           </div>
+          <div className="col-3">
+            <FieldContainer
+              label="Bank Account Number"
+              astric={true}
+              fieldGrid={3}
+              value={bankAccountNumber}
+              maxLength={17} // Adding maxLength prop
+              onChange={(e) => {
+                const inputValue = e.target.value;
+                const onlyNumbers = /^[0-9]+$/;
 
-          <FieldContainer
-            label="Bank Account Number"
-            astric={true}
-            fieldGrid={3}
-            value={bankAccountNumber}
-            onChange={(e) => {
-              const inputValue = e.target.value;
-              const onlyNumbers = /^[0-9]+$/;
+                // Check if the input is numeric and within the max length
+                if (onlyNumbers.test(inputValue) && inputValue.length <= 17) {
+                  setBankAccountNumber(inputValue);
+                } else if (inputValue === "") {
+                  setBankAccountNumber(""); // Clear the input value
+                }
 
-              if (onlyNumbers.test(inputValue)) {
-                setBankAccountNumber(inputValue);
-              } else {
-                setBankAccountNumber(""); // Clearing the input value
-              }
-              // onBlur functionality
-              if (inputValue === "") {
-                setMandatoryFieldsEmpty((prevState) => ({
-                  ...prevState,
-                  bankAccountNumber: true,
-                }));
-              } else {
-                setMandatoryFieldsEmpty({
-                  ...mandatoryFieldsEmpty,
-                  bankAccountNumber: false,
-                });
-              }
-            }}
-          />
-          {mandatoryFieldsEmpty.bankAccountNumber && (
-            <p className="form-error">Please Enter Bank Account Number</p>
-          )}
+                // onBlur functionality
+                if (inputValue === "") {
+                  setMandatoryFieldsEmpty((prevState) => ({
+                    ...prevState,
+                    bankAccountNumber: true,
+                  }));
+                } else {
+                  setMandatoryFieldsEmpty({
+                    ...mandatoryFieldsEmpty,
+                    bankAccountNumber: false,
+                  });
+                }
+              }}
+            />
+            {mandatoryFieldsEmpty.bankAccountNumber && (
+              <p className="form-error">Please Enter Bank Account Number</p>
+            )}
+          </div>
           <FieldContainer
             astric={true}
             label="IFSC"
@@ -3021,7 +2941,7 @@ const UserMaster = () => {
           {mandatoryFieldsEmpty.IFSC && (
             <p className="form-error">Please Enter IFSC</p>
           )}
-          <FieldContainer
+          {/* <FieldContainer
             label="Beneficiary"
             value={beneficiary}
             onChange={(e) => setBeneficiary(e.target.value)}
@@ -3036,7 +2956,7 @@ const UserMaster = () => {
             }}
             fieldGrid={6}
             required={true}
-          />
+          /> */}
 
           <div style={{ display: "flex", justifyContent: "flex-end" }}>
             <button
@@ -3160,7 +3080,7 @@ const UserMaster = () => {
 
                     case "Contact":
                       return (
-                        <>
+                        <div className="col-3">
                           <FieldContainer
                             key={key}
                             fieldGrid={3}
@@ -3178,7 +3098,7 @@ const UserMaster = () => {
                               {familyValidationErrors[`Contact-${index}`]}
                             </span>
                           )}
-                        </>
+                        </div>
                       );
 
                     // case "Income":
@@ -3203,7 +3123,7 @@ const UserMaster = () => {
                           name={key}
                           label={key}
                           placeholder={key}
-                          value={FormatName (detail[key])}
+                          value={FormatName(detail[key])}
                           onChange={(e) => handleFamilyDetailsChange(index, e)}
                         />
                       );
@@ -3351,26 +3271,28 @@ const UserMaster = () => {
               </div>
               {accordionButtonstitle[index]}
             </button>
-            <svg
-              className="arrow"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill=""
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <g id="Component 2">
-                <path
-                  id="Vector (Stroke)"
-                  fill-rule="evenodd"
-                  clip-rule="evenodd"
-                  d="M6.51171 4.43057C6.8262 4.161 7.29968 4.19743 7.56924 4.51192L13.5692 11.5119C13.81 11.7928 13.81 12.2072 13.5692 12.4881L7.56924 19.4881C7.29968 19.8026 6.8262 19.839 6.51171 19.5695C6.19721 19.2999 6.16079 18.8264 6.43036 18.5119L12.012 12L6.43036 5.48811C6.16079 5.17361 6.19721 4.70014 6.51171 4.43057ZM10.5119 4.43068C10.8264 4.16111 11.2999 4.19753 11.5694 4.51202L17.5694 11.512C17.8102 11.7929 17.8102 12.2073 17.5694 12.4882L11.5694 19.4882C11.2999 19.8027 10.8264 19.8391 10.5119 19.5696C10.1974 19.3 10.161 18.8265 10.4306 18.512L16.0122 12.0001L10.4306 5.48821C10.161 5.17372 10.1974 4.70024 10.5119 4.43068Z"
-                  fill={`${
-                    activeAccordionIndex === index ? "var(--primary)" : ""
-                  }`}
-                />
-              </g>
-            </svg>
+            {index !== accordionButtons.length - 1 && (
+              <svg
+                className="arrow"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill=""
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <g id="Component 2">
+                  <path
+                    id="Vector (Stroke)"
+                    fill-rule="evenodd"
+                    clip-rule="evenodd"
+                    d="M6.51171 4.43057C6.8262 4.161 7.29968 4.19743 7.56924 4.51192L13.5692 11.5119C13.81 11.7928 13.81 12.2072 13.5692 12.4881L7.56924 19.4881C7.29968 19.8026 6.8262 19.839 6.51171 19.5695C6.19721 19.2999 6.16079 18.8264 6.43036 18.5119L12.012 12L6.43036 5.48811C6.16079 5.17361 6.19721 4.70014 6.51171 4.43057ZM10.5119 4.43068C10.8264 4.16111 11.2999 4.19753 11.5694 4.51202L17.5694 11.512C17.8102 11.7929 17.8102 12.2073 17.5694 12.4882L11.5694 19.4882C11.2999 19.8027 10.8264 19.8391 10.5119 19.5696C10.1974 19.3 10.161 18.8265 10.4306 18.512L16.0122 12.0001L10.4306 5.48821C10.161 5.17372 10.1974 4.70024 10.5119 4.43068Z"
+                    fill={`${
+                      activeAccordionIndex === index ? "var(--primary)" : ""
+                    }`}
+                  />
+                </g>
+              </svg>
+            )}
           </div>
         ))}
       </div>

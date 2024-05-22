@@ -150,18 +150,6 @@ img {
   color: var(--text-white);
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
 .btn_secondary {
   border-color: var(--secondaryBoard);
   background-color: var(--secondaryBoard);
@@ -1453,6 +1441,29 @@ img {
   color: #fffbf2;
 }
 
+.slick-active.slick-current .sidebar_itembox {
+  background-color: var(--secondaryBoard);
+  border-color: transparent;
+}
+
+.slick-active.slick-current .sidebar_itembox::after {
+  transition: all .2s ease-in-out;
+  opacity: 1;
+  background: var(--secondaryBoard);
+}
+
+.slick-active.slick-current .sidebar_itembox h2,
+.slick-active.slick-current .sidebar_itembox h3,
+.slick-active.slick-current .sidebar_itembox p,
+.slick-active.slick-current .sidebar_itembox span,
+.slick-active.slick-current .sidebar_itembox .progress-circle .progress-circle-content i {
+  color: #fffbf2;
+}
+
+.slick-active.slick-current .sidebar_itembox p {
+  color: #fffbf2 !important;
+}
+
 .page_area {
   /* min-height: 100vh; */
   width: 100%;
@@ -2739,6 +2750,16 @@ img {
   padding: 0px 12px !important;
 }
 
+.sidebar_items_mobile {
+  display: none;
+}
+
+.mobileTourWrapper {}
+
+.mobileTourWrapperOverlay {}
+
+.mobileTourArea {}
+
 /* Responsive Start Here */
 
 @media only screen and (max-width: 1599px) {}
@@ -2845,6 +2866,7 @@ img {
   }
 
   .sidebar_itembox {
+    display: flex !important;
     border: none;
     border: 2px solid #e1d6ba;
     border-radius: 14px;
@@ -2852,6 +2874,10 @@ img {
     min-width: 290px;
     gap: 16px 0px;
     height: fit-content;
+  }
+
+  .sidebar_itemboxColIn {
+    justify-content: center;
   }
 
   .sidebar_itembox:nth-child(1) {
@@ -2868,7 +2894,7 @@ img {
   }
 
   .page_wrapper {
-    min-height: auto;
+    min-height: 100vh;
   }
 
   .dashboard_body {
@@ -2892,6 +2918,8 @@ img {
   .sidebar_itembox.sidebar_item_active {
     padding: 30px 30px;
   }
+
+
 
   .sidebar_itembox::after {
     top: auto;
@@ -3009,5 +3037,21 @@ img {
 
   .alert_text {
     padding: 5px 0px 0px;
+  }
+
+  .slick-track {
+    padding-bottom: 15px;
+  }
+
+  .slick-dots {
+    bottom: -17px;
+  }
+
+  .sidebar_items_desktop {
+    display: none;
+  }
+
+  .sidebar_items_mobile {
+    display: block;
   }
 }

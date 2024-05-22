@@ -60,10 +60,19 @@ import FamilyFields from "./FamilyFields";
 import EducationFields from "./EducationFields";
 import CocTabPreonboarding from "./CocTabPreonboarding";
 import { baseUrl } from "../../utils/config";
-import { set } from "date-fns";
 import ImageSelector from "./ImageSelector";
 import RocketAnimation from "./RocketAnimation";
 import { FormatName } from "../../utils/FormatName";
+import Slider from "react-slick";
+
+var settings = {
+  arrows: false,
+  dots: true,
+  infinite: true,
+  speed: 500,
+  slidesToShow: 1,
+  slidesToScroll: 1,
+};
 
 const LanguageList = [
   "English",
@@ -560,7 +569,9 @@ const PreOnboardingUserMaster = () => {
 
   useEffect(() => {
     // const approveCount = documentData.filter((doc) => doc.status == "Approved" ).length;
-    const approveCount = documentData.filter((doc) => doc.status == "Verification Pending").length;
+    const approveCount = documentData.filter(
+      (doc) => doc.status == "Verification Pending"
+    ).length;
 
     const documentPercentageTemp = Math.ceil(
       (approveCount / documentData.length) * 100
@@ -1301,6 +1312,7 @@ const PreOnboardingUserMaster = () => {
     });
   };
 
+  // position: window.innerWidth < 768 ? 'bottom' : 'right',
   const steps = [
     {
       selector: "#sidebarFormBox",
@@ -1338,6 +1350,11 @@ const PreOnboardingUserMaster = () => {
 
   return (
     <>
+      <div className="mobileTourWrapper">
+        <div className="mobileTourWrapperOverlay"></div>
+        <div className="mobileTourArea"></div>
+      </div>
+
       <Modal
         className="OnboardPrompt"
         isOpen={readyToOnboardModal}
@@ -1480,7 +1497,7 @@ const PreOnboardingUserMaster = () => {
           <div className="page_wrapper_in">
             <div className="sidebar_wrapper">
               <div className="sidebar_wrapper_in">
-                <div className="sidebar_items">
+                <div className="sidebar_items sidebar_items_desktop">
                   <div
                     className={`sidebar_itembox ${activeTab == 1 ? "sidebar_item_active" : ""
                       }`}
@@ -1540,7 +1557,6 @@ const PreOnboardingUserMaster = () => {
                       </h3> */}
                     </div>
                   </div>
-                  {/* Remove Comment */}
                   {/* {allUserData.offer_letter_send && ( */}
                   <div
                     className={`sidebar_itembox ${activeTab === 5 ? "sidebar_item_active" : ""
@@ -1617,6 +1633,149 @@ const PreOnboardingUserMaster = () => {
                     <h2>FAQ</h2>
                   </div>
                 </div>
+                <div className="sidebar_items_mobile">
+                  <Slider {...settings}>
+                    <div
+                      className={`sidebar_itembox ${
+                        activeTab == 1 ? "sidebar_item_active" : ""
+                      }`}
+                      id="sidebarFormBox"
+                      onClick={() => setActiveTab(1)}
+                    >
+                      {/* pp-100 is percentage of document procedure */}
+                      <div
+                        className={`progress-circle progressing pp-${formFieldProgressPercentage}`}
+                      >
+                        <div className="progress-circle-border">
+                          <div className="left-half-circle" />
+                          <div className="right-half-circle" />
+                        </div>
+                        <div className="progress-circle-content">
+                          <i className="bi bi-journal-text" />
+                        </div>
+                      </div>
+                      <div className="sidebar_itemboxText">
+                        <h2>Form</h2>
+                        <h3>{formFieldProgressPercentage}%</h3>
+                      </div>
+                    </div>
+                    <div
+                      className={`sidebar_itembox sidebar_itemboxCol ${
+                        activeTab == 2 ? "sidebar_item_active" : ""
+                      }`}
+                      id="sidebarDocumentBox"
+                      onClick={() => setActiveTab(2)}
+                    >
+                      <div className="sidebar_itemboxColIn">
+                        <div
+                          className={`progress-circle progressing pp-${documentPercentage}`}
+                        >
+                          <div className="progress-circle-border">
+                            <div className="left-half-circle" />
+                            <div className="right-half-circle" />
+                          </div>
+                          <div className="progress-circle-content">
+                            <i className="bi bi-file-richtext" />
+                          </div>
+                        </div>
+                      </div>
+                      <div className="sidebar_iteminfo">
+                        <div className="pack" style={{ flexDirection: "row" }}>
+                          <h2 className="document_tab_name">Documents</h2>
+                          <span>(verified)</span>
+                          <h3>{documentPercentage}%</h3>
+                        </div>
+                        <h3>
+                          Mandatory <span>{showMandotaryPer}%</span>
+                        </h3>
+                        <h3>
+                          Non Mandatory{" "}
+                          <span>
+                            {showNonMandotaryPer ? showNonMandotaryPer : 0}%
+                          </span>
+                        </h3>
+                      </div>
+                    </div>
+                    {/* {allUserData.offer_letter_send && ( */}
+                    <div
+                      className={`sidebar_itembox ${
+                        activeTab === 5 ? "sidebar_item_active" : ""
+                      }`}
+                      id="sidebarLetterBox"
+                      onClick={() => setActiveTab(5)}
+                      // style={{
+                      //   opacity: joiningDate <= formattedDate ? 0.5 : 1,
+                      //   // cursor: joiningDate <= formattedDate ? "not-allowed" : "pointer",
+                      //   pointerEvents:
+                      //     joiningDate <= formattedDate ? "none" : "auto",
+                      // }}
+                    >
+                      <div className="progress-circle progressing pp-26">
+                        <div className="progress-circle-border">
+                          <div className="left-half-circle" />
+                          <div className="right-half-circle" />
+                        </div>
+                        <div className="progress-circle-content">
+                          <i className="bi bi-file-earmark-text" />
+                        </div>
+                      </div>
+                      <h2 className="letter_tab_name">Offer Letter</h2>
+                    </div>
+                    {/* )} */}
+                    <div
+                      // className={`sidebar_itembox  ${
+                      //   activeTab == 3 ? "sidebar_item_active" : ""
+                      // }`}
+                      className={`sidebar_itembox ${
+                        activeTab === 3 && documentPercentage < 90
+                          ? "sidebar_item_active"
+                          : ""
+                      }`}
+                      id="sidebarPolicyBox"
+                      // style={{
+                      //   pointerEvents: documentPercentage < 90 ? "none" : "auto",
+                      //   opacity: documentPercentage < 90 ? 0.5 : 1,
+                      // }}
+                      onClick={() => setActiveTab(3)}
+                    >
+                      <div className="progress-circle progressing pp-100">
+                        <div className="progress-circle-border">
+                          <div className="left-half-circle" />
+                          <div className="right-half-circle" />
+                        </div>
+                        <div className="progress-circle-content">
+                          <i className="bi bi-book" />
+                        </div>
+                      </div>
+                      <h2 className="policy_tab_name">
+                        COC <small>Code of conduct</small>
+                        <div className="cocInfo">
+                          {documentPercentage < 90 && (
+                            <p>Please complete Mandatory Document</p>
+                          )}
+                        </div>
+                      </h2>
+                    </div>
+                    <div
+                      className={`sidebar_itembox ${
+                        activeTab == 4 ? "sidebar_item_active" : ""
+                      }`}
+                      id="sidebarFaqBox"
+                      onClick={() => setActiveTab(4)}
+                    >
+                      <div className="progress-circle progressing pp-100">
+                        <div className="progress-circle-border">
+                          <div className="left-half-circle" />
+                          <div className="right-half-circle" />
+                        </div>
+                        <div className="progress-circle-content">
+                          <i className="bi bi-question-circle" />
+                        </div>
+                      </div>
+                      <h2>FAQ</h2>
+                    </div>
+                  </Slider>
+                </div>
               </div>
             </div>
             <div className="page_area">
@@ -1629,6 +1788,7 @@ const PreOnboardingUserMaster = () => {
                       <div className="welcome_board_heading">
                         <h1>Welcome </h1>
                         <h2>{loginUserName}</h2>
+                        <h1>To start your onboarding please click the form</h1>
                       </div>
                       {/* <button
                       className="btn btn-success d-block w-100"
