@@ -52,12 +52,11 @@ export default function PendingPaymentRequest() {
   const [toDate, setToDate] = useState("");
   const [payDialog, setPayDialog] = useState(false);
   const [rowData, setRowData] = useState({});
-  const [paymentMode, setPaymentMode] = useState("");
+  const [paymentMode, setPaymentMode] = useState("Razor Pay");
   const [payRemark, setPayRemark] = useState("");
   const [payMentProof, setPayMentProof] = useState("");
   const [vendorName, setVendorName] = useState("");
   const [partialVendorName, setPartialVendorName] = useState("");
-  // const [instantVendorName, setInstantVendorName] = useState("");
   const [showDisCardModal, setShowDiscardModal] = useState(false);
   const [paymentAmout, setPaymentAmount] = useState("");
   const [openImageDialog, setOpenImageDialog] = useState(false);
@@ -107,7 +106,9 @@ export default function PendingPaymentRequest() {
   const [openDialog, setOpenDialog] = useState(false);
   const [overviewDialog, setOverviewDialog] = useState(false);
   const [loading, setLoading] = useState(false);
-
+  const [isTDSMandatory, setIsTDSMandatory] = useState(false);
+  const [isTDSDeducted, setIsTDSDeducted] = useState(false);
+  const [netAmount, setNetAmount] = useState("");
   const accordionButtons = ["All", "Partial", "Instant"];
 
   var handleAcknowledgeClick = () => {
@@ -212,6 +213,21 @@ export default function PendingPaymentRequest() {
           mergedArray = mergedArray.filter(
             (item) => item.status == 0 || item.status == 3 || item.status == 2
           );
+
+          mergedArray = mergedArray.sort((a, b) => {
+            console.log(a, "A--------------------", b, "b data");
+            const aReminder = remindData.some(
+              (remind) => remind.request_id === a.request_id
+            );
+            const bReminder = remindData.some(
+              (remind) => remind.request_id === b.request_id
+            );
+            if (aReminder && !bReminder) return -1;
+            if (!aReminder && bReminder) return 1;
+            // Add aging sorting logic if required
+            return new Date(a.request_date) - new Date(b.request_date);
+          });
+
           setData(mergedArray);
           setFilterData(mergedArray);
           setPendingRequestCount(mergedArray.length);
@@ -247,7 +263,7 @@ export default function PendingPaymentRequest() {
     });
 
     axios.get(`${baseUrl}` + `get_all_payment_mode`).then((res) => {
-      setPaymentModeData(res.data);
+      setPaymentModeData(res?.data);
     });
 
     axios.get(`${baseUrl}` + `get_single_user/${userID}`).then((res) => {
@@ -258,6 +274,7 @@ export default function PendingPaymentRequest() {
     setReminderData(reaminderData);
     setRemainderDialog(true);
   };
+  console.log(paymentModeData, "payment mode data ----------------------");
 
   useEffect(() => {
     callApi();
@@ -308,9 +325,11 @@ export default function PendingPaymentRequest() {
     if (gstHold) {
       paymentAmount = paymentAmount - GSTHoldAmount;
     }
-    tdsvalue = Math.round(tdsvalue);
+    console.log(tdsvalue, "------------------------");
+    // tdsvalue = Math.round(tdsvalue);
     setTDSValue(tdsvalue);
     setPaymentAmount(paymentAmount);
+    setNetAmount(paymentAmount);
   };
 
   const handleGSTHoldInputChange = (e) => {
@@ -355,7 +374,8 @@ export default function PendingPaymentRequest() {
     (total, item) => total + parseFloat(item?.balance_amount),
     0
   );
-  const handlePayVendorClick = () => {
+  const handlePayVendorClick = (e) => {
+    e.preventDefault();
     // displayRazorpay(paymentAmout);
     // return;
     const formData = new FormData();
@@ -384,6 +404,7 @@ export default function PendingPaymentRequest() {
     formData.append("tds_deduction", TDSValue);
     formData.append("gst_Hold_Bool", gstHold);
     formData.append("tds_Deduction_Bool", TDSDeduction);
+
     axios
       .post(baseUrl + "phpvendorpaymentrequest", formData, {
         headers: {
@@ -404,7 +425,7 @@ export default function PendingPaymentRequest() {
         phpFormData.append("status", 1);
         phpFormData.append("payment_mode", paymentMode);
         phpFormData.append("gst_hold", rowData.gst_amount);
-        phpFormData.append("adjust_amt", adjustAmount);
+        phpFormData.append("adjust_amt", TDSValue ? adjustAmount : 0);
         phpFormData.append("gst_hold_amount", GSTHoldAmount);
         phpFormData.append("request_amount", rowData.request_amount);
         phpFormData.append("tds_deduction", TDSValue);
@@ -436,6 +457,7 @@ export default function PendingPaymentRequest() {
         setPayMentProof("");
         handleClosePayDialog();
         setPaymentAmount("");
+        setNetAmount("");
         callApi();
       });
   };
@@ -573,6 +595,7 @@ export default function PendingPaymentRequest() {
     setPayRemark("");
     setPayMentProof("");
     setPaymentAmount("");
+    setNetAmount("");
     setTDSDeduction(false);
     setGstHold(false);
   };
@@ -589,8 +612,16 @@ export default function PendingPaymentRequest() {
       return;
     }
 
-    setRowData(row);
+    const enrichedRow = {
+      ...row,
+      totalFY: calculateTotalFY(row, nodeData),
+    };
+    setRowData(enrichedRow);
+
+    // setRowData(row);
     setPaymentAmount(row.balance_amount);
+    setNetAmount(row.balance_amount);
+
     setBaseAmount(row.base_amount != 0 ? row.base_amount : row.request_amount);
     setLoading(true);
     setPayDialog(true);
@@ -861,17 +892,9 @@ export default function PendingPaymentRequest() {
       headerName: "Aging",
       width: 150,
       renderCell: (params) => {
-        // const paymentDate = nodeData.filter(
-        //   (dateData) => dateData.request_id === params.row.request_id
-        // );
         return (
           <p>
-            {" "}
-            {Math.round(
-              (
-                calculateHours(params.row.request_date, new Date()) / 24
-              ).toFixed(1)
-            )}{" "}
+            {params.row.aging}
             Days
           </p>
         );
@@ -1041,24 +1064,59 @@ export default function PendingPaymentRequest() {
     },
   ];
 
-  // console.log(phpRemainderData, "FDFDFDF------------------------");
-  // console.log(filterData, "FDFDFDF------------------------");
-
   const getStatusText = (status) => {
     switch (status) {
-        case "0":
-            return "Pending";
-        case "1":
-            return "Paid";
-        case "2":
-            return "Discard";
-        case "3":
-            return "Partial";
-        default:
-            return "";
+      case "0":
+        return "Pending";
+      case "1":
+        return "Paid";
+      case "2":
+        return "Discard";
+      case "3":
+        return "Partial";
+      default:
+        return "";
     }
-};
+  };
 
+  const calculateTotalFY = (data) => {
+    const isCurrentMonthGreaterThanMarch = new Date().getMonth() + 1 > 3;
+    const currentYear = new Date().getFullYear();
+    const startDate = new Date(
+      `04/01/${isCurrentMonthGreaterThanMarch ? currentYear : currentYear - 1}`
+    );
+    const endDate = new Date(
+      `03/31/${isCurrentMonthGreaterThanMarch ? currentYear + 1 : currentYear}`
+    );
+
+    const dataFY = nodeData.filter((e) => {
+      const paymentDate = new Date(e?.request_date);
+      return (
+        paymentDate >= startDate &&
+        paymentDate <= endDate &&
+        e?.vendor_name === data?.vendor_name &&
+        e.status !== 0 &&
+        e.status !== 2 &&
+        e.status !== 3
+      );
+    });
+
+    const totalFY = dataFY.reduce(
+      (acc, item) => acc + parseFloat(item.payment_amount),
+      0
+    );
+
+    return totalFY;
+  };
+
+  // useEffect(() => {
+  //   const RD = data?.map((row) => ({
+  //     ...row,
+  //     totalFY: calculateTotalFY(row, nodeData),
+  //   }));
+
+  //   setRowData(RD);
+  // }, [data, rowData]);
 
   const columns = [
     {
@@ -1166,10 +1224,10 @@ export default function PendingPaymentRequest() {
       width: 150,
       valueGetter: (params) => {
         const reminder = phpRemainderData.filter(
-            (item) => item.request_id == params.row.request_id
+          (item) => item.request_id == params.row.request_id
         );
         return reminder.length;
-    },
+      },
       renderCell: (params) => {
         const reminder = phpRemainderData.filter(
           (item) => item.request_id == params.row.request_id
@@ -1236,10 +1294,12 @@ export default function PendingPaymentRequest() {
       width: 150,
       valueGetter: (params) => {
         const totalPaid = nodeData
-            .filter((e) => e.vendor_name === params.row.vendor_name && e.status == 1)
-            .reduce((acc, item) => acc + +item.payment_amount, 0);
+          .filter(
+            (e) => e.vendor_name === params.row.vendor_name && e.status == 1
+          )
+          .reduce((acc, item) => acc + +item.payment_amount, 0);
         return totalPaid;
-    },
+      },
       renderCell: (params) => {
         return nodeData.filter((e) => e.vendor_name === params.row.vendor_name)
           .length > 0 ? (
@@ -1276,78 +1336,88 @@ export default function PendingPaymentRequest() {
         const isCurrentMonthGreaterThanMarch = new Date().getMonth() + 1 > 3;
         const currentYear = new Date().getFullYear();
         const startDate = new Date(
-            `04/01/${isCurrentMonthGreaterThanMarch ? currentYear : currentYear - 1}`
+          `04/01/${
+            isCurrentMonthGreaterThanMarch ? currentYear : currentYear - 1
+          }`
         );
         const endDate = new Date(
-            `03/31/${isCurrentMonthGreaterThanMarch ? currentYear + 1 : currentYear}`
+          `03/31/${
+            isCurrentMonthGreaterThanMarch ? currentYear + 1 : currentYear
+          }`
+        );
+
+        const dataFY = nodeData.filter((e) => {
+          const paymentDate = new Date(e?.request_date);
+          return (
+            paymentDate >= startDate &&
+            paymentDate <= endDate &&
+            e?.vendor_name === params?.row?.vendor_name &&
+            e.status !== 0 &&
+            e.status !== 2 &&
+            e.status !== 3
+          );
+        });
+
+        const totalFY = dataFY.reduce(
+          (acc, item) => acc + parseFloat(item.payment_amount),
+          0
+        );
+
+        return totalFY;
+      },
+      renderCell: (params) => {
+        const isCurrentMonthGreaterThanMarch = new Date().getMonth() + 1 > 3;
+        const currentYear = new Date().getFullYear();
+        const startDate = new Date(
+          `04/01/${
+            isCurrentMonthGreaterThanMarch ? currentYear : currentYear - 1
+          }`
+        );
+        const endDate = new Date(
+          `03/31/${
+            isCurrentMonthGreaterThanMarch ? currentYear + 1 : currentYear
+          }`
         );
         const dataFY = nodeData.filter((e) => {
-            const paymentDate = new Date(e.request_date);
-            return (
-                paymentDate >= startDate &&
-                paymentDate <= endDate &&
-                e.vendor_name === params.row.vendor_name &&
-                e.status !== 0 &&
-                e.status !== 2
-            );
+          const paymentDate = new Date(e.request_date);
+          return (
+            paymentDate >= startDate &&
+            paymentDate <= endDate &&
+            e.vendor_name === params.row.vendor_name &&
+            e.status !== 0 &&
+            e.status !== 2 &&
+            e.status !== 3
+          );
         });
-        const totalFY = dataFY.reduce(
-            (acc, item) => acc + parseFloat(item.payment_amount),
-            0
-        );
-        return totalFY;
-    },
-      // renderCell: (params) => {
-      //   const isCurrentMonthGreaterThanMarch = new Date().getMonth() + 1 > 3;
-      //   const currentYear = new Date().getFullYear();
-      //   const startDate = new Date(
-      //     `04/01/${
-      //       isCurrentMonthGreaterThanMarch ? currentYear : currentYear - 1
-      //     }`
-      //   );
-      //   const endDate = new Date(
-      //     `03/31/${
-      //       isCurrentMonthGreaterThanMarch ? currentYear + 1 : currentYear
-      //     }`
-      //   );
-      //   const dataFY = nodeData.filter((e) => {
-      //     const paymentDate = new Date(e.request_date);
-      //     return (
-      //       paymentDate >= startDate &&
-      //       paymentDate <= endDate &&
-      //       e.vendor_name === params.row.vendor_name &&
-      //       e.status !== 0 &&
-      //       e.status !== 2
-      //     );
-      //   });
-      //   return nodeData.filter((e) => e.vendor_name === params.row.vendor_name)
-      //     .length > 0 ? (
-      //     <h5
-      //       onClick={() => handleOpenPaymentHistory(params.row, "FY")}
-      //       style={{ cursor: "pointer" }}
-      //       className="fs-5 col-3  font-sm lead  text-decoration-underline text-black-50"
-      //     >
-      //       {/* Financial Year */}
+        return nodeData.filter((e) => e.vendor_name === params.row.vendor_name)
+          .length > 0 ? (
+          <h5
+            onClick={() => handleOpenPaymentHistory(params.row, "FY")}
+            style={{ cursor: "pointer" }}
+            className="fs-5 col-3  font-sm lead  text-decoration-underline text-black-50"
+          >
+            {/* Financial Year */}
 
-      //       {dataFY.reduce(
-      //         (acc, item) => acc + parseFloat(item.payment_amount),
-      //         0
-      //       )}
-      //     </h5>
-      //   ) : (
-      //     <h5
-      //       style={{ cursor: "pointer" }}
-      //       className="fs-5 col-3  font-sm lead  text-decoration-underline text-black-50"
-      //     >
-      //       0
-      //     </h5>
-      //   );
-      // },
+            {dataFY.reduce(
+              (acc, item) => acc + parseFloat(item.payment_amount),
+              0
+            )}
+          </h5>
+        ) : (
+          <h5
+            style={{ cursor: "pointer" }}
+            className="fs-5 col-3  font-sm lead  text-decoration-underline text-black-50"
+          >
+            0
+          </h5>
+        );
+      },
     },
     {
       field: "Pan Img",
       headerName: "Pan Img",
-      valueGetter: (params) => params.row.pan_img.includes("uploads") ? params.row.pan_img : "NA",
+      valueGetter: (params) =>
+        params.row.pan_img.includes("uploads") ? params.row.pan_img : "NA",
       renderCell: (params) => {
         const ImgUrl = `https://purchase.creativefuel.io/${params.row.pan_img}`;
         return params.row.pan_img.includes("uploads") ? (
@@ -1451,26 +1521,24 @@ export default function PendingPaymentRequest() {
       field: "aging",
       headerName: "Aging",
       width: 150,
-      valueGetter: (params) => {
-          const hours = calculateHours(params.row.request_date, new Date());
-          const days = Math.round(hours / 24);
-          // console.log(`Calculating aging for request_date ${params.row.request_date}: ${hours} hours, ${days} days`);
-          return `${days} Days`;
-      },
-      // renderCell: (params) => (
-      //     <p>
-      //         {Math.round(
-      //             (calculateHours(params.row.request_date, new Date()) / 24).toFixed(1)
-      //         )}{" "}
-      //         Days
-      //     </p>
-      // ),
-  },
+      // valueGetter: (params) => {
+      //   const hours = calculateHours(params.row.request_date, new Date());
+      //   const days = Math.round(hours / 24);
+      //   // console.log(`Calculating aging for request_date ${params.row.request_date}: ${hours} hours, ${days} days`);
+      //   return `${days} Days`;
+      // },
+      renderCell: (params) => (
+        <p>
+          {params.row.aging}
+          Days
+        </p>
+      ),
+    },
     // {
     //   field: "aging",
     //   headerName: "Aging",
     //   width: 150,
-     
+
     //   renderCell: (params) => {
     //     // const paymentDate = nodeData.filter(
     //     //   (dateData) => dateData.request_id === params.row.request_id
@@ -1531,7 +1599,6 @@ export default function PendingPaymentRequest() {
       },
     },
   ];
-
   const filterDataBasedOnSelection = (apiData) => {
     const now = moment();
     switch (dateFilter) {
@@ -1633,6 +1700,9 @@ export default function PendingPaymentRequest() {
     (total, item) => total + parseFloat(item.balance_amount),
     0
   );
+  // const balanceAmountPartial = formatAmount(balanceAmountPart);
+
+  // console.log(balanceAmountPartial);
   const nonGstPartialCount = partialData?.filter((gst) => gst.gstHold === "0");
 
   const withInvcPartialImage = partialData?.filter(
@@ -1784,21 +1854,51 @@ export default function PendingPaymentRequest() {
     setOpenDialog(true);
   };
 
-  const handleAdjustmentAmount = (e) => {
-    setAdjustAmount(e.target.value);
-  };
-
   // useEffect(() => {
   //   const initialAdjustmentAmt = rowData?.balance_amount - paymentAmout || "";
   //   setAdjustAmount(initialAdjustmentAmt);
   // }, [rowData, TDSValue]);
+
   useEffect(() => {
-    const initialAdjustmentAmt = rowData?.balance_amount - paymentAmout || 0;
-    const formattedAdjustmentAmt = initialAdjustmentAmt.toFixed(2);
+    const initialAdjustmentAmt = netAmount - Math.floor(paymentAmout);
+    const formattedAdjustmentAmt = initialAdjustmentAmt.toFixed(1);
     setAdjustAmount(formattedAdjustmentAmt);
   }, [rowData, paymentAmout]);
 
-  // console.log(filterData, "filterData>>>>>>>>>>>>>", rowData, "rowData");
+  console.log(
+    netAmount,
+    "netAmount----------------------------",
+    paymentAmout,
+    "paymentAmout-----------------"
+  );
+
+  // useEffect(() => {
+  //   const isTDSMandatory =
+  //     rowData?.totalFY > 100000 || rowData?.totalFY > 25000;
+  //   const isTDSDeducted = rowData?.TDSDeduction === "1";
+  //   setIsTDSMandatory(isTDSMandatory);
+  //   setIsTDSDeducted(isTDSDeducted);
+  // }, [rowData]);
+  useEffect(() => {
+    const isTDSMandatory =
+      rowData?.totalFY > 100000 || rowData?.totalFY > 25000;
+    const isTDSDeducted = rowData?.TDSDeduction === "1";
+    setIsTDSMandatory(isTDSMandatory);
+    setIsTDSDeducted(isTDSDeducted);
+
+    if (isTDSMandatory && !isTDSDeducted) {
+      setTDSDeduction(true);
+    }
+  }, [rowData]);
+
+  console.log(
+    isTDSMandatory,
+    "is mandatory------------------",
+    rowData?.totalFY,
+    "FY------------ss"
+  );
+  console.log(isTDSDeducted, "is mandatory------------------");
+
   return (
     <div>
       <FormContainer
@@ -2125,7 +2225,7 @@ export default function PendingPaymentRequest() {
           dividers={true}
           sx={{ maxHeight: "80vh", overflowY: "auto" }}
         >
-          <Overview data={filterData} />
+          <Overview data={filterData} columns={columns} />
         </DialogContent>
       </Dialog>
       <div className="row">
@@ -2305,7 +2405,7 @@ export default function PendingPaymentRequest() {
         <div className="card">
           <div className="card-header sb">
             <div className="caard-title">Pending Payment Oveview</div>
-            <div className="pack w-75">
+            {/* <div className="pack w-75">
               {rowSelectionModel.length > 0 && (
                 <Button
                   className="btn btn-primary cmnbtn btn_sm"
@@ -2317,7 +2417,7 @@ export default function PendingPaymentRequest() {
                   Download PDF Zip
                 </Button>
               )}
-            </div>
+            </div> */}
           </div>
           <div className="card-body thm_table fx-head">
             {activeAccordionIndex === 0 && (
@@ -2328,19 +2428,19 @@ export default function PendingPaymentRequest() {
                 rowsPerPageOptions={[5]}
                 getRowClassName={getValidationCSSForRemainder}
                 slots={{ toolbar: GridToolbar }}
-                disableSelectionOnClick
-                checkboxSelection
-                getRowId={(row) => filterData.indexOf(row)}
+                // disableSelectionOnClick
+                // checkboxSelection
                 slotProps={{
                   toolbar: {
                     showQuickFilter: true,
                   },
                 }}
-                onRowSelectionModelChange={(rowIds) => {
-                  handleRowSelectionModelChange(rowIds);
-                  // console.log(rowIds, "IDS");
-                }}
-                rowSelectionModel={rowSelectionModel}
+                getRowId={(row) => filterData?.indexOf(row)}
+                // onRowSelectionModelChange={(rowIds) => {
+                //   handleRowSelectionModelChange(rowIds);
+                //   console.log(rowIds, "IDS");
+                // }}
+                // rowSelectionModel={rowSelectionModel}
               />
             )}
             {openImageDialog && (
@@ -2362,8 +2462,8 @@ export default function PendingPaymentRequest() {
                 h
                 getRowClassName={getValidationCSSForRemainder}
                 slots={{ toolbar: GridToolbar }}
-                checkboxSelection
-                disableSelectionOnClick
+                // checkboxSelection
+                // disableSelectionOnClick
                 disableColumnMenu
                 getRowId={(row) => filterData.indexOf(row)}
                 slotProps={{
@@ -2371,11 +2471,11 @@ export default function PendingPaymentRequest() {
                     showQuickFilter: true,
                   },
                 }}
-                onRowSelectionModelChange={(rowIds) => {
-                  handleRowSelectionModelChange(rowIds);
-                  // console.log(rowIds, "IDS");
-                }}
-                rowSelectionModel={rowSelectionModel}
+                // onRowSelectionModelChange={(rowIds) => {
+                //   handleRowSelectionModelChange(rowIds);
+                //   console.log(rowIds, "IDS");
+                // }}
+                // rowSelectionModel={rowSelectionModel}
               />
             )}
             {openImageDialog && (
@@ -2394,8 +2494,8 @@ export default function PendingPaymentRequest() {
                 rowsPerPageOptions={[5]}
                 getRowClassName={getValidationCSSForRemainder}
                 slots={{ toolbar: GridToolbar }}
-                checkboxSelection
-                disableSelectionOnClick
+                // checkboxSelection
+                // disableSelectionOnClick
                 disableColumnMenu
                 getRowId={(row) => filterData.indexOf(row)}
                 slotProps={{
@@ -2403,11 +2503,11 @@ export default function PendingPaymentRequest() {
                     showQuickFilter: true,
                   },
                 }}
-                onRowSelectionModelChange={(rowIds) => {
-                  handleRowSelectionModelChange(rowIds);
-                  // console.log(rowIds, "IDS");
-                }}
-                rowSelectionModel={rowSelectionModel}
+                // onRowSelectionModelChange={(rowIds) => {
+                //   handleRowSelectionModelChange(rowIds);
+                //   console.log(rowIds, "IDS");
+                // }}
+                // rowSelectionModel={rowSelectionModel}
               />
             )}
             {openImageDialog && (
@@ -2452,10 +2552,47 @@ export default function PendingPaymentRequest() {
               <CloseIcon />
             </IconButton>
             <DialogContent>
+              <div className="row gap-3">
+                <TextField
+                  className="col"
+                  value={rowData.name}
+                  autoFocus
+                  margin="dense"
+                  id="name"
+                  readOnly
+                  label="Requested By"
+                  type="text"
+                  variant="outlined"
+                />
+                <TextField
+                  className="col"
+                  value={convertDateToDDMMYYYY(rowData.request_date)}
+                  autoFocus
+                  margin="dense"
+                  id="name"
+                  readOnly
+                  label="Request Date"
+                  type="text"
+                  variant="outlined"
+                />
+              </div>
               <div className="row">
                 <TextField
-                  className="col-md-6 me-3"
+                  // className="col-md-6 me-3"
+                  value={rowData.t3}
+                  autoFocus
+                  margin="dense"
+                  id="name"
+                  disabled
+                  label=" Purchase Remark"
+                  type="text"
+                  variant="outlined"
+                />
+              </div>
+              <div className="row gap-3">
+                <TextField
                   value={rowData.vendor_name}
+                  className="col"
                   autoFocus
                   margin="dense"
                   id="name"
@@ -2468,12 +2605,11 @@ export default function PendingPaymentRequest() {
                   variant="outlined"
                 />
                 <TextField
-                  className="col-md-5 ml-2"
+                  className="col"
                   value={rowData.address}
                   autoFocus
                   margin="dense"
                   id="name"
-                  // disabled
                   readOnly
                   label="Address"
                   type="text"
@@ -2483,39 +2619,9 @@ export default function PendingPaymentRequest() {
                   }}
                 />
               </div>
-              <div className="row">
+              <div className="row gap-3">
                 <TextField
-                  className="col-md-6 me-3"
-                  value={rowData.mob1}
-                  autoFocus
-                  margin="dense"
-                  // disabledreadOnly
-                  readOnly
-                  label="Mobile"
-                  type="text"
-                  variant="outlined"
-                  InputProps={{
-                    readOnly: true,
-                  }}
-                />
-                <TextField
-                  className="col-md-5 ml-2"
-                  value={rowData.pan}
-                  autoFocus
-                  margin="dense"
-                  // disabled
-                  readOnly
-                  label="Pan"
-                  type="text"
-                  variant="outlined"
-                  InputProps={{
-                    readOnly: true,
-                  }}
-                />
-              </div>
-              <div className="row">
-                <TextField
-                  className="col-md-6 me-3"
+                  className="col"
                   value={rowData.gst}
                   autoFocus
                   margin="dense"
@@ -2529,7 +2635,7 @@ export default function PendingPaymentRequest() {
                   }}
                 />
                 <TextField
-                  className="col-md-5 ml-2"
+                  className="col"
                   value={`₹${rowData.outstandings}`}
                   autoFocus
                   margin="dense"
@@ -2543,9 +2649,107 @@ export default function PendingPaymentRequest() {
                   }}
                 />
               </div>
-              <div className="row">
+              <div className="row gap-3">
+                {/* {rowData?.TDSDeduction !== "1" ? ( */}
+                {/* {isTDSMandatory || TDSDeduction ? ( */}
+                <>
+                  <FormControlLabel
+                    className="col-md-3"
+                    control={
+                      <Checkbox
+                        onChange={handleTDSDeduction}
+                        checked={TDSDeduction}
+                        disabled={isTDSDeducted}
+                      />
+                    }
+                    label="TDS Deduction"
+                  />
+                  {/* {gstHold && (
+                      <TextField
+                        className="col-md-5 me-3"
+                        value={GSTHoldAmount}
+                        onChange={handleGSTHoldInputChange}
+                        autoFocus
+                        margin="dense"
+                        id="name"
+                        label="GST Hold"
+                      />
+                    )} */}
+                  {TDSDeduction && (
+                    <>
+                      <Autocomplete
+                        onChange={(e, value) => setTDSPercentage(value)}
+                        disablePortal
+                        className="col-md-3 mt-2"
+                        value={TDSPercentage}
+                        id="combo-box-demo"
+                        options={[1, 2, 10]}
+                        renderInput={(params) => (
+                          <TextField
+                            {...params}
+                            label="TDS %"
+                            placeholder="TDS %"
+                          />
+                        )}
+                        disable={true}
+                      />
+                      <TextField
+                        className="col-md-3 mt-2"
+                        value={TDSValue}
+                        autoFocus
+                        readOnly
+                        margin="dense"
+                        variant="outline"
+                        id="name"
+                        label="TDS Amount"
+                        disable={true}
+                      />
+                      <TextField
+                        InputProps={{
+                          readOnly: gstHold,
+                        }}
+                        onChange={(e) => {
+                          rowData.balance_amount;
+
+                          const currentValue = e.target.value;
+                          if (
+                            /^\d+$/.test(currentValue) ||
+                            currentValue === ""
+                          ) {
+                            // setPaymentAmount(currentValue);
+                            if (currentValue <= +rowData.balance_amount) {
+                              setNetAmount(currentValue);
+                              setPaymentStatus;
+                            } else {
+                              toastError(
+                                "Payment Amount should be less than or equal to Requested Amount"
+                              );
+                            }
+                          } else {
+                            setNetAmount("");
+                          }
+                        }}
+                        className="col-md-3 mt-2"
+                        disable={true}
+                        autoFocus
+                        type="number"
+                        margin="dense"
+                        id="name"
+                        label=" Net Amount *"
+                        variant="outline"
+                        fullWidth
+                        value={netAmount}
+                      />
+                    </>
+                  )}
+                </>
+                {/* ) : (
+                  ""
+                )} */}
+              </div>
+              <div className="row gap-3">
                 <TextField
-                  className="col-md-3 me-3"
+                  className="col"
                   value={`₹${rowData.request_amount}`}
                   autoFocus
                   margin="dense"
@@ -2560,7 +2764,7 @@ export default function PendingPaymentRequest() {
                   }}
                 />
                 <TextField
-                  className="col-md-3 me-3"
+                  className="col"
                   value={`₹${rowData.balance_amount}`}
                   autoFocus
                   margin="dense"
@@ -2574,6 +2778,8 @@ export default function PendingPaymentRequest() {
                     readOnly: true,
                   }}
                 />
+              </div>
+              <div className="row">
                 <TextField
                   className="col-md-4 me-3"
                   value={`₹${baseAmount}`}
@@ -2583,21 +2789,6 @@ export default function PendingPaymentRequest() {
                   // disabled
                   readOnly
                   label="Base Amount"
-                  type="text"
-                  variant="outlined"
-                  InputProps={{
-                    readOnly: true,
-                  }}
-                />
-                <TextField
-                  className="col-md-4 "
-                  value={`₹${rowData.gst_amount ? rowData.gst_amount : 0}`}
-                  autoFocus
-                  margin="dense"
-                  id="name"
-                  // disabled
-                  readOnly
-                  label="GST Amount"
                   type="text"
                   variant="outlined"
                   InputProps={{
@@ -2614,106 +2805,47 @@ export default function PendingPaymentRequest() {
                   }
                   label="GST Hold"
                 />
-                {rowData?.TDSDeduction !== "1" ? (
-                  <>
-                    <FormControlLabel
-                      className="col-md-5"
-                      control={<Checkbox onChange={handleTDSDeduction} />}
-                      label="TDS Deduction"
-                    />
-                    {gstHold && (
-                      <TextField
-                        className="col-md-5 me-3"
-                        value={GSTHoldAmount}
-                        onChange={handleGSTHoldInputChange}
-                        autoFocus
-                        margin="dense"
-                        id="name"
-                        label="GST Hold"
-                      />
-                    )}
-                    {TDSDeduction && (
-                      <>
-                        <Autocomplete
-                          onChange={(e, value) => setTDSPercentage(value)}
-                          disablePortal
-                          className="col-md-3 mt-2"
-                          value={TDSPercentage}
-                          id="combo-box-demo"
-                          options={[
-                            1, 2, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16,
-                            17, 18, 19, 20,
-                          ]}
-                          renderInput={(params) => (
-                            <TextField
-                              {...params}
-                              label="TDS %"
-                              placeholder="TDS %"
-                            />
-                          )}
-                        />
-                        <TextField
-                          className="col-md-3 mt-2"
-                          value={TDSValue}
-                          autoFocus
-                          readOnly
-                          margin="dense"
-                          id="name"
-                          label="TDS Amount"
-                        />
-                      </>
-                    )}
-                  </>
-                ) : (
-                  ""
-                )}
-                <TextField
-                  className="col-md-6 me-3"
-                  value={rowData.name}
-                  autoFocus
-                  margin="dense"
-                  id="name"
-                  readOnly
-                  label="Requested By"
-                  type="text"
-                  variant="outlined"
-                />
 
-                <TextField
-                  className="col-md-5 ml-2"
-                  value={convertDateToDDMMYYYY(rowData.request_date)}
-                  autoFocus
-                  margin="dense"
-                  id="name"
-                  // disabled
-                  readOnly
-                  label="Request Date"
-                  type="text"
-                  variant="outlined"
-                />
+                {gstHold && (
+                  <TextField
+                    className="col"
+                    value={GSTHoldAmount}
+                    onChange={handleGSTHoldInputChange}
+                    autoFocus
+                    margin="dense"
+                    id="name"
+                    label="GST Hold"
+                  />
+                )}
               </div>
-              <div className="row">
-                <TextField
-                  className="col-md-11 ml-3"
-                  value={rowData.t3}
-                  autoFocus
-                  margin="dense"
-                  id="name"
-                  disabled
-                  label=" Purchase Remark"
-                  type="text"
-                  variant="outlined"
-                />
-              </div>
-              <div className="me-3">
+              <div className="row gap-3">
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                  <DatePicker
+                    format="DD/MM/YYYY"
+                    className="col mt-2"
+                    defaultValue={dayjs()}
+                    autoFocus
+                    label="Payment Date "
+                    onChange={(newValue) => {
+                      setPaymentDate(
+                        newValue
+                          .add(5, "hours")
+                          .add(30, "minutes")
+                          .$d.toGMTString()
+                      );
+                    }}
+                    disableFuture
+                    views={["year", "month", "day"]}
+                  />
+                </LocalizationProvider>
                 <Autocomplete
                   onChange={(e, value) => setPaymentMode(value)}
                   disablePortal
-                  className=" mt-2"
+                  className="col mt-1"
                   id="combo-box-demo"
                   options={
                     paymentModeData.length > 0
-                      ? paymentModeData.map((item) => item.payment_mode)
+                      ? paymentModeData?.map((item) => item.payment_mode)
                       : []
                   }
                   fullWidth={true}
@@ -2725,30 +2857,8 @@ export default function PendingPaymentRequest() {
                     />
                   )}
                 />
-
-                <Autocomplete
-                  onChange={(e, value) => setPaymentStatus(value)}
-                  value={paymentStatus}
-                  disablePortal
-                  disabled
-                  className=" mt-2"
-                  id="combo-box-demo"
-                  options={[
-                    "Fully Paid",
-                    "Fully Paid(TDS Deducted)",
-                    "Fully Paid(GST Hold)",
-                    "Fully Paid(TDS Deducted & GST Hold)",
-                    "Partially Paid",
-                  ]}
-                  fullWidth={true}
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      label="Payment Status *"
-                      placeholder="Payment Status"
-                    />
-                  )}
-                />
+              </div>
+              <div className="row gap-3">
                 <TextField
                   InputProps={{
                     readOnly: gstHold,
@@ -2771,71 +2881,62 @@ export default function PendingPaymentRequest() {
                       setPaymentAmount("");
                     }
                   }}
-                  className="mt-3"
+                  className="col"
                   autoFocus
                   type="number"
                   margin="dense"
                   id="name"
-                  label="Amount *"
+                  label=" Paid Amount *"
                   variant="outlined"
                   fullWidth
-                  value={paymentAmout}
+                  value={Math.floor(paymentAmout)}
                 />
-                <LocalizationProvider dateAdapter={AdapterDayjs}>
-                  <DatePicker
-                    format="DD/MM/YYYY"
-                    className="mt-3"
-                    defaultValue={dayjs()}
+                {TDSValue ? (
+                  <TextField
+                    onChange={(e) => setAdjustAmount(e.target.value)}
+                    multiline
+                    className="col"
                     autoFocus
-                    label="Payment Date "
-                    onChange={(newValue) => {
-                      setPaymentDate(
-                        newValue
-                          .add(5, "hours")
-                          .add(30, "minutes")
-                          .$d.toGMTString()
-                      );
-                    }}
-                    disableFuture
-                    views={["year", "month", "day"]}
+                    margin="dense"
+                    id="Adjust Amount"
+                    label="Adjust Amount"
+                    type="text"
+                    variant="outlined"
+                    fullWidth
+                    value={TDSValue ? adjustAmount : 0}
                   />
-                </LocalizationProvider>
-                <TextField
-                  onChange={(e) => setAdjustAmount(e.target.value)}
-                  multiline
-                  className="mt-3"
-                  autoFocus
-                  margin="dense"
-                  id="Adjust Amount"
-                  label="Adjust Amount"
-                  type="text"
-                  variant="outlined"
-                  fullWidth
-                  value={TDSValue ? adjustAmount : ""}
-                />
-
-                <TextField
-                  multiline
-                  readOnly
-                  className="mt-3"
-                  autoFocus
-                  margin="dense"
-                  id="After Adjust Amount"
-                  label="After Adjustment Amount"
-                  variant="outlined"
-                  fullWidth
-                  InputProps={{
-                    readOnly: true,
-                    style: { color: "#6a89ba" },
-                  }}
-                  value={(
-                    parseFloat(rowData?.balance_amount) - TDSValue
-                  ).toFixed(2)}
+                ) : (
+                  ""
+                )}
+              </div>
+              <div className="row gap-3">
+                <Autocomplete
+                  onChange={(e, value) => setPaymentStatus(value)}
+                  value={paymentStatus}
+                  disablePortal
+                  disabled
+                  className="col mt-2"
+                  id="combo-box-demo"
+                  options={[
+                    "Fully Paid",
+                    "Fully Paid(TDS Deducted)",
+                    "Fully Paid(GST Hold)",
+                    "Fully Paid(TDS Deducted & GST Hold)",
+                    "Partially Paid",
+                  ]}
+                  fullWidth={true}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      label="Payment Status *"
+                      placeholder="Payment Status"
+                    />
+                  )}
                 />
                 <TextField
                   onChange={(e) => setPayRemark(e.target.value)}
                   multiline
-                  className="mt-3"
+                  className="col mt-2"
                   autoFocus
                   margin="dense"
                   id="name"
@@ -2845,6 +2946,8 @@ export default function PendingPaymentRequest() {
                   fullWidth
                   value={payRemark}
                 />
+              </div>
+              <div className="row">
                 <div className="form-group mt-3">
                   <div className="row">
                     <label htmlFor="paymentProof">
@@ -2902,7 +3005,7 @@ export default function PendingPaymentRequest() {
                 variant="contained"
                 className="mx-2"
                 fullWidth
-                onClick={handlePayVendorClick}
+                onClick={(e) => handlePayVendorClick(e)}
                 disabled={!paymentMode || !paymentAmout}
               >
                 Pay Vendor

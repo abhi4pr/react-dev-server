@@ -31,8 +31,8 @@ const LetterTab = ({ allUserData, gettingData }) => {
     monthlySalary < 9000
       ? 0
       : monthlySalary >= 9000 && monthlySalary < 15000
-      ? monthlySalary * 0.12
-      : 1800;
+        ? monthlySalary * 0.12
+        : 1800;
   const yearCalPf = monthPf * 12;
   const totalMonthearning =
     basicMonthSal + hraMonthSal + advanceMonthSal + monthLeaveEnhance - monthPf;
@@ -111,8 +111,9 @@ const LetterTab = ({ allUserData, gettingData }) => {
           pdf.output("blob"),
           `${allUserData.user_name}_offer_letter.pdf`
         );
-
         pdfData.append("email_id", allUserData.PersonalEmail);
+        pdfData.append("email_id", allUserData.user_id);
+        setIsLoading(false);
         axios
           .post(baseUrl + "offer_letter_send_in_mail", pdfData, {
             headers: {
@@ -546,6 +547,7 @@ const LetterTab = ({ allUserData, gettingData }) => {
                   className="signature-img"
                   src={`data:image/png;base64,${image64}`}
                   alt=""
+                  width={60}
                 />
                 <br />
                 <p className="bold">
@@ -643,18 +645,18 @@ const LetterTab = ({ allUserData, gettingData }) => {
               <tbody>
                 <tr>
                   <td>Basic Salary</td>
-                  <td>INR {monthlySalary * 0.6}</td>
-                  <td>INR {monthlySalary * 0.6 * 12}</td>
+                  <td>INR {(monthlySalary * 0.6).toFixed(0)}</td>
+                  <td>INR {(monthlySalary * 0.6 * 12).toFixed(0)}</td>
                 </tr>
                 <tr>
                   <td>HRA</td>
-                  <td>INR {monthlySalary * 0.6 * 0.4}</td>
-                  <td>INR {monthlySalary * 0.6 * 0.4 * 12}</td>
+                  <td>INR {(monthlySalary * 0.6 * 0.4).toFixed(0)}</td>
+                  <td>INR {(monthlySalary * 0.6 * 0.4 * 12).toFixed(0)}</td>
                 </tr>
                 <tr>
                   <td>Advance Bonus</td>
-                  <td>INR {monthlySalary * 0.6 * 0.2}</td>
-                  <td>INR {monthlySalary * 0.6 * 0.2 * 12}</td>
+                  <td>INR {(monthlySalary * 0.6 * 0.2).toFixed(0)}</td>
+                  <td>INR {(monthlySalary * 0.6 * 0.2 * 12).toFixed(0)}</td>
                 </tr>
                 <tr>
                   <td>Monthly Leave Enhancement</td>
@@ -756,10 +758,18 @@ const LetterTab = ({ allUserData, gettingData }) => {
                 {/* {monthlySalary <= 21000 && ( */}
                 <tr>
                   <td>ESIC</td>
-                  <td>{monthlySalary <= 21000 ? monthlySalary * 0.0075 : 0}</td>
+                  <td>
+                    INR
+                    {(monthlySalary <= 21000
+                      ? monthlySalary * 0.0075
+                      : 0
+                    ).toFixed(0)}
+                  </td>
                   <td>
                     INR{" "}
-                    {(monthlySalary <= 21000 ? monthlySalary * 0.0075 : 0) * 12}
+                    {(
+                      (monthlySalary <= 21000 ? monthlySalary * 0.0075 : 0) * 12
+                    ).toFixed(0)}
                   </td>
                 </tr>
                 {/* )} */}
@@ -784,11 +794,16 @@ const LetterTab = ({ allUserData, gettingData }) => {
             </div>
           </header>
           <p>
-            ** I, name acknowledge that i have recived, read through and
-            understand the contents of this letter and agree to the contents
-            here in.
+            I, {allUserData.user_name} acknowledge that i have recived, read
+            through and understand the contents of this letter and agree to the
+            contents here in.
           </p>
           <br />
+          <img
+            className="signature-img"
+            src={`data:image/png;base64,${image64}`}
+            alt=""
+          />
           <p>Signature: _________________</p>
           <footer className="footer-letter ">
             <p className="bold">CREATIVEFUEL PRIVATE LIMITED</p>
@@ -953,8 +968,8 @@ const LetterTab = ({ allUserData, gettingData }) => {
                         Date{" "}
                         {allUserData?.joining_date
                           ? new Date(
-                              allUserData.joining_date
-                            ).toLocaleDateString()
+                            allUserData.joining_date
+                          ).toLocaleDateString()
                           : ""}
                       </p>
 
@@ -1503,18 +1518,22 @@ const LetterTab = ({ allUserData, gettingData }) => {
                       <tbody>
                         <tr>
                           <td>Basic Salary</td>
-                          <td>INR {monthlySalary * 0.6}</td>
-                          <td>INR {monthlySalary * 0.6 * 12}</td>
+                          <td>INR {(monthlySalary * 0.6).toFixed(0)}</td>
+                          <td>INR {(monthlySalary * 0.6 * 12).toFixed(0)}</td>
                         </tr>
                         <tr>
                           <td>HRA</td>
-                          <td>INR {monthlySalary * 0.6 * 0.4}</td>
-                          <td>INR {monthlySalary * 0.6 * 0.4 * 12}</td>
+                          <td>INR {(monthlySalary * 0.6 * 0.4).toFixed(0)}</td>
+                          <td>
+                            INR {(monthlySalary * 0.6 * 0.4 * 12).toFixed(0)}
+                          </td>
                         </tr>
                         <tr>
                           <td>Advance Bonus</td>
-                          <td>INR {monthlySalary * 0.6 * 0.2}</td>
-                          <td>INR {monthlySalary * 0.6 * 0.2 * 12}</td>
+                          <td>INR {(monthlySalary * 0.6 * 0.2).toFixed(0)}</td>
+                          <td>
+                            INR {(monthlySalary * 0.6 * 0.2 * 12).toFixed(0)}
+                          </td>
                         </tr>
                         <tr>
                           <td>Monthly Leave Enhancement</td>
@@ -1618,15 +1637,18 @@ const LetterTab = ({ allUserData, gettingData }) => {
                             <td>ESIC</td>
                             <td>
                               INR
-                              {monthlySalary <= 21000
+                              {(monthlySalary <= 21000
                                 ? monthlySalary * 0.0075
-                                : 0}
+                                : 0
+                              ).toFixed(0)}
                             </td>
                             <td>
                               INR{" "}
-                              {(monthlySalary <= 21000
-                                ? monthlySalary * 0.0075
-                                : 0) * 12}
+                              {(
+                                (monthlySalary <= 21000
+                                  ? monthlySalary * 0.0075
+                                  : 0) * 12
+                              ).toFixed(0)}
                             </td>
                           </tr>
                         )}
@@ -1647,9 +1669,9 @@ const LetterTab = ({ allUserData, gettingData }) => {
                   </div>
                   <br />
                   <p>
-                    ** I, name acknowledge that i have recived, read through and
-                    understand the contents of this letter and agree to the
-                    contents here in.
+                    I, {allUserData.user_name} acknowledge that i have recived,
+                    read through and understand the contents of this letter and
+                    agree to the contents here in.
                   </p>
                   <br />
                   <p>Signature: _________________</p>

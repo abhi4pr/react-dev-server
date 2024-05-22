@@ -38,7 +38,7 @@ const SaleBookingClose = ({
   const [search, setSearch] = useState("");
   const [contextData, setDatas] = useState([]);
   const [filterData, setFilterData] = useState([]);
-  const [tdsStatus, setTdsStatus] = useState(0);
+  const [tdsStatus, setTdsStatus] = useState(null);
   const [aboutToClose, setAboutToClose] = useState(false);
   const [customerName, setCustomerName] = useState("");
   const [salesExecutive, setSalesExecutive] = useState("");
@@ -93,11 +93,11 @@ const SaleBookingClose = ({
   function getData() {
     axios
       .post(baseUrl + "add_php_sale_booking_tds_data_in_node")
-      .then((res) => {});
+      .then((res) => { });
 
     let formData = new FormData();
     formData.append("loggedin_user_id", 36);
-    formData.append("tds_status", tdsStatus);
+    // formData.append("tds_status", tdsStatus);
 
     axios
       .post(
@@ -145,9 +145,9 @@ const SaleBookingClose = ({
     getData();
     setButtonaccess(
       contextData &&
-        contextData[2] &&
-        contextData[2].insert_value === 1 &&
-        false
+      contextData[2] &&
+      contextData[2].insert_value === 1 &&
+      false
     );
   }, [tdsStatus, aboutToClose, dateFilter]);
 
@@ -156,17 +156,22 @@ const SaleBookingClose = ({
   //   setTdsStatus(0);
   //   setAboutToClose(true);
   // };
+  console.log(datas, "--------RES");
 
   const open = (e) => {
     e.preventDefault();
-    setTdsStatus(0);
-    setAboutToClose(false);
+    // setTdsStatus(0);
+    const filteredData = datas.filter((item) => item.show_fstatus === "Open");
+    console.log(filteredData, "------open");
+    setFilterData(filteredData);
   };
 
   const close = (e) => {
     e.preventDefault();
-    setTdsStatus(1);
-    setAboutToClose(false);
+    // setTdsStatus(1);
+    const filteredData = datas.filter((item) => item.show_fstatus === "Closed");
+    console.log(filteredData, "------close");
+    setFilterData(filteredData);
   };
 
   useEffect(() => {
@@ -405,7 +410,8 @@ const SaleBookingClose = ({
     {
       field: "Refund Balance Amount",
       fieldName: "balance_refund_amount",
-      width: 200,
+      width: 250,
+
 
       renderCell: (params) => params.row.balance_refund_amount,
     },
@@ -494,6 +500,9 @@ const SaleBookingClose = ({
     },
     {
       field: "Refund Balance Amount",
+      width: 250,
+
+
       fieldName: "balance_refund_amount",
       renderCell: (params) => params.row.balance_refund_amount,
     },
@@ -599,7 +608,8 @@ const SaleBookingClose = ({
     {
       field: "Refund Balance Amount",
       fieldName: "balance_refund_amount",
-      width: 200,
+      width: 250,
+
 
       renderCell: (params) => params.row.balance_refund_amount,
     },
@@ -651,7 +661,7 @@ const SaleBookingClose = ({
     {
       field: "Sales Executive Name",
       fieldName: "sales_exe_name",
-      width: 200,
+      width: 300,
 
       renderCell: (params) => params.row.sales_exe_name,
     },
@@ -707,7 +717,8 @@ const SaleBookingClose = ({
     {
       field: "Refund Balance Amount",
       fieldName: "balance_refund_amount",
-      width: 200,
+      width: 250,
+
 
       renderCell: (params) => params.row.balance_refund_amount,
     },
@@ -789,7 +800,7 @@ const SaleBookingClose = ({
       field: "sales_exe_name",
       headerName: "Sales Executive Name",
       renderCell: (params) => <div>{params.row.sales_exe_name}</div>,
-      width: 150,
+      width: 200,
     },
     {
       field: "sale_booking_date",
@@ -840,25 +851,29 @@ const SaleBookingClose = ({
     {
       field: "total_refund_amount",
       headerName: "Refund Amount",
+      width: 150,
+
       renderCell: (params) => params.row.total_refund_amount,
     },
     {
       field: "balance_refund_amount",
       headerName: "Refund Balance Amount",
+      width: 250,
+
       renderCell: (params) => params.row.balance_refund_amount,
-      width: 150,
+
     },
     {
       field: "net_balance_amount_to_pay_percentage",
       headerName: "Net Bal Cust to pay Amt (%)",
       renderCell: (params) => params.row.net_balance_amount_to_pay_percentage,
-      width: 150,
+      width: 250,
     },
     {
       field: "booking_created_date",
       headerName: "Booking Created Date",
       renderCell: (params) => params.row.booking_created_date,
-      width: 150,
+      width: 200,
     },
     {
       field: "show_fstatus",
@@ -988,18 +1003,23 @@ const SaleBookingClose = ({
   };
 
   useEffect(() => {
-    const openCount = filterData.filter(
+    const openCount = datas.filter(
       (item) => item.show_fstatus === "Open"
     ).length;
     setOpenBtnCount(openCount);
     // setOpencount(openCount);
 
-    const closeCount = filterData.filter(
+    const closeCount = datas.filter(
       (item) => item.show_fstatus === "Closed"
     ).length;
     setCloseBtnCount(closeCount);
     // setclosecount(closeCount);
-  }, [filterData]);
+
+    const initialFilteredData = datas.filter(
+      (item) => item.show_fstatus === "Open"
+    );
+    setFilterData(initialFilteredData);
+  }, [datas]);
 
   console.log(filterData, "filterData>");
   return (

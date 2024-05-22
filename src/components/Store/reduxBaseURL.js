@@ -1,6 +1,5 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { baseUrl } from "../../utils/config";
-import { get } from "jquery";
 
 export const reduxBaseURL = createApi({
   baseQuery: fetchBaseQuery({ baseUrl: baseUrl }),

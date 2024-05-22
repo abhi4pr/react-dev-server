@@ -160,9 +160,9 @@ const SaleBookingVerify = ({
     getData();
     setButtonaccess(
       contextData &&
-        contextData[2] &&
-        contextData[2].insert_value === 1 &&
-        false
+      contextData[2] &&
+      contextData[2].insert_value === 1 &&
+      false
     );
   }, []);
 
@@ -875,7 +875,7 @@ const SaleBookingVerify = ({
       renderCell: (params) => {
         return params.row.balance_refund_amount;
       },
-      width: 150,
+      width: 200,
     },
     {
       field: "Balance Amount",
@@ -889,19 +889,19 @@ const SaleBookingVerify = ({
       field: "net_balance_amount_to_pay",
       headerName: "Net Bal Cust to pay Amt",
       renderCell: (params) => params.row.net_balance_amount_to_pay,
-      width: 150,
+      width: 200,
     },
     {
       field: "net_balance_amount_to_pay_percentage",
       headerName: "Net Bal Cust to pay Amt (%)",
       renderCell: (params) => params.row.net_balance_amount_to_pay_percentage,
-      width: 150,
+      width: 200,
     },
     {
       field: "creation_date",
       headerName: "Booking Created Date",
       renderCell: (params) => convertDateToDDMMYYYY(params.row.creation_date),
-      width: 150,
+      width: 200,
     },
   ];
 

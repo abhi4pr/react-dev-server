@@ -499,12 +499,12 @@ const VendorMaster = () => {
   const [whatsappLink, setWhatsappLink] = useState([]);
   const [bankRows, setBankRows] = useState([
     {
-      bankName: "",
-      accountType: "",
-      accountNo: "",
-      ifscCode: "",
-      UPIid: "",
-      registeredMobileNo: "",
+      bank_name: "",
+      account_type: "",
+      account_number: "",
+      ifcs: "",
+      upi_id: "",
+      registered_number: "",
     },
   ]);
 
@@ -589,31 +589,31 @@ const VendorMaster = () => {
 
   const handleBankNameChange = (e, i) => {
     const updatedRows = [...bankRows];
-    updatedRows[i].bankName = e.target.value;
+    updatedRows[i].bank_name = e.target.value;
     setBankRows(updatedRows);
   };
 
   const handleAccountTypeChange = (e, i) => {
     const updatedRows = [...bankRows];
-    updatedRows[i].accountType = e.value;
+    updatedRows[i].account_type = e.value;
     setBankRows(updatedRows);
   };
 
   const handleAccountNoChange = (e, i) => {
     const updatedRows = [...bankRows];
-    updatedRows[i].accountNo = e.target.value;
+    updatedRows[i].account_number = e.target.value;
     setBankRows(updatedRows);
   };
 
   const handleIFSCChange = (e, i) => {
     const updatedRows = [...bankRows];
-    updatedRows[i].ifscCode = e.target.value;
+    updatedRows[i].ifcs = e.target.value;
     setBankRows(updatedRows);
   };
 
   const handleUPIidChange = (e, i) => {
     const updatedRows = [...bankRows];
-    updatedRows[i].UPIid = e.target.value;
+    updatedRows[i].upi_id = e.target.value;
     setBankRows(updatedRows);
   };
 
@@ -622,7 +622,7 @@ const VendorMaster = () => {
       return;
     }
     const updatedRows = [...bankRows];
-    updatedRows[i].registeredMobileNo = e.target.value;
+    updatedRows[i].registered_number = e.target.value;
     setBankRows(updatedRows);
   };
 
@@ -632,19 +632,19 @@ const VendorMaster = () => {
     setWhatsappLink(link);
   };
 
-  const handleAddWhatsappGroupLinkTypeClick=()=>{
+  const handleAddWhatsappGroupLinkTypeClick = () => {
     dispatch(setShowAddVendorModal());
     dispatch(setModalType("WhatsappLinkType"));
-  }
+  };
 
-  const handleWhatsappGroupLinkTypeInfoClick=()=>{
+  const handleWhatsappGroupLinkTypeInfoClick = () => {
     dispatch(handleChangeVendorInfoModal());
     dispatch(setModalType("WhatsappLinkType"));
-  }
+  };
   if (_id) {
-    axios.get(baseUrl + "vendorAllData").then((res) => {
-      const data = res.data.tmsVendorkMastList.filter((e) => e._id === _id);
-      setVendorName(data[0].vendorMast_name);
+    axios.get(baseUrl + `v1/vendor_data/${_id}`).then((res) => {
+      const data = res.data.data;
+      setVendorName(data[0].vendor_name);
       setCountryCode(data[0].country_code);
       setMobile(data[0].mobile);
       setAltMobile(data[0].alternate_mobile);
@@ -694,12 +694,12 @@ const VendorMaster = () => {
     setBankRows([
       ...bankRows,
       {
-        bankName: "",
-        accountType: "",
-        accountNo: "",
-        ifscCode: "",
-        UPIid: "",
-        registeredMobileNo: "",
+        bank_name: "",
+        account_type: "",
+        account_number: "",
+        ifcs: "",
+        upi_id: "",
+        registered_number: "",
       },
     ]);
   };
@@ -781,20 +781,20 @@ const VendorMaster = () => {
     }
     // return console.log(bankRows);
     const formData = new FormData();
-    formData.append("vendorMast_name", vendorName);
+    formData.append("vendor_name", vendorName);
     formData.append("country_code", countryCode);
     formData.append("mobile", mobile);
     formData.append("alternate_mobile", altMobile);
     formData.append("email", email);
     formData.append("personal_address", perAddress);
-    formData.append("type_id", typeId);
-    formData.append("platform_id", platformId);
-    formData.append("payMethod_id", payId);
-    formData.append("cycle_id", cycleId);
+    formData.append("type", typeId);
+    formData.append("vendor_platform", platformId);
+    formData.append("payment_method", payId);
+    formData.append("pay_cycle", cycleId);
     formData.append("pan_no", pan);
-    formData.append("upload_pan_image", panImage);
+    formData.append("pan_image", panImage);
     formData.append("gst_no", gst);
-    formData.append("upload_gst_image", gstImage);
+    formData.append("gst_image", gstImage);
     formData.append("company_name", compName);
     formData.append("company_address", compAddress);
     formData.append("company_city", compCity);
@@ -806,27 +806,16 @@ const VendorMaster = () => {
     formData.append("home_state", homeState);
     formData.append("created_by", userID);
     formData.append("vendor_category", vendorCategory);
-
-    // sumit will give the update for bank and whatsapp link
-    // formData.append("whatsapp_link", JSON.stringify(whatsappLink));
-
-    // if (bankName) {
-    //   formData.append("bank_name", bankName);
-    //   formData.append("account_type", accountType);
-    //   formData.append("account_no", accountNo);
-    //   formData.append("ifsc_code", ifscCode);
-    // }
-
-    // if (upiId) {
-    //   formData.append("upi_id", upiId);
-    // }
+    formData.append("bank_details", JSON.stringify(bankRows));
+    formData.append("vendorLinks", JSON.stringify(whatsappLink));
+    
     if (!_id) {
-      axios.post(baseUrl + "addVendorMast", formData).then(() => {
+      axios.post(baseUrl + "v1/vendor_data", formData).then(() => {
         setIsFormSubmitted(true);
         toastAlert("Submitted");
       });
     } else {
-      axios.put(baseUrl + `updateVendorMast/${_id}`, formData, {
+      axios.put(baseUrl + `v1/vendor_data/${_id}`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -1100,7 +1089,7 @@ const VendorMaster = () => {
           <>
             <FieldContainer
               label="Bank Name "
-              value={bankRows[i].bankName}
+              value={bankRows[i].bank_name}
               onChange={(e) => handleBankNameChange(e, i)}
             />
 
@@ -1113,8 +1102,8 @@ const VendorMaster = () => {
                 }))}
                 required={true}
                 value={{
-                  value: bankRows[i].accountType,
-                  label: bankRows[i].accountType,
+                  value: bankRows[i].account_type,
+                  label: bankRows[i].account_type,
                 }}
                 onChange={(e) => {
                   handleAccountTypeChange(e, i);
@@ -1124,25 +1113,25 @@ const VendorMaster = () => {
 
             <FieldContainer
               label="Account Number "
-              value={bankRows[i].accountNo}
+              value={bankRows[i].account_number}
               onChange={(e) => handleAccountNoChange(e, i)}
             />
 
             <FieldContainer
               label="IFSC "
-              value={bankRows[i].ifscCode}
+              value={bankRows[i].ifcs}
               onChange={(e) => handleIFSCChange(e, i)}
             />
 
             <FieldContainer
               label="UPI ID "
-              value={bankRows[i].UPIid}
+              value={bankRows[i].upi_id}
               onChange={(e) => handleUPIidChange(e, i)}
             />
 
             <FieldContainer
               label={"Registered Mobile Number"}
-              value={bankRows[i].registeredMobileNo}
+              value={bankRows[i].registered_number}
               required={false}
               type="number"
               onChange={(e) => handleRegisteredMobileChange(e, i)}
@@ -1395,9 +1384,16 @@ const VendorMaster = () => {
                   value: option._id,
                 }))}
                 required={true}
+                // value={{
+                //   value: link.link_type,
+                //   label: link._id,
+                // }}
                 value={{
-                  value: link.link_type,
-                  label: link._id,
+                  value: link.type,
+                  label:
+                    whatsappLinkType?.data?.find(
+                      (role) => role._id === link.type
+                    )?.link_type || "",
                 }}
                 onChange={(e) => {
                   let updatedLinks = [...whatsappLink];

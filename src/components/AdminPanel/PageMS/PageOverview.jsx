@@ -6,7 +6,13 @@ import DeleteButton from "../DeleteButton";
 import { Link, useNavigate } from "react-router-dom";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import Box from "@mui/material/Box";
-import { Stack, Switch, Typography } from "@mui/material";
+import {
+  Autocomplete,
+  Stack,
+  Switch,
+  TextField,
+  Typography,
+} from "@mui/material";
 import CircularProgress from "@mui/material/CircularProgress";
 // import ContentCopyOutlinedIcon from "@mui/icons-material/ContentCopyOutlined";
 // import CopyAllOutlinedIcon from "@mui/icons-material/CopyAllOutlined";
@@ -181,18 +187,20 @@ const PageOverview = () => {
         };
       });
 
-        const addPricesToParent = (dataArray) => {
-          return dataArray.map(item => {
-              item.purchase_price.forEach(priceObj => {
-                  // const keyName = `price_${priceObj.price_type_id}`;
-                  const keyName = allPriceTypeList?.find((d) => d.price_type_id == priceObj.price_type_id)?.price_type;
-                  item[keyName] = priceObj.price;
-              });
-              // delete item.purchase_price;
-              return item;
+      const addPricesToParent = (dataArray) => {
+        return dataArray.map((item) => {
+          item.purchase_price.forEach((priceObj) => {
+            // const keyName = `price_${priceObj.price_type_id}`;
+            const keyName = allPriceTypeList?.find(
+              (d) => d.price_type_id == priceObj.price_type_id
+            )?.price_type;
+            item[keyName] = priceObj.price;
           });
+          // delete item.purchase_price;
+          return item;
+        });
       };
-    
+
       const updatedData = addPricesToParent(data);
 
       setVendorTypes(updatedData);
@@ -466,7 +474,7 @@ const PageOverview = () => {
       renderCell: ({ row }) => {
         return (
           <div>
-            {row.purchase_price.length>0 && (
+            {row.purchase_price.length > 0 && (
               <button
                 title="Price"
                 onClick={handlePriceClick(row)}
@@ -1268,7 +1276,7 @@ const PageOverview = () => {
                     </Link>
                   </div>
                 </div>
-                <div className="row my-2">
+                {/* <div className="row my-2">
                   {platformData?.map((item, i) => {
                     return (
                       <div key={i} className="col-md-2">
@@ -1294,9 +1302,37 @@ const PageOverview = () => {
                       </div>
                     );
                   })}
+                </div> */}
+
+                <div className="mt-2">
+                  <h4>Platform</h4>
+                  <Autocomplete
+                    id="platform-autocomplete"
+                    options={platformData}
+                    getOptionLabel={(option) => {
+                      const count = vendorTypes.filter(
+                        (d) => d.platform_id == option._id
+                      ).length;
+                      return `${option.platform_name} (${count})`;
+                    }}
+                    style={{ width: 300 }}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        label="Platform"
+                        variant="outlined"
+                      />
+                    )}
+                    onChange={(event, newValue) => {
+                      let result = vendorTypes.filter(
+                        (d) => d.platform_id == newValue._id
+                      );
+                      setFilterData(result);
+                    }}
+                  />
                 </div>
                 <div>
-                  {[
+                  {/* {[
                     ...new Set(
                       vendorTypes.map((item) => {
                         return item?.ownership_type;
@@ -1324,8 +1360,8 @@ const PageOverview = () => {
                         )
                       </button>
                     );
-                  })}
-                  <div className="mt-2">
+                  })} */}
+                  {/* <div className="mt-2">
                     <h4>Page Status</h4>
 
                     {[
@@ -1357,8 +1393,77 @@ const PageOverview = () => {
                         </button>
                       );
                     })}
-                  </div>
+                  </div> */}
+
                   <div className="mt-2">
+                    <h4>Ownership Type</h4>
+                    <Autocomplete
+                      id="ownership-type-autocomplete"
+                      options={[
+                        ...new Set(
+                          vendorTypes.map((item) => {
+                            return item?.ownership_type;
+                          })
+                        ),
+                      ]}
+                      getOptionLabel={(option) => {
+                        const count = vendorTypes.filter(
+                          (d) => d.ownership_type == option
+                        ).length;
+                        return `${option} (${count})`;
+                      }}
+                      style={{ width: 300 }}
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          label="Ownership Type"
+                          variant="outlined"
+                        />
+                      )}
+                      onChange={(event, newValue) => {
+                        let result = vendorTypes.filter(
+                          (d) => d.ownership_type == newValue
+                        );
+                        setFilterData(result);
+                      }}
+                    />
+                  </div>
+
+                  <div className="mt-2">
+                    <h4>Page Status</h4>
+                    <Autocomplete
+                      id="page-status-autocomplete"
+                      options={[
+                        ...new Set(
+                          vendorTypes.map((item) => {
+                            return item?.page_status;
+                          })
+                        ),
+                      ]}
+                      getOptionLabel={(option) => {
+                        const count = vendorTypes.filter(
+                          (d) => d.page_status == option
+                        ).length;
+                        return `${option} (${count})`;
+                      }}
+                      style={{ width: 300 }}
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          label="Page Status"
+                          variant="outlined"
+                        />
+                      )}
+                      onChange={(event, newValue) => {
+                        let result = vendorTypes.filter(
+                          (d) => d.page_status == newValue
+                        );
+                        setFilterData(result);
+                      }}
+                    />
+                  </div>
+
+                  {/* <div className="mt-2">
                     <h4>Page Name Type</h4>
                     {[
                       ...new Set(
@@ -1389,8 +1494,42 @@ const PageOverview = () => {
                         </button>
                       );
                     })}
-                  </div>
+                  </div> */}
+
                   <div className="mt-2">
+                    <h4>Page Name Type</h4>
+                    <Autocomplete
+                      id="pagename-type-autocomplete"
+                      options={[
+                        ...new Set(
+                          vendorTypes.map((item) => {
+                            return item?.page_name_type;
+                          })
+                        ),
+                      ]}
+                      getOptionLabel={(option) => {
+                        const count = vendorTypes.filter(
+                          (d) => d.page_name_type == option
+                        ).length;
+                        return `${option} (${count})`;
+                      }}
+                      style={{ width: 300 }}
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          label="Page Name Type"
+                          variant="outlined"
+                        />
+                      )}
+                      onChange={(event, newValue) => {
+                        let result = vendorTypes.filter(
+                          (d) => d.page_name_type == newValue
+                        );
+                        setFilterData(result);
+                      }}
+                    />
+                  </div>
+                  {/* <div className="mt-2">
                     <h4>Closed By</h4>
                     {[
                       ...new Set(
@@ -1426,8 +1565,44 @@ const PageOverview = () => {
                         </button>
                       );
                     })}
-                  </div>
+                  </div> */}
+
                   <div className="mt-2">
+                    <h4>Closed By</h4>
+                    <Autocomplete
+                      id="closedby-autocomplete"
+                      options={[
+                        ...new Set(
+                          vendorTypes.map((item) => {
+                            return item?.page_closed_by;
+                          })
+                        ),
+                      ]}
+                      getOptionLabel={(option) => {
+                        const users = user?.find((e) => e.user_id == option);
+                        const count = vendorTypes.filter(
+                          (d) => d.page_closed_by == option
+                        ).length;
+                        return `${users?.user_name} (${count})`;
+                      }}
+                      style={{ width: 300 }}
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          label="Closed By"
+                          variant="outlined"
+                        />
+                      )}
+                      onChange={(event, newValue) => {
+                        let result = vendorTypes.filter(
+                          (d) => d.page_closed_by == newValue
+                        );
+                        setFilterData(result);
+                      }}
+                    />
+                  </div>
+
+                  {/* <div className="mt-2">
                     <h4>Category</h4>
                     {[
                       ...new Set(
@@ -1463,8 +1638,49 @@ const PageOverview = () => {
                         </button>
                       );
                     })}
-                  </div>
+                  </div> */}
+
+                  {/* import Autocomplete from '@mui/material/Autocomplete';
+import TextField from '@mui/material/TextField';
+
+// ... */}
+
                   <div className="mt-2">
+                    <h4>Category</h4>
+                    <Autocomplete
+                      id="category-autocomplete"
+                      options={[
+                        ...new Set(
+                          vendorTypes.map((item) => {
+                            return item?.page_catg_id;
+                          })
+                        ),
+                      ]}
+                      getOptionLabel={(option) => {
+                        const category = cat?.find((e) => e._id == option);
+                        const count = vendorTypes.filter(
+                          (d) => d.page_catg_id == option
+                        ).length;
+                        return `${category?.page_category} (${count})`;
+                      }}
+                      style={{ width: 300 }}
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          label="Category"
+                          variant="outlined"
+                        />
+                      )}
+                      onChange={(event, newValue) => {
+                        let result = vendorTypes.filter(
+                          (d) => d.page_catg_id == newValue
+                        );
+                        setFilterData(result);
+                      }}
+                    />
+                  </div>
+
+                  {/* <div className="mt-2">
                     <h4>Ownership</h4>
                     {[
                       ...new Set(
@@ -1495,6 +1711,40 @@ const PageOverview = () => {
                         </button>
                       );
                     })}
+                  </div> */}
+
+                  <div className="mt-2">
+                    <h4>Ownership</h4>
+                    <Autocomplete
+                      id="ownership-autocomplete"
+                      options={[
+                        ...new Set(
+                          vendorTypes.map((item) => {
+                            return item?.ownership_type;
+                          })
+                        ),
+                      ]}
+                      getOptionLabel={(option) => {
+                        const count = vendorTypes.filter(
+                          (d) => d.ownership_type == option
+                        ).length;
+                        return `${option} (${count})`;
+                      }}
+                      style={{ width: 300 }}
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          label="Ownership"
+                          variant="outlined"
+                        />
+                      )}
+                      onChange={(event, newValue) => {
+                        let result = vendorTypes.filter(
+                          (d) => d.ownership_type == newValue
+                        );
+                        setFilterData(result);
+                      }}
+                    />
                   </div>
                   <br />
                   <hr />

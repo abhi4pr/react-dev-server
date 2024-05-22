@@ -1,11 +1,11 @@
 import React from "react";
 import Select from "react-select";
 
-const DynamicSelect = ({ data, value, onChange, cols, lable, astric }) => {
+const DynamicSelect = ({ data, value, onChange, cols, label, astric }) => {
   return (
     <div className={`form-group col-${cols}`}>
       <label className="form-label">
-        {lable} {astric === true && <sup style={{ color: "red" }}>*</sup>}
+        {label} {astric === true && <sup style={{ color: "red" }}>*</sup>}
       </label>
       <Select
         className=""

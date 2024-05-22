@@ -38,9 +38,10 @@ const VendorOverview = () => {
 
   const getData = () => {
     setLoading(true);
-    axios.get(baseUrl + "vendorAllData").then((res) => {
-      setVendorTypes(res.data.tmsVendorkMastList);
-      setFilterData(res.data.tmsVendorkMastList);
+    // axios.get(baseUrl + "vendorAllData").then((res) => {
+    axios.get(baseUrl + "v1/vendor_data").then((res) => {
+      setVendorTypes(res.data.data);
+      setFilterData(res.data.data);
       setLoading(false);
     });
     axios.get(baseUrl + "getAllVendor").then((res) => {
@@ -64,7 +65,7 @@ const VendorOverview = () => {
 
   useEffect(() => {
     const result = vendorTypes?.filter((d) => {
-      return d.vendorMast_name.toLowerCase().match(search.toLowerCase());
+      return d.vendor_name.toLowerCase().match(search.toLowerCase());
     });
     setFilterData(result);
     setData(result);
@@ -92,7 +93,7 @@ const VendorOverview = () => {
       renderCell: (params) => <div>{filterData.indexOf(params.row) + 1}</div>,
     },
     {
-      field: "vendorMast_name",
+      field: "vendor_name",
       headerName: "Vendor Name",
       width: 200,
       // editable: true,

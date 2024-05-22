@@ -47,10 +47,6 @@ const AllTransactions = () => {
   const [sameCustomerData, setSameCustomerData] = useState([]);
   const [dateFilter, setDateFilter] = useState("");
 
-  // const [priorityFilter, setPriorityFilter] = useState("");
-  // const [requestAmountFilter, setRequestAmountFilter] = useState("");
-  // const [requestedAmountField, setRequestedAmountField] = useState("");
-
   function getData() {
     axios.post(baseUrl + "add_php_payment_acc_data_in_node").then((res) => {});
     axios.get(baseUrl + "get_all_php_finance_data").then((res) => {
@@ -258,6 +254,8 @@ const AllTransactions = () => {
   const rejectedCount = filterData.filter(
     (item) => item.payment_approval_status === "2"
   ).length;
+
+  // Rejected Data------------
 
   const sameCustomerColumn = [
     {
@@ -747,15 +745,21 @@ const AllTransactions = () => {
   ];
 
   const handlePendingClick = () => {
-    const filtered = datas.filter((item) => item.payment_approval_status === 0);
+    const filtered = datas.filter(
+      (item) => item.payment_approval_status === "0"
+    );
     setFilterData(filtered);
   };
   const handleApprovedClick = () => {
-    const filtered = datas.filter((item) => item.payment_approval_status === 1);
+    const filtered = datas.filter(
+      (item) => item.payment_approval_status === "1"
+    );
     setFilterData(filtered);
   };
   const handleRejectedClick = () => {
-    const filtered = datas.filter((item) => item.payment_approval_status === 2);
+    const filtered = datas.filter(
+      (item) => item.payment_approval_status === "2"
+    );
     setFilterData(filtered);
   };
 
@@ -984,7 +988,7 @@ const AllTransactions = () => {
             </div>
           </div>
         </div>
-        <div className="col-xl-4 col-lg-4 col-md-4 col-sm-12 col-12">
+        {/* <div className="col-xl-4 col-lg-4 col-md-4 col-sm-12 col-12">
           <div className="card">
             <div className="card-header">
               <h5 className="card-title w-100 flexCenterBetween">
@@ -1010,7 +1014,7 @@ const AllTransactions = () => {
               </h4>
             </div>
           </div>
-        </div>
+        </div> */}
         <div className="col-xl-4 col-lg-4 col-md-4 col-sm-12 col-12">
           <div className="card">
             <div className="card-header">
@@ -1282,7 +1286,7 @@ const AllTransactions = () => {
           <div className="card" style={{ height: "600px" }}>
             <div className="card-body thm_table">
               <DataGrid
-                rows={filterData.filter(
+                rows={filterData?.filter(
                   (data) =>
                     data.payment_approval_status === "1" ||
                     data.payment_approval_status === "2"

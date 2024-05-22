@@ -6,10 +6,10 @@ const initialState = {
   showTagCategoriesModal: false,
   showPageHelathColumn: false,
   showWhatsappModal: false,
-  whatsappLink:[],
+  whatsappLink: [],
   venodrRowData: [],
   showPageModal: false,
-  showVendorNotAssignedModal: false
+  showVendorNotAssignedModal: false,
 };
 
 const pageOverviewSlice = createSlice({
@@ -28,35 +28,49 @@ const pageOverviewSlice = createSlice({
     setPlatform(state, action) {
       state.platforms = action.payload;
     },
-    setShowPageHealthColumn(state,action){
+    setShowPageHealthColumn(state, action) {
       state.showPageHelathColumn = action.payload;
     },
-    setShowWhatsappModal(state){
-      state.showWhatsappModal = true
+    setShowWhatsappModal(state) {
+      state.showWhatsappModal = true;
     },
-    setCloseWhatsappModal(state){
-      state.showWhatsappModal = false
+    setCloseWhatsappModal(state) {
+      state.showWhatsappModal = false;
     },
-    setWhatsappLink(state,action){
-      state.whatsappLink = action.payload
+    setWhatsappLink(state, action) {
+      state.whatsappLink = action.payload;
     },
-    setVendorRowData(state,action){
-      state.venodrRowData = action.payload
+    setVendorRowData(state, action) {
+      state.venodrRowData = action.payload;
     },
-    setShowPageModal(state){
-      state.showPageModal = true
+    setShowPageModal(state) {
+      state.showPageModal = true;
     },
-    setClosePageModal(state){
-      state.showPageModal = false
+    setClosePageModal(state) {
+      state.showPageModal = false;
     },
-    setShowVendorNotAssignedModal(state){
-      state.showVendorNotAssignedModal = true
+    setShowVendorNotAssignedModal(state) {
+      state.showVendorNotAssignedModal = true;
     },
-    setCloseVendorNotAssignedModal(state){
-      state.showVendorNotAssignedModal = false
+    setCloseVendorNotAssignedModal(state) {
+      state.showVendorNotAssignedModal = false;
     },
   },
 });
 
-export const { setTagCategories , closeTagCategoriesModal , openTagCategoriesModal, setPlatform, setShowPageHealthColumn, setShowWhatsappModal,setCloseWhatsappModal,setWhatsappLink,setVendorRowData, setShowPageModal,setClosePageModal,setShowVendorNotAssignedModal,setCloseVendorNotAssignedModal } = pageOverviewSlice.actions;
+export const {
+  setTagCategories,
+  closeTagCategoriesModal,
+  openTagCategoriesModal,
+  setPlatform,
+  setShowPageHealthColumn,
+  setShowWhatsappModal,
+  setCloseWhatsappModal,
+  setWhatsappLink,
+  setVendorRowData,
+  setShowPageModal,
+  setClosePageModal,
+  setShowVendorNotAssignedModal,
+  setCloseVendorNotAssignedModal,
+} = pageOverviewSlice.actions;
 export default pageOverviewSlice.reducer;

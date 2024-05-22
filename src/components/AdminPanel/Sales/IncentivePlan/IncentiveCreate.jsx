@@ -92,7 +92,7 @@ const IncentiveCreate = () => {
           />
         </div>
         <DynamicSelect
-          lable="Incentive Type"
+          label="Incentive Type"
           astric={true}
           data={IncentiveTypeData}
           value={incentiveType}

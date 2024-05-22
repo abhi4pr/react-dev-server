@@ -76,7 +76,7 @@ export default function PaymentDone() {
 
       axios
         .get(
-          "https://purchase.creativefuel.io/webservices/RestController.php?view=getpaymentrequest"
+          "https://purchase.creativefuel.io/webservices/RestController.php?view=getpaymentrequestpaid"
         )
         .then((res) => {
           setPhpData(res.data.body);
@@ -120,7 +120,7 @@ export default function PaymentDone() {
 
     axios
       .get(
-        "https://purchase.creativefuel.io//webservices/RestController.php?view=getpaymentrequestremind"
+        "https://purchase.creativefuel.io//webservices/RestController.php?view=getpaymentrequest"
       )
       .then((res) => {
         setPhpRemainderData(res.data.body);
@@ -222,16 +222,6 @@ export default function PaymentDone() {
     const diffDays = Math.round(Math.abs((firstDate - secondDate) / oneDay));
 
     return diffDays;
-  }
-
-  function calculateHours(date1, date2) {
-    const oneHour = 60 * 60 * 1000; // minutes * seconds * milliseconds
-    const firstDate = new Date(date1);
-    const secondDate = new Date(date2);
-
-    const diffHours = Math.round(Math.abs((firstDate - secondDate) / oneHour));
-
-    return diffHours;
   }
 
   function calculateHours(date1, date2) {
@@ -658,9 +648,7 @@ export default function PaymentDone() {
       headerName: "Aging",
       width: 150,
       renderCell: (params) => {
-        return (
-          <p> {calculateDays(params.row.request_date, new Date())} Days</p>
-        );
+        return <p> {params.row.aging} Days</p>;
       },
     },
     {
@@ -687,12 +675,26 @@ export default function PaymentDone() {
       },
     },
   ];
+
+  const getStatusText = (status) => {
+    switch (status) {
+      case "0":
+        return "Paid";
+      case "1":
+        return "Discard";
+      case "2":
+        return "Partial";
+      default:
+        return "";
+    }
+  };
   const columns = [
     {
       field: "S.NO",
       headerName: "S.NO",
       width: 90,
       editable: false,
+      valueGetter: (params) => filterData.indexOf(params.row) + 1,
       renderCell: (params) => {
         const rowIndex = filterData.indexOf(params.row);
         return <div>{rowIndex + 1}</div>;
@@ -715,7 +717,7 @@ export default function PaymentDone() {
         const imgUrl = `https://purchase.creativefuel.io/${params.row.invc_img}`;
         return isPdf ? (
           <div
-            style={{ position: "relative" }}
+            style={{ position: "relative", overflow: "hidden", height: "40px" }}
             onClick={() => {
               console.log("clicked");
               setOpenImageDialog(true);
@@ -793,6 +795,12 @@ export default function PaymentDone() {
       field: "name",
       headerName: "Requested By",
       width: 150,
+      valueGetter: (params) => {
+        const reminder = phpRemainderData.filter(
+          (item) => item.request_id == params.row.request_id
+        );
+        return reminder.length;
+      },
       renderCell: (params) => {
         const reminder = phpRemainderData.filter(
           (item) => item.request_id == params.row.request_id
@@ -853,6 +861,14 @@ export default function PaymentDone() {
       field: "total_paid",
       headerName: "Total Paid",
       width: 150,
+      valueGetter: (params) => {
+        const totalPaid = nodeData
+          .filter(
+            (e) => e.vendor_name === params.row.vendor_name && e.status == 1
+          )
+          .reduce((acc, item) => acc + +item.payment_amount, 0);
+        return totalPaid;
+      },
       renderCell: (params) => {
         return nodeData.filter((e) => e.vendor_name === params.row.vendor_name)
           .length > 0 ? (
@@ -885,6 +901,35 @@ export default function PaymentDone() {
       field: "F.Y",
       headerName: "F.Y",
       width: 150,
+      valueGetter: (params) => {
+        const isCurrentMonthGreaterThanMarch = new Date().getMonth() + 1 > 3;
+        const currentYear = new Date().getFullYear();
+        const startDate = new Date(
+          `04/01/${
+            isCurrentMonthGreaterThanMarch ? currentYear : currentYear - 1
+          }`
+        );
+        const endDate = new Date(
+          `03/31/${
+            isCurrentMonthGreaterThanMarch ? currentYear + 1 : currentYear
+          }`
+        );
+        const dataFY = nodeData.filter((e) => {
+          const paymentDate = new Date(e.request_date);
+          return (
+            paymentDate >= startDate &&
+            paymentDate <= endDate &&
+            e.vendor_name === params.row.vendor_name &&
+            e.status !== 0 &&
+            e.status !== 2
+          );
+        });
+        const totalFY = dataFY.reduce(
+          (acc, item) => acc + parseFloat(item.payment_amount),
+          0
+        );
+        return totalFY;
+      },
       renderCell: (params) => {
         const isCurrentMonthGreaterThanMarch = new Date().getMonth() + 1 > 3;
         const currentYear = new Date().getFullYear();
@@ -935,6 +980,8 @@ export default function PaymentDone() {
     {
       field: "Pan Img",
       headerName: "Pan Img",
+      valueGetter: (params) =>
+        params?.row?.pan_img.includes("uploads") ? params?.row?.pan_img : "NA",
       renderCell: (params) => {
         const ImgUrl = `https://purchase.creativefuel.io/${params?.row?.pan_img}`;
         return params?.row?.pan_img?.includes("uploads") ? (
@@ -1064,18 +1111,25 @@ export default function PaymentDone() {
       headerName: "Aging",
       width: 150,
       renderCell: (params) => {
-        return (
-          <p>
-            {" "}
-            {Math.round(
-              (
-                calculateHours(params.row.request_date, new Date()) / 24
-              ).toFixed(1)
-            )}{" "}
-            Days
-          </p>
-        );
+        return <p> {params.row.aging} Days</p>;
       },
+    },
+    {
+      field: "Status",
+      headerName: "Status",
+      width: 150,
+      valueGetter: (params) => getStatusText(params.row.status),
+      renderCell: (params) => (
+        <div>
+          {params.row.status === "1"
+            ? "Paid"
+            : params.row.status === "2"
+            ? "Discard"
+            : params.row.status === "3"
+            ? "Partial"
+            : ""}
+        </div>
+      ),
     },
     // {
     //   field: "Aging (in hours)",
@@ -1090,6 +1144,7 @@ export default function PaymentDone() {
     {
       field: "gstHold",
       headerName: "GST Hold",
+      width: 150,
       renderCell: (params) => {
         return params.row.gstHold == 1 ? "Yes" : "No";
       },
@@ -1097,6 +1152,7 @@ export default function PaymentDone() {
     {
       field: "TDSDeduction",
       headerName: "TDS Deduction",
+      width: 150,
       renderCell: (params) => {
         return params.row.TDSDeduction == 1 ? "Yes" : "No";
       },
@@ -1592,7 +1648,7 @@ export default function PaymentDone() {
                 pageSize={5}
                 rowsPerPageOptions={[5]}
                 disableSelectionOnClick
-                checkboxSelection
+                // checkboxSelection
                 slots={{ toolbar: GridToolbar }}
                 slotProps={{
                   toolbar: {
@@ -1600,11 +1656,11 @@ export default function PaymentDone() {
                   },
                 }}
                 getRowId={(row) => filterData?.indexOf(row)}
-                onRowSelectionModelChange={(rowIds) => {
-                  handleRowSelectionModelChange(rowIds);
-                  console.log(rowIds, "IDS");
-                }}
-                rowSelectionModel={rowSelectionModel}
+                // onRowSelectionModelChange={(rowIds) => {
+                //   handleRowSelectionModelChange(rowIds);
+                //   console.log(rowIds, "IDS");
+                // }}
+                // rowSelectionModel={rowSelectionModel}
               />
               {openImageDialog && (
                 <ImageView

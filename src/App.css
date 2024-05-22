@@ -1495,3 +1495,7 @@ label.checkbox-inline.propscss {
   padding: 8px 0px;
   line-height: 1.1rem;
 }
+
+.css-o9k5xi-MuiInputBase-root-MuiOutlinedInput-root.Mui-error .MuiOutlinedInput-notchedOutline{
+  border-color: rgb(225, 225, 225) !important;
+}

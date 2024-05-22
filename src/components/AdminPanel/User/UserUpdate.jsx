@@ -23,6 +23,7 @@ import { ToastContainer } from "react-toastify";
 import IndianBankList from "../../../assets/js/IndianBankList";
 import IndianStatesMui from "../../ReusableComponents/IndianStatesMui";
 import IndianCitiesMui from "../../ReusableComponents/IndianCitiesMui";
+import { Line, Circle } from "rc-progress";
 
 const castOption = ["General", "OBC", "SC", "ST"];
 const colourOptions = [
@@ -1401,345 +1402,355 @@ const UserUpdate = () => {
 
   const genralFields = (
     <>
-      <div className="personal_header">Personal Details</div>
-      <FieldContainer
-        label="Full Name"
-        astric={true}
-        fieldGrid={3}
-        value={username}
-        onChange={handleFullNameChange}
-      />
-      <FieldContainer
-        label="Personal Email"
-        astric={true}
-        type="email"
-        fieldGrid={3}
-        required={false}
-        value={personalEmail}
-        onChange={(e) => setPersonalEmail(e.target.value)}
-      />
-      <FieldContainer
-        label="Personal Contact "
-        astric={true}
-        type="number"
-        fieldGrid={3}
-        value={personalContact}
-        required={false}
-        onChange={handlePersonalContactChange}
-        onBlur={handleContentBlur}
-      />
-      {isContactTouched1 && !isValidcontact1 && (
-        <p style={{ color: "red" }}>*Please enter a valid Number</p>
-      )}
-      <ContactNumberReact
-        astric={true}
-        label="Alternate Contact"
-        parentComponentContact={alternateContact}
-        setParentComponentContact={setAlternateContact}
-      />
-      <div className="form-group col-3">
-        <label className="form-label">
-          Gender <sup style={{ color: "red" }}>*</sup>
-        </label>
-        <Select
-          className=""
-          options={genderData?.map((option) => ({
-            value: `${option}`,
-            label: `${option}`,
-          }))}
-          value={{
-            value: gender,
-            label: `${gender}`,
-          }}
-          onChange={(e) => {
-            setGender(e.value);
-          }}
-          required
-        />
-      </div>
-      <div className="from-group col-3">
-        <label className="form-label">
-          DOB <sup style={{ color: "red" }}>*</sup>
-        </label>
-        <input
-          label="DOB"
-          type="date"
-          className="form-control"
-          value={dateOfBirth}
-          onChange={handleDateChange}
-        />
-      </div>
-      {dateOfBirth !== "" && (
-        <FieldContainer fieldGrid={3} label="Age" value={age} />
-      )}
-      {/* <FieldContainer
+      <div className="card">
+        <div className="card-header">Personal Details</div>
+        <div className="card-body row">
+          <FieldContainer
+            label="Full Name"
+            astric={true}
+            fieldGrid={3}
+            value={username}
+            onChange={handleFullNameChange}
+          />
+          <FieldContainer
+            label="Personal Email"
+            astric={true}
+            type="email"
+            fieldGrid={3}
+            required={false}
+            value={personalEmail}
+            onChange={(e) => setPersonalEmail(e.target.value)}
+          />
+          <FieldContainer
+            label="Personal Contact "
+            astric={true}
+            type="number"
+            fieldGrid={3}
+            value={personalContact}
+            required={false}
+            onChange={handlePersonalContactChange}
+            onBlur={handleContentBlur}
+          />
+          {isContactTouched1 && !isValidcontact1 && (
+            <p style={{ color: "red" }}>*Please enter a valid Number</p>
+          )}
+          <ContactNumberReact
+            astric={true}
+            label="Alternate Contact"
+            parentComponentContact={alternateContact}
+            setParentComponentContact={setAlternateContact}
+          />
+          <div className="form-group col-3">
+            <label className="form-label">
+              Gender <sup style={{ color: "red" }}>*</sup>
+            </label>
+            <Select
+              className=""
+              options={genderData?.map((option) => ({
+                value: `${option}`,
+                label: `${option}`,
+              }))}
+              value={{
+                value: gender,
+                label: `${gender}`,
+              }}
+              onChange={(e) => {
+                setGender(e.value);
+              }}
+              required
+            />
+          </div>
+          <div className="from-group col-3">
+            <label className="form-label">
+              DOB <sup style={{ color: "red" }}>*</sup>
+            </label>
+            <input
+              label="DOB"
+              type="date"
+              className="form-control"
+              value={dateOfBirth}
+              onChange={handleDateChange}
+            />
+          </div>
+          {dateOfBirth !== "" && (
+            <FieldContainer fieldGrid={3} label="Age" value={age} />
+          )}
+          {/* <FieldContainer
         label="Nationality"
         astric={true}
         fieldGrid={3}
         value={nationality}
         onChange={(e) => setNationality(e.target.value)}
       /> */}
-      <div className="form-group col-3">
-        <label className="form-label">
-          Nationality <sup style={{ color: "red" }}>*</sup>
-        </label>
-        <Select
-          className=""
-          options={nationalityData.map((option) => ({
-            value: `${option}`,
-            label: `${option}`,
-          }))}
-          value={{
-            value: nationality,
-            label: `${nationality}`,
-          }}
-          onChange={(e) => {
-            setNationality(e.value);
-          }}
-          required
-        />
+          <div className="form-group col-3">
+            <label className="form-label">
+              Nationality <sup style={{ color: "red" }}>*</sup>
+            </label>
+            <Select
+              className=""
+              options={nationalityData.map((option) => ({
+                value: `${option}`,
+                label: `${option}`,
+              }))}
+              value={{
+                value: nationality,
+                label: `${nationality}`,
+              }}
+              onChange={(e) => {
+                setNationality(e.value);
+              }}
+              required
+            />
+          </div>
+
+          <div className="form-group col-3">
+            <label className="form-label">
+              Maritial Status <sup style={{ color: "red" }}>*</sup>
+            </label>
+            <Select
+              className=""
+              options={maritialStatusData?.map((option) => ({
+                value: `${option}`,
+                label: `${option}`,
+              }))}
+              value={{
+                value: maritialStatus,
+                label: `${maritialStatus}`,
+              }}
+              onChange={(e) => {
+                setMaritialStatus(e.value);
+              }}
+              required={false}
+            />
+          </div>
+          {maritialStatus == "Married" && (
+            <FieldContainer
+              label="Spouse Name"
+              type="text"
+              fieldGrid={3}
+              value={spouseName}
+              onChange={(e) => setSpouseName(e.target.value)}
+              required={false}
+            />
+          )}
+          {maritialStatus == "Married" && (
+            <FieldContainer
+              label="Date Of Marriage"
+              type="date"
+              fieldGrid={3}
+              value={dateOfMarraige}
+              onChange={(e) => setDateOfMarraige(e.target.value)}
+              required={false}
+            />
+          )}
+        </div>
       </div>
 
-      <div className="form-group col-3">
-        <label className="form-label">
-          Maritial Status <sup style={{ color: "red" }}>*</sup>
-        </label>
-        <Select
-          className=""
-          options={maritialStatusData?.map((option) => ({
-            value: `${option}`,
-            label: `${option}`,
-          }))}
-          value={{
-            value: maritialStatus,
-            label: `${maritialStatus}`,
-          }}
-          onChange={(e) => {
-            setMaritialStatus(e.value);
-          }}
-          required={false}
-        />
-      </div>
-      {maritialStatus == "Married" && (
-        <FieldContainer
-          label="Spouse Name"
-          type="text"
-          fieldGrid={3}
-          value={spouseName}
-          onChange={(e) => setSpouseName(e.target.value)}
-          required={false}
-        />
-      )}
-      {maritialStatus == "Married" && (
-        <FieldContainer
-          label="Date Of Marriage"
-          type="date"
-          fieldGrid={3}
-          value={dateOfMarraige}
-          onChange={(e) => setDateOfMarraige(e.target.value)}
-          required={false}
-        />
-      )}
       {/* Other Info Inputs------------------------End------------ */}
 
       {/* Official Info Inputs------------------------Start------------ */}
-      <div className="personal_header">Official Details</div>
-      <div className="form-group col-3">
-        <label className="form-label">
-          Job Type <sup style={{ color: "red" }}>*</sup>
-        </label>
-        <Select
-          className=""
-          options={jobTypeData?.map((option) => ({
-            value: `${option.job_type}`,
-            label: `${option.job_type}`,
-          }))}
-          value={{
-            value: jobType,
-            label: `${jobType}`,
-          }}
-          onChange={(e) => {
-            setJobType(e.value);
-          }}
-          required
-        />
-      </div>
-      <div className="form-group col-3">
-        <label className="form-label">
-          Department Name <sup style={{ color: "red" }}>*</sup>
-        </label>
-        <Select
-          className=""
-          options={departmentdata?.map((option) => ({
-            value: option.dept_id,
-            label: `${option.dept_name}`,
-          }))}
-          value={{
-            value: department,
-            label:
-              departmentdata.find((user) => user.dept_id === department)
-                ?.dept_name || "",
-          }}
-          onChange={(e) => {
-            setDepartment(e.value);
-          }}
-          required
-        />
-      </div>
-      <div className="form-group col-3">
-        <label className="form-label">
-          Sub Department <sup style={{ color: "red" }}>*</sup>
-        </label>
-        <Select
-          className=""
-          options={subDepartmentData?.map((option) => ({
-            value: option.sub_dept_id,
-            label: `${option.sub_dept_name}`,
-          }))}
-          value={{
-            value: subDepartmentData,
-            label:
-              subDepartmentData.find(
-                (user) => user.sub_dept_id === subDepartment
-              )?.sub_dept_name || "",
-          }}
-          onChange={(e) => {
-            setSubDeparment(e.value);
-          }}
-          required
-        />
-      </div>
-      <div className="form-group col-3">
-        <label className="form-label">
-          Designation <sup style={{ color: "red" }}>*</sup>
-        </label>
-        <Select
-          className=""
-          options={designationData?.map((option) => ({
-            value: option.desi_id,
-            label: `${option.desi_name}`,
-          }))}
-          value={{
-            value: designation,
-            label:
-              designationData?.find((user) => user.desi_id == designation)
-                ?.desi_name || "",
-          }}
-          onChange={(e) => {
-            setDesignation(e.value);
-          }}
-          required
-        />
-      </div>
-      <div className="form-group col-3">
-        <label className="form-label">
-          Report L1 <sup style={{ color: "red" }}>*</sup>
-        </label>
-        <Select
-          className=""
-          options={usersData?.map((option) => ({
-            value: option.user_id,
-            label: `${option.user_name}`,
-          }))}
-          value={{
-            value: reportL1,
-            label:
-              usersData.find((user) => user.user_id === reportL1)?.user_name ||
-              "",
-          }}
-          onChange={(e) => {
-            setReportL1(e.value);
-          }}
-          required
-        />
-      </div>
-      <div className="form-group col-3">
-        <label className="form-label">Report L2</label>
-        <Select
-          className=""
-          options={usersData?.map((option) => ({
-            value: option.user_id,
-            label: `${option.user_name}`,
-          }))}
-          value={{
-            value: reportL2,
-            label:
-              usersData.find((user) => user.user_id === reportL2)?.user_name ||
-              "",
-          }}
-          onChange={(e) => {
-            setReportL2(e.value);
-          }}
-          required={false}
-        />
-      </div>
+      <div className="card">
+        <div className="card-header">Official Details</div>
+        <div className="card-body row">
+          <div className="form-group col-3">
+            <label className="form-label">
+              Job Type <sup style={{ color: "red" }}>*</sup>
+            </label>
+            <Select
+              className=""
+              options={jobTypeData?.map((option) => ({
+                value: `${option.job_type}`,
+                label: `${option.job_type}`,
+              }))}
+              value={{
+                value: jobType,
+                label: `${jobType}`,
+              }}
+              onChange={(e) => {
+                setJobType(e.value);
+              }}
+              required
+            />
+          </div>
+          <div className="form-group col-3">
+            <label className="form-label">
+              Department Name <sup style={{ color: "red" }}>*</sup>
+            </label>
+            <Select
+              className=""
+              options={departmentdata?.map((option) => ({
+                value: option.dept_id,
+                label: `${option.dept_name}`,
+              }))}
+              value={{
+                value: department,
+                label:
+                  departmentdata.find((user) => user.dept_id === department)
+                    ?.dept_name || "",
+              }}
+              onChange={(e) => {
+                setDepartment(e.value);
+              }}
+              required
+            />
+          </div>
+          <div className="form-group col-3">
+            <label className="form-label">
+              Sub Department <sup style={{ color: "red" }}>*</sup>
+            </label>
+            <Select
+              className=""
+              options={subDepartmentData?.map((option) => ({
+                value: option.sub_dept_id,
+                label: `${option.sub_dept_name}`,
+              }))}
+              value={{
+                value: subDepartmentData,
+                label:
+                  subDepartmentData.find(
+                    (user) => user.sub_dept_id === subDepartment
+                  )?.sub_dept_name || "",
+              }}
+              onChange={(e) => {
+                setSubDeparment(e.value);
+              }}
+              required
+            />
+          </div>
+          <div className="form-group col-3">
+            <label className="form-label">
+              Designation <sup style={{ color: "red" }}>*</sup>
+            </label>
+            <Select
+              className=""
+              options={designationData?.map((option) => ({
+                value: option.desi_id,
+                label: `${option.desi_name}`,
+              }))}
+              value={{
+                value: designation,
+                label:
+                  designationData?.find((user) => user.desi_id == designation)
+                    ?.desi_name || "",
+              }}
+              onChange={(e) => {
+                setDesignation(e.value);
+              }}
+              required
+            />
+          </div>
+          <div className="form-group col-3">
+            <label className="form-label">
+              Report L1 <sup style={{ color: "red" }}>*</sup>
+            </label>
+            <Select
+              className=""
+              options={usersData?.map((option) => ({
+                value: option.user_id,
+                label: `${option.user_name}`,
+              }))}
+              value={{
+                value: reportL1,
+                label:
+                  usersData.find((user) => user.user_id === reportL1)
+                    ?.user_name || "",
+              }}
+              onChange={(e) => {
+                setReportL1(e.value);
+              }}
+              required
+            />
+          </div>
+          <div className="form-group col-3">
+            <label className="form-label">Report L2</label>
+            <Select
+              className=""
+              options={usersData?.map((option) => ({
+                value: option.user_id,
+                label: `${option.user_name}`,
+              }))}
+              value={{
+                value: reportL2,
+                label:
+                  usersData.find((user) => user.user_id === reportL2)
+                    ?.user_name || "",
+              }}
+              onChange={(e) => {
+                setReportL2(e.value);
+              }}
+              required={false}
+            />
+          </div>
 
-      <div className="form-group col-3">
-        <label className="form-label">Report L3</label>
-        <Select
-          className=""
-          options={usersData?.map((option) => ({
-            value: option.user_id,
-            label: `${option.user_name}`,
-          }))}
-          value={{
-            value: reportL3,
-            label:
-              usersData.find((user) => user.user_id === reportL3)?.user_name ||
-              "",
-          }}
-          onChange={(e) => {
-            setReportL3(e.value);
-          }}
-          required={false}
-        />
-      </div>
-      <div className="form-group col-3">
-        <label className="form-label">
-          Role <sup style={{ color: "red" }}>*</sup>
-        </label>
-        <Select
-          options={roledata.map((option) => ({
-            value: option.role_id,
-            label: option.Role_name,
-          }))}
-          value={{
-            value: roles,
-            label:
-              roledata.find((role) => role.role_id === roles)?.Role_name || "",
-          }}
-          onChange={(e) => {
-            setRoles(e.value);
-          }}
-        ></Select>
-      </div>
-      <FieldContainer
-        label="Official Email"
-        type="email"
-        placeholder="Not Allocated"
-        fieldGrid={3}
-        required={false}
-        value={email}
-        onChange={handleEmailChange}
-      />
-      {!validEmail && <p style={{ color: "red" }}>*Please enter valid email</p>}
+          <div className="form-group col-3">
+            <label className="form-label">Report L3</label>
+            <Select
+              className=""
+              options={usersData?.map((option) => ({
+                value: option.user_id,
+                label: `${option.user_name}`,
+              }))}
+              value={{
+                value: reportL3,
+                label:
+                  usersData.find((user) => user.user_id === reportL3)
+                    ?.user_name || "",
+              }}
+              onChange={(e) => {
+                setReportL3(e.value);
+              }}
+              required={false}
+            />
+          </div>
+          <div className="form-group col-3">
+            <label className="form-label">
+              Role <sup style={{ color: "red" }}>*</sup>
+            </label>
+            <Select
+              options={roledata.map((option) => ({
+                value: option.role_id,
+                label: option.Role_name,
+              }))}
+              value={{
+                value: roles,
+                label:
+                  roledata.find((role) => role.role_id === roles)?.Role_name ||
+                  "",
+              }}
+              onChange={(e) => {
+                setRoles(e.value);
+              }}
+            ></Select>
+          </div>
+          <FieldContainer
+            label="Official Email"
+            type="email"
+            placeholder="Not Allocated"
+            fieldGrid={3}
+            required={false}
+            value={email}
+            onChange={handleEmailChange}
+          />
+          {!validEmail && (
+            <p style={{ color: "red" }}>*Please enter valid email</p>
+          )}
 
-      <FieldContainer
-        label="Official Contact"
-        type="number"
-        placeholder="Not Allocated"
-        fieldGrid={3}
-        value={contact}
-        required={true}
-        onChange={handleContactChange}
-        onBlur={handleContentBlur}
-      />
-      {(isContactTouched || contact?.length >= 10) && !isValidcontact && (
-        <p style={{ color: "red" }}>*Please enter a valid Number</p>
-      )}
-      <div className="col-xl-3 col-lg-3 col-md-3 col-sm-12">
-        <div className="form-group">
-          {/* <ps
+          <FieldContainer
+            label="Official Contact"
+            type="number"
+            placeholder="Not Allocated"
+            fieldGrid={3}
+            value={contact}
+            required={true}
+            onChange={handleContactChange}
+            onBlur={handleContentBlur}
+          />
+          {(isContactTouched || contact?.length >= 10) && !isValidcontact && (
+            <p style={{ color: "red" }}>*Please enter a valid Number</p>
+          )}
+          <div className="col-xl-3 col-lg-3 col-md-3 col-sm-12">
+            <div className="form-group">
+              {/* <ps
             className={
               loginResponse == "login id available"
                 ? "login-success1"
@@ -1748,91 +1759,91 @@ const UserUpdate = () => {
           >
             {loginResponse}
           </ps> */}
-          <label>
-            Login ID <sup style={{ color: "red" }}>*</sup>
-          </label>
-          <div className="input-group">
-            <input
-              className={`form-control ${
-                loginId
-                  ? loginResponse === "login id available"
-                    ? "login-success-border"
-                    : "login-error-border"
-                  : ""
-              }`}
-              value={loginId}
-              disabled
-              onChange={handleLoginIdChange}
-            />
-            <div className="input-group-append">
-              <button
-                className="btn btn-outline-primary"
-                onClick={generateLoginId}
-                type="button"
-              >
-                <AiOutlineReload />
-              </button>
+              <label>
+                Login ID <sup style={{ color: "red" }}>*</sup>
+              </label>
+              <div className="input-group">
+                <input
+                  className={`form-control ${
+                    loginId
+                      ? loginResponse === "login id available"
+                        ? "login-success-border"
+                        : "login-error-border"
+                      : ""
+                  }`}
+                  value={loginId}
+                  disabled
+                  onChange={handleLoginIdChange}
+                />
+                <div className="input-group-append">
+                  <button
+                    className="btn btn-outline-primary"
+                    onClick={generateLoginId}
+                    type="button"
+                  >
+                    <AiOutlineReload />
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
-        </div>
-      </div>
-      <div className="col-xl-3 col-lg-3 col-md-3 col-sm-12">
-        <div className="form-group">
-          <label>
-            Generate Password <sup style={{ color: "red" }}>*</sup>
-          </label>
-          <div className="input-group">
+          <div className="col-xl-3 col-lg-3 col-md-3 col-sm-12">
+            <div className="form-group">
+              <label>
+                Generate Password <sup style={{ color: "red" }}>*</sup>
+              </label>
+              <div className="input-group">
+                <input
+                  type="text"
+                  className="form-control"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                />
+                <div className="input-group-append">
+                  <button
+                    className="btn btn-outline-primary"
+                    onClick={generatePassword}
+                    type="button"
+                  >
+                    <i className="fa-solid fa-repeat"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="form-group col-3">
+            <label className="form-label">
+              Status <sup style={{ color: "red" }}>*</sup>
+            </label>
+            <Select
+              className=""
+              options={statusData?.map((option) => ({
+                value: `${option}`,
+                label: `${option}`,
+              }))}
+              value={{
+                value: userStatus,
+                label: `${userStatus}`,
+              }}
+              onChange={(e) => {
+                setUserStatus(e.value);
+              }}
+              required
+            />
+          </div>
+          <div className="from-group col-3">
+            <label className="form-label">
+              Joining Date <sup style={{ color: "red" }}>*</sup>
+            </label>
             <input
-              type="text"
+              type="date"
               className="form-control"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              value={joiningDate}
+              onChange={(e) => setJoiningDate(e.target.value)}
             />
-            <div className="input-group-append">
-              <button
-                className="btn btn-outline-primary"
-                onClick={generatePassword}
-                type="button"
-              >
-                <i className="fa-solid fa-repeat"></i>
-              </button>
-            </div>
           </div>
-        </div>
-      </div>
-      <div className="form-group col-3">
-        <label className="form-label">
-          Status <sup style={{ color: "red" }}>*</sup>
-        </label>
-        <Select
-          className=""
-          options={statusData?.map((option) => ({
-            value: `${option}`,
-            label: `${option}`,
-          }))}
-          value={{
-            value: userStatus,
-            label: `${userStatus}`,
-          }}
-          onChange={(e) => {
-            setUserStatus(e.value);
-          }}
-          required
-        />
-      </div>
-      <div className="from-group col-3">
-        <label className="form-label">
-          Joining Date <sup style={{ color: "red" }}>*</sup>
-        </label>
-        <input
-          type="date"
-          className="form-control"
-          value={joiningDate}
-          onChange={(e) => setJoiningDate(e.target.value)}
-        />
-      </div>
 
-      {/* {userStatus == "Resign" && (
+          {/* {userStatus == "Resign" && (
         <FieldContainer
           type="date"
           label="Date of Resign"
@@ -1841,17 +1852,18 @@ const UserUpdate = () => {
           onChange={(e) => setReleavingDate(e.target.value)}
         />
       )} */}
-
+        </div>
+      </div>
       <div style={{ display: "flex", justifyContent: "flex-end" }}>
         <button
           type="button"
-          className="btn btn-primary mr-2"
+          className="btn cmnbtn  btn-primary mr-2"
           onClick={handleSubmit}
         >
           Update
         </button>
         <button
-          className="btn btn-primary"
+          className="btn cmnbtn btn-primary"
           onClick={() => setActiveAccordionIndex((prev) => prev + 1)}
         >
           <ArrowForwardIosIcon />
@@ -1866,20 +1878,21 @@ const UserUpdate = () => {
   const otherFields = (
     <>
       {/* Other Info Inputs------------------------Start------------ */}
-      <div className="personal_header">Other Details</div>
-      {/* Current Address input-- */}
+      <div className="card">
+        <div className="card-header">Other Details</div>
+        {/* Current Address input-- */}
 
-      <div className="row">
-        <FieldContainer
-          label="Current Address"
-          fieldGrid={12}
-          astric={true}
-          value={currentAddress}
-          onChange={(e) => setCurrentAddress(e.target.value)}
-          required={false}
-        />
+        <div className=" card-body row">
+          <FieldContainer
+            label="Current Address"
+            fieldGrid={12}
+            astric={true}
+            value={currentAddress}
+            onChange={(e) => setCurrentAddress(e.target.value)}
+            required={false}
+          />
 
-        {/* <div className="form-group col-4">
+          {/* <div className="form-group col-4">
           <label className="form-label">
             Current City <sup style={{ color: "red" }}>*</sup>
           </label>
@@ -1908,60 +1921,70 @@ const UserUpdate = () => {
             onChange={(option) => setcurrentState(option ? option.value : null)}
           />
         </div> */}
-        <div className="form-group col-6 mt-3">
-          <IndianStatesMui
-            selectedState={currentState}
-            onChange={(option) => setcurrentState(option ? option : null)}
-          />
-        </div>
+          <div className="form-group col-3 mt-3">
+            <label className="form-label">
+              State / UT <sup className="form-error">*</sup>
+            </label>
 
-        <div className="form-group col-6 mt-3">
-          <IndianCitiesMui
-            selectedState={currentState}
-            selectedCity={currentCity}
-            onChange={(option) => setcurrentCity(option ? option : null)}
-          />
-        </div>
-
-        <FieldContainer
-          label="Current Pincode"
-          type="number"
-          astric={true}
-          fieldGrid={4}
-          maxLength={6}
-          value={currentPincode}
-          onChange={(e) => {
-            const value = e.target.value;
-            if (/^\d{0,6}$/.test(value)) {
-              setcurrentPincode(value);
-            }
-          }}
-          required={false}
-        />
-        {/*  Parmanent Address here------------ */}
-        <div className="board_form form_checkbox">
-          <label className="cstm_check" style={{ color: "red" }}>
-            Same as Current Addresss
-            <input
-              className="form-control"
-              type="checkbox"
-              checked={sameAsCurrent}
-              onChange={handleCheckboxChange}
+            <IndianStatesMui
+              selectedState={currentState}
+              onChange={(option) => setcurrentState(option ? option : null)}
             />
-            <span className="checkmark"></span>
-          </label>
-        </div>
-      </div>
-      <hr className="mb-3" />
-      <FieldContainer
-        label="Parmanent Address"
-        fieldGrid={12}
-        value={address}
-        onChange={(e) => setAddress(e.target.value)}
-        required={false}
-      />
+          </div>
 
-      {/* <div className="form-group col-4">
+          <div className="form-group col-3 mt-3">
+            <label className="form-label">
+              City <sup className="form-error">*</sup>
+            </label>
+            <IndianCitiesMui
+              selectedState={currentState}
+              selectedCity={currentCity}
+              onChange={(option) => setcurrentCity(option ? option : null)}
+            />
+          </div>
+          <div className="col-3 mt-3">
+            <FieldContainer
+              label="Current Pincode"
+              type="number"
+              astric={true}
+              fieldGrid={3}
+              maxLength={6}
+              value={currentPincode}
+              onChange={(e) => {
+                const value = e.target.value;
+                if (/^\d{0,6}$/.test(value)) {
+                  setcurrentPincode(value);
+                }
+              }}
+              required={false}
+            />
+          </div>
+
+          {/*  Parmanent Address here------------ */}
+          <div className="form_checkbox">
+            <label className="cstm_check" style={{ color: "red" }}>
+              Same as Current Addresss
+              <input
+                className="form-control"
+                type="checkbox"
+                checked={sameAsCurrent}
+                onChange={handleCheckboxChange}
+              />
+              <span className="checkmark"></span>
+            </label>
+          </div>
+        </div>
+        <hr className="mb-3" />
+        <div className=" body-padding row">
+          <FieldContainer
+            label="Parmanent Address"
+            fieldGrid={12}
+            value={address}
+            onChange={(e) => setAddress(e.target.value)}
+            required={false}
+          />
+
+          {/* <div className="form-group col-4">
         <label className="form-label">Parmanent City</label>
         <Select
           options={cityData?.map((city) => ({
@@ -1987,184 +2010,200 @@ const UserUpdate = () => {
           onChange={(option) => setState(option ? option.value : null)}
         />
       </div> */}
-      <div className="form-group col-4 mt-3">
-        <IndianStatesMui
-          selectedState={currentState}
-          onChange={(option) => setcurrentState(option ? option : null)}
-        />
+          <div className="form-group col-3 mt-3">
+            <label className="form-label">
+              State /UT <sup className="form-error">*</sup>
+            </label>
+
+            <IndianStatesMui
+              selectedState={currentState}
+              onChange={(option) => setcurrentState(option ? option : null)}
+            />
+          </div>
+
+          <div className="form-group col-3 mt-3">
+            <label className="form-label">
+              City <sup className="form-error">*</sup>
+            </label>
+
+            <IndianCitiesMui
+              selectedState={currentState}
+              selectedCity={currentCity}
+              onChange={(option) => setcurrentCity(option ? option : null)}
+            />
+          </div>
+          <div className="col-3 mt-3">
+            <FieldContainer
+              label="Parmanent Pincode"
+              type="number"
+              value={pincode}
+              fieldGrid={3}
+              maxLength={6}
+              onChange={(e) => {
+                const value = e.target.value;
+                if (/^\d{0,6}$/.test(value)) {
+                  setPincode(value);
+                }
+              }}
+              required={false}
+            />
+          </div>
+          <div className="form-group col-3 mt-3">
+            <label className="form-label">
+              Blood Group <sup style={{ color: "red" }}>*</sup>
+            </label>
+            <Select
+              className=""
+              options={bloodGroupData?.map((option) => ({
+                value: `${option}`,
+                label: `${option}`,
+              }))}
+              value={{
+                value: bloodGroup,
+                label: `${bloodGroup}`,
+              }}
+              onChange={(e) => {
+                setBloodGroup(e.value);
+              }}
+              required={false}
+            />
+          </div>
+          <div className="form-group col-3">
+            <label className="form-label">Hobbies</label>
+            <Select
+              isMulti
+              options={hobbiesData}
+              value={hobbies}
+              onChange={handleChange}
+              isClearable={true}
+              classNamePrefix="select"
+            />
+          </div>
+          <div className="form-group col-3">
+            <label className="form-label">
+              Spoken Languages <sup style={{ color: "red" }}>*</sup>
+            </label>
+            <Select
+              isMulti
+              name="langauages"
+              options={colourOptions}
+              className="basic-multi-select"
+              classNamePrefix="select"
+              value={tempLanguage}
+              onChange={handleLanguageSelect}
+              required={false}
+            />
+          </div>
+          <div className="form-group col-3">
+            <label className="form-label">Category</label>
+            <Select
+              className=""
+              options={castOption?.map((option) => ({
+                value: option,
+                label: `${option}`,
+              }))}
+              value={{
+                value: cast,
+                label: cast,
+              }}
+              onChange={(e) => {
+                setCast(e.value);
+              }}
+              required
+            />
+          </div>
+          <div style={{ display: "flex", justifyContent: "flex-end" }}>
+            <button
+              type="button"
+              className="btn cmnbtn btn-primary mr-2"
+              onClick={handleSubmitOtherDetails}
+            >
+              Submit Other Details
+            </button>
+          </div>
+        </div>
       </div>
 
-      <div className="form-group col-4 mt-3">
-        <IndianCitiesMui
-          selectedState={currentState}
-          selectedCity={currentCity}
-          onChange={(option) => setcurrentCity(option ? option : null)}
-        />
-      </div>
-      <FieldContainer
-        label="Parmanent Pincode"
-        type="number"
-        value={pincode}
-        fieldGrid={4}
-        maxLength={6}
-        onChange={(e) => {
-          const value = e.target.value;
-          if (/^\d{0,6}$/.test(value)) {
-            setPincode(value);
-          }
-        }}
-        required={false}
-      />
+      {/* </div> */}
 
-      <div className="form-group col-3">
-        <label className="form-label">
-          Blood Group <sup style={{ color: "red" }}>*</sup>
-        </label>
-        <Select
-          className=""
-          options={bloodGroupData?.map((option) => ({
-            value: `${option}`,
-            label: `${option}`,
-          }))}
-          value={{
-            value: bloodGroup,
-            label: `${bloodGroup}`,
-          }}
-          onChange={(e) => {
-            setBloodGroup(e.value);
-          }}
-          required={false}
-        />
-      </div>
-      <div className="form-group col-3">
-        <label className="form-label">Hobbies</label>
-        <Select
-          isMulti
-          options={hobbiesData}
-          value={hobbies}
-          onChange={handleChange}
-          isClearable={true}
-          classNamePrefix="select"
-        />
-      </div>
-      <div className="form-group col-3">
-        <label className="form-label">
-          Spoken Languages <sup style={{ color: "red" }}>*</sup>
-        </label>
-        <Select
-          isMulti
-          name="langauages"
-          options={colourOptions}
-          className="basic-multi-select"
-          classNamePrefix="select"
-          value={tempLanguage}
-          onChange={handleLanguageSelect}
-          required={false}
-        />
-      </div>
-      <div className="form-group col-3">
-        <label className="form-label">Category</label>
-        <Select
-          className=""
-          options={castOption?.map((option) => ({
-            value: option,
-            label: `${option}`,
-          }))}
-          value={{
-            value: cast,
-            label: cast,
-          }}
-          onChange={(e) => {
-            setCast(e.value);
-          }}
-          required
-        />
-      </div>
-      <div style={{ display: "flex", justifyContent: "flex-end" }}>
-        <button
-          type="button"
-          className="btn btn-primary mr-2"
-          onClick={handleSubmitOtherDetails}
-        >
-          Submit Other Details
-        </button>
-      </div>
       {/* Other Info Inputs------------------------End------------ */}
 
       {/* Bank Info Inputs------------------------Start------------ */}
-      <div className="personal_header">Bank Details</div>
-      {/* <FieldContainer
+      <div className="card">
+        <div className="card-header">Bank Details</div>
+        {/* <FieldContainer
         label="Bank Name"
         astric={true}
         value={bankName}
         onChange={(e) => setBankName(e.target.value)}
       /> */}
-      <div className="form-group col-6">
-        <label className="form-label">
-          Bank Name <sup style={{ color: "red" }}>*</sup>
-        </label>
-        <Select
-          options={IndianBankList}
-          onChange={(selectedOption) => {
-            setBankName(selectedOption ? selectedOption.value : null);
-          }}
-          isClearable
-          isSearchable
-          value={
-            bankName
-              ? IndianBankList.find((bank) => bank.value === bankName)
-              : null
-          }
-          getOptionLabel={(option) => option.label}
-          getOptionValue={(option) => option.value}
-          required
-        />
-      </div>
+        <div className="card-body row">
+          <div className="form-group col-6">
+            <label className="form-label">
+              Bank Name <sup style={{ color: "red" }}>*</sup>
+            </label>
+            <Select
+              options={IndianBankList}
+              onChange={(selectedOption) => {
+                setBankName(selectedOption ? selectedOption.value : null);
+              }}
+              isClearable
+              isSearchable
+              value={
+                bankName
+                  ? IndianBankList.find((bank) => bank.value === bankName)
+                  : null
+              }
+              getOptionLabel={(option) => option.label}
+              getOptionValue={(option) => option.value}
+              required
+            />
+          </div>
 
-      <div className="form-group col-3">
-        <label className="form-label">
-          Bank Type <sup style={{ color: "red" }}>*</sup>
-        </label>
-        <Select
-          className=""
-          options={bankTypeData.map((option) => ({
-            value: `${option}`,
-            label: `${option}`,
-          }))}
-          value={{
-            value: banktype,
-            label: `${banktype}`,
-          }}
-          onChange={(e) => {
-            setAccountType(e.value);
-          }}
-          required
-        />
-      </div>
-      <FieldContainer
-        label="Bank Account Number"
-        astric={true}
-        fieldGrid={3}
-        value={bankAccountNumber}
-        onChange={(e) => setBankAccountNumber(e.target.value)}
-      />
-      <FieldContainer
-        label="IFSC"
-        astric={true}
-        value={IFSC}
-        // onChange={(e) => setIFSC(e.target.value.toUpperCase())}
-        onChange={(e) => {
-          const inputValue = e.target.value.toUpperCase();
-          setIFSC(inputValue.slice(0, 11)); // Limiting the input to 11 characters
-        }}
-      />
-      <FieldContainer
-        label="Beneficiary"
-        value={beneficiary}
-        onChange={(e) => setBeneficiary(e.target.value)}
-      />
+          <div className="form-group col-3">
+            <label className="form-label">
+              Bank Type <sup style={{ color: "red" }}>*</sup>
+            </label>
+            <Select
+              className=""
+              options={bankTypeData.map((option) => ({
+                value: `${option}`,
+                label: `${option}`,
+              }))}
+              value={{
+                value: banktype,
+                label: `${banktype}`,
+              }}
+              onChange={(e) => {
+                setAccountType(e.value);
+              }}
+              required
+            />
+          </div>
+          <FieldContainer
+            label="Bank Account Number"
+            astric={true}
+            fieldGrid={3}
+            value={bankAccountNumber}
+            onChange={(e) => setBankAccountNumber(e.target.value)}
+          />
+          <FieldContainer
+            label="IFSC"
+            astric={true}
+            value={IFSC}
+            // onChange={(e) => setIFSC(e.target.value.toUpperCase())}
+            onChange={(e) => {
+              const inputValue = e.target.value.toUpperCase();
+              setIFSC(inputValue.slice(0, 11)); // Limiting the input to 11 characters
+            }}
+          />
+          <FieldContainer
+            label="Beneficiary"
+            value={beneficiary}
+            onChange={(e) => setBeneficiary(e.target.value)}
+          />
 
-      {/* <FieldContainer
+          {/* <FieldContainer
         label="Upload Proof *"
         type="file"
         multiple
@@ -2175,17 +2214,19 @@ const UserUpdate = () => {
         fieldGrid={6}
         required={true}
       /> */}
+        </div>
+      </div>
 
       <div style={{ display: "flex", justifyContent: "flex-end" }}>
         <button
           type="button"
-          className="btn btn-primary mr-2"
+          className="btn cmnbtn btn-primary mr-2"
           onClick={handleSubmitBank}
         >
           Submit Bank Details
         </button>
         <button
-          className="btn btn-primary"
+          className="btn cmnbtn btn-primary"
           onClick={() => setActiveAccordionIndex((prev) => prev + 1)}
         >
           <ArrowForwardIosIcon />
@@ -2198,163 +2239,170 @@ const UserUpdate = () => {
 
   const educationFamilyFieald = (
     <>
-      <div className="personal_header">Family Details</div>
-      {familyDetails?.map((detail, index) => (
-        <div key={index} mb={2}>
-          <div className="row">
-            {Object.keys(detail)?.map((key) => {
-              switch (key) {
-                // case "DOB":
-                //   return (
-                //     <FieldContainer
-                //       key={key}
-                //       fieldGrid={2}
-                //       type="date"
-                //       name={key}
-                //       label="Date of Birth"
-                //       value={
-                //         detail[key] ? detail[key].split("T")[0] : detail[key]
-                //       }
-                //       onChange={(e) => handleFamilyDetailsChange(index, e)}
-                //     />
-                //   );
+      <div className="card">
+        <div className="card-header">Family Details</div>
+        {familyDetails?.map((detail, index) => (
+          <div key={index} mb={2}>
+            <div className=" card-body row">
+              {Object.keys(detail)?.map((key) => {
+                switch (key) {
+                  // case "DOB":
+                  //   return (
+                  //     <FieldContainer
+                  //       key={key}
+                  //       fieldGrid={2}
+                  //       type="date"
+                  //       name={key}
+                  //       label="Date of Birth"
+                  //       value={
+                  //         detail[key] ? detail[key].split("T")[0] : detail[key]
+                  //       }
+                  //       onChange={(e) => handleFamilyDetailsChange(index, e)}
+                  //     />
+                  //   );
 
-                case "relation":
-                  return (
-                    <div className="form-group col-2">
-                      <label className="form-label">
-                        Relation <sup style={{ color: "red" }}>*</sup>
-                      </label>
-                      <Select
-                        className="basic-single"
-                        classNamePrefix="select"
-                        name={key}
-                        value={familyRelationList.find(
-                          (option) => option.value === detail[key]
-                        )}
-                        onChange={(selectedOption) =>
-                          handleFamilyDetailsChange(index, {
-                            target: {
-                              name: key,
-                              value: selectedOption ? selectedOption.value : "",
-                            },
-                          })
-                        }
-                        options={familyRelationList}
-                        isClearable={true}
-                        isSearchable={true}
-                      />
-                    </div>
-                  );
-
-                case "occupation":
-                  return (
-                    <div className="form-group col-2">
-                      <label className="form-label">
-                        Occupation <sup style={{ color: "red" }}>*</sup>
-                      </label>
-                      <Select
-                        className="basic-single"
-                        classNamePrefix="select"
-                        name={key}
-                        value={OccupationList.find(
-                          (option) => option.value === detail[key]
-                        )}
-                        onChange={(selectedOption) =>
-                          handleFamilyDetailsChange(index, {
-                            target: {
-                              name: key,
-                              value: selectedOption ? selectedOption.value : "",
-                            },
-                          })
-                        }
-                        options={OccupationList}
-                        isClearable={true}
-                        isSearchable={true}
-                      />
-                    </div>
-                  );
-
-                case "contact":
-                  return (
-                    <>
-                      <FieldContainer
-                        key={key}
-                        type="number"
-                        fieldGrid={2}
-                        name={key}
-                        label={familyFieldLabels[key]}
-                        value={detail[key]}
-                        onChange={(e) => handleFamilyDetailsChange(index, e)}
-                      />
-                      {familyValidationErrors[`contact-${index}`] && (
-                        <span style={{ color: "red" }}>
-                          {familyValidationErrors[`contact-${index}`]}
-                        </span>
-                      )}
-                    </>
-                  );
-
-                // case "annual_income":
-                //   return (
-                //     <FieldContainer
-                //       key={key}
-                //       type="number"
-                //       fieldGrid={2}
-                //       name={key}
-                //       label={familyFieldLabels[key]}
-                //       placeholder={familyFieldLabels[key]}
-                //       value={detail[key]}
-                //       onChange={(e) => handleFamilyDetailsChange(index, e)}
-                //     />
-                //   );
-
-                default:
-                  if (familyDisplayFields.includes(key)) {
+                  case "relation":
                     return (
-                      <FieldContainer
-                        key={key}
-                        fieldGrid={2}
-                        name={key}
-                        label={familyFieldLabels[key]}
-                        value={detail[key]}
-                        onChange={(e) => handleFamilyDetailsChange(index, e)}
-                      />
+                      <div className="form-group col-3">
+                        <label className="form-label">
+                          Relation <sup style={{ color: "red" }}>*</sup>
+                        </label>
+                        <Select
+                          className="basic-single"
+                          classNamePrefix="select"
+                          name={key}
+                          value={familyRelationList.find(
+                            (option) => option.value === detail[key]
+                          )}
+                          onChange={(selectedOption) =>
+                            handleFamilyDetailsChange(index, {
+                              target: {
+                                name: key,
+                                value: selectedOption
+                                  ? selectedOption.value
+                                  : "",
+                              },
+                            })
+                          }
+                          options={familyRelationList}
+                          isClearable={true}
+                          isSearchable={true}
+                        />
+                      </div>
                     );
-                  }
-              }
-            })}
-            {familyDetails?.length > 1 && (
-              <IconButton onClick={() => handleRemoveFamilyDetails(index)}>
-                <DeleteIcon />
-              </IconButton>
-            )}
+
+                  case "occupation":
+                    return (
+                      <div className="form-group col-3">
+                        <label className="form-label">
+                          Occupation <sup style={{ color: "red" }}>*</sup>
+                        </label>
+                        <Select
+                          className="basic-single"
+                          classNamePrefix="select"
+                          name={key}
+                          value={OccupationList.find(
+                            (option) => option.value === detail[key]
+                          )}
+                          onChange={(selectedOption) =>
+                            handleFamilyDetailsChange(index, {
+                              target: {
+                                name: key,
+                                value: selectedOption
+                                  ? selectedOption.value
+                                  : "",
+                              },
+                            })
+                          }
+                          options={OccupationList}
+                          isClearable={true}
+                          isSearchable={true}
+                        />
+                      </div>
+                    );
+
+                  case "contact":
+                    return (
+                      <>
+                        <FieldContainer
+                          key={key}
+                          type="number"
+                          fieldGrid={3}
+                          name={key}
+                          label={familyFieldLabels[key]}
+                          value={detail[key]}
+                          onChange={(e) => handleFamilyDetailsChange(index, e)}
+                        />
+                        {familyValidationErrors[`contact-${index}`] && (
+                          <span style={{ color: "red" }}>
+                            {familyValidationErrors[`contact-${index}`]}
+                          </span>
+                        )}
+                      </>
+                    );
+
+                  // case "annual_income":
+                  //   return (
+                  //     <FieldContainer
+                  //       key={key}
+                  //       type="number"
+                  //       fieldGrid={2}
+                  //       name={key}
+                  //       label={familyFieldLabels[key]}
+                  //       placeholder={familyFieldLabels[key]}
+                  //       value={detail[key]}
+                  //       onChange={(e) => handleFamilyDetailsChange(index, e)}
+                  //     />
+                  //   );
+
+                  default:
+                    if (familyDisplayFields.includes(key)) {
+                      return (
+                        <FieldContainer
+                          key={key}
+                          fieldGrid={3}
+                          name={key}
+                          label={familyFieldLabels[key]}
+                          value={detail[key]}
+                          onChange={(e) => handleFamilyDetailsChange(index, e)}
+                        />
+                      );
+                    }
+                }
+              })}
+              {familyDetails?.length > 1 && (
+                <IconButton onClick={() => handleRemoveFamilyDetails(index)}>
+                  <DeleteIcon />
+                </IconButton>
+              )}
+            </div>
+          </div>
+        ))}
+        <div className="card-body">
+          <div className="row">
+            <div className="col-12">
+              {familyDetails.length < 3 && (
+                <button
+                  onClick={handleAddFamilyDetails}
+                  variant="contained"
+                  className="btn cmnbtn btn-outline-primary me-2"
+                >
+                  Add More Family Details
+                </button>
+              )}
+            </div>
+          </div>
+
+          <div style={{ display: "flex", justifyContent: "flex-end" }}>
+            <button
+              type="button"
+              className="btn cmnbtn btn-primary mr-2"
+              onClick={handleSubmitFamily}
+            >
+              Submit Family Details
+            </button>
           </div>
         </div>
-      ))}
-
-      <div className="row">
-        <div className="col-12">
-          {familyDetails.length < 3 && (
-            <button
-              onClick={handleAddFamilyDetails}
-              variant="contained"
-              className="btn btn-outline-primary me-2"
-            >
-              Add More Family Details
-            </button>
-          )}
-        </div>
-      </div>
-
-      <div style={{ display: "flex", justifyContent: "flex-end" }}>
-        <button
-          type="button"
-          className="btn btn-primary mr-2"
-          onClick={handleSubmitFamily}
-        >
-          Submit Family Details
-        </button>
       </div>
       {/* Family Info Inputs------------------------End------------ */}
 
@@ -2374,54 +2422,56 @@ const UserUpdate = () => {
       </div> */}
 
       {/* Education Info Inputs------------------------Start------------ */}
-      <div className="personal_header">Education Details</div>
-      {educationDetails?.map((detail, index) => (
-        <div key={index} mb={2}>
-          <div className="row">
-            {educationDispalyFields?.map((key) => {
-              return key === "from_year" || key === "to_year" ? (
-                <FieldContainer
-                  key={key}
-                  fieldGrid={3}
-                  type="date"
-                  name={key}
-                  label={educationFieldLabels[key]}
-                  value={detail[key].split("T")[0]}
-                  onChange={(e) => handleEducationDetailsChange(index, e)}
-                />
-              ) : (
-                <FieldContainer
-                  key={key}
-                  fieldGrid={3}
-                  name={key}
-                  label={educationFieldLabels[key]}
-                  value={detail[key] || ""}
-                  onChange={(e) => handleEducationDetailsChange(index, e)}
-                />
-              );
-            })}
-            {educationDetails?.length > 1 && (
-              <IconButton onClick={() => handleRemoveEducationDetails(index)}>
-                <DeleteIcon />
-              </IconButton>
-            )}
+      <div className="card">
+        <div className="card-header">Education Details</div>
+        {educationDetails?.map((detail, index) => (
+          <div key={index} mb={2}>
+            <div className=" card-body row">
+              {educationDispalyFields?.map((key) => {
+                return key === "from_year" || key === "to_year" ? (
+                  <FieldContainer
+                    key={key}
+                    fieldGrid={3}
+                    type="date"
+                    name={key}
+                    label={educationFieldLabels[key]}
+                    value={detail[key].split("T")[0]}
+                    onChange={(e) => handleEducationDetailsChange(index, e)}
+                  />
+                ) : (
+                  <FieldContainer
+                    key={key}
+                    fieldGrid={3}
+                    name={key}
+                    label={educationFieldLabels[key]}
+                    value={detail[key] || ""}
+                    onChange={(e) => handleEducationDetailsChange(index, e)}
+                  />
+                );
+              })}
+              {educationDetails?.length > 1 && (
+                <IconButton onClick={() => handleRemoveEducationDetails(index)}>
+                  <DeleteIcon />
+                </IconButton>
+              )}
+            </div>
           </div>
-        </div>
-      ))}
-      <div className="row">
-        <div className="col-12">
-          {educationDetails.length < 5 && (
-            <button
-              type="button"
-              onClick={handleAddEducationDetails}
-              className="btn btn-outline-warning"
-            >
-              Add More Education Details
-            </button>
-          )}
-        </div>
-      </div>
-      {/* <div style={{ display: "flex", justifyContent: "space-between" }}>
+        ))}
+        <div className="card-body">
+          <div className="row">
+            <div className="col-12">
+              {educationDetails.length < 5 && (
+                <button
+                  type="button"
+                  onClick={handleAddEducationDetails}
+                  className="btn cmnbtn btn-outline-warning"
+                >
+                  Add More Education Details
+                </button>
+              )}
+            </div>
+          </div>
+          {/* <div style={{ display: "flex", justifyContent: "space-between" }}>
         <button
           className="btn btn-primary"
           onClick={() => setActiveAccordionIndex((prev) => prev - 1)}
@@ -2429,39 +2479,156 @@ const UserUpdate = () => {
           <ArrowBackIosIcon />
         </button>
       </div> */}
+        </div>
+      </div>
       <div style={{ display: "flex", justifyContent: "flex-end" }}>
         <button
           type="button"
-          className="btn btn-primary mr-2"
+          className="btn cmnbtn btn-primary mr-2"
           onClick={handleSubmitEducation}
         >
           Submit Education Details
         </button>
         <button
-          className="btn btn-primary"
+          className="btn cmnbtn btn-primary"
           onClick={() => setActiveAccordionIndex((prev) => prev + 1)}
         >
           <ArrowForwardIosIcon />
         </button>
       </div>
-
       {/* Education Info Inputs------------------------End------------ */}
     </>
   );
-
+  const accordionButtonstitle = [
+    "Personal & Official Details",
+    "Other & Bank Details",
+    "Family & Education Details",
+    "Upload Document",
+  ];
+  const indicator = {
+    completed: (
+      <svg
+        width="20"
+        height="20"
+        viewBox="0 0 20 20"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <rect width="20" height="20" rx="10" fill="#782BE4" />
+        <path
+          d="M9 11.793L7.3535 10.1465L6.6465 10.8535L9 13.207L13.8535 8.35348L13.1465 7.64648L9 11.793Z"
+          fill="var(--bg-white)"
+        />
+      </svg>
+    ),
+    active: (
+      <svg
+        width="20"
+        height="20"
+        viewBox="0 0 20 20"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <rect x="0.5" y="0.5" width="19" height="19" rx="9.5" fill="#782BE4" />
+        <rect x="0.5" y="0.5" width="19" height="19" rx="9.5" stroke="white" />
+        <rect x="6" y="6" width="8" height="8" rx="4" fill="white" />
+      </svg>
+    ),
+    disabled: (
+      <svg
+        width="20"
+        height="20"
+        viewBox="0 0 20 20"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <rect
+          x="0.25"
+          y="0.25"
+          width="19.5"
+          height="19.5"
+          rx="9.75"
+          fill="#ABB7C2"
+          fill-opacity="0.1"
+        />
+        <rect
+          x="0.25"
+          y="0.25"
+          width="19.5"
+          height="19.5"
+          rx="9.75"
+          stroke="#CFD6DC"
+          stroke-width="0.5"
+        />
+      </svg>
+    ),
+  };
   const documentFieldsNew = (
     <>
-      <DocumentTab
-        documentData={documentData}
-        setDocumentData={setDocumentData}
-        getDocuments={getDocuments}
-        submitButton={false}
-        normalUserLayout={true}
-      />
+      <div className="table-wrap-user">
+        <DocumentTab
+          documentData={documentData}
+          setDocumentData={setDocumentData}
+          getDocuments={getDocuments}
+          submitButton={false}
+          normalUserLayout={true}
+        />
+      </div>
     </>
   );
   return (
-    <>
+    <div>
+      <FormContainer mainTitle="User Update" link={true} />
+      <div className="user-tab w-100 mb-4">
+        {accordionButtons.map((button, index) => (
+          <div className="flex-row align-items-center w-100 gap-4">
+            <button
+              className={`tab ${
+                activeAccordionIndex === index ? "active" : "disabled"
+              }`}
+              onClick={() => handleAccordionButtonClick(index)}
+            >
+              <div className="gap-1 flex-row">
+                {
+                  indicator[
+                    activeAccordionIndex === index ? "active" : "disabled"
+                  ]
+                }
+                <p>{button}</p>
+              </div>
+              {accordionButtonstitle[index]}
+            </button>
+            {index !== accordionButtons.length - 1 && (
+              <svg
+                className="arrow"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill=""
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <g id="Component 2">
+                  <path
+                    id="Vector (Stroke)"
+                    fill-rule="evenodd"
+                    clip-rule="evenodd"
+                    d="M6.51171 4.43057C6.8262 4.161 7.29968 4.19743 7.56924 4.51192L13.5692 11.5119C13.81 11.7928 13.81 12.2072 13.5692 12.4881L7.56924 19.4881C7.29968 19.8026 6.8262 19.839 6.51171 19.5695C6.19721 19.2999 6.16079 18.8264 6.43036 18.5119L12.012 12L6.43036 5.48811C6.16079 5.17361 6.19721 4.70014 6.51171 4.43057ZM10.5119 4.43068C10.8264 4.16111 11.2999 4.19753 11.5694 4.51202L17.5694 11.512C17.8102 11.7929 17.8102 12.2073 17.5694 12.4882L11.5694 19.4882C11.2999 19.8027 10.8264 19.8391 10.5119 19.5696C10.1974 19.3 10.161 18.8265 10.4306 18.512L16.0122 12.0001L10.4306 5.48821C10.161 5.17372 10.1974 4.70024 10.5119 4.43068Z"
+                    fill={`${
+                      activeAccordionIndex === index ? "var(--primary)" : ""
+                    }`}
+                  />
+                </g>
+              </svg>
+            )}
+          </div>
+        ))}
+      </div>
+
+      {activeAccordionIndex === 0 && genralFields}
+      {activeAccordionIndex === 1 && otherFields}
+      {activeAccordionIndex === 2 && educationFamilyFieald}
+      {activeAccordionIndex === 3 && documentFieldsNew}
+
       <div className="mb-2 " style={{}}>
         <ToastContainer />
         <div
@@ -2472,21 +2639,21 @@ const UserUpdate = () => {
             borderRadius: "10px",
           }}
         >
-          <div
-            className="progress-bar"
-            style={{
-              width: `${progress}%`,
-              backgroundColor: "blue",
-              height: "20px",
-              color: "white",
-              borderRadius: "10px",
-            }}
-          >
-            {progress.toFixed(0)}%
+          <div className="profloat">
+            <div className="progress-bar">
+              <Circle
+                percent={progress}
+                strokeWidth={10}
+                strokeColor="#16B364"
+              />
+              <div className="progress-value">
+                <p>{progress.toFixed(0)} %</p>
+              </div>
+            </div>
           </div>
         </div>
       </div>
-      <FormContainer
+      {/* <FormContainer
         mainTitle="User Update"
         title="User Registration"
         handleSubmit={handleSubmit}
@@ -2499,8 +2666,8 @@ const UserUpdate = () => {
         {activeAccordionIndex === 1 && otherFields}
         {activeAccordionIndex === 2 && educationFamilyFieald}
         {activeAccordionIndex === 3 && documentFieldsNew}
-      </FormContainer>
-    </>
+      </FormContainer> */}
+    </div>
   );
 };
 

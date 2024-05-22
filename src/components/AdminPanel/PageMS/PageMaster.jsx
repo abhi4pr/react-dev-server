@@ -12,17 +12,34 @@ import { IconButton } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import InfoIcon from "@mui/icons-material/Info";
 import { useDispatch, useSelector } from "react-redux";
-import { setModalType, setOpenShowAddModal } from "../../Store/PageMaster";
+import {
+  setModalType,
+  setOpenShowAddModal,
+  setOpenShowPageInfoModal,
+} from "../../Store/PageMaster";
 import PageAddMasterModal from "./PageAddMasterModal";
+import {
+  useGetAllPageCategoryQuery,
+  useGetAllProfileListQuery,
+} from "../../Store/PageBaseURL";
+import PageInfoModal from "./PageInfoModal";
+import {
+  handleChangeVendorInfoModal,
+  setShowAddVendorModal,
+  setModalType as setVendorModalType,
+} from "../../Store/VendorMaster";
+import VendorTypeInfoModal from "./VendorTypeInfoModal";
+import AddVendorModal from "./AddVendorModal";
+import { useGetPmsPlatformQuery } from "../../Store/reduxBaseURL";
 
 const PageMaster = () => {
   const { toastAlert, toastError } = useGlobalContext();
   const [pageName, setPageName] = useState("");
   const [link, setLink] = useState("");
   const [isFormSubmitted, setIsFormSubmitted] = useState(false);
-  const [platformData, setPlatformData] = useState([]);
+  // const [platformData, setPlatformData] = useState([]);
   const [platformId, setPlatformId] = useState("");
-  const [categoryData, setCategoryData] = useState([]);
+  // const [categoryData, setCategoryData] = useState([]);
   const [categoryId, setCategoryId] = useState("");
   const [tag, setTag] = useState([]);
   const [pageLevel, setPageLevel] = useState("");
@@ -35,7 +52,7 @@ const PageMaster = () => {
   const [vendorData, setVendorData] = useState([]);
   const [vendorId, setVendorId] = useState("");
   const [followCount, setFollowCount] = useState("");
-  const [profileData, setProfileData] = useState([]);
+  // const [profileData, setProfileData] = useState([]);
   const [profileId, setProfileId] = useState("");
   const [platformActive, setPlatformActive] = useState();
   const [rate, setRate] = useState("");
@@ -59,7 +76,26 @@ const PageMaster = () => {
   const userID = decodedToken.id;
 
   const dispatch = useDispatch();
-  // const showAddModal = useSelector((state) => state.pageMaster.showAddModal);
+
+  const {
+    data: profileData,
+    error: profileError,
+    isLoading: profileLoading,
+  } = useGetAllProfileListQuery();
+
+  const {
+    data: platform,
+    error: platformError,
+    isLoading: platformLoading,
+  } = useGetPmsPlatformQuery();
+  const platformData = platform?.data || [];
+
+  const {
+    data: category,
+    error: categoryError,
+    isLoading: categoryLoading,
+  } = useGetAllPageCategoryQuery();
+  const categoryData = category?.data || [];
 
   const PageLevels = [
     { value: "Level 1 (High)", label: "Level 1 (High)" },
@@ -87,14 +123,43 @@ const PageMaster = () => {
     dispatch(setModalType("Profile Type"));
   };
 
-  const getData = () => {
-    axios.get(baseUrl + "getAllPlatform").then((res) => {
-      setPlatformData(res.data.data);
-    });
+  const handleProfileTypeInfoClick = () => {
+    dispatch(setOpenShowPageInfoModal());
+    dispatch(setModalType("Profile Type Info"));
+  };
 
-    axios.get(baseUrl + "getPageCatgList").then((res) => {
-      setCategoryData(res.data.data);
-    });
+  const handleAddPlatformClick = () => {
+    dispatch(setShowAddVendorModal());
+    dispatch(setVendorModalType("Platform"));
+  };
+
+  const handlePlatformInfoClick = () => {
+    dispatch(handleChangeVendorInfoModal());
+    dispatch(setVendorModalType("Platform"));
+  };
+
+  const handleOpenPageModal = (type) => {
+    return () => {
+      dispatch(setOpenShowAddModal());
+      dispatch(setModalType(type));
+    };
+  };
+
+  const handleOpenInfoModal = (type) => {
+    return () => {
+      dispatch(setOpenShowPageInfoModal());
+      dispatch(setModalType(type));
+    };
+  };
+
+  const getData = () => {
+    // axios.get(baseUrl + "getAllPlatform").then((res) => {
+    //   setPlatformData(res.data.data);
+    // });
+
+    // axios.get(baseUrl + "getPageCatgList").then((res) => {
+    //   setCategoryData(res.data.data);
+    // });
 
     axios.get(baseUrl + "get_all_users").then((res) => {
       setUserData(res.data.data);
@@ -104,9 +169,9 @@ const PageMaster = () => {
       setVendorData(res.data.tmsVendorkMastList);
     });
 
-    axios.get(baseUrl + "getProfileList").then((res) => {
-      setProfileData(res.data.data);
-    });
+    // axios.get(baseUrl + "getProfileList").then((res) => {
+    //   setProfileData(res.data.data);
+    // });
   };
 
   useEffect(() => {
@@ -278,14 +343,30 @@ const PageMaster = () => {
             onChange={(e) => {
               setPlatformId(e.value);
             }}
-          ></Select>
+          />
+          <IconButton
+            onClick={handleAddPlatformClick}
+            variant="contained"
+            color="primary"
+            aria-label="Add Platform.."
+          >
+            <AddIcon />
+          </IconButton>
+          <IconButton
+            onClick={handlePlatformInfoClick}
+            variant="contained"
+            color="primary"
+            aria-label="Platform Info.."
+          >
+            <InfoIcon />
+          </IconButton>
         </div>
         <div className="form-group col-6">
           <label className="form-label">
             Profile Type <sup style={{ color: "red" }}>*</sup>
           </label>
           <Select
-            options={profileData.map((option) => ({
+            options={profileData?.data.map((option) => ({
               value: option._id,
               label: option.profile_type,
             }))}
@@ -293,7 +374,7 @@ const PageMaster = () => {
             value={{
               value: profileId,
               label:
-                profileData.find((role) => role._id === profileId)
+                profileData?.data.find((role) => role._id === profileId)
                   ?.profile_type || "",
             }}
             onChange={(e) => {
@@ -309,7 +390,7 @@ const PageMaster = () => {
             <AddIcon />
           </IconButton>
           <IconButton
-            // onClick={handleInfoClick}
+            onClick={handleProfileTypeInfoClick}
             variant="contained"
             color="primary"
             aria-label="Profile Type Info.."
@@ -350,7 +431,23 @@ const PageMaster = () => {
             onChange={(e) => {
               setCategoryId(e.value);
             }}
-          ></Select>
+          />
+          <IconButton
+            onClick={handleOpenPageModal("Category")}
+            variant="contained"
+            color="primary"
+            aria-label="Add Platform.."
+          >
+            <AddIcon />
+          </IconButton>
+          <IconButton
+            onClick={handleOpenInfoModal("Category Info")}
+            variant="contained"
+            color="primary"
+            aria-label="Platform Info.."
+          >
+            <InfoIcon />
+          </IconButton>
         </div>
         {/* <label className="form-label">Tags</label>
         <div className="tags-input-container">
@@ -668,6 +765,22 @@ const PageMaster = () => {
                   }}
                   onChange={(e) => handlePriceTypeChange(e, index)}
                 />
+                <IconButton
+                  onClick={handleOpenPageModal("Price Type")}
+                  variant="contained"
+                  color="primary"
+                  aria-label="Add Price Type.."
+                >
+                  <AddIcon />
+                </IconButton>
+                <IconButton
+                  onClick={handleOpenInfoModal("Price Type Info")}
+                  variant="contained"
+                  color="primary"
+                  aria-label="Price Type Info.."
+                >
+                  <InfoIcon />
+                </IconButton>
               </div>
               <FieldContainer
                 label=" Price *"
@@ -704,6 +817,9 @@ const PageMaster = () => {
         </div>
       </FormContainer>
       <PageAddMasterModal />
+      <PageInfoModal />
+      <VendorTypeInfoModal />
+      <AddVendorModal />
     </>
   );
 };
