@@ -216,6 +216,9 @@ const AdminPreOnboarding = () => {
     if (password == "") {
       setIsRequired((perv) => ({ ...perv, password: true }));
     }
+    if (personalContact == "") {
+      setIsRequired((perv) => ({ ...perv, personalContact: true }));
+    }
 
     if (!username) {
       return toastError("Fill the Mandatory fields");
@@ -230,11 +233,11 @@ const AdminPreOnboarding = () => {
     } else if (!personalEmail || personalEmail == "") {
       return toastError("Fill the Mandatory fields");
     } else if (!personalContact || personalContact == "") {
-      return toastError("Contact is Required and should be equal to 10");
+      return toastError("Fill the Mandatory fields");
     } else if (!loginId || loginId == "") {
-      return toastError("Login ID is Required");
+      return toastError("Fill the Mandatory fields");
     } else if (!password || password == "") {
-      return toastError("Password is Required");
+      return toastError("Fill the Mandatory fields");
     } else if (!roles || roles == "") {
       return toastError("Fill the Mandatory fields");
     } else if (!joiningDate || joiningDate == "") {
@@ -434,27 +437,53 @@ const AdminPreOnboarding = () => {
 
   //personal Contact validation
 
-  function handlePersonalContactChange(event) {
-    if (event.target.value.length <= 10) {
-      const newContact1 = event.target.value;
-      setPersonalContact(newContact1);
+  // function handlePersonalContactChange(event) {
+  //   if (event.target.value.length <= 10) {
+  //     const newContact1 = event.target.value;
+  //     setPersonalContact(newContact1);
 
+  //     if (
+  //       newContact1 === "" ||
+  //       (newContact1.length === 1 && parseInt(newContact1) < 6)
+  //     ) {
+  //       setPersonalContact("");
+  //     } else {
+  //       setPersonalContact(newContact1);
+  //     }
+
+  //     if (newContact1 === "") {
+  //       setValidContact1(false);
+  //     } else {
+  //       setValidContact1(
+  //         /^(\+91[ \-\s]?)?[0]?(91)?[6789]\d{9}$/.test(newContact1)
+  //       );
+  //     }
+  //   }
+  // }
+  function handlePersonalContactChange(event) {
+    const newContact1 = event.target.value;
+
+    if (newContact1.length <= 10) {
       if (
         newContact1 === "" ||
         (newContact1.length === 1 && parseInt(newContact1) < 6)
       ) {
         setPersonalContact("");
+        setValidContact1(false);
+        setIsRequired({ ...isRequired, personalContact: true });
       } else {
         setPersonalContact(newContact1);
-      }
+        setIsRequired({ ...isRequired, personalContact: false });
 
-      if (newContact1 === "") {
-        setValidContact1(false);
-      } else {
         setValidContact1(
           /^(\+91[ \-\s]?)?[0]?(91)?[6789]\d{9}$/.test(newContact1)
         );
       }
+    }
+
+    setisContactTouched1(true);
+    if (newContact1.length < 10) {
+      setValidContact1(false);
     }
   }
 
@@ -849,7 +878,7 @@ const AdminPreOnboarding = () => {
             value={personalContact}
             required={false}
             onChange={handlePersonalContactChange}
-            onBlur={handlePersonalContactBlur}
+            // onBlur={handlePersonalContactBlur}
           />
           {(isContactTouched1 || personalContact.length >= 10) &&
             !isValidcontact1 && (

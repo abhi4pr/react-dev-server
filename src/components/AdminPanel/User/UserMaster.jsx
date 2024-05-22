@@ -598,12 +598,12 @@ const UserMaster = () => {
     }
 
     if (personalContact.length !== 10) {
-      toastError("Personal Contact must be 10 digits");
+      toastError("Fill the Mandatory fields");
       return; // Prevent form submission
     }
 
     if (alternateContact.length !== 10) {
-      toastError("Alternate Contact must be 10 digits");
+      toastError("Fill the Mandatory fields");
       return; // Prevent form submission
     }
 
@@ -653,7 +653,8 @@ const UserMaster = () => {
     try {
       const isLoginIdExists = usersData.some(
         (user) =>
-          user.user_login_id.toLocaleLowerCase() === loginId.toLocaleLowerCase()
+          user.user_login_id?.toLocaleLowerCase() ===
+          loginId?.toLocaleLowerCase()
       );
       const contactNumberExists = usersData.some(
         (user) => user.user_contact_no == personalContact
@@ -742,28 +743,28 @@ const UserMaster = () => {
 
   const handleSubmitOtherDetails = async (e) => {
     e.preventDefault();
-    if (currentAddress == "") {
-      setMandatoryFieldsEmpty((prev) => ({
-        ...prev,
-        currentAddress: true,
-      }));
-    }
-    if (currentPincode == "") {
-      setMandatoryFieldsEmpty((prev) => ({
-        ...prev,
-        currentPincode: true,
-      }));
-    }
+    // if (currentAddress == "") {
+    //   setMandatoryFieldsEmpty((prev) => ({
+    //     ...prev,
+    //     currentAddress: true,
+    //   }));
+    // }
+    // if (currentPincode == "") {
+    //   setMandatoryFieldsEmpty((prev) => ({
+    //     ...prev,
+    //     currentPincode: true,
+    //   }));
+    // }
 
-    if (!currentAddress || currentAddress == "") {
-      return toastError("Fill the Mandatory fields");
-    } else if (!currentCity || currentCity == "") {
-      return toastError("Current city is required");
-    } else if (!currentState || currentState == "") {
-      return toastError("Current state is required");
-    } else if (!currentPincode || currentPincode == "") {
-      return toastError("Fill the Mandatory fields");
-    }
+    // if (!currentAddress || currentAddress == "") {
+    //   return toastError("Fill the Mandatory fields");
+    // } else if (!currentCity || currentCity == "") {
+    //   return toastError("Current city is required");
+    // } else if (!currentState || currentState == "") {
+    //   return toastError("Current state is required");
+    // } else if (!currentPincode || currentPincode == "") {
+    //   return toastError("Fill the Mandatory fields");
+    // }
     try {
       const response = await axios.put(
         baseUrl + `update_user_for_other_details/${userResID}`,
@@ -984,6 +985,10 @@ const UserMaster = () => {
         });
       }
     }
+    setisContactTouched1(true);
+    if (newContact.length < 10) {
+      setValidContact1(false);
+    }
   }
 
   function handleAlternateContactChange(event) {
@@ -1007,6 +1012,10 @@ const UserMaster = () => {
           alternateContact: false,
         });
       }
+    }
+    setisAlternateTouched1(true);
+    if (newContact.length < 10) {
+      setValidContact3(false);
     }
   }
 
@@ -1351,8 +1360,7 @@ const UserMaster = () => {
 
     if (name === "Contact") {
       if (!/^(\+91[ \-\s]?)?[0]?(91)?[6789]\d{9}$/.test(value)) {
-        errors[`${name}-${index}`] =
-          "Invalid contact number. Please Enter a valid phone number.";
+        errors[`${name}-${index}`] = "Please Enter a valid phone number.";
       } else {
         delete errors[`${name}-${index}`];
       }
@@ -1615,8 +1623,7 @@ const UserMaster = () => {
               // onBlur={(e) => handleContentBlur(e, "personalContact")}
             />
             {(isContactTouched1 || personalContact.length >= 10) &&
-              !isValidcontact1 &&
-              mandatoryFieldsEmpty.personalContact && (
+              !isValidcontact1 && (
                 <p className="form-error">
                   Please Enter a valid Contact Number
                 </p>
@@ -1669,8 +1676,7 @@ const UserMaster = () => {
               // onBlur={(e) => handleAlternateBlur(e, "alternateContact")}
             />
             {(isAlternateTouched1 || alternateContact.length >= 10) &&
-              !isValidcontact3 &&
-              !mandatoryFieldsEmpty.alternateContact && (
+              !isValidcontact3 && (
                 <p className="form-error">Please Enter a valid Number</p>
               )}
             {mandatoryFieldsEmpty.alternateContact && (
@@ -2480,7 +2486,7 @@ const UserMaster = () => {
             <FieldContainer
               label="Current Address"
               fieldGrid={12}
-              astric={true}
+              // astric={true}
               value={currentAddress}
               onChange={(e) => {
                 setCurrentAddress(e.target.value);
@@ -2500,9 +2506,9 @@ const UserMaster = () => {
               }}
               required={false}
             />
-            {mandatoryFieldsEmpty.currentAddress && (
+            {/* {mandatoryFieldsEmpty.currentAddress && (
               <p className="form-error">Please Enter Address</p>
-            )}
+            )} */}
             {/* <div className="form-group col-4">
           <label className="form-label">
             Current City <sup className="form-error">*</sup>
@@ -2526,10 +2532,7 @@ const UserMaster = () => {
           />
         </div> */}
             <div className="form-group col-4 mt-3">
-              <label htmlFor="">
-                {" "}
-                State <sup style={{ color: "red" }}>*</sup>
-              </label>
+              <label htmlFor=""> State</label>
               <IndianStatesMui
                 selectedState={currentState}
                 onChange={(option) => setcurrentState(option ? option : null)}
@@ -2537,10 +2540,7 @@ const UserMaster = () => {
             </div>
 
             <div className="form-group col-4 mt-3">
-              <label htmlFor="">
-                {" "}
-                City <sup style={{ color: "red" }}>*</sup>
-              </label>
+              <label htmlFor=""> City</label>
 
               <IndianCitiesMui
                 selectedState={currentState}
@@ -2552,7 +2552,7 @@ const UserMaster = () => {
               <FieldContainer
                 label="Pincode"
                 type="number"
-                astric={true}
+                // astric={true}
                 fieldGrid={3}
                 maxLength={6}
                 // placeholder="123456"
@@ -2580,9 +2580,9 @@ const UserMaster = () => {
                 }}
                 required={false}
               />
-              {mandatoryFieldsEmpty.currentPincode && (
+              {/* {mandatoryFieldsEmpty.currentPincode && (
                 <p className="form-error">Please Enter Pincode</p>
-              )}
+              )} */}
             </div>
             {/*  Parmanent Address here------------ */}
             <div className="">
@@ -2879,38 +2879,42 @@ const UserMaster = () => {
               <p className="form-error">Please Enter Bank Type</p>
             )}
           </div>
+          <div className="col-3">
+            <FieldContainer
+              label="Bank Account Number"
+              astric={true}
+              fieldGrid={3}
+              value={bankAccountNumber}
+              maxLength={17} // Adding maxLength prop
+              onChange={(e) => {
+                const inputValue = e.target.value;
+                const onlyNumbers = /^[0-9]+$/;
 
-          <FieldContainer
-            label="Bank Account Number"
-            astric={true}
-            fieldGrid={3}
-            value={bankAccountNumber}
-            onChange={(e) => {
-              const inputValue = e.target.value;
-              const onlyNumbers = /^[0-9]+$/;
+                // Check if the input is numeric and within the max length
+                if (onlyNumbers.test(inputValue) && inputValue.length <= 17) {
+                  setBankAccountNumber(inputValue);
+                } else if (inputValue === "") {
+                  setBankAccountNumber(""); // Clear the input value
+                }
 
-              if (onlyNumbers.test(inputValue)) {
-                setBankAccountNumber(inputValue);
-              } else {
-                setBankAccountNumber(""); // Clearing the input value
-              }
-              // onBlur functionality
-              if (inputValue === "") {
-                setMandatoryFieldsEmpty((prevState) => ({
-                  ...prevState,
-                  bankAccountNumber: true,
-                }));
-              } else {
-                setMandatoryFieldsEmpty({
-                  ...mandatoryFieldsEmpty,
-                  bankAccountNumber: false,
-                });
-              }
-            }}
-          />
-          {mandatoryFieldsEmpty.bankAccountNumber && (
-            <p className="form-error">Please Enter Bank Account Number</p>
-          )}
+                // onBlur functionality
+                if (inputValue === "") {
+                  setMandatoryFieldsEmpty((prevState) => ({
+                    ...prevState,
+                    bankAccountNumber: true,
+                  }));
+                } else {
+                  setMandatoryFieldsEmpty({
+                    ...mandatoryFieldsEmpty,
+                    bankAccountNumber: false,
+                  });
+                }
+              }}
+            />
+            {mandatoryFieldsEmpty.bankAccountNumber && (
+              <p className="form-error">Please Enter Bank Account Number</p>
+            )}
+          </div>
           <FieldContainer
             astric={true}
             label="IFSC"
@@ -3076,7 +3080,7 @@ const UserMaster = () => {
 
                     case "Contact":
                       return (
-                        <>
+                        <div className="col-3">
                           <FieldContainer
                             key={key}
                             fieldGrid={3}
@@ -3094,7 +3098,7 @@ const UserMaster = () => {
                               {familyValidationErrors[`Contact-${index}`]}
                             </span>
                           )}
-                        </>
+                        </div>
                       );
 
                     // case "Income":
