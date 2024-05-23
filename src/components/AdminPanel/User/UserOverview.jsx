@@ -128,7 +128,7 @@ const UserOverview = () => {
       });
       reJoinClose();
       getData();
-    } catch { }
+    } catch {}
   };
 
   const SummaryData = (userId) => {
@@ -890,9 +890,7 @@ const UserOverview = () => {
             <div className="card-body">
               <div className="row thm_form">
                 <div className="form-group col-3">
-                  <label className="form-label">
-                    Department Name<sup style={{ color: "red" }}>*</sup>
-                  </label>
+                  <label className="form-label">Department Name</label>
                   <Select
                     options={[
                       { value: "", label: "All" },
@@ -905,12 +903,12 @@ const UserOverview = () => {
                       departmentFilter === ""
                         ? { value: "", label: "All" }
                         : {
-                          value: departmentFilter,
-                          label:
-                            departmentData.find(
-                              (dept) => dept.dept_id === departmentFilter
-                            )?.dept_name || "Select...",
-                        }
+                            value: departmentFilter,
+                            label:
+                              departmentData.find(
+                                (dept) => dept.dept_id === departmentFilter
+                              )?.dept_name || "Select...",
+                          }
                     }
                     onChange={(selectedOption) => {
                       const selectedValue = selectedOption
@@ -926,9 +924,7 @@ const UserOverview = () => {
                 </div>
 
                 <div className="form-group col-3">
-                  <label className="form-label">
-                    Designation<sup style={{ color: "red" }}>*</sup>
-                  </label>
+                  <label className="form-label">Designation</label>
                   <Select
                     options={[
                       { value: "", label: "All" },
@@ -941,12 +937,12 @@ const UserOverview = () => {
                       designationFilter === ""
                         ? { value: "", label: "All" }
                         : {
-                          value: designationFilter,
-                          label:
-                            designationData.find(
-                              (option) => option.desi_id === designationFilter
-                            )?.desi_name || "Select...",
-                        }
+                            value: designationFilter,
+                            label:
+                              designationData.find(
+                                (option) => option.desi_id === designationFilter
+                              )?.desi_name || "Select...",
+                          }
                     }
                     onChange={(selectedOption) => {
                       const newValue = selectedOption
@@ -962,9 +958,7 @@ const UserOverview = () => {
                 </div>
 
                 <div className="form-group col-3">
-                  <label className="form-label">
-                    Job Type<sup style={{ color: "red" }}>*</sup>
-                  </label>
+                  <label className="form-label">Job Type</label>
                   <Select
                     value={jobTypeOptions.find(
                       (option) => option.value === jobType
@@ -988,8 +982,6 @@ const UserOverview = () => {
             </div>
           </div>
           <div className="card">
-
-
             <div
               className="data_tbl card-body thm_table"
               style={{ height: "64vh", width: "100%" }}
@@ -1186,13 +1178,13 @@ const UserOverview = () => {
               {(separationStatus === "On Long Leave" ||
                 separationStatus === "Subatical" ||
                 separationStatus === "Suspended") && (
-                  <FieldContainer
-                    label="Reinstated Date"
-                    type="date"
-                    value={separationReinstateDate}
-                    onChange={(e) => setSeparationReinstateDate(e.target.value)}
-                  />
-                )}
+                <FieldContainer
+                  label="Reinstated Date"
+                  type="date"
+                  value={separationReinstateDate}
+                  onChange={(e) => setSeparationReinstateDate(e.target.value)}
+                />
+              )}
               {separationStatus == "Resign Accepted" && (
                 <input
                   label="Last Working Day"

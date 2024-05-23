@@ -223,11 +223,28 @@ export default function PendingPaymentRequest() {
             const bReminder = remindData.some(
               (remind) => remind.request_id === b.request_id
             );
+
             if (aReminder && !bReminder) return -1;
             if (!aReminder && bReminder) return 1;
+
             // Add aging sorting logic if required
             return new Date(a.request_date) - new Date(b.request_date);
-            // return new Date(a.request_date) < new Date(b.request_date) ? -1 : 1;
+          });
+
+          mergedArray = mergedArray.sort((a, b) => {
+            console.log(a, "A--------------------", b, "b data");
+            const aReminder = remindData.some(
+              (remind) => remind.request_id === a.request_id
+            );
+            const bReminder = remindData.some(
+              (remind) => remind.request_id === b.request_id
+            );
+
+            if (aReminder && !bReminder) return -1;
+            if (!aReminder && bReminder) return 1;
+
+            // Add aging sorting logic if required
+            return b.aging - a.aging;
           });
 
           setData(mergedArray);
@@ -2698,7 +2715,7 @@ export default function PendingPaymentRequest() {
                             placeholder="TDS %"
                           />
                         )}
-                        disable={true}
+                        disable={isTDSDeducted}
                       />
                       <TextField
                         className="col-md-3 mt-2"
@@ -2709,7 +2726,7 @@ export default function PendingPaymentRequest() {
                         variant="outlined"
                         id="name"
                         label="TDS Amount"
-                        disable={true}
+                        disable={isTDSDeducted}
                       />
                       <TextField
                         InputProps={{
@@ -2737,7 +2754,7 @@ export default function PendingPaymentRequest() {
                           }
                         }}
                         className="col-md-3 mt-2"
-                        disable={true}
+                        disable={isTDSDeducted}
                         autoFocus
                         type="number"
                         margin="dense"
