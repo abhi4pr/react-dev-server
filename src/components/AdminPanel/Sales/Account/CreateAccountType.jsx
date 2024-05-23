@@ -28,7 +28,7 @@ const CreateAccountType = ({
       setAccountTypeName("");
       setDescription("");
       closeModal();
-      refetchAllAccountTypes();
+      // refetchAllAccountTypes();
       toastAlert("Account Type added successfully");
     } catch (err) {
       console.error("Failed to add account type:", err);
