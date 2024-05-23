@@ -20,7 +20,11 @@ const CustomTable = ({ columns, data, fixedHeader = true, Pagination = false, da
     const [selectedRowsIndex, setSelectedRowsIndex] = useState([]);
     const [selectedRowsData, setSelectedRowsData] = useState([]);
     const [selectAll, setSelectAll] = useState(false);
+    const [editablesRows, setEditablesRows] = useState(columns.map((column) => column.editable ? column.editable : false));
+    console.log("editablesRows", editablesRows, columns);
+
     let pagination = Pagination?.length > 0 ? Pagination : [10, 50, 100];
+
 
     const tabledata = pagination ? data.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage) : data;
 
@@ -37,6 +41,7 @@ const CustomTable = ({ columns, data, fixedHeader = true, Pagination = false, da
         }
         return 0;
     });
+
 
 
     return (

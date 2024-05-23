@@ -160,7 +160,7 @@ const RenderedTable = ({ data, fixedHeader, visibleColumns, rowSelectable, colum
                                     {columnsheader.map((column, colIndex) => (
 
                                         visibleColumns[colIndex] && (
-                                            <td key={colIndex}> {column.renderRowCell ? column.renderRowCell(row) : row[column.key]}</td>)
+                                            <td key={colIndex}> {column.renderRowCell ? column.renderRowCell(row, index) : row[column.key]}</td>)
                                     ))}
                                 </tr>
                             ))}
