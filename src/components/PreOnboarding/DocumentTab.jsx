@@ -137,7 +137,8 @@ const DocumentTab = ({
         },
       });
 
-      toastAlert("Document Uploaded Successfully");
+      toastAlert("Details Uploaded Successfully");
+      getDocuments();
     } catch (error) {
       console.error("Error uploading document", error);
       toastError("Failed to upload document");
