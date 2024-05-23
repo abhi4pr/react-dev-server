@@ -1,4 +1,5 @@
-import DateISOtoNormal from "../../../../../../utils/DateISOtoNormal";
+import DateISOtoNormal from "../../../../../utils/DateISOtoNormal";
+
 
 export const ViewBrandCategoryColumns = [
   { key: "Serial_no", name: "S.NO", renderRowCell: (row, index) => index + 1, width: 100, sortable: true },

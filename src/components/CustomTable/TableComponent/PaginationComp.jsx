@@ -36,7 +36,7 @@ const PaginationComp = ({ data, currentPage, setCurrentPage, itemsPerPage, setIt
                 <button
                     className='next-button'
                     onClick={() => setCurrentPage(currentPage < Math.ceil(data.length / itemsPerPage) ? currentPage + 1 : currentPage)}
-                    disabled={currentPage === Math.ceil(data.length / itemsPerPage)}
+                    disabled={currentPage === Math.ceil(data?.length / itemsPerPage)}
                 >
                     <svg fill="var(--medium)" height="13px" width="13px" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
                         viewBox="0 0 330 330" xml:space="preserve">
