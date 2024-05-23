@@ -16,9 +16,9 @@ import CreateBrandCategory from "./CreateBrandCategory";
 import CreateAccountType from "./CreateAccountType";
 import CreateCompanyType from "./CreateCompanyType";
 import View from "./View/View";
-import { ViewBrandCategoryColumns } from "./View/Columns/ViewBrandCategoryColumns";
-import { ViewCompanyTypeColumns } from "./View/Columns/ViewCompanyTypeColumns";
-import { ViewAccountTypeColumns } from "./View/Columns/ViewAccountTypeColumns";
+import { ViewBrandCategoryColumns } from "./Columns/ViewBrandCategoryColumns";
+import { ViewCompanyTypeColumns } from "./Columns/ViewCompanyTypeColumns";
+import { ViewAccountTypeColumns } from "./Columns/ViewAccountTypeColumns";
 const CreateSalesAccount = () => {
   const { toastAlert, toastError } = useGlobalContext();
   const navigate = useNavigate();
