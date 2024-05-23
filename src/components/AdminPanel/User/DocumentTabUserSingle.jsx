@@ -62,6 +62,7 @@ const DocumentTabUserSingle = (id) => {
               <thead>
                 <tr>
                   <th scope="col">Document Type</th>
+                  <th scope="col">Document Name</th>
                   <th scope="col">View</th>
                   <th scope="col" className="text-center">
                     Action
@@ -71,12 +72,22 @@ const DocumentTabUserSingle = (id) => {
               <tbody>
                 {documentData.map((item) => (
                   <tr key={item._id}>
+                    <td>
+                      <div className="uploadDocBtn">
+                        <span>
+                          {item?.document.doc_name
+                            ? item.document.doc_name
+                            : "N/A"}
+                        </span>
+                      </div>
+                    </td>
                     <td scope="row">
                       {item.document.doc_type}
                       {item.document.isRequired && (
                         <span style={{ color: "red" }}> * (Mandatory)</span>
                       )}
                     </td>
+
                     <td>
                       <div className="uploadDocBtn">
                         <span>
