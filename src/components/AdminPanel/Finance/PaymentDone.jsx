@@ -255,7 +255,7 @@ export default function PaymentDone() {
       // Vender Name Filter
       const vendorNameFilterPassed =
         !vendorName ||
-        item.vendor_name.toLowerCase().includes(vendorName.toLowerCase());
+        item?.vendor_name.toLowerCase().includes(vendorName?.toLowerCase());
 
       // Priority Filter
       const priorityFilterPassed =
@@ -267,7 +267,7 @@ export default function PaymentDone() {
         Object.values(item).some(
           (val) =>
             typeof val === "string" &&
-            val.toLowerCase().includes(search.toLowerCase())
+            val?.toLowerCase().includes(search?.toLowerCase())
         );
 
       // Requested Amount Filter
@@ -981,7 +981,7 @@ export default function PaymentDone() {
       field: "Pan Img",
       headerName: "Pan Img",
       valueGetter: (params) =>
-        params?.row?.pan_img.includes("uploads") ? params?.row?.pan_img : "NA",
+        params?.row?.pan_img?.includes("uploads") ? params?.row?.pan_img : "NA",
       renderCell: (params) => {
         const ImgUrl = `https://purchase.creativefuel.io/${params?.row?.pan_img}`;
         return params?.row?.pan_img?.includes("uploads") ? (
