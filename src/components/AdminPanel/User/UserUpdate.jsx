@@ -672,47 +672,47 @@ const UserUpdate = () => {
     // setLoading(true);
     e.preventDefault();
     if (!jobType) {
-      return toastError("Job Type is Required");
+      return toastError("Fill the job Type");
     } else if (!department || department == "") {
-      return toastError("Department is Required");
+      return toastError("Fill the Department");
     } else if (
       !subDepartment ||
       subDepartment == "" ||
       subDepartment.length === 0
     ) {
-      return toastError("Sub Department is Required");
+      return toastError("Fill the Sub Department");
     } else if (!designation || designation == "") {
-      return toastError("Designatoin is Required");
+      return toastError("Fill the Designation");
     } else if (!reportL1 || reportL1 == "") {
-      return toastError("Report L1 Is Required");
+      return toastError("Fill the Report L1");
     } else if (!personalEmail || personalEmail == "") {
-      return toastError("Personal Email is Required");
+      return toastError("Fill the Personal Email");
     } else if (!personalContact || personalContact == "") {
-      return toastError("Personal Contact is Required");
+      return toastError("Fill the Personal Contact");
     } else if (!alternateContact || alternateContact == "") {
-      return toastError("Alternate Contact is Required");
+      return toastError("Fill the Alternate Contact");
     } else if (!loginId || loginId == "") {
-      return toastError("Login Id is Required");
+      return toastError("Fill the Login ID");
     } else if (!password || password == "") {
-      return toastError("Password is Required");
+      return toastError("Fill the Password");
     } else if (!gender || gender == "") {
-      return toastError("Gender is Required");
+      return toastError("Fill the Gender");
     } else if (!nationality || nationality == "") {
-      return toastError("Nationality is Required");
+      return toastError("Fill the Nationality");
     } else if (!dateOfBirth || dateOfBirth == "") {
-      return toastError("Date of Birth is Required");
+      return toastError("Fill the DOB");
     } else if (
       !maritialStatus ||
       maritialStatus == "" ||
       maritialStatus.length == 0
     ) {
-      return toastError("Maritial Status is Required");
+      return toastError("Fill the Maritial Status");
     } else if (!joiningDate || joiningDate == "") {
-      return toastError("Joining Date is Required");
+      return toastError("Fill the Joining Date");
     } else if (!userStatus || userStatus == "") {
-      return toastError("Status is Required");
+      return toastError("Fill the Status");
     } else if (!username || username == "") {
-      return toastError("User Name Error is required");
+      return toastError("Fill the User Name");
     }
     const formData = new FormData();
     //personal info payload Start
@@ -919,15 +919,6 @@ const UserUpdate = () => {
 
   const handleSubmitOtherDetails = async (e) => {
     e.preventDefault();
-    if (!currentAddress || currentAddress == "") {
-      return toastError("Current Address is required");
-    } else if (!currentCity || currentCity == "") {
-      return toastError("Current city is required");
-    } else if (!currentState || currentState == "") {
-      return toastError("Current state is required");
-    } else if (!currentPincode || currentPincode == "") {
-      return toastError("Current Pincode is required");
-    }
     try {
       const response = await axios.put(
         baseUrl + `update_user_for_other_details/${id}`,
@@ -1861,7 +1852,7 @@ const UserUpdate = () => {
           <FieldContainer
             label="Current Address"
             fieldGrid={12}
-            astric={true}
+            // astric={true}
             value={currentAddress}
             onChange={(e) => setCurrentAddress(e.target.value)}
             required={false}
@@ -1897,9 +1888,7 @@ const UserUpdate = () => {
           />
         </div> */}
           <div className="form-group col-3 mt-3">
-            <label className="form-label">
-              State / UT <sup className="form-error">*</sup>
-            </label>
+            <label className="form-label">State / UT</label>
 
             <IndianStatesMui
               selectedState={currentState}
@@ -1908,9 +1897,7 @@ const UserUpdate = () => {
           </div>
 
           <div className="form-group col-3 mt-3">
-            <label className="form-label">
-              City <sup className="form-error">*</sup>
-            </label>
+            <label className="form-label">City</label>
             <IndianCitiesMui
               selectedState={currentState}
               selectedCity={currentCity}
@@ -1921,7 +1908,7 @@ const UserUpdate = () => {
             <FieldContainer
               label="Current Pincode"
               type="number"
-              astric={true}
+              // astric={true}
               fieldGrid={3}
               maxLength={6}
               value={currentPincode}
@@ -1937,7 +1924,7 @@ const UserUpdate = () => {
 
           {/*  Parmanent Address here------------ */}
           <div className="form_checkbox">
-            <label className="cstm_check" style={{ color: "red" }}>
+            <label className="cstm_check">
               Same as Current Addresss
               <input
                 className="form-control"
@@ -1986,9 +1973,7 @@ const UserUpdate = () => {
         />
       </div> */}
           <div className="form-group col-3 mt-3">
-            <label className="form-label">
-              State /UT <sup className="form-error">*</sup>
-            </label>
+            <label className="form-label">State /UT</label>
 
             <IndianStatesMui
               selectedState={currentState}
@@ -1997,9 +1982,7 @@ const UserUpdate = () => {
           </div>
 
           <div className="form-group col-3 mt-3">
-            <label className="form-label">
-              City <sup className="form-error">*</sup>
-            </label>
+            <label className="form-label">City</label>
 
             <IndianCitiesMui
               selectedState={currentState}
@@ -2024,9 +2007,7 @@ const UserUpdate = () => {
             />
           </div>
           <div className="form-group col-3 mt-3">
-            <label className="form-label">
-              Blood Group <sup style={{ color: "red" }}>*</sup>
-            </label>
+            <label className="form-label">Blood Group</label>
             <Select
               className=""
               options={bloodGroupData?.map((option) => ({
@@ -2055,9 +2036,7 @@ const UserUpdate = () => {
             />
           </div>
           <div className="form-group col-3">
-            <label className="form-label">
-              Spoken Languages <sup style={{ color: "red" }}>*</sup>
-            </label>
+            <label className="form-label">Spoken Languages</label>
             <Select
               isMulti
               name="langauages"
@@ -2160,7 +2139,19 @@ const UserUpdate = () => {
             astric={true}
             fieldGrid={3}
             value={bankAccountNumber}
-            onChange={(e) => setBankAccountNumber(e.target.value)}
+            onChange={(e) => {
+              const inputValue = e.target.value;
+              const onlyNumbers = /^[0-9]+$/;
+
+              // Check if the input is numeric and within the max length
+              if (onlyNumbers.test(inputValue) && inputValue.length <= 17) {
+                setBankAccountNumber(inputValue);
+              } else if (inputValue === "") {
+                setBankAccountNumber(""); // Clear the input value
+              }
+            }}
+
+            // setBankAccountNumber(e.target.value)}
           />
           <FieldContainer
             label="IFSC"
@@ -2172,11 +2163,11 @@ const UserUpdate = () => {
               setIFSC(inputValue.slice(0, 11)); // Limiting the input to 11 characters
             }}
           />
-          <FieldContainer
+          {/* <FieldContainer
             label="Beneficiary"
             value={beneficiary}
             onChange={(e) => setBeneficiary(e.target.value)}
-          />
+          /> */}
 
           {/* <FieldContainer
         label="Upload Proof *"
@@ -2239,9 +2230,7 @@ const UserUpdate = () => {
                   case "relation":
                     return (
                       <div className="form-group col-3">
-                        <label className="form-label">
-                          Relation <sup style={{ color: "red" }}>*</sup>
-                        </label>
+                        <label className="form-label">Relation</label>
                         <Select
                           className="basic-single"
                           classNamePrefix="select"
@@ -2269,9 +2258,7 @@ const UserUpdate = () => {
                   case "occupation":
                     return (
                       <div className="form-group col-3">
-                        <label className="form-label">
-                          Occupation <sup style={{ color: "red" }}>*</sup>
-                        </label>
+                        <label className="form-label">Occupation</label>
                         <Select
                           className="basic-single"
                           classNamePrefix="select"
