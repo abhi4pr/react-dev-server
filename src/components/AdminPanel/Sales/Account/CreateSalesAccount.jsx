@@ -15,7 +15,10 @@ import Modal from "react-modal";
 import CreateBrandCategory from "./CreateBrandCategory";
 import CreateAccountType from "./CreateAccountType";
 import CreateCompanyType from "./CreateCompanyType";
-
+import View from "./View/View";
+import { ViewBrandCategoryColumns } from "./View/Columns/ViewBrandCategoryColumns";
+import { ViewCompanyTypeColumns } from "./View/Columns/ViewCompanyTypeColumns";
+import { ViewAccountTypeColumns } from "./View/Columns/ViewAccountTypeColumns";
 const CreateSalesAccount = () => {
   const { toastAlert, toastError } = useGlobalContext();
   const navigate = useNavigate();
@@ -68,7 +71,7 @@ const CreateSalesAccount = () => {
   const [companyEmail, setCompanyEmail] = useState("");
   const [description, setDescription] = useState("");
   const [accOwnerNameData, setAccOwnerNameData] = useState([]);
-  const [modalContentType, setModalContentType] = useState(null); // State to track modal content type
+  const [modalContentType, setModalContentType] = useState(false); // State to track modal content type
 
   useEffect(() => {
     async function getData() {
@@ -178,16 +181,33 @@ const CreateSalesAccount = () => {
             refetchAllCompanyType={refetchAllCompanyType}
           />
         );
+      case "viewBrandCategory":
+        return (
+          <View title={"Brand Category View"} data={allBrandCatType} columns={ViewBrandCategoryColumns} isLoading={allBrandCatTypeLoading} />
+
+        );
+      case "viewCompanyType":
+        return (
+          <View title={"Company Type"} data={allCompanyType} columns={ViewCompanyTypeColumns} isLoading={allCompanyTypeLoading} />
+
+        );
+      case "viewAccountType":
+        return (
+          <View title={"Company Type"} data={allAccountTypes} columns={ViewAccountTypeColumns} isLoading={allAccountTypesLoading} />
+
+        );
+
       default:
         return null;
     }
   };
+  console.log(allAccountTypes);
 
   return (
     <div>
       <Modal
-        className="OnboardPrompt"
-        isOpen={!!modalContentType}
+        className="salesModal"
+        isOpen={modalContentType}
         onRequestClose={closeModal}
         contentLabel="modal"
         preventScroll={true}
@@ -196,10 +216,13 @@ const CreateSalesAccount = () => {
           overlay: {
             position: "fixed",
             backgroundColor: "rgba(255, 255, 255, 0.75)",
+            height: "100vh",
           },
           content: {
             position: "absolute",
-            width: "500px",
+            minWidth: "max-content",
+            width: "700px",
+            top: "50px",
             border: "1px solid #ccc",
             background: "#fff",
             overflow: "auto",
@@ -207,6 +230,9 @@ const CreateSalesAccount = () => {
             borderRadius: "4px",
             outline: "none",
             padding: "20px",
+            maxHeight: "650px"
+
+
           },
         }}
       >
@@ -237,13 +263,22 @@ const CreateSalesAccount = () => {
           setSelectedId={setSelectedAccountType}
           required
         />
-        <button
-          type="button"
-          className="btn btn-group"
-          onClick={() => openModal("accountType")}
-        >
-          +
-        </button>
+        <div className="col-md-4 mt-2 flex-row gap-2">
+          <button
+            type="button"
+            className="btn cmn btn_sm btn btn-primary mt-4 "
+            onClick={() => openModal("accountType")}
+          >
+            +
+          </button>
+          <button
+            type="button"
+            className="btn cmnbtn btn_sm btn-primary mt-4"
+            onClick={() => openModal("viewAccountType")}>
+            <i className="bi bi-eye" />
+          </button>
+        </div>
+
 
         <CustomSelect
           label="Company Type"
@@ -254,13 +289,22 @@ const CreateSalesAccount = () => {
           setSelectedId={setSelectedCompanyType}
           required
         />
-        <button
-          type="button"
-          className="btn btn-group"
-          onClick={() => openModal("companyType")}
-        >
-          +
-        </button>
+        <div className="col-md-6 mt-2 flex-row gap-2">
+
+          <button
+            type="button"
+            className="btn cmnbtn btn_sm btn-primary mt-4"
+            onClick={() => openModal("companyType")}
+          >
+            +
+          </button>
+          <button
+            type="button"
+            className="btn cmnbtn btn_sm btn-primary mt-4"
+            onClick={() => openModal("viewCompanyType")}>
+            <i className="bi bi-eye" />
+          </button>
+        </div>
 
         <CustomSelect
           label="Category Name"
@@ -271,14 +315,23 @@ const CreateSalesAccount = () => {
           setSelectedId={setSelectedCategory}
           required
         />
-        <button
-          type="button"
-          className="btn btn-group"
-          onClick={() => openModal("brandCategory")}
-        >
-          +
-        </button>
+        <div className="col-md-6 mt-2 flex-row gap-2">
 
+          <button
+            type="button"
+            className="btn cmnbtn btn_sm btn-primary mt-4"
+            onClick={() => openModal("brandCategory")}
+          >
+            +
+          </button>
+          <button
+            type="button"
+            className="btn cmnbtn btn_sm btn-primary mt-4"
+            onClick={() => openModal("viewBrandCategory")}>
+            <i className="bi bi-eye" />
+          </button>
+
+        </div>
         <CustomSelect
           label="Account Owner Name"
           dataArray={accOwnerNameData}
@@ -401,7 +454,7 @@ const CreateSalesAccount = () => {
           placeholder="Enter description"
         />
       </FormContainer>
-    </div>
+    </div >
   );
 };
 
