@@ -4,7 +4,7 @@ import CustomTableWrapper from '../../../../ReusableComponents/CustomTableWrappe
 
 
 
-const View = ({ data, columns, isLoading, title }) => {
+const View = ({ data, columns, isLoading, title, rowSelectable = false, pagination = true }) => {
 
     return (
 
@@ -14,7 +14,8 @@ const View = ({ data, columns, isLoading, title }) => {
                 data={data}
                 fixedHeader
                 dataLoading={isLoading}
-                Pagination
+                Pagination={pagination}
+                rowSelectable={rowSelectable}
             />
         </CustomTableWrapper>
 
