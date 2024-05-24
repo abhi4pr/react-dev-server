@@ -35,6 +35,7 @@ import VendorTypeInfoModal from "./VendorTypeInfoModal";
 import AddCircleTwoToneIcon from "@mui/icons-material/AddCircleTwoTone";
 import RemoveCircleTwoToneIcon from "@mui/icons-material/RemoveCircleTwoTone";
 import { useParams } from "react-router";
+import { toast } from "react-toastify";
 
 const countries = [
   { code: "AD", label: "Andorra", phone: "376" },
@@ -470,7 +471,7 @@ const VendorMaster = () => {
 
   const { toastAlert, toastError } = useGlobalContext();
   const [vendorName, setVendorName] = useState("");
-  const [countryCode, setCountryCode] = useState("");
+  const [countryCode, setCountryCode] = useState(null);
   const [isFormSubmitted, setIsFormSubmitted] = useState(false);
   const [mobile, setMobile] = useState("");
   const [altMobile, setAltMobile] = useState("");
@@ -641,44 +642,57 @@ const VendorMaster = () => {
     dispatch(handleChangeVendorInfoModal());
     dispatch(setModalType("WhatsappLinkType"));
   };
-  if (_id) {
-    axios.get(baseUrl + `v1/vendor_data/${_id}`).then((res) => {
-      const data = res.data.data;
-      setVendorName(data[0].vendor_name);
-      setCountryCode(data[0].country_code);
-      setMobile(data[0].mobile);
-      setAltMobile(data[0].alternate_mobile);
-      setEmail(data[0].email);
-      setPerAddress(data[0].personal_address);
-      setPan(data[0].pan_no);
-      setPanImage(data[0]?.upload_pan_image);
-      setGstImage(data[0].upload_gst_image);
-      setGst(data[0].gst_no);
-      setCompName(data[0].company_name);
-      setCompAddress(data[0].company_address);
-      setCompCity(data[0].company_city);
-      setCompPin(data[0].company_pincode);
-      setCompState(data[0].company_state);
-      setLimit(data[0].threshold_limit);
-      setHomeAddress(data[0].home_address);
-      setHomeCity(data[0].home_city);
-      setHomeState(data[0].home_state);
-      setTypeId(data[0].type_id);
-      setPlatformId(data[0].platform_id);
-      setPayId(data[0].payMethod_id);
-      setCycleId(data[0].cycle_id);
-      // setPanImglink(data[0].upload_pan_image);
-      // setGstImglink(data[0].upload_gst_image);
-      // setBankName(data[0].bank_name);
-      // setAccountType(data[0].account_type);
-      // setAccountNo(data[0].account_no);
-      // setIfscCode(data[0].ifsc_code);
-      // setUpiId(data[0].upi_id);
-      setWhatsappLink(data[0].whatsapp_link);
-      setVendorCategory(data[0].vendor_category);
-    });
-  }
 
+  useEffect(() => {
+    if (_id) {
+      axios.get(baseUrl + `v1/vendor/${_id}`).then((res) => {
+        const data = res.data.data;
+        console.log(data.vendor_type);
+        setVendorName(data.vendor_name);
+        setCountryCode(data.country_code);
+        setMobile(data.mobile);
+        setAltMobile(data.alternate_mobile);
+        setEmail(data.email);
+        setPerAddress(data.personal_address);
+        setPan(data.pan_no);
+        setPanImage(data?.pan_image);
+        setGstImage(data?.gst_image);
+        setGst(data.gst_no);
+        setCompName(data.company_name);
+        setCompAddress(data.company_address);
+        setCompCity(data.company_city);
+        setCompPin(data.company_pincode);
+        setCompState(data.company_state);
+        setLimit(data.threshold_limit);
+        setHomeAddress(data.home_address);
+        setHomeCity(data.home_city);
+        setHomeState(data.home_state);
+        setTypeId(data.vendor_type);
+        setPlatformId(data.vendor_platform);
+        setPayId(data.payment_method);
+        setCycleId(data.pay_cycle);
+        // setPanImglink(data.upload_pan_image);
+        // setGstImage(data.upload_gst_image);
+        // setBankName(data.bank_name);
+        // setAccountType(data.account_type);
+        // setAccountNo(data.account_no);
+        // setIfscCode(data.ifsc_code);
+        // setUpiId(data.upi_id);
+        // setWhatsappLink(data.whatsapp_link);
+        setVendorCategory(data.vendor_category);
+      });
+
+      axios.get(baseUrl + `v1/bank_details_by_vendor_id/${_id}`).then((res) => {
+        const data = res.data.data;
+        setBankRows(data);
+      });
+
+      axios.get(baseUrl + `v1/vendor_group_link_vendor_id/${_id}`).then((res) => {
+        const data = res.data?.data ;
+        setWhatsappLink(data);
+      });
+    }
+  }, [_id]);
   const addLink = () => {
     setWhatsappLink([
       ...whatsappLink,
@@ -787,7 +801,7 @@ const VendorMaster = () => {
     formData.append("alternate_mobile", altMobile);
     formData.append("email", email);
     formData.append("personal_address", perAddress);
-    formData.append("type", typeId);
+    formData.append("vendor_type", typeId);
     formData.append("vendor_platform", platformId);
     formData.append("payment_method", payId);
     formData.append("pay_cycle", cycleId);
@@ -808,18 +822,26 @@ const VendorMaster = () => {
     formData.append("vendor_category", vendorCategory);
     formData.append("bank_details", JSON.stringify(bankRows));
     formData.append("vendorLinks", JSON.stringify(whatsappLink));
-    
+
     if (!_id) {
-      axios.post(baseUrl + "v1/vendor_data", formData).then(() => {
+      axios.post(baseUrl + "v1/vendor", formData).then(() => {
         setIsFormSubmitted(true);
         toastAlert("Submitted");
       });
     } else {
-      axios.put(baseUrl + `v1/vendor_data/${_id}`, formData, {
+      axios.put(baseUrl + `v1/vendor/${_id}`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
+      }).then(() => {
+        toastAlert("Updated");
+        setIsFormSubmitted(true);
+
+      }).catch((err) => {
+        console.log(err);
+        toastError(err.message);
       });
+
     }
   };
 
@@ -883,15 +905,13 @@ const VendorMaster = () => {
           <label className="form-label">
             Country Code <sup style={{ color: "red" }}>*</sup>
           </label>
-
           <Autocomplete
             id="country-select-demo"
             sx={{ width: 300 }}
             options={countries}
             required={true}
-            // className=" col-6"
             onChange={(e, val) => {
-              setCountryCode(val.phone);
+              setCountryCode(val ? val.phone : null);
             }}
             autoHighlight
             getOptionLabel={(option) => option.phone}
@@ -919,6 +939,7 @@ const VendorMaster = () => {
             )}
             renderInput={(params) => (
               <TextField
+                value={countries.find((option) => option.phone == countryCode)}
                 {...params}
                 // label="Choose a country"
                 inputProps={{
@@ -981,7 +1002,7 @@ const VendorMaster = () => {
               value: typeId,
               label:
                 (!typeLoading &&
-                  typeData.data?.find((role) => role._id === typeId)
+                  typeData.data?.find((role) => role._id == typeId)
                     ?.type_name) ||
                 "",
             }}
@@ -1020,7 +1041,7 @@ const VendorMaster = () => {
             value={{
               value: platformId,
               label:
-                platformData?.data?.find((role) => role._id === platformId)
+                platformData?.data?.find((role) => role._id == platformId)
                   ?.platform_name || "",
             }}
             onChange={(e) => {
@@ -1059,7 +1080,7 @@ const VendorMaster = () => {
             value={{
               value: payId,
               label:
-                payData?.find((role) => role._id === payId)?.payMethod_name ||
+                payData?.find((role) => role._id == payId)?.payMethod_name ||
                 "",
             }}
             onChange={(e) => {
@@ -1089,6 +1110,7 @@ const VendorMaster = () => {
           <>
             <FieldContainer
               label="Bank Name "
+              required={false}
               value={bankRows[i].bank_name}
               onChange={(e) => handleBankNameChange(e, i)}
             />
@@ -1113,17 +1135,20 @@ const VendorMaster = () => {
 
             <FieldContainer
               label="Account Number "
+              required={false}
               value={bankRows[i].account_number}
               onChange={(e) => handleAccountNoChange(e, i)}
             />
 
             <FieldContainer
+              required={false}
               label="IFSC "
               value={bankRows[i].ifcs}
               onChange={(e) => handleIFSCChange(e, i)}
             />
 
             <FieldContainer
+              required={false}
               label="UPI ID "
               value={bankRows[i].upi_id}
               onChange={(e) => handleUPIidChange(e, i)}

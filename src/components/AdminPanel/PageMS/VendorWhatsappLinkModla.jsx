@@ -5,12 +5,14 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogActions from "@mui/material/DialogActions";
 import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
-import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import { useDispatch, useSelector } from "react-redux";
 import { setCloseWhatsappModal } from "../../Store/PageOverview";
-import { Link } from "react-router-dom";
 import { DataGrid } from "@mui/x-data-grid";
+import {
+  useGetAllVendorQuery,
+  useGetVendorWhatsappLinkQuery,
+} from "../../Store/reduxBaseURL";
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   "& .MuiDialogContent-root": {
@@ -22,7 +24,12 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
 }));
 
 export default function VendorWhatsappLinkModla() {
-const links = useSelector(state=>state.PageOverview.whatsappLink)
+  const row = useSelector((state) => state.PageOverview.rowData);
+  const { data } = useGetVendorWhatsappLinkQuery(row._id);
+  const links = data?.data;
+
+  const { data: linkType } = useGetAllVendorQuery();
+
   const dispatch = useDispatch();
   const showWhatsappModal = useSelector(
     (state) => state.PageOverview.showWhatsappModal
@@ -39,7 +46,7 @@ const links = useSelector(state=>state.PageOverview.whatsappLink)
         open={showWhatsappModal}
       >
         <DialogTitle sx={{ m: 0, p: 2 }} id="customized-dialog-title">
-          Modal title
+          Whatsapp Group Links
         </DialogTitle>
         <IconButton
           aria-label="close"
@@ -54,25 +61,44 @@ const links = useSelector(state=>state.PageOverview.whatsappLink)
           <CloseIcon />
         </IconButton>
         <DialogContent dividers>
-      <DataGrid 
-        rows={links}
-        columns={[
-          { field: 'sno', headerName: 'S.NO', width: 90, renderCell: (params) => { return links.indexOf(params.row)+1; }},
-          { field: 'link', headerName: 'Link', width: 150 },
-          { field: 'type', headerName: 'Type', width: 150 },
-          { field: 'remark', headerName: 'Remark', width: 150 },
-
-        ]}
-        pageSize={5}
-        rowsPerPageOptions={[5]}
-        getRowId={(row) => row.link}
-        disableSelectionOnClick
-      />
-
+          <DataGrid
+            rows={links}
+            columns={[
+              {
+                field: "sno",
+                headerName: "S.NO",
+                width: 90,
+                renderCell: (params) => {
+                  return links.indexOf(params.row) + 1;
+                },
+              },
+              { field: "link", headerName: "Link", width: 150 },
+              {
+                field: "type",
+                headerName: "Type",
+                width: 150,
+                renderCell: (params) => {
+                  return linkType?.data.find(
+                    (type) => type?._id === params.row.type
+                  )?.name;
+                },
+              },
+              // { field: 'remark', headerName: 'Remark', width: 150 },
+            ]}
+            pageSize={5}
+            rowsPerPageOptions={[5]}
+            getRowId={(row) => row._id}
+            disableSelectionOnClick
+          />
         </DialogContent>
         <DialogActions>
-          <Button autoFocus variant="contained" color="error" onClick={handleClose}>
-            Clsoe
+          <Button
+            autoFocus
+            variant="contained"
+            color="error"
+            onClick={handleClose}
+          >
+            Close
           </Button>
         </DialogActions>
       </BootstrapDialog>

@@ -15,24 +15,24 @@ const CustomTable = ({ columns, data, fixedHeader = true, Pagination = false, da
     const [currentPage, setCurrentPage] = useState(1);
     const [sortKey, setSortKey] = useState("");
     const [sortDirection, setSortDirection] = useState("asc");
-    const [ascFlag, setAscFlag] = useState({ ...columns.map(() => true) });
+    const [ascFlag, setAscFlag] = useState({ ...columns?.map(() => true) });
     const [visibleColumns, setVisibleColumns] = useState(columns.map((column) => column.showCol));
     const [selectedRowsIndex, setSelectedRowsIndex] = useState([]);
     const [selectedRowsData, setSelectedRowsData] = useState([]);
     const [selectAll, setSelectAll] = useState(false);
     const [editablesRows, setEditablesRows] = useState(columns.map((column) => column.editable ? column.editable : false));
-    console.log("editablesRows", editablesRows, columns);
+
 
     let pagination = Pagination?.length > 0 ? Pagination : [10, 50, 100];
 
 
-    const tabledata = pagination ? data.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage) : data;
+    const tabledata = pagination ? data?.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage) : data;
 
     const toggleColumnVisibility = (index) => {
         setVisibleColumns(visibleColumns.map((visible, i) => i === index ? !visible : visible));
     };
 
-    let sortedData = [...tabledata].sort((a, b) => {
+    let sortedData = tabledata?.sort((a, b) => {
         if (a[sortKey] < b[sortKey]) {
             return sortDirection === 'asc' ? -1 : 1;
         }

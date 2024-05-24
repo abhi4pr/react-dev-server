@@ -1,5 +1,6 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { baseUrl } from "../../utils/config";
+import { get } from "jquery";
 
 export const reduxBaseURL = createApi({
   baseQuery: fetchBaseQuery({ baseUrl: baseUrl }),
@@ -127,6 +128,14 @@ export const reduxBaseURL = createApi({
       }),
       invalidatesTags: ["whatsappLinkType"],
     }),
+    getSingleBankDetail: builder.query({
+      query: (data) => `v1/bank_details_by_vendor_id/${data}`,
+    }),
+
+    //venodr whatsapp group link 
+    getVendorWhatsappLink: builder.query({
+      query: (id) => `v1/vendor_group_link_vendor_id/${id}`,
+    }),
   }),
 });
 
@@ -147,4 +156,6 @@ export const {
   useAddVendorWhatsappLinkTypeMutation,
   useGetVendorWhatsappLinkTypeQuery,
   useUpdateVendorWhatsappLinkTypeMutation,
+  useGetSingleBankDetailQuery,
+  useGetVendorWhatsappLinkQuery
 } = reduxBaseURL;

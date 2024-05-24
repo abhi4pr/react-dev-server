@@ -25,12 +25,12 @@
         background-color: #f1f5f9;
         font-size: 15px;
 
-        &:hover {
+        /* &:hover {
             .wrapper-filed {
 
                 display: flex;
             }
-        }
+        } */
     }
 
     .col-opt {
@@ -42,7 +42,7 @@
         display: flex;
         justify-content: center;
         align-items: center;
-        display: none;
+
 
     }
 

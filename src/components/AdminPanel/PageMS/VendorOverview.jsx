@@ -12,15 +12,23 @@ import ContentCopyOutlinedIcon from "@mui/icons-material/ContentCopyOutlined";
 import CopyAllOutlinedIcon from "@mui/icons-material/CopyAllOutlined";
 import { useGlobalContext } from "../../../Context/Context";
 import {
+  setRowData,
+  setShowBankDetailsModal,
   setShowPageModal,
   setShowWhatsappModal,
   setVendorRowData,
-  setWhatsappLink,
 } from "../../Store/PageOverview";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import VendorWhatsappLinkModla from "./VendorWhatsappLinkModla";
 import OpenWithIcon from "@mui/icons-material/OpenWith";
 import VendorPageModal from "./VendorPageModal";
+import {
+  useGetAllVendorQuery,
+  useGetPmsPayCycleQuery,
+  useGetPmsPaymentMethodQuery,
+  useGetPmsPlatformQuery,
+} from "../../Store/reduxBaseURL";
+import VendorBankDetailModal from "./VendorBankDetailModal";
 
 const VendorOverview = () => {
   const { toastAlert } = useGlobalContext();
@@ -28,34 +36,28 @@ const VendorOverview = () => {
   const [search, setSearch] = useState("");
   const [filterData, setFilterData] = useState([]);
   const [data, setData] = useState([]);
-  const [typeData, setTypeData] = useState([{}]);
-  const [platformData, setPlatformData] = useState([{}]);
-  const [cycleData, setCycleData] = useState([{}]);
-  const [payData, setPayData] = useState([{}]);
   const [loading, setLoading] = useState(false);
-
   const dispatch = useDispatch();
+  const { data: vendor } = useGetAllVendorQuery();
+  const typeData = vendor?.data;
 
+  const showWhatsappModal = useSelector(
+    (state) => state.PageOverview.showWhatsappModal
+  );
+  const { data: platform } = useGetPmsPlatformQuery();
+  const platformData = platform?.data;
+
+  const { data: cycle } = useGetPmsPayCycleQuery();
+  const cycleData = cycle?.data;
+
+  const { data: pay } = useGetPmsPaymentMethodQuery();
+  const payData = pay?.data;
   const getData = () => {
     setLoading(true);
-    // axios.get(baseUrl + "vendorAllData").then((res) => {
-    axios.get(baseUrl + "v1/vendor_data").then((res) => {
+    axios.get(baseUrl + "v1/vendor").then((res) => {
       setVendorTypes(res.data.data);
       setFilterData(res.data.data);
       setLoading(false);
-    });
-    axios.get(baseUrl + "getAllVendor").then((res) => {
-      setTypeData(res.data.data);
-    });
-    axios.get(baseUrl + "getAllPlatform").then((res) => {
-      setPlatformData(res.data.data);
-    });
-    axios.get(baseUrl + "getAllPayCycle").then((res) => {
-      setCycleData(res.data.data);
-    });
-
-    axios.get(baseUrl + "getAllPay").then((res) => {
-      setPayData(res.data.data);
     });
   };
 
@@ -71,12 +73,19 @@ const VendorOverview = () => {
     setData(result);
   }, [search]);
 
-  const handleOpenWhatsappModal = (whatsappLink) => {
+  const handleOpenWhatsappModal = (row) => {
     return () => {
       dispatch(setShowWhatsappModal());
-      dispatch(setWhatsappLink(whatsappLink));
+      dispatch(setRowData(row));
     };
   };
+
+  const handleOpenBankDetailsModal = (row) => {
+    return () => {
+      dispatch(setShowBankDetailsModal());
+      dispatch(setRowData(row));
+    };
+  }
 
   const handleClickVendorName = (params) => {
     return () => {
@@ -103,7 +112,7 @@ const VendorOverview = () => {
             onClick={handleClickVendorName(params)}
             className="link-primary cursor-pointer text-truncate"
           >
-            {params.row.vendorMast_name}
+            {params.row.vendor_name}
           </div>
         );
       },
@@ -210,77 +219,68 @@ const VendorOverview = () => {
       editable: true,
     },
     {
-      field: "type_id",
+      field: "vendor_type",
       headerName: "Vendor Type",
       width: 200,
       renderCell: (params) => {
         let name = typeData?.find(
-          (item) => item?._id == params.row?.type_id
+          (item) => item?._id == params.row?.vendor_type
         )?.type_name;
         return <div>{name}</div>;
       },
       editable: true,
     },
     {
-      field: "platform_id",
+      field: "vendor_platform",
       headerName: "Platform",
       width: 200,
       renderCell: (params) => {
         let name = platformData?.find(
-          (item) => item?._id == params.row?.platform_id
+          (item) => item?._id == params.row?.vendor_platform
         )?.platform_name;
         return <div>{name}</div>;
       },
       editable: true,
     },
     {
-      field: "payMethod_id",
+      field: "payment_method",
       headerName: "Paymen Method",
       width: 200,
       renderCell: (params) => {
         let name = payData?.find(
-          (item) => item?._id == params.row?.payMethod_id
+          (item) => item?._id == params.row?.payment_method
         )?.payMethod_name;
         return <div>{name}</div>;
       },
       editable: true,
     },
     {
-      field: "cycle_id",
+      field: "pay_cycle",
       headerName: "Cycle",
       width: 200,
       renderCell: (params) => {
         let name = cycleData?.find(
-          (item) => item?._id == params.row?.cycle_id
+          (item) => item?._id == params.row?.pay_cycle
         )?.cycle_name;
         return <div>{name}</div>;
       },
       editable: true,
     },
     {
-      field: "bank_name",
-      headerName: "Bank Name",
+      field: "Bank Details",
+      headerName: "Bank Details",
       width: 200,
-    },
-    {
-      field: "account_type",
-      headerName: "Account Type",
-      width: 200,
-    },
-    {
-      field: "account_no",
-      headerName: "Account No",
-      width: 200,
-    },
-    {
-      field: "ifsc_code",
-      headerName: "IFSC Code",
-      width: 200,
-    },
-    {
-      field: "upi_id",
-      headerName: "UPI ID",
-      width: 200,
+      renderCell: (params) => {
+        return (
+          <button
+            title="Bank Details"
+            className="btn btn-outline-primary btn-sm user-button"
+            onClick={handleOpenBankDetailsModal(params.row)}
+          >
+            <OpenWithIcon />
+          </button>
+        );
+      },
     },
     {
       field: "whatsapp_link",
@@ -288,19 +288,13 @@ const VendorOverview = () => {
       width: 200,
       renderCell: (params) => {
         return (
-          <div>
-            {
-              params.row?.whatsapp_link && (
-                <div
-                  className="text-truncate link-primary cursor-pointer"
-                  onClick={handleOpenWhatsappModal(params.row.whatsapp_link)}
-                >
-                  <OpenWithIcon />
-                </div>
-              )
-              // ))
-            }
-          </div>
+          <button
+            title="Whatsapp Link"
+            className="btn btn-outline-primary btn-sm user-button"
+            onClick={handleOpenWhatsappModal(params.row)}
+          >
+            <OpenWithIcon />
+          </button>
         );
       },
     },
@@ -339,7 +333,7 @@ const VendorOverview = () => {
             </button>
           </Link>
           <DeleteButton
-            endpoint="deleteVendorMast"
+            endpoint="v1/vendor"
             id={params.row._id}
             getData={getData}
           />
@@ -652,7 +646,9 @@ const VendorOverview = () => {
           )}
         </div>
       </div>
+      <VendorBankDetailModal />
       <VendorPageModal />
+     <VendorWhatsappLinkModla />
     </>
   );
 };

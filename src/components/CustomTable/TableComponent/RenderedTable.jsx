@@ -21,7 +21,7 @@ const RenderedTable = ({ data, fixedHeader, visibleColumns, rowSelectable, colum
         setSelectAll(e.target.checked);
         if (e.target.checked) {
             // If the "select all" checkbox is checked, select all rows
-            setSelectedRowsIndex(data.map((_, index) => index));
+            setSelectedRowsIndex(data?.map((_, index) => index));
         } else {
             // If the "select all" checkbox is unchecked, deselect all rows
             setSelectedRowsIndex([]);
@@ -99,7 +99,7 @@ const RenderedTable = ({ data, fixedHeader, visibleColumns, rowSelectable, colum
                             onChange={handleSelectAll}
                         />
                     </th>)}
-                    {columnsheader.map((column, index) => visibleColumns[index] && (
+                    {columnsheader?.map((column, index) => visibleColumns[index] && (
                         <th
                             key={column.key}
 

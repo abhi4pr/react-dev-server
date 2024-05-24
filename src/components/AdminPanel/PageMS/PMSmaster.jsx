@@ -283,7 +283,7 @@ export default function PMSmaster() {
                   </div>
                 </div>
               </Link>
-            </div>  
+            </div>
             <div
               className="d-flex gap4 col mb-2 md-6"
               style={{ flexWrap: "wrap", gap: "10px" }}
@@ -592,7 +592,6 @@ export default function PMSmaster() {
                 </div>
               </Link>
             </div>{" "}
-         
           </div>
         </div>
       </div>

@@ -16,6 +16,7 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { TextField } from "@mui/material";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { constant } from "../../../utils/constants";
+import dayjs from "dayjs";
 
 const onBoardStatus = 2;
 
@@ -96,6 +97,10 @@ const AdminPreOnboarding = () => {
   const [selectedImage, setSelectedImage] = useState(null);
   const [roledata, getRoleData] = useState([]);
   const [dateOfBirth, setDateOfBirth] = useState("");
+
+  const [dobError, setDobError] = useState("");
+  const [dobValidate, setDobValidate] = useState(0);
+
   const [age, setAge] = useState("");
   const [gender, setGender] = useState("");
 
@@ -595,10 +600,15 @@ const AdminPreOnboarding = () => {
 
     return age;
   };
+  const disableFutureDates = (date) => {
+    return dayjs(date).isAfter(dayjs(), "day");
+  };
 
   const handleDateChange = (e) => {
     const selectedDate = e;
+    const validateAge = dayjs().diff(e, "year");
     const age = calculateAge(selectedDate);
+    setDobValidate(validateAge);
 
     if (selectedDate === "") {
       setIsRequired((prev) => ({ ...prev, dateOfBirth: true }));
@@ -606,12 +616,15 @@ const AdminPreOnboarding = () => {
       setIsRequired((prev) => ({ ...prev, dateOfBirth: false }));
     }
 
-    if (age < 15) {
-      window.alert("Your age must be greater than 15 years.");
+    if (validateAge < 15 || validateAge > 100) {
+      // window.alert("Your age must be greater than 15 years.");
+      setDobError("Age can't less than 15 or greater than 100 years.");
+      setDateOfBirth("");
     } else {
-      setDateOfBirth(selectedDate);
-      setAge(age);
+      setDobError("");
     }
+    setDateOfBirth(selectedDate);
+    setAge(age);
   };
 
   const handleFullNameChange = (event) => {
@@ -1187,12 +1200,14 @@ const AdminPreOnboarding = () => {
             <DatePicker
               value={dateOfBirth}
               onChange={handleDateChange}
+              shouldDisableDate={disableFutureDates}
               renderInput={(params) => <TextField {...params} />}
             />
           </LocalizationProvider>
           {isRequired.dateOfBirth && (
             <p className="form-error">Please select a DOB</p>
           )}
+          {<p className="form-error">{dobError}</p>}
         </div>
         {/* <FieldContainer
           astric

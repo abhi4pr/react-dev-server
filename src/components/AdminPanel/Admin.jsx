@@ -336,6 +336,7 @@ import CreditApproval from "./Finance/CreditApproval/CreditApproval";
 import ViewPaymentUpdate from "./Sales/PaymentUpdate/ViewPaymentUpdate";
 import { FinanceContextComponent } from "../../Context/FinanceContext";
 import CreateSalesAccount from "./Sales/Account/CreateSalesAccount";
+import SalesAccountOverview from "./Sales/Account/SalesAccountOverview";
 
 const Admin = () => {
   const [contextData, setData] = useState([]);
@@ -409,8 +410,8 @@ const Admin = () => {
                       (contextData &&
                         contextData[38] &&
                         contextData[38].view_value === 1)) && (
-                      <Route path="/user" element={<UserMaster />} />
-                    )}
+                        <Route path="/user" element={<UserMaster />} />
+                      )}
 
                     {/* User Profile Routing Here  */}
                     <Route path="/user-timeline" element={<Timeline />} />
@@ -1597,6 +1598,10 @@ const Admin = () => {
                   <Route
                     path="/op-campaign-executions"
                     element={<CampaignExecutions />}
+                  />
+                  <Route
+                    path="/sales-account-overview"
+                    element={<SalesAccountOverview />}
                   />
                 </Route>
               </Routes>

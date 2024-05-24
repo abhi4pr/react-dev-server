@@ -5,7 +5,7 @@ import CustomTableWrapper from '../../../../ReusableComponents/CustomTableWrappe
 
 
 const View = ({ data, columns, isLoading, title }) => {
-    console.log(data, columns);
+
     return (
 
         <CustomTableWrapper title={title}>

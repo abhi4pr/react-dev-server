@@ -6,10 +6,11 @@ const initialState = {
   showTagCategoriesModal: false,
   showPageHelathColumn: false,
   showWhatsappModal: false,
-  whatsappLink: [],
   venodrRowData: [],
   showPageModal: false,
   showVendorNotAssignedModal: false,
+  showBankDetailsModal: false,
+  rowData:""
 };
 
 const pageOverviewSlice = createSlice({
@@ -37,9 +38,6 @@ const pageOverviewSlice = createSlice({
     setCloseWhatsappModal(state) {
       state.showWhatsappModal = false;
     },
-    setWhatsappLink(state, action) {
-      state.whatsappLink = action.payload;
-    },
     setVendorRowData(state, action) {
       state.venodrRowData = action.payload;
     },
@@ -55,7 +53,16 @@ const pageOverviewSlice = createSlice({
     setCloseVendorNotAssignedModal(state) {
       state.showVendorNotAssignedModal = false;
     },
+    setShowBankDetailsModal(state) {
+      state.showBankDetailsModal = true;
+    },
+    setCloseBankDetailsModal(state) {
+      state.showBankDetailsModal = false;
   },
+  setRowData(state, action) {
+    state.rowData = action.payload;
+  },
+}
 });
 
 export const {
@@ -66,11 +73,13 @@ export const {
   setShowPageHealthColumn,
   setShowWhatsappModal,
   setCloseWhatsappModal,
-  setWhatsappLink,
   setVendorRowData,
   setShowPageModal,
   setClosePageModal,
   setShowVendorNotAssignedModal,
   setCloseVendorNotAssignedModal,
+  setShowBankDetailsModal,
+  setCloseBankDetailsModal,
+  setRowData,
 } = pageOverviewSlice.actions;
 export default pageOverviewSlice.reducer;
