@@ -7,7 +7,6 @@ import TableToolkit from "./TableComponent/TableToolkit";
 import RenderedTable from "./TableComponent/RenderedTable";
 
 const CustomTable = ({ columns, data, fixedHeader = true, Pagination = false, dataLoading = false, rowSelectable }) => {
-
     const [columnsheader, setColumns] = useState(columns);
     const [resizing, setResizing] = useState(null);
     const [widths, setWidths] = useState(columns);
@@ -21,6 +20,13 @@ const CustomTable = ({ columns, data, fixedHeader = true, Pagination = false, da
     const [selectedRowsData, setSelectedRowsData] = useState([]);
     const [selectAll, setSelectAll] = useState(false);
     const [editablesRows, setEditablesRows] = useState(columns.map((column) => column.editable ? column.editable : false));
+    useEffect(() => {
+        setColumns(columns)
+        setWidths(columns)
+        setAscFlag({ ...columns?.map(() => true) })
+        setVisibleColumns(columns.map((column) => column.showCol))
+        setEditablesRows(columns.map((column) => column.editable ? column.editable : false))
+    }, [dataLoading])
 
 
     let pagination = Pagination?.length > 0 ? Pagination : [10, 50, 100];
@@ -52,8 +58,8 @@ const CustomTable = ({ columns, data, fixedHeader = true, Pagination = false, da
 
             <TableToolkit columnsheader={columnsheader} setVisibleColumns={setVisibleColumns} visibleColumns={visibleColumns} data={data} selectedRowsIndex={selectedRowsIndex} setSelectedRowsData={setSelectedRowsData} toggleColumnVisibility={toggleColumnVisibility} />
             <div className="table-container">
-                <RenderedTable dataLoading={dataLoading} data={data} setSortKey={setSortKey} fixedHeader={fixedHeader} rowSelectable={rowSelectable} visibleColumns={visibleColumns} columnsheader={columnsheader} ascFlag={ascFlag} selectAll={selectAll} setColumns={setColumns} currentPage={currentPage} itemsPerPage={itemsPerPage} selectedRowsIndex={selectedRowsIndex} setSelectedRowsIndex={setSelectedRowsIndex} setSelectAll={setSelectAll} setAscFlag={setAscFlag} resizing={resizing} setResizing={setResizing} sortDirection={sortDirection} setSortDirection={setSortDirection} widths={widths} setWidths={setWidths} sortedData={sortedData} />
-            </div>
+                {<RenderedTable dataLoading={dataLoading} data={data} setSortKey={setSortKey} fixedHeader={fixedHeader} rowSelectable={rowSelectable} visibleColumns={visibleColumns} columnsheader={columnsheader} ascFlag={ascFlag} selectAll={selectAll} setColumns={setColumns} currentPage={currentPage} itemsPerPage={itemsPerPage} selectedRowsIndex={selectedRowsIndex} setSelectedRowsIndex={setSelectedRowsIndex} setSelectAll={setSelectAll} setAscFlag={setAscFlag} resizing={resizing} setResizing={setResizing} sortDirection={sortDirection} setSortDirection={setSortDirection} widths={widths} setWidths={setWidths} sortedData={sortedData} />
+                }            </div>
             {
                 Pagination && <PaginationComp data={data} Pagination={pagination} currentPage={currentPage} setCurrentPage={setCurrentPage} itemsPerPage={itemsPerPage} setItemsPerPage={setItemsPerPage} />
             }
