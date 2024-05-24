@@ -39,8 +39,8 @@ const FAQTab = ({ username, designation }) => {
                 </div>
                 <div className="thm_textbx">
                   <h3>
-                    2. What is the duration of the notice period that needs to be
-                    served?
+                    2. What is the duration of the notice period that needs to
+                    be served?
                   </h3>
                   <p>
                     <span className="bold">Ans:- </span>60 Days
@@ -100,7 +100,7 @@ const FAQTab = ({ username, designation }) => {
                     for working from home (WFH)?
                   </h3>
                   <p>
-                    <span className="bold">Ans:- </span>* Prior approval must be
+                    <span className="bold">Ans:- </span> Prior approval must be
                     obtained before taking leave from the regular office and
                     working from home. Failure to obtain such approval may
                     result in the employee being considered absent from work.
@@ -151,8 +151,8 @@ const FAQTab = ({ username, designation }) => {
                       href="https://mail.google.com/mail/?view=cm&fs=1&tf=1&to=tushar@creativefuel.io"
                     >
                       tushar@creativefuel.io{" "}
-                    </a>
-                    {" "}and your team leader when necessary.
+                    </a>{" "}
+                    and your team leader when necessary.
                   </p>
                 </div>
               </div>

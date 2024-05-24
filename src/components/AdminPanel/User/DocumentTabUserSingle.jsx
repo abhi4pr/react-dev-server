@@ -4,12 +4,14 @@ import { FcDownload } from "react-icons/fc";
 import ApproveReject from "./ApproveReject";
 import { useGlobalContext } from "../../../Context/Context";
 import { baseUrl } from "../../../utils/config";
+import { FaRegFilePdf } from "react-icons/fa";
 
 const DocumentTabUserSingle = (id) => {
   const { toastAlert, toastError } = useGlobalContext();
   const [documentData, setDocumentData] = useState([]);
   const [rejectReasonActive, setRejectReasonActive] = useState(null);
   const [rejectReason, setRejectReason] = useState("");
+  const [documentPercentage, setDocumentPercentage] = useState(0);
 
   const getDocuments = async () => {
     try {
@@ -25,6 +27,18 @@ const DocumentTabUserSingle = (id) => {
   useEffect(() => {
     getDocuments();
   }, []);
+
+  useEffect(() => {
+    const approveCount = documentData.filter(
+      (doc) => doc.doc_image !== ""
+    ).length;
+
+    const documentPercentageTemp = Math.ceil(
+      (approveCount / documentData.length) * 100
+    );
+
+    setDocumentPercentage(documentPercentageTemp);
+  }, [getDocuments]);
 
   const handleDocumentUpdate = async (e, id, status, reason) => {
     e.preventDefault();
@@ -58,11 +72,14 @@ const DocumentTabUserSingle = (id) => {
                docTableLight
              table-responsive`}
           >
+            <h2 className="bold">
+              Document Uploaded Percentage: {documentPercentage}%
+            </h2>
             <table className="table">
               <thead>
                 <tr>
-                  <th scope="col">Document Type</th>
                   <th scope="col">Document Name</th>
+                  <th scope="col">Document Type</th>
                   <th scope="col">View</th>
                   <th scope="col" className="text-center">
                     Action
@@ -73,19 +90,22 @@ const DocumentTabUserSingle = (id) => {
                 {documentData.map((item) => (
                   <tr key={item._id}>
                     <td>
-                      <div className="uploadDocBtn ">
-                        <span className="w-100">
+                      <div className="uploadDocBtn">
+                        <span>
                           {item?.document.doc_name
                             ? item.document.doc_name
                             : "N/A"}
+                          {item.document.isRequired && (
+                            <span style={{ color: "red" }}>*</span>
+                          )}
                         </span>
                       </div>
                     </td>
                     <td scope="row">
                       {item.document.doc_type}
-                      {item.document.isRequired && (
+                      {/* {item.document.isRequired && (
                         <span style={{ color: "red" }}> * (Mandatory)</span>
-                      )}
+                      )} */}
                     </td>
 
                     <td>
@@ -97,8 +117,19 @@ const DocumentTabUserSingle = (id) => {
                               target="_blank"
                               download
                             >
-                              <img src={item.doc_image_url} alt="doc image" />
-                              <i class="fa-solid fa-eye" />
+                              {item.doc_image_url.endsWith(".pdf") ? (
+                                <>
+                                  <FaRegFilePdf style={{ fontSize: "50px" }} />
+                                </>
+                              ) : (
+                                <>
+                                  <img
+                                    src={item.doc_image_url}
+                                    alt="doc image"
+                                  />
+                                  <i className="fa-solid fa-eye" />
+                                </>
+                              )}
                             </a>
                           ) : (
                             "N/A"

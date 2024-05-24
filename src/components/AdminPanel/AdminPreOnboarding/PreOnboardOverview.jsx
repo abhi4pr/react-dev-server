@@ -72,32 +72,32 @@ const PreOnboardingOverview = () => {
           </Link>
         </>
       ),
-      width: "10%",
+      width: "200px",
       sortable: true,
       reorder: true,
     },
 
-    {
-      name: "Total Documents Filled Percentage",
-      selector: (row) => Math.ceil(row.documentPercentage) + "%",
-      width: "5%",
-      sortable: true,
-      reorder: true,
-    },
-    {
-      name: "Mandatory Documents Filled Percentage",
-      selector: (row) => row.document_percentage_mandatory,
-      width: "5%",
-      sortable: true,
-      reorder: true,
-    },
-    {
-      name: "Non Mandatory Documents Filled Percentage",
-      selector: (row) => row.document_percentage_non_mandatory,
-      width: "5%",
-      sortable: true,
-      reorder: true,
-    },
+    // {
+    //   name: "Total Documents Filled Percentage",
+    //   selector: (row) => Math.ceil(row.documentPercentage) + "%",
+    //   width: "150px",
+    //   sortable: true,
+    //   reorder: true,
+    // },
+    // {
+    //   name: "Mandatory Documents Filled Percentage",
+    //   selector: (row) => row.document_percentage_mandatory,
+    //   width: "5%",
+    //   sortable: true,
+    //   reorder: true,
+    // },
+    // {
+    //   name: "Non Mandatory Documents Filled Percentage",
+    //   selector: (row) => row.document_percentage_non_mandatory,
+    //   width: "5%",
+    //   sortable: true,
+    //   reorder: true,
+    // },
     {
       name: "Role",
       selector: (row) => row.Role_name,
@@ -150,10 +150,10 @@ const PreOnboardingOverview = () => {
             sx={{ marginRight: "10px" }}
             className="btn btn-outline-secondary cmnbtn btn_sm"
             size="small"
-            disabled={
-              row.document_percentage_mandatory < 100 ||
-              row.document_percentage_mandatory === undefined
-            }
+            // disabled={
+            //   row.document_percentage_mandatory < 100 ||
+            //   row.document_percentage_mandatory === undefined
+            // }
             onClick={() => handleStatusChange(row.user_id, row.onboard_status)}
             variant="outlined"
             color="secondary"

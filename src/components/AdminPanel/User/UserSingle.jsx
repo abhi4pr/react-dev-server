@@ -13,10 +13,12 @@ import { baseUrl } from "../../../utils/config";
 import UserSingleTab5 from "./UserSingle5";
 import UserSingleTab6 from "./UserSingle6";
 import UserSingleWFHDSalaryTab from "./UserSingleWFHDSalaryTab";
+import { useAPIGlobalContext } from "../APIContext/APIContext";
 
 const UserSingle = () => {
   const whatsappApi = WhatsappAPI();
   const [KRIData, setKRIData] = useState([]);
+  const { RoleIDContext } = useAPIGlobalContext();
   const { id } = useParams();
   const [defaultSeatData, setDefaultSeatData] = useState([]);
   const [roomId, setRoomId] = useState();
