@@ -38,10 +38,295 @@ import KeyboardDoubleArrowUpIcon from "@mui/icons-material/KeyboardDoubleArrowUp
 import { EditTwoTone } from "@mui/icons-material";
 import { useGetnotAssignedVendorsQuery } from "../../Store/reduxBaseURL";
 import VendorNotAssignedModal from "./VendorNotAssignedModal";
+import instaIcon from "../../../assets/img/icon/insta.svg";
+import { Dropdown } from "react-bootstrap";
+import ReactApexChart from "react-apexcharts";
+import avatarOne from "../../../assets/img/product/Avtrar1.png";
 
 const PageOverview = () => {
   // const { toastAlert } = useGlobalContext();
   const [vendorTypes, setVendorTypes] = useState([]);
+  const [pieChart, setPieChart] = useState({
+    series: [40, 60],
+    options: {
+      chart: {
+        type: "donut",
+      },
+      labels: ["Male", "Female"],
+      colors: ["#FAA7E0", "#DD2590"],
+      stroke: {
+        show: false,
+        width: 0,
+      },
+      dataLabels: {
+        enabled: false,
+      },
+      legend: {
+        position: "left",
+        offsetY: 70,
+        offsetX: 0,
+        fontSize: "16px",
+        fontWeight: 500,
+        markers: {
+          width: 14,
+          height: 14,
+          radius: 14,
+        },
+        itemMargin: {
+          horizontal: 0,
+          vertical: 5,
+        },
+      },
+    },
+  });
+  const [columnChartAge, setcolumnChartAge] = useState({
+    series: [
+      {
+        name: "Demographics (Age group)",
+        data: [15, 32, 13, 7, 4, 47, 19],
+      },
+    ],
+    tooltip: {
+      enabled: false,
+    },
+    options: {
+      chart: {
+        type: "bar",
+        toolbar: {
+          show: false, // Disables the toolbar
+        },
+      },
+      plotOptions: {
+        bar: {
+          borderRadius: 7,
+          borderRadiusApplication: "end",
+          dataLabels: {
+            position: "top", // top, center, bottom
+          },
+        },
+      },
+      grid: {
+        show: false, // Removes the horizontal grid lines
+      },
+      colors: ["#DD2590"],
+      dataLabels: {
+        enabled: true,
+        formatter: function (val) {
+          return val + "%";
+        },
+        offsetY: -25,
+        style: {
+          fontSize: "14px",
+          fontWeight: "400",
+          colors: ["#344054"],
+        },
+      },
+
+      xaxis: {
+        categories: [
+          "13 - 17",
+          "18 - 24",
+          "25 - 34",
+          "35 - 44",
+          "45 - 54",
+          "55 - 64",
+          "65 Above",
+        ],
+        position: "bottom",
+        axisBorder: {
+          show: false,
+        },
+        axisTicks: {
+          show: false,
+        },
+        crosshairs: {
+          show: false,
+          enabled: false,
+        },
+        tooltip: {
+          enabled: false,
+          show: false,
+        },
+      },
+      yaxis: {
+        axisBorder: {
+          show: false,
+        },
+        axisTicks: {
+          show: false,
+        },
+        labels: {
+          show: false,
+        },
+      },
+    },
+  });
+  const [columnChartCountry, setcolumnChartCountry] = useState({
+    series: [
+      {
+        name: "Top Country",
+        data: [43, 12, 26, 14, 44, 20, 25],
+      },
+    ],
+    tooltip: {
+      enabled: false,
+    },
+    options: {
+      chart: {
+        type: "bar",
+        toolbar: {
+          show: false, // Disables the toolbar
+        },
+      },
+      plotOptions: {
+        bar: {
+          borderRadius: 7,
+          borderRadiusApplication: "end",
+          dataLabels: {
+            position: "top", // top, center, bottom
+          },
+        },
+      },
+      grid: {
+        show: false, // Removes the horizontal grid lines
+      },
+      colors: ["#DD2590"],
+      dataLabels: {
+        enabled: true,
+        formatter: function (val) {
+          return val + "%";
+        },
+        offsetY: -25,
+        style: {
+          fontSize: "14px",
+          fontWeight: "400",
+          colors: ["#344054"],
+        },
+      },
+
+      xaxis: {
+        categories: [
+          "India",
+          "Myanmar",
+          "Philippine",
+          "Japan",
+          "Korea",
+          "Cambodia",
+          "Thailand",
+        ],
+        position: "bottom",
+        axisBorder: {
+          show: false,
+        },
+        axisTicks: {
+          show: false,
+        },
+        crosshairs: {
+          show: false,
+          enabled: false,
+        },
+        tooltip: {
+          enabled: false,
+          show: false,
+        },
+      },
+      yaxis: {
+        axisBorder: {
+          show: false,
+        },
+        axisTicks: {
+          show: false,
+        },
+        labels: {
+          show: false,
+        },
+      },
+    },
+  });
+
+  const [columnChartCity, setcolumnChartCity] = useState({
+    series: [
+      {
+        name: "Top City",
+        data: [40, 23, 10, 34, 27, 32, 38],
+      },
+    ],
+    tooltip: {
+      enabled: false,
+    },
+    options: {
+      chart: {
+        type: "bar",
+        toolbar: {
+          show: false, // Disables the toolbar
+        },
+      },
+      plotOptions: {
+        bar: {
+          borderRadius: 7,
+          borderRadiusApplication: "end",
+          dataLabels: {
+            position: "top", // top, center, bottom
+          },
+        },
+      },
+      grid: {
+        show: false, // Removes the horizontal grid lines
+      },
+      colors: ["#DD2590"],
+      dataLabels: {
+        enabled: true,
+        formatter: function (val) {
+          return val + "%";
+        },
+        offsetY: -25,
+        style: {
+          fontSize: "14px",
+          fontWeight: "400",
+          colors: ["#344054"],
+        },
+      },
+
+      xaxis: {
+        categories: [
+          "Bhopal",
+          "Indore",
+          "Delhi",
+          "Noida",
+          "Kolkata",
+          "Chennai",
+          "Pune",
+        ],
+        position: "bottom",
+        axisBorder: {
+          show: false,
+        },
+        axisTicks: {
+          show: false,
+        },
+        crosshairs: {
+          show: false,
+          enabled: false,
+        },
+        tooltip: {
+          enabled: false,
+          show: false,
+        },
+      },
+      yaxis: {
+        axisBorder: {
+          show: false,
+        },
+        axisTicks: {
+          show: false,
+        },
+        labels: {
+          show: false,
+        },
+      },
+    },
+  });
+
   const [filterData, setFilterData] = useState([]);
   const [cat, setCat] = useState([{}]);
   const [venodr, setVenodr] = useState([{}]);
@@ -181,20 +466,22 @@ const PageOverview = () => {
         };
       });
 
-        const addPricesToParent = (dataArray) => {
-          return dataArray.map(item => {
-              item.purchase_price.forEach(priceObj => {
-                  // const keyName = `price_${priceObj.price_type_id}`;
-                  const keyName = allPriceTypeList?.find((d) => d.price_type_id == priceObj.price_type_id)?.price_type;
-                  console.log(keyName,"keyName")
-                  console.log(priceObj.price_type_id,"keyName")
-                  item[keyName] = priceObj.price;
-              });
-              // delete item.purchase_price;
-              return item;
+      const addPricesToParent = (dataArray) => {
+        return dataArray.map((item) => {
+          item.purchase_price.forEach((priceObj) => {
+            // const keyName = `price_${priceObj.price_type_id}`;
+            const keyName = allPriceTypeList?.find(
+              (d) => d.price_type_id == priceObj.price_type_id
+            )?.price_type;
+            console.log(keyName, "keyName");
+            console.log(priceObj.price_type_id, "keyName");
+            item[keyName] = priceObj.price;
           });
+          // delete item.purchase_price;
+          return item;
+        });
       };
-    
+
       const updatedData = addPricesToParent(data);
 
       setVendorTypes(updatedData);
@@ -356,8 +643,8 @@ const PageOverview = () => {
               <Button
                 className="text-center"
                 // onClick={handlePlatfrormClick(data)}
-                onClick={()=>{
-                  console.log(params.row)
+                onClick={() => {
+                  console.log(params.row);
                 }}
               >
                 <KeyboardDoubleArrowUpIcon />
@@ -468,7 +755,7 @@ const PageOverview = () => {
       renderCell: ({ row }) => {
         return (
           <div>
-            {row.purchase_price.length>0 && (
+            {row.purchase_price.length > 0 && (
               <button
                 title="Price"
                 onClick={handlePriceClick(row)}
@@ -1168,6 +1455,860 @@ const PageOverview = () => {
 
   return (
     <>
+      {/* Design Start */}
+      <div className="pageOverviewWrapper">
+        <div className="pageOverviewWrapperLeft">
+          <div className="pageOverviewBoard card">
+            <div className="card-body">
+              <div className="pageSourceHeader">
+                <ul>
+                  <li className="active">
+                    <a href="#">Instagram</a>
+                  </li>
+                </ul>
+              </div>
+              <div className="pageSourceBody">
+                <div className="pageInsight">
+                  <div className="pageInsightHead">
+                    <div className="pageTitle">
+                      <span>
+                        <img className="logo-img" src={instaIcon} alt="icon" />
+                      </span>
+                      <h2>Creativefuel</h2>
+                    </div>
+                    <div className="pageAction">
+                      <div className="pageActionUl">
+                        <div className="pageActionLi">
+                          <Dropdown>
+                            <Dropdown.Toggle
+                              variant="default"
+                              id="dropdownStats"
+                            >
+                              <span>0.00%</span>Stats
+                              <button className="btn toggleArrowBtn">
+                                <i class="bi bi-chevron-down"></i>
+                              </button>
+                            </Dropdown.Toggle>
+                            <Dropdown.Menu>
+                              <Dropdown.Item href="#/action-1">
+                                Set Stats
+                              </Dropdown.Item>
+                              <Dropdown.Item href="#/action-2">
+                                Update Stats
+                              </Dropdown.Item>
+                            </Dropdown.Menu>
+                          </Dropdown>
+                        </div>
+                        <div className="pageActionLi">
+                          <Dropdown>
+                            <Dropdown.Toggle
+                              variant="default"
+                              id="dropdownMore"
+                            >
+                              <i class="bi bi-three-dots-vertical"></i> More
+                              <button className="btn toggleArrowBtn">
+                                <i class="bi bi-chevron-down"></i>
+                              </button>
+                            </Dropdown.Toggle>
+                            <Dropdown.Menu>
+                              <Dropdown.Item href="#/action-1">
+                                Edit
+                              </Dropdown.Item>
+                              <Dropdown.Item id="historyToggle">
+                                History
+                              </Dropdown.Item>
+                              <Dropdown.Item href="#/action-3">
+                                Purchase price
+                              </Dropdown.Item>
+                              <Dropdown.Item
+                                href="#/action-4"
+                                className="dangerText"
+                              >
+                                Delete
+                              </Dropdown.Item>
+                            </Dropdown.Menu>
+                          </Dropdown>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="pageInsightText">
+                    <h2>Instagram Account Insight</h2>
+                    <h4>
+                      This graph shows the total size of your fanbase across
+                      your tracked social & streaming platforms.
+                    </h4>
+                  </div>
+                  <div className="pageInsightChart row">
+                    <div className="col-xl-3 col-lg-3 col-md-12 col-12">
+                      <div className="pageInsightChartText">
+                        <h4>Profile Visit</h4>
+                        <h2>12M</h2>
+                        <h4>
+                          4<small>th</small> Quater
+                        </h4>
+                      </div>
+                    </div>
+                    <div className="col-xl-4 col-lg-4 col-md-12 col-12">
+                      <div className="pageInsightChartData">
+                        <div id="chart">
+                          <ReactApexChart
+                            options={pieChart.options}
+                            series={pieChart.series}
+                            type="donut"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <hr />
+                <div className="pageChart demographic">
+                  <div className="pageChartHead">
+                    <h2>Demographics (Age Group)</h2>
+                    <button className="btn">
+                      View image <i class="bi bi-image-fill"></i>
+                    </button>
+                  </div>
+                  <div className="pageChartArea">
+                    <div id="chartTwo">
+                      <ReactApexChart
+                        options={columnChartAge.options}
+                        series={columnChartAge.series}
+                        type="bar"
+                        height={200}
+                      />
+                    </div>
+                  </div>
+                </div>
+                <hr />
+                <div className="pageChart country">
+                  <div className="pageChartHead">
+                    <h2>Top Country</h2>
+                    <button className="btn">
+                      View image <i class="bi bi-image-fill"></i>
+                    </button>
+                  </div>
+                  <div className="pageChartArea">
+                    <div id="chartThree">
+                      <ReactApexChart
+                        options={columnChartCountry.options}
+                        series={columnChartCountry.series}
+                        type="bar"
+                        height={200}
+                      />
+                    </div>
+                  </div>
+                </div>
+                <hr />
+                <div className="pageChart city">
+                  <div className="pageChartHead">
+                    <h2>Top City</h2>
+                    <button className="btn">
+                      View image <i class="bi bi-image-fill"></i>
+                    </button>
+                  </div>
+                  <div className="pageChartArea">
+                    <div id="chartFour">
+                      <ReactApexChart
+                        options={columnChartCity.options}
+                        series={columnChartCity.series}
+                        type="bar"
+                        height={200}
+                      />
+                    </div>
+                  </div>
+                </div>
+                <hr />
+                <div className="pageStats">
+                  <div className="row">
+                    <div className="col-xl-3 col-lg-3 col-md-12 col-sm-12 col-12">
+                      <div className="pageStateBox">
+                        <h2>Engagement</h2>
+                        <h3>00</h3>
+                      </div>
+                    </div>
+                    <div className="col-xl-3 col-lg-3 col-md-12 col-sm-12 col-12">
+                      <div className="pageStateBox">
+                        <h2>Impression</h2>
+                        <h3>00</h3>
+                      </div>
+                    </div>
+                    <div className="col-xl-3 col-lg-3 col-md-12 col-sm-12 col-12">
+                      <div className="pageStateBox">
+                        <h2>Reach</h2>
+                        <h3>00</h3>
+                      </div>
+                    </div>
+                    <div className="col-xl-3 col-lg-3 col-md-12 col-sm-12 col-12">
+                      <div className="pageStateBox">
+                        <h2>Stats</h2>
+                        <h3>00</h3>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="pageOverviewWrapperRight">
+          <div className="pageHistoryBoard card">
+            <div class="card-header flexCenterBetween">
+              <h5 class="card-title">History</h5>
+              <button id="closeHistory" className="btn iconBtn">
+                <i class="bi bi-x-lg"></i>
+              </button>
+            </div>
+            <div className="card-body">
+              <div className="historyUserCardList">
+                <div className="historyUserCard">
+                  <img className="img-profile" src={avatarOne} />
+                  <div className="historyUserCardText">
+                    <h2>Ashia Kashyap</h2>
+                    <h3>13/03/2024</h3>
+                  </div>
+                </div>
+                <div className="historyUserCard">
+                  <img className="img-profile" src={avatarOne} />
+                  <div className="historyUserCardText">
+                    <h2>Ashia Kashyap</h2>
+                    <h3>13/03/2024</h3>
+                  </div>
+                </div>
+                <div className="historyUserCard">
+                  <img className="img-profile" src={avatarOne} />
+                  <div className="historyUserCardText">
+                    <h2>Ashia Kashyap</h2>
+                    <h3>13/03/2024</h3>
+                  </div>
+                </div>
+                <div className="historyUserCard">
+                  <img className="img-profile" src={avatarOne} />
+                  <div className="historyUserCardText">
+                    <h2>Ashia Kashyap</h2>
+                    <h3>13/03/2024</h3>
+                  </div>
+                </div>
+                <div className="historyUserCard">
+                  <img className="img-profile" src={avatarOne} />
+                  <div className="historyUserCardText">
+                    <h2>Ashia Kashyap</h2>
+                    <h3>13/03/2024</h3>
+                  </div>
+                </div>
+                <div className="historyUserCard">
+                  <img className="img-profile" src={avatarOne} />
+                  <div className="historyUserCardText">
+                    <h2>Ashia Kashyap</h2>
+                    <h3>13/03/2024</h3>
+                  </div>
+                </div>
+                <div className="historyUserCard">
+                  <img className="img-profile" src={avatarOne} />
+                  <div className="historyUserCardText">
+                    <h2>Ashia Kashyap</h2>
+                    <h3>13/03/2024</h3>
+                  </div>
+                </div>
+                <div className="historyUserCard">
+                  <img className="img-profile" src={avatarOne} />
+                  <div className="historyUserCardText">
+                    <h2>Ashia Kashyap</h2>
+                    <h3>13/03/2024</h3>
+                  </div>
+                </div>
+                <div className="historyUserCard">
+                  <img className="img-profile" src={avatarOne} />
+                  <div className="historyUserCardText">
+                    <h2>Ashia Kashyap</h2>
+                    <h3>13/03/2024</h3>
+                  </div>
+                </div>
+                <div className="historyUserCard">
+                  <img className="img-profile" src={avatarOne} />
+                  <div className="historyUserCardText">
+                    <h2>Ashia Kashyap</h2>
+                    <h3>13/03/2024</h3>
+                  </div>
+                </div>
+                <div className="historyUserCard">
+                  <img className="img-profile" src={avatarOne} />
+                  <div className="historyUserCardText">
+                    <h2>Ashia Kashyap</h2>
+                    <h3>13/03/2024</h3>
+                  </div>
+                </div>
+                <div className="historyUserCard">
+                  <img className="img-profile" src={avatarOne} />
+                  <div className="historyUserCardText">
+                    <h2>Ashia Kashyap</h2>
+                    <h3>13/03/2024</h3>
+                  </div>
+                </div>
+                <div className="historyUserCard">
+                  <img className="img-profile" src={avatarOne} />
+                  <div className="historyUserCardText">
+                    <h2>Ashia Kashyap</h2>
+                    <h3>13/03/2024</h3>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="stateHistoryWrapper">
+        <div className="card">
+          <div class="card-body flexCenterBetween">
+            <h5 class="card-title">Stats History</h5>
+            <div class="form-group flexCenter colGap8 w-40 m0">
+              <label class="w-25 m0">Stats for</label>
+              <select class="form-control form_sm">
+                <option value="">All</option>
+                <option value="daily">Daily</option>
+                <option value="monthly">Monthly</option>
+                <option value="fortnight">Fortnight</option>
+                <option value="quarterly">Quarterly</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div className="card">
+          <div class="card-header">
+            <h5 class="card-title">Followers Bifurcation</h5>
+          </div>
+          <div className="card-body pb8">
+            <div className="row thm_form">
+              <div className="col-md-4 col-sm-12">
+                <div class="form-group">
+                  <label>
+                    Reach <span className="dangerText">*</span>
+                  </label>
+                  <div class="input-group">
+                    <input type="text" class="form-control" />
+                    <button
+                      class="btn iconBtn btn-outline-border"
+                      type="button"
+                    >
+                      <i class="bi bi-cloud-arrow-up-fill"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <div className="col-md-4 col-sm-12">
+                <div class="form-group">
+                  <label>
+                    Impressions <span className="dangerText">*</span>
+                  </label>
+                  <div class="input-group">
+                    <input type="text" class="form-control" />
+                    <button
+                      class="btn iconBtn btn-outline-border"
+                      type="button"
+                    >
+                      <i class="bi bi-cloud-arrow-up-fill"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <div className="col-md-4 col-sm-12">
+                <div class="form-group">
+                  <label>
+                    Engagement <span className="dangerText">*</span>
+                  </label>
+                  <div class="input-group">
+                    <input type="text" class="form-control" />
+                    <button
+                      class="btn iconBtn btn-outline-border"
+                      type="button"
+                    >
+                      <i class="bi bi-cloud-arrow-up-fill"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <div className="col-md-4 col-sm-12">
+                <div class="form-group">
+                  <label>
+                    Story View <span className="dangerText">*</span>
+                  </label>
+                  <div class="input-group">
+                    <input type="text" class="form-control" />
+                    <button
+                      class="btn iconBtn btn-outline-border"
+                      type="button"
+                    >
+                      <i class="bi bi-cloud-arrow-up-fill"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <div className="col-md-4 col-sm-12">
+                <div class="form-group">
+                  <label>Story View Date</label>
+                  <input type="date" class="form-control" />
+                </div>
+              </div>
+              <div className="col-md-4 col-sm-12">
+                <div class="form-group">
+                  <label>Profile Visit</label>
+                  <input type="text" class="form-control" />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="card">
+          <div class="card-header">
+            <h5 class="card-title">City</h5>
+          </div>
+          <div className="card-body pb8">
+            <div className="row thm_form">
+              <div className="col-md-4 col-sm-12">
+                <div class="form-group">
+                  <label>City 1</label>
+                  <div className="row m0">
+                    <div className="col-md-9 p0 mr8">
+                      <select className="form-control">
+                        <option value="">Select City</option>
+                        <option value="Bhopal">Bhopal</option>
+                        <option value="Indore">Indore</option>
+                        <option value="Delhi">Delhi</option>
+                        <option value="Noida">Noida</option>
+                        <option value="Kolkata">Kolkata</option>
+                        <option value="Kolkata">Kolkata</option>
+                        <option value="Chennai">Chennai</option>
+                        <option value="Pune">Pune</option>
+                      </select>
+                    </div>
+                    <div className="col p0">
+                      <div class="input-group">
+                        <input
+                          type="text"
+                          class="form-control pl4 pr4 text-center"
+                        />
+                        <span class="input-group-text">%</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="col-md-4 col-sm-12">
+                <div class="form-group">
+                  <label>City 2</label>
+                  <div className="row m0">
+                    <div className="col-md-9 p0 mr8">
+                      <select className="form-control">
+                        <option value="">Select City</option>
+                        <option value="Bhopal">Bhopal</option>
+                        <option value="Indore">Indore</option>
+                        <option value="Delhi">Delhi</option>
+                        <option value="Noida">Noida</option>
+                        <option value="Kolkata">Kolkata</option>
+                        <option value="Kolkata">Kolkata</option>
+                        <option value="Chennai">Chennai</option>
+                        <option value="Pune">Pune</option>
+                      </select>
+                    </div>
+                    <div className="col p0">
+                      <div class="input-group">
+                        <input
+                          type="text"
+                          class="form-control pl4 pr4 text-center"
+                        />
+                        <span class="input-group-text">%</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="col-md-4 col-sm-12">
+                <div class="form-group">
+                  <label>City 3</label>
+                  <div className="row m0">
+                    <div className="col-md-9 p0 mr8">
+                      <select className="form-control">
+                        <option value="">Select City</option>
+                        <option value="Bhopal">Bhopal</option>
+                        <option value="Indore">Indore</option>
+                        <option value="Delhi">Delhi</option>
+                        <option value="Noida">Noida</option>
+                        <option value="Kolkata">Kolkata</option>
+                        <option value="Kolkata">Kolkata</option>
+                        <option value="Chennai">Chennai</option>
+                        <option value="Pune">Pune</option>
+                      </select>
+                    </div>
+                    <div className="col p0">
+                      <div class="input-group">
+                        <input
+                          type="text"
+                          class="form-control pl4 pr4 text-center"
+                        />
+                        <span class="input-group-text">%</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="col-md-4 col-sm-12">
+                <div class="form-group">
+                  <label>City 4</label>
+                  <div className="row m0">
+                    <div className="col-md-9 p0 mr8">
+                      <select className="form-control">
+                        <option value="">Select City</option>
+                        <option value="Bhopal">Bhopal</option>
+                        <option value="Indore">Indore</option>
+                        <option value="Delhi">Delhi</option>
+                        <option value="Noida">Noida</option>
+                        <option value="Kolkata">Kolkata</option>
+                        <option value="Kolkata">Kolkata</option>
+                        <option value="Chennai">Chennai</option>
+                        <option value="Pune">Pune</option>
+                      </select>
+                    </div>
+                    <div className="col p0">
+                      <div class="input-group">
+                        <input
+                          type="text"
+                          class="form-control pl4 pr4 text-center"
+                        />
+                        <span class="input-group-text">%</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="col-md-4 col-sm-12">
+                <div class="form-group">
+                  <label>City 5</label>
+                  <div className="row m0">
+                    <div className="col-md-9 p0 mr8">
+                      <select className="form-control">
+                        <option value="">Select City</option>
+                        <option value="Bhopal">Bhopal</option>
+                        <option value="Indore">Indore</option>
+                        <option value="Delhi">Delhi</option>
+                        <option value="Noida">Noida</option>
+                        <option value="Kolkata">Kolkata</option>
+                        <option value="Kolkata">Kolkata</option>
+                        <option value="Chennai">Chennai</option>
+                        <option value="Pune">Pune</option>
+                      </select>
+                    </div>
+                    <div className="col p0">
+                      <div class="input-group">
+                        <input
+                          type="text"
+                          class="form-control pl4 pr4 text-center"
+                        />
+                        <span class="input-group-text">%</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="col-md-4 col-sm-12">
+                <div class="form-group">
+                  <button className="btn cmnbtn btn-primary mt24">
+                    <i class="bi bi-cloud-arrow-up-fill"></i> Image
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="card">
+          <div class="card-header">
+            <h5 class="card-title">Country</h5>
+          </div>
+          <div className="card-body pb8">
+            <div className="row thm_form">
+              <div className="col-md-4 col-sm-12">
+                <div class="form-group">
+                  <label>Country 1</label>
+                  <div className="row m0">
+                    <div className="col-md-9 p0 mr8">
+                      <select className="form-control">
+                        <option value="">Select Country</option>
+                        <option value="Bhopal">Bhopal</option>
+                        <option value="Indore">Indore</option>
+                        <option value="Delhi">Delhi</option>
+                        <option value="Noida">Noida</option>
+                        <option value="Kolkata">Kolkata</option>
+                        <option value="Kolkata">Kolkata</option>
+                        <option value="Chennai">Chennai</option>
+                        <option value="Pune">Pune</option>
+                      </select>
+                    </div>
+                    <div className="col p0">
+                      <div class="input-group">
+                        <input
+                          type="text"
+                          class="form-control pl4 pr4 text-center"
+                        />
+                        <span class="input-group-text">%</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="col-md-4 col-sm-12">
+                <div class="form-group">
+                  <label>Country 2</label>
+                  <div className="row m0">
+                    <div className="col-md-9 p0 mr8">
+                      <select className="form-control">
+                        <option value="">Select Country</option>
+                        <option value="Bhopal">Bhopal</option>
+                        <option value="Indore">Indore</option>
+                        <option value="Delhi">Delhi</option>
+                        <option value="Noida">Noida</option>
+                        <option value="Kolkata">Kolkata</option>
+                        <option value="Kolkata">Kolkata</option>
+                        <option value="Chennai">Chennai</option>
+                        <option value="Pune">Pune</option>
+                      </select>
+                    </div>
+                    <div className="col p0">
+                      <div class="input-group">
+                        <input
+                          type="text"
+                          class="form-control pl4 pr4 text-center"
+                        />
+                        <span class="input-group-text">%</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="col-md-4 col-sm-12">
+                <div class="form-group">
+                  <label>Country 3</label>
+                  <div className="row m0">
+                    <div className="col-md-9 p0 mr8">
+                      <select className="form-control">
+                        <option value="">Select Country</option>
+                        <option value="Bhopal">Bhopal</option>
+                        <option value="Indore">Indore</option>
+                        <option value="Delhi">Delhi</option>
+                        <option value="Noida">Noida</option>
+                        <option value="Kolkata">Kolkata</option>
+                        <option value="Kolkata">Kolkata</option>
+                        <option value="Chennai">Chennai</option>
+                        <option value="Pune">Pune</option>
+                      </select>
+                    </div>
+                    <div className="col p0">
+                      <div class="input-group">
+                        <input
+                          type="text"
+                          class="form-control pl4 pr4 text-center"
+                        />
+                        <span class="input-group-text">%</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="col-md-4 col-sm-12">
+                <div class="form-group">
+                  <label>Country 4</label>
+                  <div className="row m0">
+                    <div className="col-md-9 p0 mr8">
+                      <select className="form-control">
+                        <option value="">Select Country</option>
+                        <option value="Bhopal">Bhopal</option>
+                        <option value="Indore">Indore</option>
+                        <option value="Delhi">Delhi</option>
+                        <option value="Noida">Noida</option>
+                        <option value="Kolkata">Kolkata</option>
+                        <option value="Kolkata">Kolkata</option>
+                        <option value="Chennai">Chennai</option>
+                        <option value="Pune">Pune</option>
+                      </select>
+                    </div>
+                    <div className="col p0">
+                      <div class="input-group">
+                        <input
+                          type="text"
+                          class="form-control pl4 pr4 text-center"
+                        />
+                        <span class="input-group-text">%</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="col-md-4 col-sm-12">
+                <div class="form-group">
+                  <label>Country 5</label>
+                  <div className="row m0">
+                    <div className="col-md-9 p0 mr8">
+                      <select className="form-control">
+                        <option value="">Select Country</option>
+                        <option value="Bhopal">Bhopal</option>
+                        <option value="Indore">Indore</option>
+                        <option value="Delhi">Delhi</option>
+                        <option value="Noida">Noida</option>
+                        <option value="Kolkata">Kolkata</option>
+                        <option value="Kolkata">Kolkata</option>
+                        <option value="Chennai">Chennai</option>
+                        <option value="Pune">Pune</option>
+                      </select>
+                    </div>
+                    <div className="col p0">
+                      <div class="input-group">
+                        <input
+                          type="text"
+                          class="form-control pl4 pr4 text-center"
+                        />
+                        <span class="input-group-text">%</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="col-md-4 col-sm-12">
+                <div class="form-group">
+                  <button className="btn cmnbtn btn-primary mt24">
+                    <i class="bi bi-cloud-arrow-up-fill"></i> Image
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="card">
+          <div class="card-header">
+            <h5 class="card-title">Age Group</h5>
+          </div>
+          <div className="card-body pb8">
+            <div className="row thm_form">
+              <div className="col-md-4 col-sm-12">
+                <div class="form-group">
+                  <label>13 - 17</label>
+                  <div class="input-group">
+                    <input type="text" class="form-control" />
+                    <span class="input-group-text">%</span>
+                  </div>
+                </div>
+              </div>
+              <div className="col-md-4 col-sm-12">
+                <div class="form-group">
+                  <label>18 - 24</label>
+                  <div class="input-group">
+                    <input type="text" class="form-control" />
+                    <span class="input-group-text">%</span>
+                  </div>
+                </div>
+              </div>
+              <div className="col-md-4 col-sm-12">
+                <div class="form-group">
+                  <label>25 - 34</label>
+                  <div class="input-group">
+                    <input type="text" class="form-control" />
+                    <span class="input-group-text">%</span>
+                  </div>
+                </div>
+              </div>
+              <div className="col-md-4 col-sm-12">
+                <div class="form-group">
+                  <label>35 - 44</label>
+                  <div class="input-group">
+                    <input type="text" class="form-control" />
+                    <span class="input-group-text">%</span>
+                  </div>
+                </div>
+              </div>
+              <div className="col-md-4 col-sm-12">
+                <div class="form-group">
+                  <label>45 - 54</label>
+                  <div class="input-group">
+                    <input type="text" class="form-control" />
+                    <span class="input-group-text">%</span>
+                  </div>
+                </div>
+              </div>
+              <div className="col-md-4 col-sm-12">
+                <div class="form-group">
+                  <label>55 - 64</label>
+                  <div class="input-group">
+                    <input type="text" class="form-control" />
+                    <span class="input-group-text">%</span>
+                  </div>
+                </div>
+              </div>
+              <div className="col-md-4 col-sm-12">
+                <div class="form-group">
+                  <label>65+</label>
+                  <div class="input-group">
+                    <input type="text" class="form-control" />
+                    <span class="input-group-text">%</span>
+                  </div>
+                </div>
+              </div>
+              <div className="col-md-4 col-sm-12">
+                <div class="form-group">
+                  <button className="btn cmnbtn btn-primary mt24">
+                    <i class="bi bi-cloud-arrow-up-fill"></i> Image
+                  </button>
+                </div>
+              </div>
+              <div className="col-md-4 col-sm-12">
+                <div class="form-group">
+                  <p className="mt24 dangerText">
+                    Note: Total percentage must be at least 98%
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="card">
+          <div class="card-header">
+            <h5 class="card-title">Gender</h5>
+          </div>
+          <div className="card-body pb8">
+            <div className="row thm_form">
+              <div className="col-md-4 col-sm-12">
+                <div class="form-group">
+                  <label>Male</label>
+                  <div class="input-group">
+                    <input type="text" class="form-control" />
+                    <span class="input-group-text">%</span>
+                  </div>
+                </div>
+              </div>
+              <div className="col-md-4 col-sm-12">
+                <div class="form-group">
+                  <label>Female</label>
+                  <div class="input-group">
+                    <input type="text" class="form-control" />
+                    <span class="input-group-text">%</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-body">
+            <div class="flexCenter colGap16">
+              <button class="btn cmnbtn btn-primary" type="button">
+                Save
+              </button>
+              <button class="btn cmnbtn btn-secondary" type="button">
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      {/* Design End */}
       <Link to={`/admin/pms-page-master`}>
         <button
           title="Add"
