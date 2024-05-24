@@ -159,12 +159,7 @@ const LetterTab = ({ allUserData, gettingData }) => {
             </div>
           </header>
           <article>
-            <p>
-              Date{" "}
-              {allUserData?.joining_date
-                ? new Date(allUserData.joining_date).toLocaleDateString()
-                : ""}
-            </p>
+            <p>Date {new Date().toLocaleDateString()}</p>
 
             <section>
               <p className="bold">
@@ -965,14 +960,7 @@ const LetterTab = ({ allUserData, gettingData }) => {
                       </div>
                     </header>
                     <article>
-                      <p>
-                        Date{" "}
-                        {allUserData?.joining_date
-                          ? new Date(
-                              allUserData.joining_date
-                            ).toLocaleDateString()
-                          : ""}
-                      </p>
+                      <p>Date {new Date().toLocaleDateString()}</p>
 
                       <section>
                         <p className="bold">

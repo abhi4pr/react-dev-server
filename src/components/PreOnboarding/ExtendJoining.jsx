@@ -4,6 +4,7 @@ import axios from "axios";
 import { useGlobalContext } from "../../Context/Context";
 import WhatsappAPI from "../WhatsappAPI/WhatsappAPI";
 import { baseUrl } from "../../utils/config";
+import { FaCloudUploadAlt } from "react-icons/fa";
 
 const url = baseUrl + "";
 
@@ -164,7 +165,10 @@ const ExtendJoining = ({
                           : "doc_item"
                       }
                     >
-                      <p>Upload file</p>
+                      <p>
+                        <FaCloudUploadAlt style={{ fontSize: "35px" }} /> Upload
+                        Reason file
+                      </p>
                       <input
                         type="file"
                         value=""
