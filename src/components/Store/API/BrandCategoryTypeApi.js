@@ -1,60 +1,156 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import authBaseQuery from "../../../utils/authBaseQuery";
 
 const BrandCategoryTypeApi = createApi({
   reducerPath: "brandCategoryTypeApi",
-  baseQuery: fetchBaseQuery({
-    baseUrl: "http://35.200.154.203:8080/api/brandCategory",
-  }),
+  baseQuery: fetchBaseQuery({ baseUrl: "http://35.200.154.203:8080/api/" }),
   endpoints: (builder) => ({
     getAllBrandCategoryType: builder.query({
-      query: () => ({
-        url: "",
-        method: "GET",
-      }),
-      transformResponse: (returnValue, args) => returnValue.data,
+      query: () => "brandCategory",
+      transformResponse: (returnValue) => returnValue.data,
       keepUnusedDataFor: 60 * 60 * 24,
     }),
 
     getSingleBrandCategoryType: builder.query({
-      query: (id) => ({ url: `/${id}`, method: "GET" }),
+      query: (id) => `brandCategory/${id}`,
+      transformResponse: (returnValue) => returnValue.data,
+      keepUnusedDataFor: 60 * 60 * 24,
     }),
 
     addBrandCategoryType: builder.mutation({
       query: (newBrandCategoryType) => ({
-        url: "",
+        url: "brandCategory",
         method: "POST",
         body: newBrandCategoryType,
       }),
-      async onQueryStarted({ body }, { dispatch, queryFulfilled }) {
+      onQueryStarted: async (
+        newBrandCategoryType,
+        { dispatch, queryFulfilled }
+      ) => {
         try {
-          console.log(body, "harshal");
-          const createdBrandCategoryType = body; // Access the new brand category type data directly from the body parameter
-          const patchResult = dispatch(
-            BrandCategoryTypeApi.util.upsertQueryData(
+          const { data: addedBrandCategoryType } = await queryFulfilled;
+
+          dispatch(
+            BrandCategoryTypeApi.util.updateQueryData(
               "getAllBrandCategoryType",
-              null,
-              createdBrandCategoryType
+              undefined,
+              (draft) => {
+                draft.unshift(addedBrandCategoryType.data);
+              }
             )
           );
         } catch (error) {
-          console.error("Error while updating cache:", error);
+          console.error("Failed to add brand category type:", error);
         }
+
+        /*
+        // Optimistic update (commented out)
+        const patchResult = dispatch(
+          BrandCategoryTypeApi.util.updateQueryData('getAllBrandCategoryType', undefined, (draft) => {
+            draft.unshift(newBrandCategoryType);
+          })
+        );
+
+        try {
+          await queryFulfilled;
+        } catch (error) {
+          patchResult.undo();
+          console.error('Failed to add brand category type:', error);
+        }
+        */
       },
     }),
 
     editBrandCategoryType: builder.mutation({
-      query: ({ id, ...updatedBrandCatType }) => ({
-        url: `/${id}`,
+      query: ({ id, ...updatedBrandCategoryType }) => ({
+        url: `brandCategory/${id}`,
         method: "PUT",
-        body: updatedBrandCatType,
+        body: updatedBrandCategoryType,
       }),
+      onQueryStarted: async (
+        { id, ...updatedBrandCategoryType },
+        { dispatch, queryFulfilled }
+      ) => {
+        try {
+          const { data: returnedBrandCategoryType } = await queryFulfilled;
+
+          dispatch(
+            BrandCategoryTypeApi.util.updateQueryData(
+              "getAllBrandCategoryType",
+              undefined,
+              (draft) => {
+                const brandCategoryIndex = draft.findIndex(
+                  (brandCategory) => brandCategory.id === id
+                );
+                if (brandCategoryIndex !== -1) {
+                  draft[brandCategoryIndex] = returnedBrandCategoryType.data; // Update the object in its current position
+                }
+              }
+            )
+          );
+        } catch (error) {
+          console.error("Failed to edit brand category type:", error);
+        }
+
+        /*
+        // Optimistic update (commented out)
+        const patchResult = dispatch(
+          BrandCategoryTypeApi.util.updateQueryData('getAllBrandCategoryType', undefined, (draft) => {
+            const brandCategoryIndex = draft.findIndex(brandCategory => brandCategory.id === id);
+            if (brandCategoryIndex !== -1) {
+              draft[brandCategoryIndex] = { ...draft[brandCategoryIndex], ...updatedBrandCategoryType };
+            }
+          })
+        );
+
+        try {
+          await queryFulfilled;
+        } catch (error) {
+          patchResult.undo();
+          console.error('Failed to edit brand category type:', error);
+        }
+        */
+      },
     }),
 
     deleteBrandCategoryType: builder.mutation({
       query: (id) => ({
-        url: `/${id}`,
+        url: `brandCategory/${id}`,
         method: "DELETE",
       }),
+      onQueryStarted: async (id, { dispatch, queryFulfilled }) => {
+        try {
+          await queryFulfilled;
+
+          dispatch(
+            BrandCategoryTypeApi.util.updateQueryData(
+              "getAllBrandCategoryType",
+              undefined,
+              (draft) => {
+                return draft.filter((brandCategory) => brandCategory.id !== id);
+              }
+            )
+          );
+        } catch (error) {
+          console.error("Failed to delete brand category type:", error);
+        }
+
+        /*
+        // Optimistic update (commented out)
+        const patchResult = dispatch(
+          BrandCategoryTypeApi.util.updateQueryData('getAllBrandCategoryType', undefined, (draft) => {
+            return draft.filter(brandCategory => brandCategory.id !== id);
+          })
+        );
+
+        try {
+          await queryFulfilled;
+        } catch (error) {
+          patchResult.undo();
+          console.error('Failed to delete brand category type:', error);
+        }
+        */
+      },
     }),
   }),
 });
