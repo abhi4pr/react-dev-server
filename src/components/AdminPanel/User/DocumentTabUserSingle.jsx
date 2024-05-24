@@ -73,8 +73,8 @@ const DocumentTabUserSingle = (id) => {
                 {documentData.map((item) => (
                   <tr key={item._id}>
                     <td>
-                      <div className="uploadDocBtn">
-                        <span>
+                      <div className="uploadDocBtn ">
+                        <span className="w-100">
                           {item?.document.doc_name
                             ? item.document.doc_name
                             : "N/A"}

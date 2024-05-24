@@ -7,6 +7,7 @@ import { FcDownload } from "react-icons/fc";
 import { baseUrl } from "../../utils/config";
 import html2pdf from "html2pdf.js";
 import logo from "/logo.png";
+import DateISOtoNormal from "../../utils/DateISOtoNormal";
 
 const LetterTab = ({ allUserData, gettingData }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -115,7 +116,7 @@ const LetterTab = ({ allUserData, gettingData }) => {
         pdfData.append("user_id", parseInt(allUserData.user_id));
         setIsLoading(false);
         axios
-          .post(baseUrl + "offer_letter_send_in_mail",  pdfData, {
+          .post(baseUrl + "offer_letter_send_in_mail", pdfData, {
             headers: {
               "Content-Type": "multipart/form-data",
             },
@@ -199,13 +200,14 @@ const LetterTab = ({ allUserData, gettingData }) => {
                   Position: {allUserData?.designation_name}
                 </p>
                 <p className="bold">Reports to: {allUserData?.Report_L1N}</p>
+                {console.log(
+                  DateISOtoNormal(allUserData.joining_date),
+                  "joininig date"
+                )}
                 <p className="bold">
-                  Start Date:{" "}
+                  Joining Date:{" "}
                   {allUserData?.joining_date && (
-                    <span>
-                      Date{" "}
-                      {new Date(allUserData.joining_date).toLocaleDateString()}
-                    </span>
+                    <span>{DateISOtoNormal(allUserData.joining_date)}</span>
                   )}
                 </p>
                 <p className="bold">Location: Indore</p>
@@ -548,6 +550,7 @@ const LetterTab = ({ allUserData, gettingData }) => {
                   src={`data:image/png;base64,${image64}`}
                   alt=""
                   width={60}
+                  height={40}
                 />
                 <br />
                 <p className="bold">
@@ -624,9 +627,7 @@ const LetterTab = ({ allUserData, gettingData }) => {
                     <p>ESIC - {monthlySalary <= 21000 ? monthlySalary * (0.0075) : 0}</p> */}
             <p>Employee Name: {allUserData.user_name}</p>
             <p>Designation: {allUserData.designation_name}</p>
-            <p>
-              D.O.J : {new Date(allUserData.joining_date).toLocaleDateString()}
-            </p>
+            <p>D.O.J : {DateISOtoNormal(allUserData.joining_date)}</p>
           </div>
           <br />
           <div className="ol-table">
@@ -794,7 +795,7 @@ const LetterTab = ({ allUserData, gettingData }) => {
             </div>
           </header>
           <p>
-            I, {allUserData.user_name} acknowledge that i have recived, read
+            I, {allUserData.user_name} acknowledge that i have received, read
             through and understand the contents of this letter and agree to the
             contents here in.
           </p>
@@ -1014,13 +1015,10 @@ const LetterTab = ({ allUserData, gettingData }) => {
                             Reports to: {allUserData?.Report_L1N}
                           </p>
                           <p className="bold">
-                            Start Date:{" "}
+                            Joining Date:{" "}
                             {allUserData?.joining_date && (
                               <span>
-                                Date{" "}
-                                {new Date(
-                                  allUserData.joining_date
-                                ).toLocaleDateString()}
+                                {DateISOtoNormal(allUserData.joining_date)}
                               </span>
                             )}
                           </p>
@@ -1497,10 +1495,7 @@ const LetterTab = ({ allUserData, gettingData }) => {
                   <div>
                     <p>Employee Name: {allUserData.user_name}</p>
                     <p>Designation: {allUserData.designation_name}</p>
-                    <p>
-                      D.O.J :{" "}
-                      {new Date(allUserData.joining_date).toLocaleDateString()}
-                    </p>
+                    <p>D.O.J : {DateISOtoNormal(allUserData.joining_date)}</p>
                   </div>
                   <br />
                   <div className="ol-table">
@@ -1669,7 +1664,7 @@ const LetterTab = ({ allUserData, gettingData }) => {
                   </div>
                   <br />
                   <p>
-                    I, {allUserData.user_name} acknowledge that i have recived,
+                    I, {allUserData.user_name} acknowledge that i have received,
                     read through and understand the contents of this letter and
                     agree to the contents here in.
                   </p>
