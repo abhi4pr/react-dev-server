@@ -21,6 +21,23 @@ const CompanyTypeApi = createApi({
         method: "POST",
         body: newCompanyType,
       }),
+      onQueryStarted: async (newCompanyType, { dispatch, queryFulfilled }) => {
+        try {
+          const { data: addedCompanyType } = await queryFulfilled;
+
+          dispatch(
+            CompanyTypeApi.util.updateQueryData(
+              "getAllCompanyType",
+              undefined,
+              (draft) => {
+                draft.unshift(addedCompanyType.data);
+              }
+            )
+          );
+        } catch (error) {
+          console.error("Failed to add company type:", error);
+        }
+      },
     }),
 
     editCompanyType: builder.mutation({
@@ -29,6 +46,31 @@ const CompanyTypeApi = createApi({
         method: "PUT",
         body: updatedCompanyType,
       }),
+      onQueryStarted: async (
+        { id, ...updatedCompanyType },
+        { dispatch, queryFulfilled }
+      ) => {
+        try {
+          const { data: returnedCompanyType } = await queryFulfilled;
+
+          dispatch(
+            CompanyTypeApi.util.updateQueryData(
+              "getAllCompanyType",
+              undefined,
+              (draft) => {
+                const companyTypeIndex = draft.findIndex(
+                  (companyType) => companyType.id === id
+                );
+                if (companyTypeIndex !== -1) {
+                  draft[companyTypeIndex] = returnedCompanyType.data; // Update the object in its current position
+                }
+              }
+            )
+          );
+        } catch (error) {
+          console.error("Failed to edit company type:", error);
+        }
+      },
     }),
 
     deleteCompanyType: builder.mutation({

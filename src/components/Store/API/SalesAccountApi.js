@@ -21,6 +21,23 @@ const SalesAccountApi = createApi({
         method: "POST",
         body: newAccount,
       }),
+      onQueryStarted: async (newAccount, { dispatch, queryFulfilled }) => {
+        try {
+          const { data: addedAccount } = await queryFulfilled;
+
+          dispatch(
+            SalesAccountApi.util.updateQueryData(
+              "getAllAccount",
+              undefined,
+              (draft) => {
+                draft.unshift(addedAccount.data);
+              }
+            )
+          );
+        } catch (error) {
+          console.error("Failed to add account:", error);
+        }
+      },
     }),
 
     editAccount: builder.mutation({
@@ -29,6 +46,31 @@ const SalesAccountApi = createApi({
         method: "PUT",
         body: updatedAccount,
       }),
+      onQueryStarted: async (
+        { id, ...updatedAccount },
+        { dispatch, queryFulfilled }
+      ) => {
+        try {
+          const { data: returnedAccount } = await queryFulfilled;
+
+          dispatch(
+            SalesAccountApi.util.updateQueryData(
+              "getAllAccount",
+              undefined,
+              (draft) => {
+                const accountIndex = draft.findIndex(
+                  (account) => account.id === id
+                );
+                if (accountIndex !== -1) {
+                  draft[accountIndex] = returnedAccount.data; // Update the object in its current position
+                }
+              }
+            )
+          );
+        } catch (error) {
+          console.error("Failed to edit account:", error);
+        }
+      },
     }),
 
     deleteAccount: builder.mutation({

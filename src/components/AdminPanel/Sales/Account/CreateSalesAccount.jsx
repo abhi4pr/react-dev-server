@@ -71,7 +71,10 @@ const CreateSalesAccount = () => {
   const [companyEmail, setCompanyEmail] = useState("");
   const [description, setDescription] = useState("");
   const [accOwnerNameData, setAccOwnerNameData] = useState([]);
-  const [modalContentType, setModalContentType] = useState(false); // State to track modal content type
+  const [modalContentType, setModalContentType] = useState(false);
+
+  // State for POCs
+  const [pocs, setPocs] = useState([]);
 
   useEffect(() => {
     async function getData() {
@@ -81,6 +84,29 @@ const CreateSalesAccount = () => {
     getData();
   }, []);
 
+  const handleAddPoc = () => {
+    setPocs([
+      ...pocs,
+      {
+        contact_name: "",
+        contact_no: "",
+        alternative_contact_no: "",
+        email: "",
+        department: "",
+        designation: "",
+        description: "",
+      },
+    ]);
+  };
+
+  const handlePocChange = (index, key, value) => {
+    const updatedPocs = pocs.map((poc, pocIndex) =>
+      pocIndex === index ? { ...poc, [key]: value } : poc
+    );
+    setPocs(updatedPocs);
+  };
+
+  console.log(pocs);
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -107,6 +133,7 @@ const CreateSalesAccount = () => {
         company_email: companyEmail,
         description: description,
         created_by: loginUserId,
+        account_poc: pocs, // Include POCs in the submission
       }).unwrap();
 
       // Reset all states
@@ -131,6 +158,7 @@ const CreateSalesAccount = () => {
       setPinCode("");
       setCompanyEmail("");
       setDescription("");
+      setPocs([]); // Reset POCs
 
       navigate("/admin/view-payment-details");
       toastAlert("Payment Details Updated");
@@ -183,24 +211,36 @@ const CreateSalesAccount = () => {
         );
       case "viewBrandCategory":
         return (
-          <View title={"Brand Category View"} data={allBrandCatType} columns={ViewBrandCategoryColumns} isLoading={allBrandCatTypeLoading} />
-
+          <View
+            title={"Brand Category View"}
+            data={allBrandCatType}
+            columns={ViewBrandCategoryColumns}
+            isLoading={allBrandCatTypeLoading}
+          />
         );
       case "viewCompanyType":
         return (
-          <View title={"Company Type"} data={allCompanyType} columns={ViewCompanyTypeColumns} isLoading={allCompanyTypeLoading} />
-
+          <View
+            title={"Company Type"}
+            data={allCompanyType}
+            columns={ViewCompanyTypeColumns}
+            isLoading={allCompanyTypeLoading}
+          />
         );
       case "viewAccountType":
         return (
-          <View title={"Company Type"} data={allAccountTypes} columns={ViewAccountTypeColumns} isLoading={allAccountTypesLoading} />
-
+          <View
+            title={"Company Type"}
+            data={allAccountTypes}
+            columns={ViewAccountTypeColumns}
+            isLoading={allAccountTypesLoading}
+          />
         );
-
       default:
         return null;
     }
   };
+
   console.log(allAccountTypes);
 
   return (
@@ -230,9 +270,7 @@ const CreateSalesAccount = () => {
             borderRadius: "4px",
             outline: "none",
             padding: "20px",
-            maxHeight: "650px"
-
-
+            maxHeight: "650px",
           },
         }}
       >
@@ -274,11 +312,11 @@ const CreateSalesAccount = () => {
           <button
             type="button"
             className="btn cmnbtn btn_sm btn-primary mt-4"
-            onClick={() => openModal("viewAccountType")}>
+            onClick={() => openModal("viewAccountType")}
+          >
             <i className="bi bi-eye" />
           </button>
         </div>
-
 
         <CustomSelect
           label="Company Type"
@@ -290,7 +328,6 @@ const CreateSalesAccount = () => {
           required
         />
         <div className="col-md-6 mt-2 flex-row gap-2">
-
           <button
             type="button"
             className="btn cmnbtn btn_sm btn-primary mt-4"
@@ -301,7 +338,8 @@ const CreateSalesAccount = () => {
           <button
             type="button"
             className="btn cmnbtn btn_sm btn-primary mt-4"
-            onClick={() => openModal("viewCompanyType")}>
+            onClick={() => openModal("viewCompanyType")}
+          >
             <i className="bi bi-eye" />
           </button>
         </div>
@@ -316,7 +354,6 @@ const CreateSalesAccount = () => {
           required
         />
         <div className="col-md-6 mt-2 flex-row gap-2">
-
           <button
             type="button"
             className="btn cmnbtn btn_sm btn-primary mt-4"
@@ -327,11 +364,12 @@ const CreateSalesAccount = () => {
           <button
             type="button"
             className="btn cmnbtn btn_sm btn-primary mt-4"
-            onClick={() => openModal("viewBrandCategory")}>
+            onClick={() => openModal("viewBrandCategory")}
+          >
             <i className="bi bi-eye" />
           </button>
-
         </div>
+
         <CustomSelect
           label="Account Owner Name"
           dataArray={accOwnerNameData}
@@ -453,8 +491,86 @@ const CreateSalesAccount = () => {
           onChange={(e) => setDescription(e.target.value)}
           placeholder="Enter description"
         />
+
+        <h5>Point of Contacts</h5>
+
+        {pocs.map((poc, index) => (
+          <div key={index} className="poc-container">
+            <FieldContainer
+              label="Contact Name"
+              fieldGrid={4}
+              value={poc.contact_name}
+              onChange={(e) =>
+                handlePocChange(index, "contact_name", e.target.value)
+              }
+              placeholder="Enter contact name"
+              required
+            />
+            <FieldContainer
+              label="Contact Number"
+              fieldGrid={4}
+              value={poc.contact_no}
+              onChange={(e) =>
+                handlePocChange(index, "contact_no", e.target.value)
+              }
+              placeholder="Enter contact number"
+              required
+            />
+            <FieldContainer
+              label="Alternative Contact Number"
+              fieldGrid={4}
+              value={poc.alternative_contact_no}
+              onChange={(e) =>
+                handlePocChange(index, "alternative_contact_no", e.target.value)
+              }
+              placeholder="Enter alternative contact number"
+            />
+            <FieldContainer
+              label="Email"
+              fieldGrid={4}
+              value={poc.email}
+              onChange={(e) => handlePocChange(index, "email", e.target.value)}
+              placeholder="Enter email"
+              required
+            />
+            <FieldContainer
+              label="Department"
+              fieldGrid={4}
+              value={poc.department}
+              onChange={(e) =>
+                handlePocChange(index, "department", e.target.value)
+              }
+              placeholder="Enter department"
+            />
+            <FieldContainer
+              label="Designation"
+              fieldGrid={4}
+              value={poc.designation}
+              onChange={(e) =>
+                handlePocChange(index, "designation", e.target.value)
+              }
+              placeholder="Enter designation"
+            />
+            <FieldContainer
+              label="Description"
+              fieldGrid={4}
+              value={poc.description}
+              onChange={(e) =>
+                handlePocChange(index, "description", e.target.value)
+              }
+              placeholder="Enter description"
+            />
+          </div>
+        ))}
+        <button
+          type="button"
+          className="btn btn-secondary"
+          onClick={handleAddPoc}
+        >
+          Add Point of Contact
+        </button>
       </FormContainer>
-    </div >
+    </div>
   );
 };
 
