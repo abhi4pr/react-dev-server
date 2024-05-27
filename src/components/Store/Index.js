@@ -9,6 +9,7 @@ import SalesAccountTypeApi from "./API/Sales/SalesAccountTypeApi";
 import CompanyTypeApi from "./API/Sales/CompanyTypeApi";
 import BrandCategoryTypeApi from "./API/Sales/BrandCategoryTypeApi";
 import SaleBookingApi from "./API/Sales/SaleBookingApi";
+import BrandApi from "./API/Sales/BrandApi";
 
 const store = configureStore({
   reducer: {
@@ -21,6 +22,7 @@ const store = configureStore({
     [CompanyTypeApi.reducerPath]: CompanyTypeApi.reducer,
     [BrandCategoryTypeApi.reducerPath]: BrandCategoryTypeApi.reducer,
     [SaleBookingApi.reducerPath]: SaleBookingApi.reducer,
+    [BrandApi.reducerPath]: BrandApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware()
@@ -29,7 +31,8 @@ const store = configureStore({
       .concat(SalesAccountTypeApi.middleware)
       .concat(CompanyTypeApi.middleware)
       .concat(BrandCategoryTypeApi.middleware)
-      .concat(SaleBookingApi.middleware),
+      .concat(SaleBookingApi.middleware)
+      .concat(BrandApi.middleware),
 });
 
 setupListeners(store.dispatch);
