@@ -17,6 +17,7 @@ const APIContext = ({ children }) => {
   const userID = decodedToken.id;
   const ContextDept = decodedToken.dept_id;
   const RoleIDContext = decodedToken.role_id;
+  const JobType = decodedToken.job_type;
   useEffect(() => {
     if (userID && contextData?.length === 0) {
       axios
@@ -51,6 +52,7 @@ const APIContext = ({ children }) => {
         userID,
         ContextDept,
         RoleIDContext,
+        JobType,
       }}
     >
       {children}
