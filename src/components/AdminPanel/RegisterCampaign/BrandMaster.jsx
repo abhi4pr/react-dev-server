@@ -299,6 +299,9 @@ export default function BrandMaster() {
     setIsPutOpen(false);
     setReload(!reload);
   };
+  const capitalizeFirstWord = (string) => {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+  };
 
   const columns = [
     {
@@ -326,11 +329,15 @@ export default function BrandMaster() {
       field: "category_name",
       headerName: "Category",
       width: 180,
+      renderCell: (params) => capitalizeFirstWord(params.row.category_name)
+
     },
     {
       field: "sub_category_name",
       headerName: "SubCategory",
       width: 180,
+      renderCell: (params) => capitalizeFirstWord(params.row.sub_category_name)
+
     },
     {
       field: "platform",
@@ -395,19 +402,11 @@ export default function BrandMaster() {
     try {
       const response = await axios.get(`${baseUrl}get_all_data_platforms`);
       setDataPlatforms(response?.data);
-    } catch (error) {}
+    } catch (error) { }
   };
 
   return (
     <>
-      {/* <div className="form-heading">
-        <img className="img-bg" src="/bg-img.png" alt="" width="160" />
-        <div className="form_heading_title ">
-          <div className="pack">
-            <i className="bi bi-house"></i> Brand Master
-          </div>
-        </div>
-      </div> */}
       <FormContainer mainTitle="Brand Master" link="true" />
 
       <div className="card">
