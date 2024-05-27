@@ -19,6 +19,7 @@ import View from "./View/View";
 import { ViewBrandCategoryColumns } from "./Columns/ViewBrandCategoryColumns";
 import { ViewCompanyTypeColumns } from "./Columns/ViewCompanyTypeColumns";
 import { ViewAccountTypeColumns } from "./Columns/ViewAccountTypeColumns";
+import PointOfContact from "./PointOfContact";
 const CreateSalesAccount = () => {
   const { toastAlert, toastError } = useGlobalContext();
   const navigate = useNavigate();
@@ -82,6 +83,7 @@ const CreateSalesAccount = () => {
   }, []);
 
   const handleAddPoc = () => {
+    console.log("added");
     setPocs([
       ...pocs,
       {
@@ -102,8 +104,22 @@ const CreateSalesAccount = () => {
     );
     setPocs(updatedPocs);
   };
+  function isValidContactNumber(number) {
+    if (!number) return true;
+    const regex = /^[6-9]\d{9}$/;
+    return regex.test(number);
+  }
+  function isValidEmail(email) {
+    if (!email) return true;
+    const regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    return regex.test(email);
+  }
+  function isValidPinCode(pinCode) {
+    if (!pinCode) return true;
+    const regex = /^\d{6}$/;
+    return regex.test(pinCode);
+  }
 
-  console.log(pocs);
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -252,8 +268,9 @@ const CreateSalesAccount = () => {
           },
           content: {
             position: "absolute",
-            minWidth: "max-content",
-            width: "700px",
+
+
+            maxWidth: "900px",
             top: "50px",
             border: "1px solid #ccc",
             background: "#fff",
@@ -271,297 +288,246 @@ const CreateSalesAccount = () => {
 
       <FormContainer
         mainTitle="Accounts Master"
-        title="Create"
-        handleSubmit={handleSubmit}
-      >
-        <FieldContainer
-          label="Account Name"
-          astric
-          fieldGrid={4}
-          value={accountName}
-          onChange={(e) => setAccountName(e.target.value)}
-          placeholder="Enter account name"
-          required
-        />
+        link={true}
 
-        <CustomSelect
-          label="Account Type"
-          dataArray={allAccountTypes}
-          optionId="_id"
-          optionLabel="account_type_name"
-          selectedId={selectedAccountType}
-          setSelectedId={setSelectedAccountType}
-          required
-        />
-        <div className="col-md-4 mt-2 flex-row gap-2">
-          <button
-            type="button"
-            className="btn cmn btn_sm btn btn-primary mt-4 "
-            onClick={() => openModal("accountType")}
-          >
-            +
-          </button>
-          <button
-            type="button"
-            className="btn cmnbtn btn_sm btn-primary mt-4"
-            onClick={() => openModal("viewAccountType")}
-          >
-            <i className="bi bi-eye" />
-          </button>
+      />
+      <div className="card">
+        <div className="card-header">
+          <h5 className="card-title">Create</h5>
         </div>
+        <div className="card-body row">
 
-        <CustomSelect
-          label="Company Type"
-          dataArray={allCompanyType}
-          optionId="_id"
-          optionLabel="company_type_name"
-          selectedId={selectedCompanyType}
-          setSelectedId={setSelectedCompanyType}
-          required
-        />
-        <div className="col-md-6 mt-2 flex-row gap-2">
-          <button
-            type="button"
-            className="btn cmnbtn btn_sm btn-primary mt-4"
-            onClick={() => openModal("companyType")}
-          >
-            +
-          </button>
-          <button
-            type="button"
-            className="btn cmnbtn btn_sm btn-primary mt-4"
-            onClick={() => openModal("viewCompanyType")}
-          >
-            <i className="bi bi-eye" />
-          </button>
-        </div>
-
-        <CustomSelect
-          label="Category Name"
-          dataArray={allBrandCatType}
-          optionId="_id"
-          optionLabel="brandCategory_name"
-          selectedId={selectedCategory}
-          setSelectedId={setSelectedCategory}
-          required
-        />
-        <div className="col-md-6 mt-2 flex-row gap-2">
-          <button
-            type="button"
-            className="btn cmnbtn btn_sm btn-primary mt-4"
-            onClick={() => openModal("brandCategory")}
-          >
-            +
-          </button>
-          <button
-            type="button"
-            className="btn cmnbtn btn_sm btn-primary mt-4"
-            onClick={() => openModal("viewBrandCategory")}
-          >
-            <i className="bi bi-eye" />
-          </button>
-        </div>
-
-        <CustomSelect
-          label="Account Owner Name"
-          dataArray={accOwnerNameData}
-          optionId="user_id"
-          optionLabel="user_name"
-          selectedId={selectedOwner}
-          setSelectedId={setSelectedOwner}
-          required
-        />
-        <FieldContainer
-          label="Website"
-          fieldGrid={4}
-          value={website}
-          onChange={(e) => setWebsite(e.target.value)}
-          placeholder="Enter website"
-        />
-        <FieldContainer
-          label="Turnover (in cr)"
-          fieldGrid={4}
-          value={turnover}
-          onChange={(e) => setTurnover(e.target.value)}
-          placeholder="Enter turnover in crores"
-        />
-        <FieldContainer
-          label="How Many Offices"
-          fieldGrid={4}
-          value={officesCount}
-          onChange={(e) => setOfficesCount(e.target.value)}
-          placeholder="Enter number of offices"
-        />
-        <FieldContainer
-          label="Connected Offices"
-          fieldGrid={4}
-          value={connectedOffices}
-          onChange={(e) => setConnectedOffices(e.target.value)}
-          placeholder="Enter connected offices"
-        />
-        <FieldContainer
-          label="Connected Billing Street"
-          fieldGrid={4}
-          value={connectedBillingStreet}
-          onChange={(e) => setConnectedBillingStreet(e.target.value)}
-          placeholder="Enter connected billing street"
-        />
-        <FieldContainer
-          label="Connected Billing City"
-          fieldGrid={4}
-          value={connectedBillingCity}
-          onChange={(e) => setConnectedBillingCity(e.target.value)}
-          placeholder="Enter connected billing city"
-        />
-        <FieldContainer
-          label="Connected Billing State"
-          fieldGrid={4}
-          value={connectedBillingState}
-          onChange={(e) => setConnectedBillingState(e.target.value)}
-          placeholder="Enter connected billing state"
-        />
-        <FieldContainer
-          label="Connected Billing Country"
-          fieldGrid={4}
-          value={connectedBillingCountry}
-          onChange={(e) => setConnectedBillingCountry(e.target.value)}
-          placeholder="Enter connected billing country"
-        />
-        <FieldContainer
-          label="Head Office"
-          fieldGrid={4}
-          value={headOffice}
-          onChange={(e) => setHeadOffice(e.target.value)}
-          placeholder="Enter head office"
-        />
-        <FieldContainer
-          label="Head Billing Street"
-          fieldGrid={4}
-          value={headBillingStreet}
-          onChange={(e) => setHeadBillingStreet(e.target.value)}
-          placeholder="Enter head billing street"
-        />
-        <FieldContainer
-          label="Head Billing City"
-          fieldGrid={4}
-          value={headBillingCity}
-          onChange={(e) => setHeadBillingCity(e.target.value)}
-          placeholder="Enter head billing city"
-        />
-        <FieldContainer
-          label="Head Billing State"
-          fieldGrid={4}
-          value={headBillingState}
-          onChange={(e) => setHeadBillingState(e.target.value)}
-          placeholder="Enter head billing state"
-        />
-        <FieldContainer
-          label="Head Billing Country"
-          fieldGrid={4}
-          value={headBillingCountry}
-          onChange={(e) => setHeadBillingCountry(e.target.value)}
-          placeholder="Enter head billing country"
-        />
-        <FieldContainer
-          label="Pin Code"
-          fieldGrid={4}
-          value={pinCode}
-          onChange={(e) => setPinCode(e.target.value)}
-          placeholder="Enter pin code"
-        />
-        <FieldContainer
-          label="Company Email"
-          fieldGrid={4}
-          value={companyEmail}
-          onChange={(e) => setCompanyEmail(e.target.value)}
-          placeholder="Enter company email"
-        />
-        <FieldContainer
-          label="Description"
-          fieldGrid={4}
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-          placeholder="Enter description"
-        />
-
-        <h5>Point of Contacts</h5>
-
-        {pocs.map((poc, index) => (
-          <div key={index} className="poc-container">
-            <FieldContainer
-              label="Contact Name"
-              fieldGrid={4}
-              value={poc.contact_name}
-              onChange={(e) =>
-                handlePocChange(index, "contact_name", e.target.value)
-              }
-              placeholder="Enter contact name"
-              required
-            />
-            <FieldContainer
-              label="Contact Number"
-              fieldGrid={4}
-              value={poc.contact_no}
-              onChange={(e) =>
-                handlePocChange(index, "contact_no", e.target.value)
-              }
-              placeholder="Enter contact number"
-              required
-            />
-            <FieldContainer
-              label="Alternative Contact Number"
-              fieldGrid={4}
-              value={poc.alternative_contact_no}
-              onChange={(e) =>
-                handlePocChange(index, "alternative_contact_no", e.target.value)
-              }
-              placeholder="Enter alternative contact number"
-            />
-            <FieldContainer
-              label="Email"
-              fieldGrid={4}
-              value={poc.email}
-              onChange={(e) => handlePocChange(index, "email", e.target.value)}
-              placeholder="Enter email"
-              required
-            />
-            <FieldContainer
-              label="Department"
-              fieldGrid={4}
-              value={poc.department}
-              onChange={(e) =>
-                handlePocChange(index, "department", e.target.value)
-              }
-              placeholder="Enter department"
-            />
-            <FieldContainer
-              label="Designation"
-              fieldGrid={4}
-              value={poc.designation}
-              onChange={(e) =>
-                handlePocChange(index, "designation", e.target.value)
-              }
-              placeholder="Enter designation"
-            />
-            <FieldContainer
-              label="Description"
-              fieldGrid={4}
-              value={poc.description}
-              onChange={(e) =>
-                handlePocChange(index, "description", e.target.value)
-              }
-              placeholder="Enter description"
-            />
+          <FieldContainer
+            label="Account Name"
+            astric
+            fieldGrid={4}
+            value={accountName}
+            onChange={(e) => setAccountName(e.target.value)}
+            placeholder="Enter account name"
+            required
+          />
+          <CustomSelect
+            label="Account Type"
+            dataArray={allAccountTypes}
+            optionId="_id"
+            optionLabel="account_type_name"
+            selectedId={selectedAccountType}
+            setSelectedId={setSelectedAccountType}
+            required
+          />
+          <div className="col-md-4 mt-2 flex-row gap-2">
+            <button
+              type="button"
+              className="btn cmn btn_sm btn btn-primary mt-4 "
+              onClick={() => openModal("accountType")}
+            >
+              +
+            </button>
+            <button
+              type="button"
+              className="btn cmnbtn btn_sm btn-primary mt-4"
+              onClick={() => openModal("viewAccountType")}
+            >
+              <i className="bi bi-eye" />
+            </button>
           </div>
-        ))}
-        <button
-          type="button"
-          className="btn btn-secondary"
-          onClick={handleAddPoc}
-        >
-          Add Point of Contact
+
+          <CustomSelect
+            label="Company Type"
+            dataArray={allCompanyType}
+            optionId="_id"
+            optionLabel="company_type_name"
+            selectedId={selectedCompanyType}
+            setSelectedId={setSelectedCompanyType}
+            required
+          />
+          <div className="col-md-6 mt-2 flex-row gap-2">
+            <button
+              type="button"
+              className="btn cmnbtn btn_sm btn-primary mt-4"
+              onClick={() => openModal("companyType")}
+            >
+              +
+            </button>
+            <button
+              type="button"
+              className="btn cmnbtn btn_sm btn-primary mt-4"
+              onClick={() => openModal("viewCompanyType")}
+            >
+              <i className="bi bi-eye" />
+            </button>
+          </div>
+
+          <CustomSelect
+            label="Category Name"
+            dataArray={allBrandCatType}
+            optionId="_id"
+            optionLabel="brandCategory_name"
+            selectedId={selectedCategory}
+            setSelectedId={setSelectedCategory}
+            required
+          />
+          <div className="col-md-6 mt-2 flex-row gap-2">
+            <button
+              type="button"
+              className="btn cmnbtn btn_sm btn-primary mt-4"
+              onClick={() => openModal("brandCategory")}
+            >
+              +
+            </button>
+            <button
+              type="button"
+              className="btn cmnbtn btn_sm btn-primary mt-4"
+              onClick={() => openModal("viewBrandCategory")}
+            >
+              <i className="bi bi-eye" />
+            </button>
+          </div>
+
+          <CustomSelect
+            label="Account Owner Name"
+            dataArray={accOwnerNameData}
+            optionId="user_id"
+            optionLabel="user_name"
+            selectedId={selectedOwner}
+            setSelectedId={setSelectedOwner}
+            required
+          />
+          <FieldContainer
+            label="Website"
+            fieldGrid={4}
+            value={website}
+            onChange={(e) => setWebsite(e.target.value)}
+            placeholder="Enter website"
+          />
+          <FieldContainer
+            label="Turnover (in cr)"
+            type="number"
+            fieldGrid={4}
+            value={turnover}
+            onChange={(e) => setTurnover(e.target.value)}
+            placeholder="Enter turnover in crores"
+          />
+          <FieldContainer
+            label="How Many Offices"
+            fieldGrid={4}
+            value={officesCount}
+            onChange={(e) => setOfficesCount(e.target.value)}
+            placeholder="Enter number of offices"
+          />
+          <FieldContainer
+            label="Connected Offices"
+            fieldGrid={4}
+            value={connectedOffices}
+            onChange={(e) => setConnectedOffices(e.target.value)}
+            placeholder="Enter connected offices"
+          />
+          <FieldContainer
+            label="Connected Billing Street"
+            fieldGrid={4}
+            value={connectedBillingStreet}
+            onChange={(e) => setConnectedBillingStreet(e.target.value)}
+            placeholder="Enter connected billing street"
+          />
+          <FieldContainer
+            label="Connected Billing City"
+            fieldGrid={4}
+            value={connectedBillingCity}
+            onChange={(e) => setConnectedBillingCity(e.target.value)}
+            placeholder="Enter connected billing city"
+          />
+          <FieldContainer
+            label="Connected Billing State"
+            fieldGrid={4}
+            value={connectedBillingState}
+            onChange={(e) => setConnectedBillingState(e.target.value)}
+            placeholder="Enter connected billing state"
+          />
+          <FieldContainer
+            label="Connected Billing Country"
+            fieldGrid={4}
+            value={connectedBillingCountry}
+            onChange={(e) => setConnectedBillingCountry(e.target.value)}
+            placeholder="Enter connected billing country"
+          />
+          <FieldContainer
+            label="Head Office"
+            fieldGrid={4}
+            value={headOffice}
+            onChange={(e) => setHeadOffice(e.target.value)}
+            placeholder="Enter head office"
+          />
+          <FieldContainer
+            label="Head Billing Street"
+            fieldGrid={4}
+            value={headBillingStreet}
+            onChange={(e) => setHeadBillingStreet(e.target.value)}
+            placeholder="Enter head billing street"
+          />
+          <FieldContainer
+            label="Head Billing City"
+            fieldGrid={4}
+            value={headBillingCity}
+            onChange={(e) => setHeadBillingCity(e.target.value)}
+            placeholder="Enter head billing city"
+          />
+          <FieldContainer
+            label="Head Billing State"
+            fieldGrid={4}
+            value={headBillingState}
+            onChange={(e) => setHeadBillingState(e.target.value)}
+            placeholder="Enter head billing state"
+          />
+          <FieldContainer
+            label="Head Billing Country"
+            fieldGrid={4}
+            value={headBillingCountry}
+            onChange={(e) => setHeadBillingCountry(e.target.value)}
+            placeholder="Enter head billing country"
+          />
+          <div className="col-4">
+
+            <FieldContainer
+              label="Pin Code"
+              type="number"
+              fieldGrid={4}
+              value={pinCode}
+              onChange={(e) => setPinCode(e.target.value)}
+              placeholder="Enter pin code"
+            />
+            {!isValidPinCode(pinCode) && <div className="form-error">Please Enter Valid Pin Code</div>}
+          </div>
+          <div className="col-4">
+
+            <FieldContainer
+              label="Company Email"
+              type="email"
+              fieldGrid={4}
+              value={companyEmail}
+              onChange={(e) => setCompanyEmail(e.target.value)}
+              placeholder="Enter company email"
+            />
+            {!isValidEmail(companyEmail) && <div className="form-error">Please Enter Valid Email</div>}
+          </div>
+          <FieldContainer
+            label="Description"
+            fieldGrid={4}
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            placeholder="Enter description"
+          />
+
+        </div>
+      </div>
+      <PointOfContact pocs={pocs} setPocs={setPocs} />
+      <div className="flex-row sb mb-3">
+
+        <button className="btn cmnbtn btn-primary " onClick={() => handleSubmit}>
+          Submit
         </button>
-      </FormContainer>
+        <button className="btn cmnbtn btn-warning" onClick={() => handleAddPoc()}>Add Point of Contact</button>
+      </div>
+
     </div>
   );
 };

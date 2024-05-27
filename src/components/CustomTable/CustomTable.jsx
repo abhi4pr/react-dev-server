@@ -25,7 +25,7 @@ const CustomTable = ({
   const [sortDirection, setSortDirection] = useState("asc");
   const [ascFlag, setAscFlag] = useState({ ...columns?.map(() => true) });
   const [visibleColumns, setVisibleColumns] = useState(
-    columns.map((column) => column.showCol)
+    columns.map((column) => column.showCol === undefined ? true : column.showCol)
   );
   const [selectedRowsIndex, setSelectedRowsIndex] = useState([]);
   const [selectedRowsData, setSelectedRowsData] = useState([]);
@@ -33,20 +33,26 @@ const CustomTable = ({
   const [editablesRows, setEditablesRows] = useState(
     columns.map((column) => (column.editable ? column.editable : false))
   );
+  const [searchQuery, setSearchQuery] = useState('');
+
+  const filteredData = searchQuery
+    ? data?.filter(item => (columnsheader.map(column => column.key).some(key => item[key]?.toString().toLowerCase().includes(searchQuery.toLowerCase()))))
+    : data;
+
   useEffect(() => {
     setColumns(columns);
     setWidths(columns);
     setAscFlag({ ...columns?.map(() => true) });
-    setVisibleColumns(columns.map((column) => column.showCol));
+    setVisibleColumns(columns.map((column) => column.showCol === undefined ? true : column.showCol));
     setEditablesRows(
       columns.map((column) => (column.editable ? column.editable : false))
     );
-  }, [dataLoading]);
+  }, [dataLoading, columns]);
 
   let pagination = Pagination?.length > 0 ? Pagination : [10, 50, 100];
 
   const tabledata = pagination
-    ? data?.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
+    ? filteredData?.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
     : data;
 
   const toggleColumnVisibility = (index) => {
@@ -74,7 +80,10 @@ const CustomTable = ({
         data={data}
         selectedRowsIndex={selectedRowsIndex}
         setSelectedRowsData={setSelectedRowsData}
+        selectedRowsData={selectedRowsData}
         toggleColumnVisibility={toggleColumnVisibility}
+        searchQuery={searchQuery}
+        setSearchQuery={setSearchQuery}
       />
       <div className="table-container">
         {

@@ -125,7 +125,7 @@ const RenderedTable = ({
               {columnsheader?.map(
                 (column, index) =>
                   visibleColumns[index] && (
-                    <th key={column.key} style={{ width: `${column.width}px` }}>
+                    <th key={index} style={{ width: `${column.width ? column.width : 100}px` }}>
                       <div className="table-header">
                         <div
                           className="header-title"
