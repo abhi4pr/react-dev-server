@@ -18,7 +18,7 @@ import { useAPIGlobalContext } from "../APIContext/APIContext";
 const UserSingle = () => {
   const whatsappApi = WhatsappAPI();
   const [KRIData, setKRIData] = useState([]);
-  const { RoleIDContext } = useAPIGlobalContext();
+  const { JobType } = useAPIGlobalContext();
   const { id } = useParams();
   const [defaultSeatData, setDefaultSeatData] = useState([]);
   const [roomId, setRoomId] = useState();
@@ -84,8 +84,9 @@ const UserSingle = () => {
     "Documents",
     "Family",
     "Education",
-    "Salary",
-  ];
+    // "Salary",
+    JobType === "WFHD" ? "Salary" : null,
+  ].filter(Boolean);
 
   return (
     <>

@@ -27,7 +27,7 @@ const ExtendJoining = ({
 
   const calculateMinDate = (dateStr) => {
     const parts = dateStr.split("-");
-    const inputDate = new Date(parts[2], parts[1] - 1, parts[0]);
+    const inputDate = new Date(parts[1], parts[1] - 1, parts[0]);
     inputDate.setDate(inputDate.getDate() + 30);
     return `${inputDate.getFullYear()}-${(inputDate.getMonth() + 1)
       .toString()
