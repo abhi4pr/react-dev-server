@@ -2,8 +2,6 @@ import React, { useState } from "react";
 import FormContainer from "../FormContainer";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import ModeCommentTwoToneIcon from "@mui/icons-material/ModeCommentTwoTone";
-import SendTwoToneIcon from "@mui/icons-material/SendTwoTone";
-import DeleteIcon from "@mui/icons-material/Delete";
 import { useNavigate, useParams, Link } from "react-router-dom";
 
 import {
@@ -11,16 +9,13 @@ import {
   Box,
   Button,
   FormControl,
-  Input,
   InputLabel,
   MenuItem,
   Modal,
   OutlinedInput,
-  Paper,
   TextField,
   Select,
   Typography,
-  styled,
 } from "@mui/material";
 import DownloadTwoToneIcon from "@mui/icons-material/DownloadTwoTone";
 import { useEffect } from "react";
@@ -142,7 +137,6 @@ export default function RegisteredCampaigns() {
     const newUploadLink = event.target.value;
     const updatedFields = [...formData.fields];
     updatedFields[index].uploadLink = newUploadLink;
-    // Use setFormData to update the state
     setFormData((prevData) => ({
       ...prevData,
       fields: updatedFields,
@@ -225,9 +219,7 @@ export default function RegisteredCampaigns() {
         formData.append("status", "1");
         formData.append("stage", "1");
         formData.append("campaign_brief", data.campaignBrief);
-
         formData.append("cmpAdminDemoLink", field.uploadLink);
-        // Append your file here (assuming `field.file` contains the file object)
         formData.append("cmpAdminDemoFile", field.file);
 
         try {
@@ -245,7 +237,6 @@ export default function RegisteredCampaigns() {
                 })
                 .then((res) => {
                   handleClose();
-                  // formData.contentCount = "";
                   formData.videoCount = "";
                   formData.campaignBrief = "";
                   formData.fields = [
@@ -464,7 +455,7 @@ export default function RegisteredCampaigns() {
       width: 200,
       renderCell: (params) => capitalizeFirstWord(params.row.hashtags)
     },
-    
+
     {
       field: "campaignclosedby",
       headerName: "Campaign Closed By",
@@ -875,8 +866,8 @@ export default function RegisteredCampaigns() {
             <TextField
               type="text"
               label="Search Campaign"
-              // value={searchQuery}
-              // onChange={handleSearch}
+            // value={searchQuery}
+            // onChange={handleSearch}
             />
           </div>
           <div className="card-title">Count: {filteredTable1DataLength}</div>
@@ -895,7 +886,7 @@ export default function RegisteredCampaigns() {
                 <MenuItem value="thisWeek"> Week</MenuItem>
                 <MenuItem value="thisMonth"> This Month</MenuItem>
                 <MenuItem value="last3Months">Last 3 Months</MenuItem>
-                <MenuItem value="thisYear"> Year</MenuItem>
+                <MenuItem value="thisYear"> This Year</MenuItem>
               </Select>
             </FormControl>
           </div>
@@ -1053,14 +1044,14 @@ export default function RegisteredCampaigns() {
                   {videoType?.filter(
                     (e) => !fields?.map((e) => e.selectValue).includes(e)
                   ).length > 0 && (
-                    <button
-                      className="btn btn_sm btn-outline-primary mb-2"
-                      variant="outlined"
-                      onClick={handleAddField}
-                    >
-                      Add Row
-                    </button>
-                  )}
+                      <button
+                        className="btn btn_sm btn-outline-primary mb-2"
+                        variant="outlined"
+                        onClick={handleAddField}
+                      >
+                        Add Row
+                      </button>
+                    )}
                 </div>
               </div>
               <div className="d-flex justify-content-between">

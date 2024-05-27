@@ -1,10 +1,8 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import { DataGrid } from "@mui/x-data-grid";
 import { Paper, Button, Box, TextField } from "@mui/material";
-import DeleteIcon from "@mui/icons-material/Delete";
-import PublishedWithChangesIcon from "@mui/icons-material/PublishedWithChanges";
 import ReplacePagesModal from "./ReplacePagesModal";
 import ReplacementRecord from "./ReplacementRecord";
 import millify from "millify";
@@ -20,7 +18,6 @@ import {
   DialogTitle,
 } from "@mui/material";
 import { useGlobalContext } from "../../../Context/Context";
-import BorderColorIcon from "@mui/icons-material/BorderColor";
 import { baseUrl } from "../../../utils/config";
 
 const PageOverview = ({ selectData, setrender, stage, id, phase_id }) => {
@@ -32,6 +29,9 @@ const PageOverview = ({ selectData, setrender, stage, id, phase_id }) => {
   const [selection, setSelections] = useState();
   const [realData, setRealData] = useState([]);
   const [updatePayload, setUpdatePayload] = useState({ campaignId: id })
+  const [openDeleteConfirmation, setOpenDeleteConfirmation] = useState(false);
+  const [selectedRowForDelete, setSelectedRowForDelete] = useState(null);
+
   const handleDeletePlanData = () => {
     setOpenDeleteDialog(true);
   };
@@ -47,51 +47,44 @@ const PageOverview = ({ selectData, setrender, stage, id, phase_id }) => {
         page.replacement_status == "replacement" ||
         page.replacement_status == "inactive" ||
         page.replacement_status == "active"
-
       ) {
         return page;
       }
     });
-
-
     setRealData(data);
   }, [selectData]);
 
-  const handleDeleteSinglePlan = async (params) => {
-    const pageName = params.row?.page_name;
-    if (params.row.isExecuted) {
-      toastError("Cant delete page , it is already executed");
-    } else {
-      if (stage == 'plan') {
-
-        const deleteData = await axios.post(
-          `${baseUrl}` + `campaignplan/singleplan`,
-          { page: params.row, deletion_requested_by: "test" }
-        );
-        toastAlert(` Delete ${pageName} Page Successfully `);
-        setrender();
-      } else if (stage == 'phase') {
-        const deleteData = await axios.post(
-          `${baseUrl}` + `campaignphase/singlephase`,
-          { page: params.row, deletion_requested_by: "test" }
-        );
-        toastAlert(` Delete ${pageName} Page Successfully `);
-        setrender();
-      }
-    }
+  const handleDeleteSinglePlan = (params) => {
+    setSelectedRowForDelete(params.row);
+    setOpenDeleteConfirmation(true);
   };
 
-
-
+  const confirmDelete = async () => {
+    const pageName = selectedRowForDelete?.page_name;
+    if (selectedRowForDelete.isExecuted) {
+      toastError("Can't delete page, it is already executed");
+    } else {
+      try {
+        let deleteEndpoint = stage === 'plan' ? 'campaignplan/singleplan' : 'campaignphase/singlephase';
+        const deleteData = await axios.post(
+          `${baseUrl}${deleteEndpoint}`,
+          { page: selectedRowForDelete, deletion_requested_by: "test" }
+        );
+        toastAlert(`Delete ${pageName} Page Successfully`);
+        setrender();
+      } catch (error) {
+        console.log(error);
+      }
+    }
+    setOpenDeleteConfirmation(false);
+  };
 
   const handleInputChange = (e, params) => {
-
     if (params.field == "postPerPage") {
       setUpdatePayload({ ...updatePayload, postPerPage: Number(e.target.value), p_id: params.row.p_id })
     } else if (params.field == "storyPerPage") {
       setUpdatePayload({ ...updatePayload, storyPerPage: Number(e.target.value), p_id: params.row.p_id })
     }
-
   }
 
   const updateSinglePlan = async () => {
@@ -100,24 +93,19 @@ const PageOverview = ({ selectData, setrender, stage, id, phase_id }) => {
         const response = await axios.put(`${baseUrl}` + `updateplan`, updatePayload)
         console.log(response)
         toastAlert(response.data.message)
-      }
-      catch (error) {
+      } catch (error) {
         console.log(error);
       }
     } else {
       alert("update not implement here")
     }
-
-
   }
 
-  console.log(updatePayload)
   const columns = [
     {
       field: "S.NO",
       headerName: "S.NO",
       width: 90,
-      editable: false,
       renderCell: (params) => {
         const rowIndex = selectData.indexOf(params.row);
         return <div>{rowIndex + 1}</div>;
@@ -146,7 +134,6 @@ const PageOverview = ({ selectData, setrender, stage, id, phase_id }) => {
       width: 150,
       renderCell: (params) => {
 
-
         return (
           <TextField
             defaultValue={params?.row?.postPerPage}
@@ -160,8 +147,6 @@ const PageOverview = ({ selectData, setrender, stage, id, phase_id }) => {
       headerName: "story",
       width: 150,
       renderCell: (params) => {
-
-
         return (
           <TextField
             defaultValue={params?.row?.storyPerPage}
@@ -170,19 +155,10 @@ const PageOverview = ({ selectData, setrender, stage, id, phase_id }) => {
         );
       },
     },
-
-    // {
-    //   field: "storyPerPage",
-    //   headerName: "Story",
-    //   width: 150,
-    //   editable:true
-
-    // },
     {
       field: "Action",
       headerName: "Action",
       width: 150,
-      editable: true,
       renderCell: (params) => {
         return (
           <>
@@ -200,7 +176,6 @@ const PageOverview = ({ selectData, setrender, stage, id, phase_id }) => {
       field: "replace",
       headerName: "Replace Pages",
       width: 150,
-      editable: true,
       renderCell: (params) => {
         return (
           params.row.replacement_status == "inactive" && (
@@ -215,7 +190,6 @@ const PageOverview = ({ selectData, setrender, stage, id, phase_id }) => {
       field: "replacerecord",
       headerName: "Replace Pages",
       width: 150,
-      editable: true,
       renderCell: (params) => {
         return params.row.replacement_id ? (
           <button className="icon-1" onClick={() => handleOpenModalRecord(params.row)}>
@@ -268,22 +242,15 @@ const PageOverview = ({ selectData, setrender, stage, id, phase_id }) => {
       const deleteData = await axios.delete(
         `${baseUrl}` + `campaignphase/bulk/${phase_id}`
       );
-      // naviagte("/admin/registered-campaign");
       toastAlert("Phase Delete Successfully !!");
       setrender()
     }
   };
 
-
-  const handleEditPlanData = () => {
-    // axios.put()
-  }
-
   return (
     <div>
       <div className="card">
         <div className="card-header sb">
-
           <div className="gap16">
             {" "}
             <Button
@@ -302,7 +269,6 @@ const PageOverview = ({ selectData, setrender, stage, id, phase_id }) => {
               variant="text"
               color="error"
               title="Download Pdf"
-
             >
               <PictureAsPdfIcon sx={{ fontSize: "40px" }} />
             </Button>
@@ -319,7 +285,6 @@ const PageOverview = ({ selectData, setrender, stage, id, phase_id }) => {
           <div className="gap16">
             <Button
               variant="outlined"
-              onClick={handleEditPlanData}
               color="success"
               className="btn cmnbtn btn_sm btn-success"
 
@@ -364,8 +329,6 @@ const PageOverview = ({ selectData, setrender, stage, id, phase_id }) => {
             }}
           />
         </div>
-
-
       </div>
       <>
         <ReplacePagesModal
@@ -399,6 +362,31 @@ const PageOverview = ({ selectData, setrender, stage, id, phase_id }) => {
               Cancel
             </Button>
             <Button onClick={handleDeletePlan} variant="outlined" color="error">
+              Confirm
+            </Button>
+          </DialogActions>
+        </Dialog>
+        <Dialog
+          open={openDeleteConfirmation}
+          onClose={() => setOpenDeleteConfirmation(false)}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+        >
+          <DialogTitle id="alert-dialog-title" color="secondary">
+            Confirm Deletion
+          </DialogTitle>
+          <DialogContent>
+            <DialogContentText id="alert-dialog-description">
+
+              {`Are you sure you want to delete  ${stage === 'plan' ? 'Single page !!' : ''}`}
+
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={() => setOpenDeleteConfirmation(false)} variant="outlined">
+              Cancel
+            </Button>
+            <Button onClick={confirmDelete} variant="outlined" color="error">
               Confirm
             </Button>
           </DialogActions>

@@ -1,16 +1,11 @@
 import { Paper, TextField, Grid } from "@mui/material";
 import axios from "axios";
 import { useEffect, useState } from "react";
-import {baseUrl} from '../../../utils/config'
+import { baseUrl } from "../../../utils/config";
 
 let commInfo = [];
 
-const CampaignDetails = ({
-  cid,
-  getCampaign,
-  // setCampaignData,
-  // campaignData,
-}) => {
+const CampaignDetails = ({ cid, getCampaign }) => {
   const [campaignData, setCampaignData] = useState({});
   const [brandData, setBrandData] = useState([]);
   const [cmpName, setCmpName] = useState({});
@@ -19,9 +14,7 @@ const CampaignDetails = ({
 
   const getData = async () => {
     try {
-      const res = await axios.get(
-        `${baseUrl}`+`register_campaign/${cid}`
-      );
+      const res = await axios.get(`${baseUrl}` + `register_campaign/${cid}`);
       setCampaignData(res.data.data);
     } catch (error) {
       console.log(error);
@@ -29,7 +22,7 @@ const CampaignDetails = ({
   };
 
   const getBrandInfo = async () => {
-    const brand = await axios.get(`${baseUrl}`+`get_brands`);
+    const brand = await axios.get(`${baseUrl}` + `get_brands`);
     const myBrand = brand.data.data.find(
       (brand) => brand.brand_id == campaignData.brand_id
     );
@@ -37,7 +30,7 @@ const CampaignDetails = ({
   };
 
   const getCampaignName = async () => {
-    const camp = await axios.get(`${baseUrl}`+`exe_campaign`);
+    const camp = await axios.get(`${baseUrl}` + `exe_campaign`);
     const mycamp = camp.data.data.find(
       (camp) => camp.exeCmpId == campaignData.exeCmpId
     );
@@ -48,17 +41,18 @@ const CampaignDetails = ({
   }, [cid]);
 
   const getCommitments = async () => {
-    const comm = await axios.get(
-      baseUrl+"get_all_commitments"
-    );
+    const comm = await axios.get(baseUrl + "get_all_commitments");
     const myComm = comm.data.data.filter((comm) =>
       commInfo.includes(comm.cmtId)
     );
     setCommitData(myComm);
-    // console.log(myComm);
     let data = [];
-    myComm.forEach((x,index) => {
-      data.push({ commitment: x.cmtName, value: "0",max:campaignData?.commitment[index]?.textValue });
+    myComm.forEach((x, index) => {
+      data.push({
+        commitment: x.cmtName,
+        value: "0",
+        max: campaignData?.commitment[index]?.textValue,
+      });
     });
 
     setCommitmentCompleteData(data);
@@ -66,7 +60,7 @@ const CampaignDetails = ({
 
   useEffect(() => {
     if (commitmentCompleteData.length > 0 && getCampaign) {
-      getCampaign(commitmentCompleteData, cmpName?.exeCmpName,campaignData);
+      getCampaign(commitmentCompleteData, cmpName?.exeCmpName, campaignData);
     }
   }, [commitmentCompleteData, cmpName]);
 
@@ -83,18 +77,21 @@ const CampaignDetails = ({
 
   return (
     <>
-      {/* Non editable campaigning detailes */}
       <div className="card body-padding">
         <Grid container spacing={2}>
           <Grid item xs={12} sm={6} md={4}>
             <TextField
-              label="Brand "
+              label="Brand"
               InputLabelProps={{ shrink: true }}
               InputProps={{
                 readOnly: true,
               }}
               fullWidth
-              value={brandData?.brand_name}
+              value={
+                brandData.brand_name &&
+                brandData.brand_name.charAt(0).toUpperCase() +
+                  brandData.brand_name.slice(1)
+              }
             />
           </Grid>
           <Grid item xs={12} sm={6} md={4}>
@@ -105,7 +102,11 @@ const CampaignDetails = ({
               fullWidth
               label="Campaign"
               InputLabelProps={{ shrink: true }}
-              value={cmpName?.exeCmpName}
+              value={
+                cmpName?.exeCmpName &&
+                cmpName?.exeCmpName.charAt(0).toUpperCase() +
+                  cmpName?.exeCmpName.slice(1)
+              }
             />
           </Grid>
           <Grid item xs={12} sm={6} md={4}>
@@ -116,24 +117,28 @@ const CampaignDetails = ({
               fullWidth
               label="Campaign Details"
               InputLabelProps={{ shrink: true }}
-              value={campaignData.detailing}
+              value={
+                campaignData.detailing &&
+                campaignData.detailing.charAt(0).toUpperCase() +
+                  campaignData.detailing.slice(1)
+              }
             />
           </Grid>
           {commitData.length > 0 &&
             commitData.map((comm, index) => {
-              // commitForValidate.push()
-              return  <>
-              <Grid  sx={{ m: 2 }}>
-                <TextField
-                  InputProps={{
-                    readOnly: true,
-                  }}
-                  fullWidth
-                  label={comm.cmtName}
-                  value={campaignData?.commitment[index]?.textValue}
-                />
-              </Grid>
-              {/* <Grid item xs={12} sm={6} sx={{ mb: 2 }}>
+              return (
+                <>
+                  <Grid sx={{ m: 2 }}>
+                    <TextField
+                      InputProps={{
+                        readOnly: true,
+                      }}
+                      fullWidth
+                      label={comm.cmtName}
+                      value={campaignData?.commitment[index]?.textValue}
+                    />
+                  </Grid>
+                  {/* <Grid item xs={12} sm={6} sx={{ mb: 2 }}>
                
                 <TextField
                   InputProps={{
@@ -144,7 +149,8 @@ const CampaignDetails = ({
                   value={campaignData?.commitment[index]?.textValue}
                 />
               </Grid> */}
-            </>
+                </>
+              );
             })}
         </Grid>
       </div>

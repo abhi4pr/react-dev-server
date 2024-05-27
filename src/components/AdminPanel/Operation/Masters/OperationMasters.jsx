@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 const OperationMasters = () => {
   return (
     <div>
-      <FormContainer link={true} mainTitle="All Master" />
+      <FormContainer link={true} mainTitle="Campaign Master" />
       <div className="card body-padding">
         <div className="grid-con">
       
@@ -38,7 +38,7 @@ const OperationMasters = () => {
                 <div className="rounded-circle circle-card">
                   <i className="bi bi-bounding-box"></i>
                 </div>
-                Brand Master
+                Brand 
               </div>
             </div>
           </Link>
@@ -72,7 +72,7 @@ const OperationMasters = () => {
                 <div className="rounded-circle circle-card">
                   <i className="bi bi-bounding-box"></i>
                 </div>
-                Agency Master
+                Agency 
               </div>
             </div>
           </Link>
@@ -106,7 +106,7 @@ const OperationMasters = () => {
                 <div className="rounded-circle circle-card">
                   <i className="bi bi-bounding-box"></i>
                 </div>
-                Industry Master
+                Industry 
               </div>
             </div>
           </Link>
@@ -140,7 +140,7 @@ const OperationMasters = () => {
                 <div className="rounded-circle circle-card">
                   <i className="bi bi-bounding-box"></i>
                 </div>
-                Goal Master
+                Goal 
               </div>
             </div>
           </Link>
@@ -174,7 +174,7 @@ const OperationMasters = () => {
                 <div className="rounded-circle circle-card">
                   <i className="bi bi-bounding-box"></i>
                 </div>
-                Commitment Master
+                Commitment 
               </div>
             </div>
           </Link>
@@ -209,7 +209,7 @@ const OperationMasters = () => {
                 <div className="rounded-circle circle-card">
                   <i className="bi bi-bounding-box"></i>
                 </div>
-                Service Master
+                Service 
               </div>
             </div>
           </Link>
@@ -243,7 +243,7 @@ const OperationMasters = () => {
                 <div className="rounded-circle circle-card">
                   <i className="bi bi-bounding-box"></i>
                 </div>
-                Content Type Master
+                Content Type 
               </div>
             </div>
           </Link>
@@ -277,7 +277,7 @@ const OperationMasters = () => {
                 <div className="rounded-circle circle-card">
                   <i className="bi bi-bounding-box"></i>
                 </div>
-                Campaign Master
+                Campaign 
               </div>
             </div>
           </Link>
