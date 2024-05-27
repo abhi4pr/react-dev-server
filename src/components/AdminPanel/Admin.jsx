@@ -410,8 +410,8 @@ const Admin = () => {
                       (contextData &&
                         contextData[38] &&
                         contextData[38].view_value === 1)) && (
-                        <Route path="/user" element={<UserMaster />} />
-                      )}
+                      <Route path="/user" element={<UserMaster />} />
+                    )}
 
                     {/* User Profile Routing Here  */}
                     <Route path="/user-timeline" element={<Timeline />} />
@@ -1467,7 +1467,7 @@ const Admin = () => {
                     element={<SalesServicesOverview />}
                   />
 
-                  {/* Harshal */}
+                  {/* Sales  harshal start*/}
                   <Route
                     path="/create-credit-reason-approval"
                     element={<CreditApprovalReasonCreate />}
@@ -1545,7 +1545,12 @@ const Admin = () => {
                     element={<CreateSalesAccount />}
                   />
 
-                  {/* Harshal */}
+                  <Route
+                    path="/sales-account-overview"
+                    element={<SalesAccountOverview />}
+                  />
+
+                  {/* Sales Harshal end */}
                   <Route
                     path="/sales-incentive-create"
                     element={<IncentiveCreate />}
@@ -1597,10 +1602,6 @@ const Admin = () => {
                   <Route
                     path="/op-campaign-executions"
                     element={<CampaignExecutions />}
-                  />
-                  <Route
-                    path="/sales-account-overview"
-                    element={<SalesAccountOverview />}
                   />
                 </Route>
               </Routes>

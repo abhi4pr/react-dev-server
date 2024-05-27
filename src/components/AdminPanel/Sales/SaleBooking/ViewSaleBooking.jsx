@@ -5,27 +5,21 @@ import DataTable from "react-data-table-component";
 import FormContainer from "../../FormContainer";
 import DateISOtoNormal from "../../../../utils/DateISOtoNormal";
 import { Link } from "react-router-dom";
+import { useGetAllSaleBookingQuery } from "../../../Store/API/Sales/SaleBookingApi";
 
 const ViewSaleBooking = () => {
-  const [saleBookingData, setSaleBookingData] = useState([]);
-  const [originalData, setOriginalData] = useState([]);
+  const {
+    data: allSaleBooking,
+    error: allSalebBookingError,
+    isLoading: allSaleBookingLoading,
+  } = useGetAllSaleBookingQuery();
+
+  const [saleBookingData, setSaleBookingData] = useState(allSaleBooking);
+  const [originalData, setOriginalData] = useState(allSaleBooking);
   const [search, setSearch] = useState("");
 
-  const getData = async () => {
-    try {
-      const response = await axios.get(`${baseUrl}sales/get_all_sales_booking`);
-      setSaleBookingData(response.data.data);
-      setOriginalData(response.data.data);
-    } catch (error) {
-      console.error("Error fetching credit approval reasons:", error);
-    }
-  };
   useEffect(() => {
-    getData();
-  }, []);
-
-  useEffect(() => {
-    const result = originalData.filter((d) => {
+    const result = allSaleBooking?.filter((d) => {
       return d?.customer_name?.toLowerCase()?.includes(search?.toLowerCase());
     });
     setSaleBookingData(result);

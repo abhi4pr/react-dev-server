@@ -1,11 +1,11 @@
 import React, { useMemo } from "react";
 import FormContainer from "../../FormContainer";
 import View from "./View/View";
-import { useGetAllAccountQuery } from "../../../Store/API/SalesAccountApi";
+import { useGetAllAccountQuery } from "../../../Store/API/Sales/SalesAccountApi";
 import { Link } from "react-router-dom";
-import { useGetAllAccountTypeQuery } from "../../../Store/API/SalesAccountTypeApi";
-import { useGetAllCompanyTypeQuery } from "../../../Store/API/CompanyTypeApi";
-import { useGetAllBrandCategoryTypeQuery } from "../../../Store/API/BrandCategoryTypeApi";
+import { useGetAllAccountTypeQuery } from "../../../Store/API/Sales/SalesAccountTypeApi";
+import { useGetAllCompanyTypeQuery } from "../../../Store/API/Sales/CompanyTypeApi";
+import { useGetAllBrandCategoryTypeQuery } from "../../../Store/API/Sales/BrandCategoryTypeApi";
 import DateISOtoNormal from "../../../../utils/DateISOtoNormal";
 
 const SalesAccountOverview = () => {

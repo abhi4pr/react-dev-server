@@ -1,12 +1,8 @@
 import React, { useState } from "react";
 import { useGlobalContext } from "../../../../Context/Context";
-import { useAddAccountTypeMutation } from "../../../Store/API/SalesAccountTypeApi";
+import { useAddAccountTypeMutation } from "../../../Store/API/Sales/SalesAccountTypeApi";
 
-const CreateAccountType = ({
-  loginUserId,
-  closeModal,
-  refetchAllAccountTypes,
-}) => {
+const CreateAccountType = ({ loginUserId, closeModal }) => {
   const { toastAlert, toastError } = useGlobalContext();
   const [accountTypeName, setAccountTypeName] = useState("");
   const [description, setDescription] = useState("");
@@ -28,7 +24,6 @@ const CreateAccountType = ({
       setAccountTypeName("");
       setDescription("");
       closeModal();
-      // refetchAllAccountTypes();
       toastAlert("Account Type added successfully");
     } catch (err) {
       console.error("Failed to add account type:", err);
