@@ -37,6 +37,7 @@ import JSZip from "jszip";
 import { saveAs } from "file-saver";
 import Overview from "./Overview";
 import Loader from "./Loader/Loader";
+import PayVendorDialog from "./Purchase/Dialog/PayVendorDialog";
 
 export default function PendingPaymentRequest() {
   const whatsappApi = WhatsappAPI();
@@ -52,7 +53,8 @@ export default function PendingPaymentRequest() {
   const [toDate, setToDate] = useState("");
   const [payDialog, setPayDialog] = useState(false);
   const [rowData, setRowData] = useState({});
-  const [paymentMode, setPaymentMode] = useState("Razor Pay");
+  const [paymentMode, setPaymentMode] = useState(null);
+  const [paymentModeData, setPaymentModeData] = useState([]);
   const [payRemark, setPayRemark] = useState("");
   const [payMentProof, setPayMentProof] = useState("");
   const [vendorName, setVendorName] = useState("");
@@ -92,7 +94,7 @@ export default function PendingPaymentRequest() {
   const [baseAmount, setBaseAmount] = useState(0);
   const [paymentStatus, setPaymentStatus] = useState("Fully Paid");
   const [bankDetailRowData, setBankDetailRowData] = useState([]);
-  const [paymentModeData, setPaymentModeData] = useState([]);
+
   const [dateFilter, setDateFilter] = useState("");
   const [invoiceCount, setInvoiceCount] = useState(0);
   const [nonInvoiceCount, setNonInvoiceCount] = useState(0);
@@ -216,7 +218,7 @@ export default function PendingPaymentRequest() {
           );
 
           mergedArray = mergedArray.sort((a, b) => {
-            console.log(a, "A--------------------", b, "b data");
+            // console.log(a, "A--------------------", b, "b data");
             const aReminder = remindData.some(
               (remind) => remind.request_id === a.request_id
             );
@@ -262,7 +264,7 @@ export default function PendingPaymentRequest() {
             uvData.push(vendorRows[0]);
           });
           setUniqueVendorData(uvData);
-
+          console.log(uvData);
           const nonGstCount = mergedArray.filter((gst) => gst.gstHold === "0");
           setNonGstCount(nonGstCount.length);
 
@@ -287,9 +289,9 @@ export default function PendingPaymentRequest() {
         });
     });
 
-    axios.get(`${baseUrl}` + `get_all_payment_mode`).then((res) => {
-      setPaymentModeData(res?.data);
-    });
+    // axios.get(`${baseUrl}` + `get_all_payment_mode`).then((res) => {
+    //   setPaymentModeData(res?.data);
+    // });
 
     axios.get(`${baseUrl}` + `get_single_user/${userID}`).then((res) => {
       setUserName(res.data.user_name);
@@ -318,6 +320,7 @@ export default function PendingPaymentRequest() {
   }, [TDSPercentage, GSTHoldAmount, TDSDeduction, gstHold]);
 
   const handleTDSDeduction = (e) => {
+    console.log(e.target.checked, "e.target.checked", TDSPercentage, TDSValue);
     setTDSDeduction(e.target.checked);
     setTDSPercentage(1);
   };
@@ -356,28 +359,10 @@ export default function PendingPaymentRequest() {
     setNetAmount(paymentAmount);
   };
 
-  const handleGSTHoldInputChange = (e) => {
-    if (e.target.value > rowData.gst_amount) {
-      toastError("GST Hold Amount can't be greater than GST Amount");
-    } else {
-      setGSTHoldAmount(e.target.value);
-    }
-  };
-
   GridToolbar.defaultProps = {
     filterRowsButtonText: "Filter",
     filterGridToolbarButton: "Filter",
   };
-
-  function calculateHours(date1, date2) {
-    const oneHour = 60 * 60 * 1000; // minutes * seconds * milliseconds
-    const firstDate = new Date(date1);
-    const secondDate = new Date(date2);
-
-    const diffHours = Math.round(Math.abs((firstDate - secondDate) / oneHour));
-
-    return diffHours;
-  }
 
   const totalPendingAmount = filterData?.reduce(
     (total, item) => total + parseFloat(item?.request_amount),
@@ -388,93 +373,7 @@ export default function PendingPaymentRequest() {
     (total, item) => total + parseFloat(item?.balance_amount),
     0
   );
-  const handlePayVendorClick = (e) => {
-    e.preventDefault();
-    // displayRazorpay(paymentAmout);
-    // return;
-    const formData = new FormData();
-    formData.append("request_id", rowData.request_id);
-    formData.append("vendor_id", rowData.vendor_id);
-    formData.append("request_by", rowData.request_by);
-    formData.append("request_amount", rowData.request_amount);
-    formData.append("priority", rowData.priority);
-    formData.append("status", 1); //status will be Change Soon
-    formData.append("evidence", payMentProof);
-    formData.append("payment_mode", paymentMode);
-    formData.append("payment_amount", paymentAmout);
-    formData.append("payment_by", userID);
-    formData.append("remark_finance", payRemark);
-    formData.append("invc_no", rowData.invc_no);
-    formData.append("invc_Date", rowData.invc_Date);
-    formData.append("invc_remark", rowData.invc_remark);
-    formData.append("remark_audit", rowData.remark_audit);
-    formData.append("outstandings", rowData.outstandings);
-    formData.append("vendor_name", rowData.vendor_name);
-    formData.append("name", rowData.name);
-    formData.append("request_date", rowData.request_date);
-    formData.append("payment_date", paymentDate);
-    formData.append("gst_hold", rowData.gst_amount);
-    formData.append("gst_hold_amount", GSTHoldAmount);
-    formData.append("tds_deduction", TDSValue);
-    formData.append("gst_Hold_Bool", gstHold);
-    formData.append("tds_Deduction_Bool", TDSDeduction);
 
-    axios
-      .post(baseUrl + "phpvendorpaymentrequest", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      })
-      .then(() => {
-        const phpFormData = new FormData();
-        phpFormData.append("request_id", rowData.request_id);
-        phpFormData.append("payment_amount", paymentAmout);
-        phpFormData.append(
-          "payment_date",
-          new Date(paymentDate)?.toISOString().slice(0, 19).replace("T", " ")
-        );
-        phpFormData.append("payment_by", userName);
-        phpFormData.append("evidence", payMentProof);
-        phpFormData.append("finance_remark", payRemark);
-        phpFormData.append("status", 1);
-        phpFormData.append("payment_mode", paymentMode);
-        phpFormData.append("gst_hold", rowData.gst_amount);
-        phpFormData.append("adjust_amt", TDSValue ? adjustAmount : 0);
-        phpFormData.append("gst_hold_amount", GSTHoldAmount);
-        phpFormData.append("request_amount", rowData.request_amount);
-        phpFormData.append("tds_deduction", TDSValue);
-        phpFormData.append("gst_Hold_Bool", gstHold ? 1 : 0);
-        phpFormData.append("tds_Deduction_Bool", TDSDeduction ? 1 : 0);
-        axios
-          .post(
-            "https://purchase.creativefuel.io/webservices/RestController.php?view=updatePaymentrequestNew",
-            phpFormData,
-            {
-              headers: {
-                "Content-Type": "multipart/form-data",
-              },
-            }
-          )
-          .then((res) => {
-            toastAlert("Payment Done Successfully");
-
-            whatsappApi.callWhatsAPI(
-              "Extend Date by User",
-              JSON.stringify(9109266387),
-              rowData.vendor_name,
-              [paymentAmout, rowData.vendor_name, rowData.mob1]
-            );
-          });
-
-        setPaymentMode("Razor Pay");
-        setPayRemark("");
-        setPayMentProof("");
-        handleClosePayDialog();
-        setPaymentAmount("");
-        setNetAmount("");
-        callApi();
-      });
-  };
   //req_id , paymeent_amou ,paydate , payby, screenshot , finance remark
 
   const handleDiscardClick = (e, row) => {
@@ -603,6 +502,7 @@ export default function PendingPaymentRequest() {
     setInvoiceCount(withInvoiceImage.length);
     setNonInvoiceCount(withoutInvoiceImage.length);
   };
+
   const handleClosePayDialog = () => {
     setPayDialog(false);
     setPaymentMode("Razor Pay");
@@ -615,7 +515,6 @@ export default function PendingPaymentRequest() {
   };
 
   const handlePayClick = (e, row) => {
-    console.log(row, "handle pay row data ------------------");
     e.preventDefault();
 
     let x = phpRemainderData.filter(
@@ -631,18 +530,12 @@ export default function PendingPaymentRequest() {
       ...row,
       totalFY: calculateTotalFY(row),
     };
-
-    console.log(enrichedRow, "enriched row---------------");
-    setRowData(enrichedRow);
-
-    // setRowData(row);
-    setPaymentAmount(row?.balance_amount);
-    setNetAmount(row?.balance_amount);
-
-    setBaseAmount(
-      row?.base_amount != 0 ? row?.base_amount : row?.request_amount
-    );
     setLoading(true);
+    setRowData(enrichedRow);
+    setPaymentAmount(row.balance_amount);
+    setNetAmount(row.balance_amount);
+    setBaseAmount(row.base_amount != 0 ? row.base_amount : row.request_amount);
+
     setPayDialog(true);
   };
 
@@ -1127,7 +1020,6 @@ export default function PendingPaymentRequest() {
 
     return totalFY;
   };
-  console.log(filterData, "filter Data------");
   const columns = [
     {
       field: "S.NO",
@@ -1617,6 +1509,7 @@ export default function PendingPaymentRequest() {
       },
     },
   ];
+
   const filterDataBasedOnSelection = (apiData) => {
     const now = moment();
     switch (dateFilter) {
@@ -1886,13 +1779,6 @@ export default function PendingPaymentRequest() {
     setAdjustAmount(formattedAdjustmentAmt);
   }, [rowData, paymentAmout]);
 
-  console.log(
-    netAmount,
-    "netAmount----------------------------",
-    paymentAmout,
-    "paymentAmout-----------------"
-  );
-
   // useEffect(() => {
   //   const isTDSMandatory =
   //     rowData?.totalFY > 100000 || rowData?.totalFY > 25000;
@@ -1911,14 +1797,6 @@ export default function PendingPaymentRequest() {
     // }
     setTDSDeduction(tdsMandatory || isTdsDeductedData);
   }, [rowData]);
-
-  console.log(
-    isTDSMandatory,
-    "is mandatory------------------",
-    rowData?.totalFY,
-    "FY------------ss"
-  );
-  console.log(isTDSDeducted, "is mandatory------------------");
 
   return (
     <div>
@@ -2459,6 +2337,7 @@ export default function PendingPaymentRequest() {
                     showQuickFilter: true,
                   },
                 }}
+                // getRowId={(row) => filterData?.indexOf(row)}
                 getRowId={(row) => row?.request_id}
                 // onRowSelectionModelChange={(rowIds) => {
                 //   handleRowSelectionModelChange(rowIds);
@@ -2546,7 +2425,7 @@ export default function PendingPaymentRequest() {
         </div>
 
         {/*Dialog Box */}
-        {loading ? (
+        {/* {loading ? (
           <div
             style={{
               width: "100vw",
@@ -2557,485 +2436,27 @@ export default function PendingPaymentRequest() {
               zIndex: "222",
             }}
           >
-            {" "}
             <Loader />
           </div>
-        ) : (
-          <Dialog open={payDialog} onClose={handleClosePayDialog}>
-            <DialogTitle>Vendor Payment</DialogTitle>
-            <IconButton
-              aria-label="close"
-              onClick={handleClosePayDialog}
-              sx={{
-                position: "absolute",
-                right: 8,
-                top: 8,
-                color: (theme) => theme.palette.grey[500],
-              }}
-            >
-              <CloseIcon />
-            </IconButton>
-            <DialogContent>
-              <div className="row gap-3">
-                <TextField
-                  className="col"
-                  value={rowData.name}
-                  autoFocus
-                  margin="dense"
-                  id="name"
-                  readOnly
-                  label="Requested By"
-                  type="text"
-                  variant="outlined"
-                />
-                <TextField
-                  className="col"
-                  value={convertDateToDDMMYYYY(rowData.request_date)}
-                  autoFocus
-                  margin="dense"
-                  id="name"
-                  readOnly
-                  label="Request Date"
-                  type="text"
-                  variant="outlined"
-                />
-              </div>
-              <div className="row">
-                <TextField
-                  // className="col-md-6 me-3"
-                  value={rowData.t3}
-                  autoFocus
-                  margin="dense"
-                  id="name"
-                  disabled
-                  label=" Purchase Remark"
-                  type="text"
-                  variant="outlined"
-                />
-              </div>
-              <div className="row gap-3">
-                <TextField
-                  value={rowData.vendor_name}
-                  className="col"
-                  autoFocus
-                  margin="dense"
-                  id="name"
-                  readOnly={true}
-                  label="Vendor Name"
-                  type="text"
-                  InputProps={{
-                    readOnly: true,
-                  }}
-                  variant="outlined"
-                />
-                <TextField
-                  className="col"
-                  value={rowData.address}
-                  autoFocus
-                  margin="dense"
-                  id="name"
-                  readOnly
-                  label="Address"
-                  type="text"
-                  variant="outlined"
-                  InputProps={{
-                    readOnly: true,
-                  }}
-                />
-              </div>
-              <div className="row gap-3">
-                <TextField
-                  className="col"
-                  value={rowData.gst}
-                  autoFocus
-                  margin="dense"
-                  // disabled
-                  readOnly
-                  label="GST"
-                  type="text"
-                  variant="outlined"
-                  InputProps={{
-                    readOnly: true,
-                  }}
-                />
-                <TextField
-                  className="col"
-                  value={`₹${rowData.outstandings}`}
-                  autoFocus
-                  margin="dense"
-                  // disabled
-                  readOnly
-                  label="Outstanding"
-                  type="text"
-                  variant="outlined"
-                  InputProps={{
-                    readOnly: true,
-                  }}
-                />
-              </div>
-              <div className="row gap-3">
-                {/* {rowData?.TDSDeduction !== "1" ? ( */}
-                {/* {isTDSMandatory || TDSDeduction ? ( */}
-                <>
-                  <FormControlLabel
-                    className="col-md-3"
-                    control={
-                      <Checkbox
-                        onChange={handleTDSDeduction}
-                        checked={TDSDeduction}
-                        disabled={isTDSDeducted}
-                      />
-                    }
-                    label="TDS Deduction"
-                  />
-                  {/* {gstHold && (
-                      <TextField
-                        className="col-md-5 me-3"
-                        value={GSTHoldAmount}
-                        onChange={handleGSTHoldInputChange}
-                        autoFocus
-                        margin="dense"
-                        id="name"
-                        label="GST Hold"
-                      />
-                    )} */}
-                  {TDSDeduction && (
-                    <>
-                      <Autocomplete
-                        onChange={(e, value) => setTDSPercentage(value)}
-                        disablePortal
-                        className="col-md-3 mt-2"
-                        value={TDSPercentage}
-                        id="combo-box-demo"
-                        options={[1, 2, 10]}
-                        renderInput={(params) => (
-                          <TextField
-                            {...params}
-                            label="TDS %"
-                            placeholder="TDS %"
-                          />
-                        )}
-                        disable={isTDSDeducted}
-                      />
-                      <TextField
-                        className="col-md-3 mt-2"
-                        value={TDSValue}
-                        autoFocus
-                        readOnly
-                        margin="dense"
-                        variant="outlined"
-                        id="name"
-                        label="TDS Amount"
-                        disable={isTDSDeducted}
-                      />
-                      <TextField
-                        InputProps={{
-                          readOnly: gstHold,
-                        }}
-                        onChange={(e) => {
-                          rowData.balance_amount;
-
-                          const currentValue = e.target.value;
-                          if (
-                            /^\d+$/.test(currentValue) ||
-                            currentValue === ""
-                          ) {
-                            // setPaymentAmount(currentValue);
-                            if (currentValue <= +rowData.balance_amount) {
-                              setNetAmount(currentValue);
-                              setPaymentStatus;
-                            } else {
-                              toastError(
-                                "Payment Amount should be less than or equal to Requested Amount"
-                              );
-                            }
-                          } else {
-                            setNetAmount("");
-                          }
-                        }}
-                        className="col-md-3 mt-2"
-                        disable={isTDSDeducted}
-                        autoFocus
-                        type="number"
-                        margin="dense"
-                        id="name"
-                        label=" Net Amount *"
-                        variant="outlined"
-                        fullWidth
-                        value={netAmount}
-                      />
-                    </>
-                  )}
-                </>
-                {/* ) : (
-                  ""
-                )} */}
-              </div>
-              <div className="row gap-3">
-                <TextField
-                  className="col"
-                  value={`₹${rowData.request_amount}`}
-                  autoFocus
-                  margin="dense"
-                  id="name"
-                  // disabled
-                  readOnly
-                  label="Amount Requested"
-                  type="text"
-                  variant="outlined"
-                  InputProps={{
-                    readOnly: true,
-                  }}
-                />
-                <TextField
-                  className="col"
-                  value={`₹${rowData.balance_amount}`}
-                  autoFocus
-                  margin="dense"
-                  id="name"
-                  // disabled
-                  readOnly
-                  label="Balance Amount"
-                  type="text"
-                  variant="outlined"
-                  InputProps={{
-                    readOnly: true,
-                  }}
-                />
-              </div>
-              <div className="row">
-                <TextField
-                  className="col-md-4 me-3"
-                  value={`₹${baseAmount}`}
-                  autoFocus
-                  margin="dense"
-                  id="name"
-                  // disabled
-                  readOnly
-                  label="Base Amount"
-                  type="text"
-                  variant="outlined"
-                  InputProps={{
-                    readOnly: true,
-                  }}
-                />
-                <FormControlLabel
-                  className="col-md-5"
-                  control={
-                    <Checkbox
-                      onChange={handleGstHold}
-                      disabled={rowData.gst_amount == 0}
-                    />
-                  }
-                  label="GST Hold"
-                />
-
-                {gstHold && (
-                  <TextField
-                    className="col"
-                    value={GSTHoldAmount}
-                    onChange={handleGSTHoldInputChange}
-                    autoFocus
-                    margin="dense"
-                    id="name"
-                    label="GST Hold"
-                  />
-                )}
-              </div>
-              <div className="row gap-3">
-                <LocalizationProvider dateAdapter={AdapterDayjs}>
-                  <DatePicker
-                    format="DD/MM/YYYY"
-                    className="col mt-2"
-                    defaultValue={dayjs()}
-                    autoFocus
-                    label="Payment Date "
-                    onChange={(newValue) => {
-                      setPaymentDate(
-                        newValue
-                          .add(5, "hours")
-                          .add(30, "minutes")
-                          .$d.toGMTString()
-                      );
-                    }}
-                    disableFuture
-                    views={["year", "month", "day"]}
-                  />
-                </LocalizationProvider>
-                <Autocomplete
-                  onChange={(e, value) => setPaymentMode(value || null)}
-                  disablePortal
-                  className="col mt-1"
-                  id="combo-box-demo"
-                  options={
-                    paymentModeData.length > 0
-                      ? paymentModeData?.map((item) => item.payment_mode)
-                      : []
-                  }
-                  value={paymentMode}
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      label="Payment Mode *"
-                      placeholder="Payment Mode"
-                    />
-                  )}
-                />
-              </div>
-              <div className="row gap-3">
-                <TextField
-                  InputProps={{
-                    readOnly: gstHold,
-                  }}
-                  onChange={(e) => {
-                    rowData.balance_amount;
-
-                    const currentValue = e.target.value;
-                    if (/^\d+$/.test(currentValue) || currentValue === "") {
-                      // setPaymentAmount(currentValue);
-                      if (currentValue <= +rowData.balance_amount) {
-                        setPaymentAmount(currentValue);
-                        setPaymentStatus;
-                      } else {
-                        toastError(
-                          "Payment Amount should be less than or equal to Requested Amount"
-                        );
-                      }
-                    } else {
-                      setPaymentAmount("");
-                    }
-                  }}
-                  className="col"
-                  autoFocus
-                  type="number"
-                  margin="dense"
-                  id="name"
-                  label=" Paid Amount *"
-                  variant="outlined"
-                  fullWidth
-                  value={Math.floor(paymentAmout)}
-                />
-                {TDSValue ? (
-                  <TextField
-                    onChange={(e) => setAdjustAmount(e.target.value)}
-                    multiline
-                    className="col"
-                    autoFocus
-                    margin="dense"
-                    id="Adjust Amount"
-                    label="Adjust Amount"
-                    type="text"
-                    variant="outlined"
-                    fullWidth
-                    value={TDSValue ? adjustAmount : 0}
-                  />
-                ) : (
-                  ""
-                )}
-              </div>
-              <div className="row gap-3">
-                <Autocomplete
-                  onChange={(e, value) => setPaymentStatus(value)}
-                  value={paymentStatus}
-                  disablePortal
-                  disabled
-                  className="col mt-2"
-                  id="combo-box-demo"
-                  options={[
-                    "Fully Paid",
-                    "Fully Paid(TDS Deducted)",
-                    "Fully Paid(GST Hold)",
-                    "Fully Paid(TDS Deducted & GST Hold)",
-                    "Partially Paid",
-                  ]}
-                  fullWidth={true}
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      label="Payment Status *"
-                      placeholder="Payment Status"
-                    />
-                  )}
-                />
-                <TextField
-                  onChange={(e) => setPayRemark(e.target.value)}
-                  multiline
-                  className="col mt-2"
-                  autoFocus
-                  margin="dense"
-                  id="name"
-                  label="Remark"
-                  type="text"
-                  variant="outlined"
-                  fullWidth
-                  value={payRemark}
-                />
-              </div>
-              <div className="row">
-                <div className="form-group mt-3">
-                  <div className="row">
-                    <label htmlFor="paymentProof">
-                      Payment Proof/ScreenShot
-                    </label>
-
-                    <input
-                      type="file"
-                      className="form-control col-md-6"
-                      id="paymentProof"
-                      onChange={handleFileChange}
-                      // onClick={openImgDialog}
-                    />
-                    <Button
-                      variant="contained"
-                      className="col-md-5 ms-3"
-                      fullWidth
-                      onClick={openImgDialog}
-                    >
-                      view image
-                    </Button>
-                    {openDialog && preview && (
-                      <div
-                        style={{
-                          position: "fixed",
-                          top: 0,
-                          left: 0,
-                          right: 0,
-                          bottom: 0,
-                          background: "rgba(0,0,0,0.5)",
-                          display: "flex",
-                          justifyContent: "center",
-                          alignItems: "center",
-                          zIndex: 9999,
-                        }}
-                        onClick={() => setOpenDialog(false)}
-                      >
-                        <img
-                          src={preview}
-                          alt="Selected file"
-                          style={{
-                            maxWidth: "50%",
-                            maxHeight: "80%",
-                            cursor: "pointer",
-                          }}
-                        />
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </div>
-            </DialogContent>
-            <DialogActions>
-              <Button
-                variant="contained"
-                className="mx-2"
-                fullWidth
-                onClick={(e) => handlePayVendorClick(e)}
-                disabled={!paymentMode || !paymentAmout}
-              >
-                Pay Vendor
-              </Button>
-            </DialogActions>
-          </Dialog>
+        ) : ( */}
+        {payDialog && (
+          <PayVendorDialog
+          callApi={callApi}
+            userName={userName}
+            loading={loading}
+            setLoading={setLoading}
+            phpRemainderData={phpRemainderData}
+            rowData={rowData}
+            setRowData={setRowData}
+            paymentAmout={paymentAmout}
+            setPaymentAmount={setPaymentAmount}
+            netAmount={netAmount}
+            setNetAmount={setNetAmount}
+            baseAmount={baseAmount}
+            setBaseAmount={setBaseAmount}
+            payDialog={payDialog}
+            setPayDialog={setPayDialog}
+          />
         )}
 
         {showDisCardModal && (
