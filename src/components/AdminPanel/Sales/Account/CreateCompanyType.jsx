@@ -1,12 +1,8 @@
 import React, { useState } from "react";
 import { useGlobalContext } from "../../../../Context/Context";
-import { useAddCompanyTypeMutation } from "../../../Store/API/CompanyTypeApi";
+import { useAddCompanyTypeMutation } from "../../../Store/API/Sales/CompanyTypeApi";
 
-const CreateCompanyType = ({
-  loginUserId,
-  closeModal,
-  refetchAllCompanyType,
-}) => {
+const CreateCompanyType = ({ loginUserId, closeModal }) => {
   const { toastAlert, toastError } = useGlobalContext();
   const [companyTypeName, setCompanyTypeName] = useState("");
   const [description, setDescription] = useState("");
@@ -29,7 +25,6 @@ const CreateCompanyType = ({
       setCompanyTypeName("");
       setDescription("");
       isSuccess && toastAlert("Company Type added successfully");
-      refetchAllCompanyType();
       closeModal();
     } catch (err) {
       console.error("Failed to add company type:", err);

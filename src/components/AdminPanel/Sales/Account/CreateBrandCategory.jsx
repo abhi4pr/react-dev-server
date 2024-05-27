@@ -1,12 +1,8 @@
 import React, { useState } from "react";
-import { useAddBrandCategoryTypeMutation } from "../../../Store/API/BrandCategoryTypeApi";
+import { useAddBrandCategoryTypeMutation } from "../../../Store/API/Sales/BrandCategoryTypeApi";
 import { useGlobalContext } from "../../../../Context/Context";
 
-const CreateBrandCategory = ({
-  loginUserId,
-  closeModal,
-  refetchAllBrandCatType,
-}) => {
+const CreateBrandCategory = ({ loginUserId, closeModal }) => {
   const { toastAlert, toastError } = useGlobalContext();
   const [brandName, setBrandName] = useState("");
   const [addBrandCategoryType, { isLoading, isSuccess, isError }] =
@@ -22,7 +18,6 @@ const CreateBrandCategory = ({
       }).unwrap();
       setBrandName("");
       closeModal();
-      refetchAllBrandCatType();
       toastAlert("Brand added successfully");
     } catch (err) {
       console.error("Failed to add brand:", err);

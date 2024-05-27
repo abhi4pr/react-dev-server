@@ -1,5 +1,4 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import authBaseQuery from "../../../utils/authBaseQuery";
 
 const BrandCategoryTypeApi = createApi({
   reducerPath: "brandCategoryTypeApi",
@@ -7,13 +6,13 @@ const BrandCategoryTypeApi = createApi({
   endpoints: (builder) => ({
     getAllBrandCategoryType: builder.query({
       query: () => "brandCategory",
-      transformResponse: (returnValue) => returnValue.data,
+      transformResponse: (response) => response.data,
       keepUnusedDataFor: 60 * 60 * 24,
     }),
 
     getSingleBrandCategoryType: builder.query({
       query: (id) => `brandCategory/${id}`,
-      transformResponse: (returnValue) => returnValue.data,
+      transformResponse: (response) => response.data,
       keepUnusedDataFor: 60 * 60 * 24,
     }),
 

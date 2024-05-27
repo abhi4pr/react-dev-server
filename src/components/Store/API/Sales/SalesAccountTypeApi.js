@@ -1,5 +1,5 @@
 import { createApi } from "@reduxjs/toolkit/query/react";
-import authBaseQuery from "../../../utils/authBaseQuery";
+import authBaseQuery from "../../../../utils/authBaseQuery";
 
 const SalesAccountTypeApi = createApi({
   reducerPath: "salesAccountTypeApi",
@@ -7,13 +7,13 @@ const SalesAccountTypeApi = createApi({
   endpoints: (builder) => ({
     getAllAccountType: builder.query({
       query: () => "accounts/get_account_type_list",
-      transformResponse: (returnValue) => returnValue.data,
+      transformResponse: (response) => response.data,
       keepUnusedDataFor: 60 * 60 * 24,
     }),
 
     getSingleAccountType: builder.query({
       query: (id) => `accounts/get_account_type/${id}`,
-      transformResponse: (returnValue) => returnValue.data,
+      transformResponse: (response) => response.data,
       keepUnusedDataFor: 60 * 60 * 24,
     }),
 

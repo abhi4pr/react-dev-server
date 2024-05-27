@@ -7,10 +7,10 @@ import { useGlobalContext } from "../../../../Context/Context";
 import getDecodedToken from "../../../../utils/DecodedToken";
 import { useNavigate } from "react-router-dom";
 import CustomSelect from "../../../ReusableComponents/CustomSelect";
-import { useGetAllAccountTypeQuery } from "../../../Store/API/SalesAccountTypeApi";
-import { useGetAllCompanyTypeQuery } from "../../../Store/API/CompanyTypeApi";
-import { useGetAllBrandCategoryTypeQuery } from "../../../Store/API/BrandCategoryTypeApi";
-import { useAddAccountMutation } from "../../../Store/API/SalesAccountApi";
+import { useGetAllAccountTypeQuery } from "../../../Store/API/Sales/SalesAccountTypeApi";
+import { useGetAllCompanyTypeQuery } from "../../../Store/API/Sales/CompanyTypeApi";
+import { useGetAllBrandCategoryTypeQuery } from "../../../Store/API/Sales/BrandCategoryTypeApi";
+import { useAddAccountMutation } from "../../../Store/API/Sales/SalesAccountApi";
 import Modal from "react-modal";
 import CreateBrandCategory from "./CreateBrandCategory";
 import CreateAccountType from "./CreateAccountType";
@@ -29,21 +29,18 @@ const CreateSalesAccount = () => {
     data: allAccountTypes,
     error: allAccountTypesError,
     isLoading: allAccountTypesLoading,
-    refetch: refetchAllAccountTypes,
   } = useGetAllAccountTypeQuery();
 
   const {
     data: allCompanyType,
     error: allCompanyTypeError,
     isLoading: allCompanyTypeLoading,
-    refetch: refetchAllCompanyType,
   } = useGetAllCompanyTypeQuery();
 
   const {
     data: allBrandCatType,
     error: allBrandCatTypeError,
     isLoading: allBrandCatTypeLoading,
-    refetch: refetchAllBrandCatType,
   } = useGetAllBrandCategoryTypeQuery();
 
   const [createSalesAccount, { isLoading, isSuccess, isError }] =
@@ -160,7 +157,7 @@ const CreateSalesAccount = () => {
       setDescription("");
       setPocs([]); // Reset POCs
 
-      navigate("/admin/view-payment-details");
+      navigate("/admin/sales-account-overview");
       toastAlert("Payment Details Updated");
     } catch (error) {
       toastError(error.message);
@@ -190,7 +187,6 @@ const CreateSalesAccount = () => {
           <CreateBrandCategory
             loginUserId={loginUserId}
             closeModal={closeModal}
-            refetchAllBrandCatType={refetchAllBrandCatType}
           />
         );
       case "accountType":
@@ -198,7 +194,6 @@ const CreateSalesAccount = () => {
           <CreateAccountType
             loginUserId={loginUserId}
             closeModal={closeModal}
-            refetchAllAccountTypes={refetchAllAccountTypes}
           />
         );
       case "companyType":
@@ -206,7 +201,6 @@ const CreateSalesAccount = () => {
           <CreateCompanyType
             loginUserId={loginUserId}
             closeModal={closeModal}
-            refetchAllCompanyType={refetchAllCompanyType}
           />
         );
       case "viewBrandCategory":
@@ -240,8 +234,6 @@ const CreateSalesAccount = () => {
         return null;
     }
   };
-
-  console.log(allAccountTypes);
 
   return (
     <div>
