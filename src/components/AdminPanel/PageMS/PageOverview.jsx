@@ -6,13 +6,14 @@ import DeleteButton from "../DeleteButton";
 import { Link, useNavigate } from "react-router-dom";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import Box from "@mui/material/Box";
-import { Stack, Switch, Typography } from "@mui/material";
+import {
+  Autocomplete,
+  Stack,
+  Switch,
+  TextField,
+  Typography,
+} from "@mui/material";
 import CircularProgress from "@mui/material/CircularProgress";
-// import ContentCopyOutlinedIcon from "@mui/icons-material/ContentCopyOutlined";
-// import CopyAllOutlinedIcon from "@mui/icons-material/CopyAllOutlined";
-// import ContentPasteIcon from "@mui/icons-material/ContentPaste";
-import { useGlobalContext } from "../../../Context/Context";
-import OpenInNewIcon from "@mui/icons-material/OpenInNew";
 import RequestPageIcon from "@mui/icons-material/RequestPage";
 import PriceCheckIcon from "@mui/icons-material/PriceCheck";
 import Dialog from "@mui/material/Dialog";
@@ -25,7 +26,6 @@ import jwtDecode from "jwt-decode";
 import { useDispatch, useSelector } from "react-redux";
 import { addRow } from "../../Store/Executon-Slice";
 import DateFormattingComponent from "../../DateFormator/DateFormared";
-import CategoryIcon from "@mui/icons-material/Category";
 import {
   openTagCategoriesModal,
   setPlatform,
@@ -35,13 +35,23 @@ import {
 } from "../../Store/PageOverview";
 import TagCategoryListModal from "./TagCategoryListModal";
 import KeyboardDoubleArrowUpIcon from "@mui/icons-material/KeyboardDoubleArrowUp";
-import { EditTwoTone } from "@mui/icons-material";
-import { useGetnotAssignedVendorsQuery } from "../../Store/reduxBaseURL";
+import {
+  useGetAllVendorQuery,
+  useGetPmsPlatformQuery,
+  useGetnotAssignedVendorsQuery,
+} from "../../Store/reduxBaseURL";
 import VendorNotAssignedModal from "./VendorNotAssignedModal";
 import instaIcon from "../../../assets/img/icon/insta.svg";
 import { Dropdown } from "react-bootstrap";
 import ReactApexChart from "react-apexcharts";
 import avatarOne from "../../../assets/img/product/Avtrar1.png";
+import {
+  useGetAllPageCategoryQuery,
+  useGetAllPageListQuery,
+  useGetAllPriceListQuery,
+  useGetMultiplePagePriceQuery,
+  useGetpagePriceTypeQuery,
+} from "../../Store/PageBaseURL";
 
 const PageOverview = () => {
   // const { toastAlert } = useGlobalContext();
@@ -328,16 +338,15 @@ const PageOverview = () => {
   });
 
   const [filterData, setFilterData] = useState([]);
-  const [cat, setCat] = useState([{}]);
   const [venodr, setVenodr] = useState([{}]);
   const [user, setUser] = useState();
   const [loading, setLoading] = useState(false);
   const [progress, setProgress] = useState(10);
-  const [platformData, setPlatformData] = useState([]);
-  const [allPriceTypeList, setAllallPriceTypeList] = useState([]);
+  // const [allPriceTypeList, setAllallPriceTypeList] = useState([]);
   const [showPriceModal, setShowPriceModal] = useState(false);
-  const [priceData, setPriceData] = useState([]);
+  // const [priceData, setPriceData] = useState([]);
   const [contextData, setContextData] = useState(false);
+  const [selectedRow, setSelectedRow] = useState(null);
   const storedToken = sessionStorage.getItem("token");
   const decodedToken = jwtDecode(storedToken);
   const userID = decodedToken.id;
@@ -349,44 +358,46 @@ const PageOverview = () => {
   function handleNotAssignedVendorClick() {
     dispatch(setShowVendorNotAssignedModal());
   }
-  const handleEditCellChange = (params) => {
-    (async () => {
-      const updatedRow = {
-        ...params.row,
-        [params.field]: params.value,
-      };
 
-      return axios
-        .put(baseUrl + `updatePage/${params.row._id}`, updatedRow)
-        .then((res) => {});
-    })();
+  const { data: allPriceTypeList } = useGetpagePriceTypeQuery();
+  // const handleEditCellChange = (params) => {
+  //   (async () => {
+  //     const updatedRow = {
+  //       ...params.row,
+  //       [params.field]: params.value,
+  //     };
 
-    // Make API call to update the row data
-    // Example: fetch('/api/updateRow', { method: 'POST', body: JSON.stringify(updatedRow) })
+  //     return axios
+  //       .put(baseUrl + `updatePage/${params.row._id}`, updatedRow)
+  //       .then((res) => {});
+  //   })();
 
-    // Update the local state with the updated row
-    // setUpdatedRows((prevRows) => {
-    //   const updatedRows = [...prevRows];
-    //   const rowIndex = updatedRows.findIndex((row) => row.id === params.row.id);
-    //   updatedRows[rowIndex] = updatedRow;
-    //   return updatedRows;
-    // });
-  };
+  //   // Make API call to update the row data
+  //   // Example: fetch('/api/updateRow', { method: 'POST', body: JSON.stringify(updatedRow) })
+
+  //   // Update the local state with the updated row
+  //   // setUpdatedRows((prevRows) => {
+  //   //   const updatedRows = [...prevRows];
+  //   //   const rowIndex = updatedRows.findIndex((row) => row.id === params.row.id);
+  //   //   updatedRows[rowIndex] = updatedRow;
+  //   //   return updatedRows;
+  //   // });
+  // };
 
   const showPageHealthColumn = useSelector(
     (state) => state.PageOverview.showPageHelathColumn
   );
   useEffect(() => {
-    if (userID && contextData == false) {
-      axios
-        .get(`${baseUrl}` + `get_single_user_auth_detail/${userID}`)
-        .then((res) => {
-          if (res.data[33].view_value == 1) {
-            setContextData(true);
-          }
-        });
-    }
-    setTimeout(() => {}, 500);
+    //   if (userID && contextData == false) {
+    //     axios
+    //       .get(`${baseUrl}` + `get_single_user_auth_detail/${userID}`)
+    //       .then((res) => {
+    //         if (res.data[33].view_value == 1) {
+    //           setContextData(true);
+    //         }
+    //       });
+    //   }
+    //   setTimeout(() => {}, 500);
     getData();
   }, []);
 
@@ -425,117 +436,36 @@ const PageOverview = () => {
     });
   };
 
+  const { data: platData } = useGetPmsPlatformQuery();
+  const platformData = platData?.data;
+
+  const { data: pageCate } = useGetAllPageCategoryQuery();
+  const cat = pageCate?.data;
+
+  const { data: vendor } = useGetAllVendorQuery();
+  const vendorData = vendor?.data;
   const getData = () => {
-    setProgress(0);
-    setLoading(true);
-    setProgress(20);
-
-    axios.get(baseUrl + "getAllPlatform").then((res) => {
-      setPlatformData(res.data.data);
-    });
-
-    setProgress(30);
-    axios.get(baseUrl + "getPageCatgList").then((res) => {
-      setCat(res.data.data);
-    });
-
-    axios.get(baseUrl + "vendorAllData").then((res) => {
-      setVenodr(res.data.tmsVendorkMastList);
-    });
-    setProgress(40);
     axios.get(baseUrl + "get_all_users").then((res) => {
       setUser(res.data.data);
       setProgress(70);
     });
   };
 
+  const { data: pageList } = useGetAllPageListQuery();
   useEffect(() => {
-    axios.get(baseUrl + "getPageMastList").then((res) => {
-      setProgress(100);
-      let data = res.data.data;
+    if (pageList) {
+      setVendorTypes(pageList.data);
+      setFilterData(pageList.data);
+    }
+  }, [pageList]);
 
-      data = data.map((e) => {
-        return {
-          ...e,
-          tag_category_name: cat
-            .filter((item) => {
-              return e.tag_category?.includes(item._id);
-            })
-            .map((item) => item.page_category)
-            .join(","),
-        };
-      });
-
-      const addPricesToParent = (dataArray) => {
-        return dataArray.map((item) => {
-          item.purchase_price.forEach((priceObj) => {
-            // const keyName = `price_${priceObj.price_type_id}`;
-            const keyName = allPriceTypeList?.find(
-              (d) => d.price_type_id == priceObj.price_type_id
-            )?.price_type;
-            console.log(keyName, "keyName");
-            console.log(priceObj.price_type_id, "keyName");
-            item[keyName] = priceObj.price;
-          });
-          // delete item.purchase_price;
-          return item;
-        });
-      };
-
-      const updatedData = addPricesToParent(data);
-
-      setVendorTypes(updatedData);
-      setFilterData(updatedData.reverse());
-      setLoading(false);
-    });
-
-    // {
-    //   field: "price_type",
-    //   headerName: "Price Type",
-    //   width: 200,
-    //   renderCell: (params) => {
-    //     let name = allPriceTypeList?.find(
-    //       (item) => item.price_type_id == params.row.price_type_id
-    //     )?.price_type;
-    //     return <div>{name}</div>;
-    //   },
-    // },
-
-    // {
-    //   field: "price",
-    //   headerName: "Price",
-    //   width: 200,
-    // },
-  }, [cat]);
-
-  useEffect(() => {
-    axios.get(baseUrl + `get_exe_historyData`).then((res) => {
-      let data = vendorTypes.map((e) => {
-        let result = res.data.result.filter((d) => {
-          return d.pageMast_id == e.pageMast_id;
-        });
-        let totalPercentage = 0;
-        result.forEach((e) => {
-          totalPercentage += e.percentage;
-        });
-        e.totalPercentage = totalPercentage;
-        e.latestEntry = result[result.length - 1];
-        return e;
-      });
-      setFilterData(data);
-    });
-  }, [vendorTypes]);
-
-  useEffect(() => {
-    setAllallPriceTypeList([]);
-    axios.get(baseUrl + `get_all_data_list`).then((res) => {
-      setAllallPriceTypeList(res.data.data);
-    });
-  }, []);
+  const { data: priceData, isLoading: isPriceLoading } =
+    useGetMultiplePagePriceQuery(selectedRow);
 
   const handlePriceClick = (row) => {
     return function () {
-      setPriceData(row.purchase_price);
+      setSelectedRow(row._id);
+      // setPriceData(row.purchase_price);
       setShowPriceModal(true);
     };
   };
@@ -553,7 +483,7 @@ const PageOverview = () => {
       width: 80,
     },
     {
-      field: "page_user_name",
+      field: "page_name",
       headerName: "User Name",
       width: 200,
       editable: true,
@@ -567,7 +497,7 @@ const PageOverview = () => {
       //   return <Link target="__black" to={params.row.link} className="link-primary" >{name}</Link>;
       // },
       renderCell: (params) => {
-        let name = params.row.page_user_name;
+        let name = params.row.page_name;
         return (
           <Link target="__black" to={params.row.link} className="link-primary">
             {name}
@@ -575,8 +505,13 @@ const PageOverview = () => {
         );
       },
     },
-    { field: "page_level", headerName: "Level", width: 200 },
-    { field: "page_status", headerName: "Status", width: 200 },
+    { field: "preference_level", headerName: "Level", width: 200 },
+    {
+      field: "status",
+      headerName: "Status",
+      width: 200,
+      valueGetter: (params) => (params.row.status == 0 ? "Active" : "Inactive"),
+    },
     { field: "ownership_type", headerName: "Ownership", width: 200 },
     // {
     //   field: "link",
@@ -605,7 +540,7 @@ const PageOverview = () => {
       width: 200,
       renderCell: (params) => {
         let name = cat?.find(
-          (item) => item?._id == params.row?.page_catg_id
+          (item) => item?._id == params.row?.page_category_id
         )?.page_category;
 
         return <div>{name}</div>;
@@ -617,12 +552,12 @@ const PageOverview = () => {
       width: 200,
     },
     {
-      field: "vendorMast_id",
+      field: "vendor_id",
       headerName: "Vendor",
       renderCell: (params) => {
-        let name = venodr?.find(
-          (item) => item?.vendorMast_id == params.row?.vendorMast_id
-        )?.vendorMast_name;
+        let name = vendorData?.find(
+          (item) => item?._id == params.row?.vendor_id
+        )?.vendor_name;
 
         return <div>{name}</div>;
       },
@@ -633,35 +568,40 @@ const PageOverview = () => {
       field: "platform_active_on",
       headerName: "Active Platform",
       width: 200,
-      renderCell: (params) => {
-        let data = platformData.filter((item) => {
+      // renderCell: (params) => {
+      //   let data = platformData?.filter((item) => {
+      //     return params.row.platform_active_on.includes(item._id);
+      //   });
+      //   return (
+      //     <div>
+      //       {data.length > 0 && (
+      //         <Button
+      //           className="text-center"
+      //           onClick={handlePlatfrormClick(data)}
+      //         >
+      //           <KeyboardDoubleArrowUpIcon />
+      //         </Button>
+      //       )}
+      //     </div>
+      //   );
+      // },
+      valueGetter: (params) => {
+        let data = platformData?.filter((item) => {
           return params.row.platform_active_on.includes(item._id);
         });
-        return (
-          <div>
-            {data.length > 0 && (
-              <Button
-                className="text-center"
-                // onClick={handlePlatfrormClick(data)}
-                onClick={() => {
-                  console.log(params.row);
-                }}
-              >
-                <KeyboardDoubleArrowUpIcon />
-              </Button>
-            )}
-          </div>
-        );
+        return data.map((item) => item.platform_name).join(", ");
       },
     },
     {
-      field: "tag_category_name",
+      field: "tags_page_category",
       headerName: "Tag Category",
       width: 200,
       renderCell: (params) => {
-        let data = cat.filter((item) => {
-          return params.row?.tag_category?.includes(item._id);
-        });
+        let data = cat
+          .filter((item) => {
+            return params.row?.tags_page_category?.includes(item._id);
+          })
+          .map((item) => item.page_category);
         return (
           <div
             style={{
@@ -678,7 +618,7 @@ const PageOverview = () => {
                   onClick={handleTagCategory(data)}
                   style={{ display: "inline", cursor: "pointer" }}
                 >
-                  {params.row.tag_category_name}
+                  {item}
                   {i !== data.length - 1 && ","}
                 </p>
               );
@@ -703,10 +643,9 @@ const PageOverview = () => {
       width: 200,
       renderCell: (params) => {
         let name = user?.find(
-          (item) => item?.user_id == params.row?.page_closed_by
+          (item) => item?.user_id == params?.row?.page_closed_by
         )?.user_name;
-
-        return <div>{name}</div>;
+        return <div>{name ?? "NA"}</div>;
       },
     },
     {
@@ -746,16 +685,16 @@ const PageOverview = () => {
     //     );
     //   },
     // },
-    { field: "price_cal_type", headerName: "Rate Type", width: 200 },
+    { field: "rate_type", headerName: "Rate Type", width: 200 },
     { field: "variable_type", headerName: "Variable Type", width: 200 },
     {
-      field: "purchase_price",
+      field: "page_price_multiple",
       headerName: "Price",
       width: 200,
       renderCell: ({ row }) => {
         return (
           <div>
-            {row.purchase_price.length > 0 && (
+            {
               <button
                 title="Price"
                 onClick={handlePriceClick(row)}
@@ -763,7 +702,7 @@ const PageOverview = () => {
               >
                 <PriceCheckIcon />
               </button>
-            )}
+            }
           </div>
         );
       },
@@ -820,7 +759,7 @@ const PageOverview = () => {
       renderCell: (params) => {
         let name = allPriceTypeList?.find(
           (item) => item.price_type_id == params.row.price_type_id
-        )?.price_type;
+        )?.name;
         return <div>{name}</div>;
       },
     },
@@ -1371,88 +1310,6 @@ const PageOverview = () => {
   if (showPageHealthColumn) {
     dataGridcolumns.push(...pageHealthColumn);
   }
-
-  // const copyToClipboard = (text) => {
-  //   const textarea = document.createElement("textarea");
-  //   textarea.value = text;
-  //   document.body.appendChild(textarea);
-  //   textarea.select();
-  //   document.execCommand("copy");
-  //   document.body.removeChild(textarea);
-  // };
-
-  // const copySelectedRows = (type) => {
-  //   // Your existing code to retrieve the selected rows and format the data
-  //   let selectedRows = Array.from(
-  //     document.getElementsByClassName("MuiDataGrid-row")
-  //   ).filter((row) => row.classList.contains("Mui-selected"));
-
-  //   let data = selectedRows.map((row) => {
-  //     let rowData = {};
-  //     for (let j = 1; j < row.children.length - 1; j++) {
-  //       if (dataGridcolumns[j].field !== "Action") {
-  //         rowData[dataGridcolumns[j].field] = row.children[j].innerText;
-  //       }
-  //     }
-  //     return rowData;
-  //   });
-
-  //   if (type === 0) {
-  //     // Copy data without using the clipboard API
-  //     let copyData = data.map((row) => {
-  //       return {
-  //         "Page Name": row.page_level,
-  //         Link: row.platform_id,
-  //       };
-  //     });
-
-  //     let formattedData = copyData.map((row) => {
-  //       let formattedRow = `Page Name: ${row["Page Name"]}\nPage Link: ${row["Link"]}\n`;
-  //       return formattedRow;
-  //     });
-
-  //     copyToClipboard(formattedData.join("\n"));
-  //     toastAlert("Data Copied Successfully", "success");
-  //     return;
-  //   }
-
-  //   // Copy data using the clipboard API
-  //   let formattedData = data.map((row) => {
-  //     let formattedRow = `Page Name: ${row["page_level"]}\nFollowers: ${row["followers_count"]}\nPage Link: ${row["platform_id"]}\nPlatform: ${row["page_catg_id"]}\nCategory: ${row["followers_count"]}\nOwnership Type: ${row["link"]}\nPage Status: ${row["ownership_type"]}\n`;
-  //     return formattedRow;
-  //   });
-
-  //   copyToClipboard(formattedData.join("\n"));
-  //   toastAlert("Data Copied Successfully", "success");
-  // };
-
-  // const copyAllRows = () => {
-  //   let copyData = filterData.map((row) => {
-  //     return {
-  //       "Page Name": row.page_user_name,
-  //       Followers: row.followers_count,
-  //       "Page Link": row.link,
-  //       Platform: row.PMS_paform_data.platform_name,
-  //       Category: row.PMS_Pagecategories.page_category,
-  //       Vendor: venodr.find((item) => item.vendorMast_id == row.vendorMast_id)
-  //         ?.vendorMast_name,
-  //       "Platform Active On": row.platform_active_on,
-  //       "Engagment Rate": row.engagment_rate,
-  //       "Closed By": row.page_closed_by,
-  //       "Page Name Type": row.page_name_type,
-  //       "Content Creation": row.content_creation,
-  //     };
-  //   });
-
-  //   let formattedData = copyData.map((row) => {
-  //     let formattedRow = `Page Name: ${row["Page Name"]}\n   Followers: ${row["Followers"]}\n   Page Link: ${row["Page Link"]} \n   Platform: ${row["Platform"]}\n   Category: ${row["Category"]}\n   Vendor: ${row["Vendor"]}\n   Platform Active On: ${row["Platform Active On"]}\n   Engagment Rate: ${row["Engagment Rate"]}\n   Closed By: ${row["Closed By"]}\n   Page Name Type: ${row["Page Name Type"]}\n   Content Creation: ${row["Content Creation"]}\n`;
-  //     return formattedRow;
-  //   });
-
-  //   navigator.clipboard.writeText(formattedData.join("\n\n"));
-  //   toastAlert("Data Copied Successfully", "success");
-  // };
-
   return (
     <>
       {/* Design Start */}
@@ -2411,7 +2268,7 @@ const PageOverview = () => {
                     </Link>
                   </div>
                 </div>
-                <div className="row my-2">
+                {/* <div className="row my-2">
                   {platformData?.map((item, i) => {
                     return (
                       <div key={i} className="col-md-2">
@@ -2437,9 +2294,37 @@ const PageOverview = () => {
                       </div>
                     );
                   })}
+                </div> */}
+
+                <div className="mt-2">
+                  <h4>Platform</h4>
+                  <Autocomplete
+                    id="platform-autocomplete"
+                    options={platformData}
+                    getOptionLabel={(option) => {
+                      const count = vendorTypes.filter(
+                        (d) => d.platform_id == option._id
+                      ).length;
+                      return `${option.platform_name} (${count})`;
+                    }}
+                    style={{ width: 300 }}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        label="Platform"
+                        variant="outlined"
+                      />
+                    )}
+                    onChange={(event, newValue) => {
+                      let result = vendorTypes.filter(
+                        (d) => d.platform_id == newValue._id
+                      );
+                      setFilterData(result);
+                    }}
+                  />
                 </div>
                 <div>
-                  {[
+                  {/* {[
                     ...new Set(
                       vendorTypes.map((item) => {
                         return item?.ownership_type;
@@ -2467,8 +2352,8 @@ const PageOverview = () => {
                         )
                       </button>
                     );
-                  })}
-                  <div className="mt-2">
+                  })} */}
+                  {/* <div className="mt-2">
                     <h4>Page Status</h4>
 
                     {[
@@ -2500,8 +2385,77 @@ const PageOverview = () => {
                         </button>
                       );
                     })}
-                  </div>
+                  </div> */}
+
                   <div className="mt-2">
+                    <h4>Ownership Type</h4>
+                    <Autocomplete
+                      id="ownership-type-autocomplete"
+                      options={[
+                        ...new Set(
+                          vendorTypes?.map((item) => {
+                            return item?.ownership_type;
+                          })
+                        ),
+                      ]}
+                      getOptionLabel={(option) => {
+                        const count = vendorTypes.filter(
+                          (d) => d.ownership_type == option
+                        ).length;
+                        return `${option} (${count})`;
+                      }}
+                      style={{ width: 300 }}
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          label="Ownership Type"
+                          variant="outlined"
+                        />
+                      )}
+                      onChange={(event, newValue) => {
+                        let result = vendorTypes.filter(
+                          (d) => d.ownership_type == newValue
+                        );
+                        setFilterData(result);
+                      }}
+                    />
+                  </div>
+
+                  <div className="mt-2">
+                    <h4>Page Status</h4>
+                    <Autocomplete
+                      id="page-status-autocomplete"
+                      options={[
+                        ...new Set(
+                          vendorTypes?.map((item) => {
+                            return item?.page_status;
+                          })
+                        ),
+                      ]}
+                      getOptionLabel={(option) => {
+                        const count = vendorTypes.filter(
+                          (d) => d.page_status == option
+                        ).length;
+                        return `${option} (${count})`;
+                      }}
+                      style={{ width: 300 }}
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          label="Page Status"
+                          variant="outlined"
+                        />
+                      )}
+                      onChange={(event, newValue) => {
+                        let result = vendorTypes.filter(
+                          (d) => d.page_status == newValue
+                        );
+                        setFilterData(result);
+                      }}
+                    />
+                  </div>
+
+                  {/* <div className="mt-2">
                     <h4>Page Name Type</h4>
                     {[
                       ...new Set(
@@ -2532,8 +2486,42 @@ const PageOverview = () => {
                         </button>
                       );
                     })}
-                  </div>
+                  </div> */}
+
                   <div className="mt-2">
+                    <h4>Page Name Type</h4>
+                    <Autocomplete
+                      id="pagename-type-autocomplete"
+                      options={[
+                        ...new Set(
+                          vendorTypes?.map((item) => {
+                            return item?.page_name_type;
+                          })
+                        ),
+                      ]}
+                      getOptionLabel={(option) => {
+                        const count = vendorTypes.filter(
+                          (d) => d.page_name_type == option
+                        ).length;
+                        return `${option} (${count})`;
+                      }}
+                      style={{ width: 300 }}
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          label="Page Name Type"
+                          variant="outlined"
+                        />
+                      )}
+                      onChange={(event, newValue) => {
+                        let result = vendorTypes.filter(
+                          (d) => d.page_name_type == newValue
+                        );
+                        setFilterData(result);
+                      }}
+                    />
+                  </div>
+                  {/* <div className="mt-2">
                     <h4>Closed By</h4>
                     {[
                       ...new Set(
@@ -2569,8 +2557,44 @@ const PageOverview = () => {
                         </button>
                       );
                     })}
-                  </div>
+                  </div> */}
+
                   <div className="mt-2">
+                    <h4>Closed By</h4>
+                    <Autocomplete
+                      id="closedby-autocomplete"
+                      options={[
+                        ...new Set(
+                          vendorTypes?.map((item) => {
+                            return item?.page_closed_by;
+                          })
+                        ),
+                      ]}
+                      getOptionLabel={(option) => {
+                        const users = user?.find((e) => e.user_id == option);
+                        const count = vendorTypes.filter(
+                          (d) => d.page_closed_by == option
+                        ).length;
+                        return `${users?.user_name} (${count})`;
+                      }}
+                      style={{ width: 300 }}
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          label="Closed By"
+                          variant="outlined"
+                        />
+                      )}
+                      onChange={(event, newValue) => {
+                        let result = vendorTypes.filter(
+                          (d) => d.page_closed_by == newValue
+                        );
+                        setFilterData(result);
+                      }}
+                    />
+                  </div>
+
+                  {/* <div className="mt-2">
                     <h4>Category</h4>
                     {[
                       ...new Set(
@@ -2606,8 +2630,49 @@ const PageOverview = () => {
                         </button>
                       );
                     })}
-                  </div>
+                  </div> */}
+
+                  {/* import Autocomplete from '@mui/material/Autocomplete';
+import TextField from '@mui/material/TextField';
+
+// ... */}
+
                   <div className="mt-2">
+                    <h4>Category</h4>
+                    <Autocomplete
+                      id="category-autocomplete"
+                      options={[
+                        ...new Set(
+                          vendorTypes?.map((item) => {
+                            return item?.page_catg_id;
+                          })
+                        ),
+                      ]}
+                      getOptionLabel={(option) => {
+                        const category = cat?.find((e) => e._id == option);
+                        const count = vendorTypes.filter(
+                          (d) => d.page_catg_id == option
+                        ).length;
+                        return `${category?.page_category} (${count})`;
+                      }}
+                      style={{ width: 300 }}
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          label="Category"
+                          variant="outlined"
+                        />
+                      )}
+                      onChange={(event, newValue) => {
+                        let result = vendorTypes.filter(
+                          (d) => d.page_catg_id == newValue
+                        );
+                        setFilterData(result);
+                      }}
+                    />
+                  </div>
+
+                  {/* <div className="mt-2">
                     <h4>Ownership</h4>
                     {[
                       ...new Set(
@@ -2638,6 +2703,40 @@ const PageOverview = () => {
                         </button>
                       );
                     })}
+                  </div> */}
+
+                  <div className="mt-2">
+                    <h4>Ownership</h4>
+                    <Autocomplete
+                      id="ownership-autocomplete"
+                      options={[
+                        ...new Set(
+                          vendorTypes?.map((item) => {
+                            return item?.ownership_type;
+                          })
+                        ),
+                      ]}
+                      getOptionLabel={(option) => {
+                        const count = vendorTypes.filter(
+                          (d) => d.ownership_type == option
+                        ).length;
+                        return `${option} (${count})`;
+                      }}
+                      style={{ width: 300 }}
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          label="Ownership"
+                          variant="outlined"
+                        />
+                      )}
+                      onChange={(event, newValue) => {
+                        let result = vendorTypes.filter(
+                          (d) => d.ownership_type == newValue
+                        );
+                        setFilterData(result);
+                      }}
+                    />
                   </div>
                   <br />
                   <hr />
@@ -2738,20 +2837,22 @@ const PageOverview = () => {
         <DialogTitle id="alert-dialog-title">{"Price Details"}</DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            <DataGrid
-              rows={priceData}
-              columns={priceColumn}
-              pageSize={5}
-              rowsPerPageOptions={[5]}
-              disableSelectionOnClick
-              getRowId={(row) => row.price_type_id}
-              slots={{ toolbar: GridToolbar }}
-              slotProps={{
-                toolbar: {
-                  showQuickFilter: true,
-                },
-              }}
-            />
+            {!isPriceLoading && (
+              <DataGrid
+                rows={priceData}
+                columns={priceColumn}
+                pageSize={5}
+                rowsPerPageOptions={[5]}
+                disableSelectionOnClick
+                getRowId={(row) => row._id}
+                slots={{ toolbar: GridToolbar }}
+                slotProps={{
+                  toolbar: {
+                    showQuickFilter: true,
+                  },
+                }}
+              />
+            )}
           </DialogContentText>
         </DialogContent>
         <DialogActions>

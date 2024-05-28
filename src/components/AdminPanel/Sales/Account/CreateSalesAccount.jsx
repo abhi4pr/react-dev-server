@@ -85,7 +85,6 @@ const CreateSalesAccount = () => {
   }, []);
 
   const handleAddPoc = () => {
-    console.log("added");
     setPocs([
       ...pocs,
       {

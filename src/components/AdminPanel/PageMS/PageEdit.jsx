@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 import { useGlobalContext } from "../../../Context/Context";
 import FieldContainer from "../FieldContainer";
@@ -12,6 +12,7 @@ import {
   Autocomplete,
   Box,
   Button,
+  IconButton,
   InputAdornment,
   TextField,
   styled,
@@ -28,6 +29,14 @@ import { DataGrid } from "@mui/x-data-grid";
 import InsertPhotoTwoToneIcon from "@mui/icons-material/InsertPhotoTwoTone";
 import OndemandVideoTwoToneIcon from "@mui/icons-material/OndemandVideoTwoTone";
 import { useNavigate } from "react-router-dom";
+import { useGetAllPageCategoryQuery, useGetAllProfileListQuery, useGetMultiplePagePriceQuery } from "../../Store/PageBaseURL";
+import {
+  useGetAllVendorQuery,
+  useGetPmsPlatformQuery,
+} from "../../Store/reduxBaseURL";
+import AddIcon from "@mui/icons-material/Add";
+import { setModalType, setOpenShowAddModal } from "../../Store/PageMaster";
+import { useDispatch } from "react-redux";
 
 const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",
@@ -43,13 +52,18 @@ const VisuallyHiddenInput = styled("input")({
 
 const PageEdit = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch()
   const { toastAlert } = useGlobalContext();
+  const [rowCount, setRowCount] = useState([
+    { page_price_type_id: "", price: "" },
+  ]);
+  const [filterPriceTypeList, setFilterPriceTypeList] = useState([]);
+  const [priceTypeList, setPriceTypeList] = useState([]);
+
   const [pageName, setPageName] = useState("");
   const [link, setLink] = useState("");
   const [isFormSubmitted, setIsFormSubmitted] = useState(false);
-  const [platformData, setPlatformData] = useState([]);
   const [platformId, setPlatformId] = useState("");
-  const [categoryData, setCategoryData] = useState([]);
   const [categoryId, setCategoryId] = useState("");
   const [tag, setTag] = useState([]);
   const [pageLevel, setPageLevel] = useState("");
@@ -59,10 +73,10 @@ const PageEdit = () => {
   const [pageType, setPageType] = useState("");
   const [content, setContent] = useState("");
   const [ownerType, setOwnerType] = useState("");
-  const [vendorData, setVendorData] = useState([]);
+  // const [vendorData, setVendorData] = useState([]);
   const [vendorId, setVendorId] = useState("");
   const [followCount, setFollowCount] = useState("");
-  const [profileData, setProfileData] = useState([]);
+  // const [profileData, setProfileData] = useState([]);
   const [profileId, setProfileId] = useState("");
   const [platformActive, setPlatformActive] = useState();
   const [rate, setRate] = useState("");
@@ -164,7 +178,7 @@ const PageEdit = () => {
     useState(false);
   const [allUsers, setAllUsers] = useState([]);
   const [stateUpdate, setStateUpdate] = useState(false);
-const [data, setData] = useState([]);
+  const [data, setData] = useState([]);
 
   const handlePercentageChange = (value, setter) => {
     const newValue = parseFloat(value);
@@ -450,18 +464,18 @@ const [data, setData] = useState([]);
   ];
 
   const PageStatus = [
-    { value: "English", label: "English" },
-    { value: "Hindi", label: "Hindi" },
+    { value: "Active", label: "Active" },
+    { value: "Inactive", label: "Inactive" },
   ];
 
   const PageTypes = [
-    { value: "English", label: "English" },
-    { value: "Hindi", label: "Hindi" },
+    { value: "Clear", label: "Clear" },
+    { value: "Shreddy", label: "Shreddy" },
   ];
 
   const Contents = [
-    { value: "English", label: "English" },
-    { value: "Hindi", label: "Hindi" },
+    { value: "Own", label: "Own" },
+    { value: "CF", label: "CF" },
   ];
 
   const handleUpdateRowClick = async () => {
@@ -477,25 +491,17 @@ const [data, setData] = useState([]);
       });
   };
   const getData = () => {
-    axios.get(baseUrl + "getAllPlatform").then((res) => {
-      setPlatformData(res.data.data);
-    });
-
-    axios.get(baseUrl + "getPageCatgList").then((res) => {
-      setCategoryData(res.data.data);
-    });
-
     axios.get(baseUrl + "get_all_users").then((res) => {
       setUserData(res.data.data);
     });
 
-    axios.get(baseUrl + "vendorAllData").then((res) => {
-      setVendorData(res.data.tmsVendorkMastList);
-    });
+    // axios.get(baseUrl + "vendorAllData").then((res) => {
+    //   setVendorData(res.data.tmsVendorkMastList);
+    // });
 
-    axios.get(baseUrl + "getProfileList").then((res) => {
-      setProfileData(res.data.data);
-    });
+    // axios.get(baseUrl + "getProfileList").then((res) => {
+    //   setProfileData(res.data.data);
+    // });
 
     axios.get(baseUrl + "get_all_cities").then((res) => {
       setCityListTemp(res.data.data.map((city) => city.city_name));
@@ -517,21 +523,107 @@ const [data, setData] = useState([]);
     callApi();
   }, [intervalFlag]);
 
+  const {
+    data: category,
+    error: categoryError,
+    isLoading: categoryIsLoading,
+  } = useGetAllPageCategoryQuery();
+  const categoryData = category?.data || [];
+
+  const {
+    data: platform,
+    error: platformError,
+    isLoading: platformIsLoading,
+  } = useGetPmsPlatformQuery();
+
+  const platformData = platform?.data || [];
+
+  const {
+    data: vendor,
+    error: vendorError,
+    isLoading: vendorIsLoading,
+  } = useGetAllVendorQuery();
+
+  const vendorData = vendor?.data || [];
+
+  const {
+    data: profile,
+    error: profileError,
+    isLoading: profileIsLoading,
+  }= useGetAllProfileListQuery();
+
+  const profileData = profile?.data || [];
+
+  const handlePriceTypeChange = (e, index) => {
+    rowCount[index].page_price_type_id = e.value;
+    handleFilterPriceType();
+  };
+
+  const handlePriceChange = (e, index) => {
+    rowCount[index].price = e.target.value;
+  };
+
+  const handleFilterPriceType = () => {
+    let filteredData = priceTypeList.filter((row) => {
+      // Check if row's page_price_type_id exists in priceTypeList
+      return !rowCount.some(
+        (e) => e.page_price_type_id == row.page_price_type_id
+      );
+    });
+    setFilterPriceTypeList(filteredData);
+  };
+
+  const handleOpenPageModal = (type) => {
+    return () => {
+      dispatch(setOpenShowAddModal());
+      dispatch(setModalType(type));
+    };
+  };
+
   useEffect(() => {
-    axios.get(baseUrl + `getPageDetail/${pageMast_id}`).then((res) => {
+    if (platformId) {
+      setPriceTypeList([]);
+      let priceData = platformData.find((role) => role._id == platformId)?._id;
+      axios
+        .get(baseUrl + `v1/pagePriceTypesForPlatformId/${priceData}`)
+        .then((res) => {
+          setPriceTypeList(res.data.data);
+          setFilterPriceTypeList(res.data.data);
+        });
+    }
+  }, [platformId]);
+
+  const addPriceRow = () => {
+    setRowCount((rowCount) => [
+      ...rowCount,
+      { page_price_type_id: "", price: "" },
+    ]);
+  };
+
+  const { data: priceData, isLoading: isPriceLoading } =
+  useGetMultiplePagePriceQuery(pageMast_id);
+
+  useEffect(() => {
+    if (priceData) {
+      setRowCount(priceData);
+    }
+  }, [priceData]);
+
+  useEffect(() => {
+    axios.get(baseUrl + `v1/pageMaster/${pageMast_id}`).then((res) => {
       const data = [res.data.data];
       setData(data);
-
+      console.log(data, "data");
       setLatestEntry(res.data.latestEntry);
       setStateUpdate(data[0].stats_update_flag);
       setTotalPercentage(res.data.totalPercentage);
       setPlatformId(data[0].platform_id);
-      setPageName(data[0].page_user_name);
-      setLink(data[0].link);
-      setCategoryId(data[0].page_catg_id);
-      setTag(data[0].tag_category);
+      setPageName(data[0].page_name);
+      setLink(data[0].page_link);
+      setCategoryId(data[0].page_category_id);
+      // setTag(data[0].tag_category);
       const tagFilter = categoryData.filter((e) =>
-        data[0].tag_category.includes(e._id)
+        data[0].tags_page_category.includes(e._id)
       );
       setTag(
         tagFilter.map((e) => {
@@ -539,14 +631,14 @@ const [data, setData] = useState([]);
         })
       );
       setPageLevel(data[0].page_level);
-      setPageStatus(data[0].page_status);
+      setPageStatus(data[0].status == 0 ? "Active" : "Inactive");
       setCloseBy(data[0].page_closed_by);
       setPageType(data[0].page_name_type);
       setContent(data[0].content_creation);
       setOwnerType(data[0].ownership_type);
-      setVendorId(data[0].vendorMast_id);
+      setVendorId(data[0].vendor_id);
       setFollowCount(data[0].followers_count);
-      setProfileId(data[0].profile_type_id);
+      setProfileId(data[0].page_profile_type_id);
       const platformActive = platformData.filter((e) =>
         data[0].platform_active_on.includes(e._id)
       );
@@ -562,7 +654,7 @@ const [data, setData] = useState([]);
       const { execounthismodels } = data[0];
       setExecounthismodels(execounthismodels);
     });
-  }, [categoryData, platformData]);
+  }, [platformData]);
 
   const handleHistoryRowClick = () => {
     navigate(`/admin/exe-history/${p_id}`, { state: p_id });
@@ -641,27 +733,27 @@ const [data, setData] = useState([]);
     }
 
     const payload = {
-      page_user_name: pageName,
+      page_name: pageName,
       link: link,
       platform_id: platformId,
-      page_catg_id: categoryId,
-      tag_category: tag.map((e) => e.value),
-      page_level: pageLevel,
-      page_status: pageStatus,
+      page_category_id: categoryId,
+      tags_page_category: tag.map((e) => e.value),
+      preference_level: pageLevel,
+      status: pageStatus == "Active" ? 1 : 0,
       page_closed_by: closeBy,
       page_name_type: pageType,
       content_creation: content,
       ownership_type: ownerType,
-      vendorMast_id: vendorId,
+      vendor_id: vendorId,
       followers_count: followCount,
-      profile_type_id: profileId,
+      page_profile_type_id: profileId,
       platform_active_on: platformActive.map((e) => e.value),
-      engagment_rate: rate,
+      rate_type: rate,
       description: description,
       updated_by: userID,
     };
 
-    axios.put(baseUrl + `updatePage/${pageMast_id}`, payload).then(() => {
+    axios.put(baseUrl + `pageMaster/${pageMast_id}`, payload).then(() => {
       setIsFormSubmitted(true);
       toastAlert("Submitted");
     });
@@ -687,15 +779,16 @@ const [data, setData] = useState([]);
   ];
 
   const Page = () => {
-
-
     return (
       <>
         <FieldContainer
           label="Page Name *"
           value={pageName}
           required={true}
-          onChange={(e) =>{ setPageName(e.target.value); e.preventDefault();}}
+          onChange={(e) => {
+            setPageName(e.target.value);
+            e.preventDefault();
+          }}
         />
 
         <FieldContainer
@@ -853,14 +946,14 @@ const [data, setData] = useState([]);
           </label>
           <Select
             options={vendorData.map((option) => ({
-              value: option.vendorMast_id,
-              label: option.vendorMast_name,
+              value: option._id,
+              label: option.vendor_name,
             }))}
             value={{
               value: vendorId,
               label:
-                vendorData.find((role) => role.vendorMast_id === vendorId)
-                  ?.vendorMast_name || "",
+                vendorData.find((role) => role._id === vendorId)?.vendor_name ||
+                "",
             }}
             onChange={(e) => {
               setVendorId(e.value);
@@ -928,6 +1021,79 @@ const [data, setData] = useState([]);
           required={false}
           onChange={(e) => setDescription(e.target.value)}
         />
+
+<div className="col-12 row">
+          {rowCount.map((row, index) => (
+            <>
+              {" "}
+              <div className="form-group col-5 row">
+                <label className="form-label">
+                  Price Type <sup style={{ color: "red" }}>*</sup>
+                </label>
+                <Select
+                  options={filterPriceTypeList.map((option) => ({
+                    value: option._id,
+                    label: option.name,
+                  }))}
+                  required={true}
+                  value={{
+                    label: priceTypeList.find(
+                      (role) => role._id === rowCount[index].page_price_type_id
+                    )?.name,
+                    value: rowCount[index].page_price_type_id,
+                  }}
+                  onChange={(e) => handlePriceTypeChange(e, index)}
+                />
+                {/* <IconButton
+                  onClick={handleOpenPageModal("Price Type")}
+                  variant="contained"
+                  color="primary"
+                  aria-label="Add Price Type.."
+                >
+                  <AddIcon />
+                </IconButton>
+                <IconButton
+                  onClick={handleOpenInfoModal("Price Type Info")}
+                  variant="contained"
+                  color="primary"
+                  aria-label="Price Type Info.."
+                >
+                  <InfoIcon />
+                </IconButton> */}
+              </div>
+              <FieldContainer
+                label=" Price *"
+                required={true}
+                type="number"
+                onChange={(e) => handlePriceChange(e, index)}
+                value={rowCount[index].price}
+              />
+              {index != 0 && (
+                <button
+                  className="btn btn-sm btn-danger mt-4 ml-2  col-1 mb-3"
+                  type="button"
+                  onClick={() => {
+                    setRowCount(
+                      (prev) => prev.filter((e, i) => i !== index),
+                      handleFilterPriceType()
+                    );
+                  }}
+                >
+                  Remove
+                </button>
+              )}
+            </>
+          ))}
+          <div className="text-center">
+            <button
+              type="button"
+              onClick={addPriceRow}
+              className="btn btn-sm btn-primary"
+            >
+              Add Price
+            </button>
+          </div>
+        </div>
         <button type="submit" className="btn btn-primary mt-2 btn-sm">
           Submit
         </button>
@@ -1926,7 +2092,9 @@ const [data, setData] = useState([]);
             style={{ width: "70vw", height: "auto" }}
           >
             <div className="modal-header">
-              <h4 className="modal-title">Page Name :- {data[0]?.page_user_name}</h4>
+              <h4 className="modal-title">
+                Page Name :- {data[0]?.page_user_name}
+              </h4>
               <button
                 type="button"
                 className="close"

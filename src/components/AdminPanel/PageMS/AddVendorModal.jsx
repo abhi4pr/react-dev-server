@@ -4,6 +4,7 @@ import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogTitle from "@mui/material/DialogTitle";
 import {
+  handleChangeVendorInfoModal,
   setCloseAddVendorModal,
   setVendorRowData,
 } from "../../Store/VendorMaster";
@@ -15,10 +16,12 @@ import {
   useAddPmsPaymentMethodMutation,
   useAddPmsPlatformMutation,
   useAddPmsVendorTypeMutation,
+  useAddVendorWhatsappLinkTypeMutation,
   useUpdatePmsPayCycleMutation,
   useUpdatePmsPaymentMethodMutation,
   useUpdatePmsPlatformMutation,
   useUpdateVendorTypeMutation,
+  useUpdateVendorWhatsappLinkTypeMutation,
 } from "../../Store/reduxBaseURL";
 import jwtDecode from "jwt-decode";
 import { useGlobalContext } from "../../../Context/Context";
@@ -35,6 +38,8 @@ export default function AddVendorModal() {
   const [updatePayMethod] = useUpdatePmsPaymentMethodMutation();
   const [addPayCycle] = useAddPmsPayCycleMutation();
   const [updatePayCycle] = useUpdatePmsPayCycleMutation();
+  const [whatsapplinkTypePost] = useAddVendorWhatsappLinkTypeMutation();
+  const [updateWhatsapplinkType] = useUpdateVendorWhatsappLinkTypeMutation();
   const open = useSelector((state) => state.vendorMaster.showAddVendorModal);
   const venodrRowData = useSelector(
     (state) => state.vendorMaster.vendorRowData
@@ -64,6 +69,9 @@ export default function AddVendorModal() {
     } else if (venodrRowData?.cycle_name) {
       setValue("typeName", venodrRowData.cycle_name);
       setValue("description", venodrRowData.description);
+    } else if (venodrRowData?.link_type) {
+      setValue("typeName", venodrRowData.link_type);
+      setValue("description", venodrRowData.description);
     }
   }, [venodrRowData]);
 
@@ -81,8 +89,10 @@ export default function AddVendorModal() {
     };
     if (modalType == "UpdateVendor") {
       if (venodrRowData) {
-        obj._id = venodrRowData._id;
-        obj.updated_by = userID;
+        obj.id = venodrRowData._id;
+        // obj.updated_by = userID;
+        obj.last_updated_by = userID;
+        delete obj.updated_by;
         vendorUpdate(obj)
           .unwrap()
           .then(() => {
@@ -91,6 +101,7 @@ export default function AddVendorModal() {
             setValue("typeName", null);
             setValue("description", null);
             handleClose();
+            dispatch(handleChangeVendorInfoModal());
           })
           .catch((err) => {
             toastError(err.message);
@@ -124,8 +135,11 @@ export default function AddVendorModal() {
           toastError(err.message);
         });
     } else if (modalType == "UpdatePlatform") {
+      // delete obj.type_name;
+      obj.id = venodrRowData._id;
+      obj.last_updated_by = userID;
+      delete obj.created_by;
       delete obj.type_name;
-      obj._id = venodrRowData._id;
       obj.platform_name = data.typeName;
       updatePlatform(obj)
         .unwrap()
@@ -135,6 +149,7 @@ export default function AddVendorModal() {
           setValue("typeName", null);
           setValue("description", null);
           handleClose();
+          dispatch(handleChangeVendorInfoModal());
         })
         .catch((err) => {
           toastError(err.message);
@@ -154,8 +169,10 @@ export default function AddVendorModal() {
         });
     } else if (modalType == "UpdatePayment") {
       delete obj.type_name;
-      obj._id = venodrRowData._id;
+      delete obj.created_by;
+      obj.id = venodrRowData._id;
       obj.payMethod_name = data.typeName;
+      obj.last_updated_by = userID;
       updatePayMethod(obj)
         .unwrap()
         .then(() => {
@@ -164,6 +181,7 @@ export default function AddVendorModal() {
           setValue("typeName", null);
           setValue("description", null);
           handleClose();
+          dispatch(handleChangeVendorInfoModal());
         })
         .catch((err) => {
           toastError(err.message);
@@ -183,8 +201,10 @@ export default function AddVendorModal() {
         });
     } else if (modalType == "UpdatePayCycle") {
       delete obj.type_name;
-      obj._id = venodrRowData._id;
+      delete obj.created_by;
+      obj.id = venodrRowData._id;
       obj.cycle_name = data.typeName;
+      obj.last_updated_by = userID;
       updatePayCycle(obj)
         .unwrap()
         .then(() => {
@@ -193,6 +213,39 @@ export default function AddVendorModal() {
           setValue("typeName", null);
           setValue("description", null);
           handleClose();
+          dispatch(handleChangeVendorInfoModal());
+        })
+        .catch((err) => {
+          toastError(err.message);
+        });
+    } else if (modalType == "WhatsappLinkType") {
+      delete obj.type_name;
+      obj.link_type = data.typeName;
+      obj.description = data.description;
+      whatsapplinkTypePost(obj)
+        .unwrap()
+        .then(() => {
+          toastAlert("Whatsapp Link Type Added");
+          handleClose();
+        })
+        .catch((err) => {
+          toastError(err.message);
+        });
+    } else if (modalType == "updateWhatsappLinkType") {
+      delete obj.type_name;
+      delete obj.created_by;
+      obj.id = venodrRowData._id;
+      obj.link_type = data.typeName;
+      obj.last_updated_by = userID;
+      updateWhatsapplinkType(obj)
+        .unwrap()
+        .then(() => {
+          toastAlert("Whatsapp Link Type Updated");
+          dispatch(setVendorRowData(null));
+          setValue("typeName", null);
+          setValue("description", null);
+          handleClose();
+          dispatch(handleChangeVendorInfoModal());
         })
         .catch((err) => {
           toastError(err.message);
@@ -217,6 +270,8 @@ export default function AddVendorModal() {
       setTitle("Add Payment Cycle");
     } else if (modalType == "UpdatePayCycle") {
       setTitle("Update Payment Cycle");
+    } else if (modalType == "WhatsappLinkType") {
+      setTitle("Add Whatsapp Link Type");
     }
   }, [modalType]);
   return (

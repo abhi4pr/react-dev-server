@@ -1395,11 +1395,12 @@ const Admin = () => {
                     path="/pms-group-link-type"
                     element={<GroupLinkType />}
                   />
-                  <Route
+                  {/* <Route
                     path="/pms-vendor-edit/:_id"
                     element={<VendorEdit />}
-                  />
+                  /> */}
                   <Route path="/pms-vendor-master" element={<VendorMaster />} />
+                  <Route path="/pms-vendor-master/:_id" element={<VendorMaster />} />
                   <Route
                     path="/pms-vendor-overview"
                     element={<VendorOverview />}
