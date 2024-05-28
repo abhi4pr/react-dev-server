@@ -315,48 +315,13 @@ export default function PendingPaymentRequest() {
     return `${day}/${month}/${year}`;
   };
 
-  useEffect(() => {
-    handleCalculatePaymentAmount();
-  }, [TDSPercentage, GSTHoldAmount, TDSDeduction, gstHold]);
-
-  const handleTDSDeduction = (e) => {
-    console.log(e.target.checked, "e.target.checked", TDSPercentage, TDSValue);
-    setTDSDeduction(e.target.checked);
-    setTDSPercentage(1);
-  };
+  // useEffect(() => {
+  //   handleCalculatePaymentAmount();
+  // }, [TDSPercentage, GSTHoldAmount, TDSDeduction, gstHold]);
 
   const handleGstHold = (e) => {
     setGstHold(e.target.checked);
     setGSTHoldAmount(rowData.gst_amount);
-  };
-
-  const handleCalculatePaymentAmount = () => {
-    if (gstHold && TDSDeduction) {
-      setPaymentStatus("Fully Paid GST Hold and TDS Deduction");
-    } else if (gstHold) {
-      setPaymentStatus("Fully Paid GST Hold");
-    } else if (TDSDeduction) {
-      setPaymentStatus("Fully Paid TDS Deduction");
-    } else {
-      setPaymentStatus("Fully Paid");
-    }
-
-    let paymentAmount = rowData.balance_amount;
-    let baseamount = baseAmount;
-    let tdsvalue = 0;
-
-    if (TDSDeduction) {
-      tdsvalue = (baseamount * TDSPercentage) / 100;
-      paymentAmount = paymentAmount - tdsvalue;
-    }
-    if (gstHold) {
-      paymentAmount = paymentAmount - GSTHoldAmount;
-    }
-    console.log(tdsvalue, "------------------------");
-    // tdsvalue = Math.round(tdsvalue);
-    setTDSValue(tdsvalue);
-    setPaymentAmount(paymentAmount);
-    setNetAmount(paymentAmount);
   };
 
   GridToolbar.defaultProps = {
@@ -1567,17 +1532,17 @@ export default function PendingPaymentRequest() {
             "[]"
           )
         );
-      case "nextMonth":
-        const startOfNextMonth = now.clone().add(1, "months").startOf("month");
-        const endOfNextMonth = now.clone().add(1, "months").endOf("month");
-        return apiData.filter((item) =>
-          moment(item.request_date).isBetween(
-            startOfNextMonth,
-            endOfNextMonth,
-            "day",
-            "[]"
-          )
-        );
+      // case "nextMonth":
+      //   const startOfNextMonth = now.clone().add(1, "months").startOf("month");
+      //   const endOfNextMonth = now.clone().add(1, "months").endOf("month");
+      //   return apiData.filter((item) =>
+      //     moment(item.request_date).isBetween(
+      //       startOfNextMonth,
+      //       endOfNextMonth,
+      //       "day",
+      //       "[]"
+      //     )
+      //   );
       case "currentQuarter":
         const quarterStart = moment().startOf("quarter");
         const quarterEnd = moment().endOf("quarter");
@@ -1589,8 +1554,12 @@ export default function PendingPaymentRequest() {
             "[]"
           )
         );
+      case "today":
+        return apiData.filter((item) =>
+          moment(item.request_date).isSame(now, "day")
+        );
       default:
-        return apiData; // No filter applied
+        return apiData;
     }
   };
 
@@ -1768,35 +1737,11 @@ export default function PendingPaymentRequest() {
     setOpenDialog(true);
   };
 
-  // useEffect(() => {
-  //   const initialAdjustmentAmt = rowData?.balance_amount - paymentAmout || "";
-  //   setAdjustAmount(initialAdjustmentAmt);
-  // }, [rowData, TDSValue]);
-
   useEffect(() => {
-    const initialAdjustmentAmt = netAmount - Math.floor(paymentAmout);
+    const initialAdjustmentAmt = netAmount - paymentAmout;
     const formattedAdjustmentAmt = initialAdjustmentAmt.toFixed(1);
     setAdjustAmount(formattedAdjustmentAmt);
   }, [rowData, paymentAmout]);
-
-  // useEffect(() => {
-  //   const isTDSMandatory =
-  //     rowData?.totalFY > 100000 || rowData?.totalFY > 25000;
-  //   const isTDSDeducted = rowData?.TDSDeduction === "1";
-  //   setIsTDSMandatory(isTDSMandatory);
-  //   setIsTDSDeducted(isTDSDeducted);
-  // }, [rowData]);
-  useEffect(() => {
-    const tdsMandatory = rowData?.totalFY > 100000 || rowData?.totalFY > 25000;
-    const isTdsDeductedData = rowData?.TDSDeduction === "1";
-    setIsTDSMandatory(tdsMandatory);
-    setIsTDSDeducted(isTdsDeductedData);
-
-    // if (tdsMandatory && !isTdsDeductedData) {
-    //   setTDSDeduction(true);
-    // }
-    setTDSDeduction(tdsMandatory || isTdsDeductedData);
-  }, [rowData]);
 
   return (
     <div>
@@ -2145,12 +2090,13 @@ export default function PendingPaymentRequest() {
                     onChange={(e) => setDateFilter(e.target.value)}
                   >
                     <option value="">All</option>
-                    <option value="last7Days">Last 7 Days</option>
+                    <option value="today">Today</option>
+                    {/* <option value="last7Days">Last 7 Days</option> */}
                     <option value="last30Days">Last 30 Days</option>
                     <option value="thisWeek">This Week</option>
                     <option value="lastWeek">Last Week</option>
                     <option value="currentMonth">Current Month</option>
-                    <option value="nextMonth">Next Month</option>
+                    {/* <option value="nextMonth">Next Month</option> */}
                     <option value="currentQuarter">This Quarter</option>
                   </select>
                 </div>
@@ -2441,7 +2387,7 @@ export default function PendingPaymentRequest() {
         ) : ( */}
         {payDialog && (
           <PayVendorDialog
-          callApi={callApi}
+            callApi={callApi}
             userName={userName}
             loading={loading}
             setLoading={setLoading}

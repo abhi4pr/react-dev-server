@@ -117,6 +117,10 @@ const BalancePaymentList = () => {
   const [invoiceDateData, setInvoiceDate] = useState(dayjs(new Date()));
   const [totalCount, setTotalCount] = useState(0);
 
+  const [invoiceImageDialog, setInvcImageDialog] = useState(false);
+  const [saleBookingIdForInvoiceImg, setSaleBookingIdforInvoiceImg] =
+    useState("");
+  const [invoiceImageDataField, setInvoiceImageDataField] = useState("");
   const accordionButtons = [
     "Invoice Created",
     "Non Invoice Created",
@@ -688,6 +692,27 @@ const BalancePaymentList = () => {
         handleCloseEditDateField();
       });
   };
+  // update Invoice Image
+  const handleUpdateInvoiceImg = () => {
+    const formData = new FormData();
+
+    formData.append("sale_booking_id", saleBookingIdForInvoiceImg);
+    formData.append("invoice_mnj_number", invoiceImageDataField);
+
+    axios
+      .post(
+        "https://sales.creativefuel.io/webservices/RestController.php?view=sales_edit_invoice_detail",
+        formData,
+        {
+          headers: { "Content-Type": "multipart/form-data" },
+        }
+      )
+      .then((res) => {
+        console.log(res, "RESPONSE<<>>>>>>>>>>>");
+        getData();
+        handleCloseEditInvoiceImage();
+      });
+  };
   const handleOpenEditPartyField = (id) => {
     setPartyNameDialog(true);
     setSaleBookingIdforPartyName(id);
@@ -696,6 +721,16 @@ const BalancePaymentList = () => {
   const handleCloseEditPartyField = () => {
     setPartyNameDialog(false);
   };
+  // Edit invoice function
+  const handleOpenEditInvoiceImage = (id) => {
+    setInvcImageDialog(true);
+    setSaleBookingIdforInvoiceImg(id);
+  };
+
+  const handleCloseEditInvoiceImage = () => {
+    setInvcImageDialog(false);
+  };
+  // -------------------------------
   const handleOpenEditInvoiceField = (id) => {
     setInvoiceNumberDialog(true);
     setSaleBookingIdForInvoiceNo(id);
@@ -1447,32 +1482,52 @@ const BalancePaymentList = () => {
       renderCell: (params) =>
         params.row.invoice ? (
           params.row.invoice.includes(".pdf") ? (
-            <img
-              src={pdfImg}
-              onClick={() => {
-                setViewImgSrc(
-                  params.row.invoice
-                    ? `https://sales.creativefuel.io/${params.row.invoice}`
-                    : ""
-                ),
-                  setViewImgDialog(true);
-              }}
-              style={{ width: "40px", height: "40px" }}
-            />
+            <>
+              <img
+                src={pdfImg}
+                onClick={() => {
+                  setViewImgSrc(
+                    params.row.invoice
+                      ? `https://sales.creativefuel.io/${params.row.invoice}`
+                      : ""
+                  ),
+                    setViewImgDialog(true);
+                }}
+                style={{ width: "40px", height: "40px" }}
+              />
+              <button
+                className="btn tableIconBtn btn_sm "
+                onClick={() =>
+                  handleOpenEditInvoiceImage(params.row.sale_booking_id)
+                }
+              >
+                <EditIcon />
+              </button>
+            </>
           ) : (
-            <img
-              onClick={() => {
-                setViewImgSrc(
-                  params.row.invoice
-                    ? `https://sales.creativefuel.io/${params.row.invoice}`
-                    : ""
-                ),
-                  setViewImgDialog(true);
-              }}
-              src={`https://sales.creativefuel.io/${params.row.invoice}`}
-              alt="payment screenshot"
-              style={{ width: "50px", height: "50px" }}
-            />
+            <>
+              <img
+                onClick={() => {
+                  setViewImgSrc(
+                    params.row.invoice
+                      ? `https://sales.creativefuel.io/${params.row.invoice}`
+                      : ""
+                  ),
+                    setViewImgDialog(true);
+                }}
+                src={`https://sales.creativefuel.io/${params.row.invoice}`}
+                alt="payment screenshot"
+                style={{ width: "50px", height: "50px" }}
+              />
+              <button
+                className="btn tableIconBtn btn_sm "
+                onClick={() =>
+                  handleOpenEditInvoiceImage(params.row.sale_booking_id)
+                }
+              >
+                <EditIcon />
+              </button>
+            </>
           )
         ) : (
           "No Image"
@@ -1550,7 +1605,6 @@ const BalancePaymentList = () => {
   //     return data.map((e, i) => ({ ...e, sno: i + 1 }));
   //   }
   // };
-
   const filterDataBasedOnSelection = (apiData) => {
     console.log(apiData, "api data >>");
     const now = moment();
@@ -1998,6 +2052,55 @@ const BalancePaymentList = () => {
                 variant="contained"
                 className="mt-4"
                 onClick={handleUpdateInvoiceDate}
+              >
+                Update
+              </Button>
+            </DialogContent>
+          </Dialog>
+          {/* Edit  Invoice Image Column */}
+          <Dialog
+            open={invoiceImageDialog}
+            onClose={handleCloseEditInvoiceImage}
+            fullWidth={"md"}
+            maxWidth={"md"}
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <DialogTitle>Edit Column</DialogTitle>
+            <IconButton
+              aria-label="close"
+              onClick={handleCloseEditInvoiceImage}
+              sx={{
+                position: "absolute",
+                right: 8,
+                top: 8,
+                color: (theme) => theme.palette.grey[500],
+              }}
+            >
+              <CloseIcon />
+            </IconButton>
+            <DialogContent
+              dividers={true}
+              sx={{ maxHeight: "80vh", overflowY: "auto" }}
+            >
+              <div className="form-group">
+                <label htmlFor="images">Payment Reference Image:</label>
+                <input
+                  type="file"
+                  className="form-control"
+                  id="images"
+                  name="images"
+                  accept="image/*"
+                  onChange={(e) => setInvoiceImageDataField(e.target.files[0])}
+                />
+              </div>
+              <Button
+                variant="contained"
+                className="mt-4"
+                onClick={handleUpdateInvoiceImg}
               >
                 Update
               </Button>

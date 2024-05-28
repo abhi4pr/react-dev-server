@@ -1171,17 +1171,17 @@ export default function PurchaseManagementAllTransaction() {
             "[]"
           )
         );
-      case "nextMonth":
-        const startOfNextMonth = now.clone().add(1, "months").startOf("month");
-        const endOfNextMonth = now.clone().add(1, "months").endOf("month");
-        return apiData.filter((item) =>
-          moment(item.request_date).isBetween(
-            startOfNextMonth,
-            endOfNextMonth,
-            "day",
-            "[]"
-          )
-        );
+      // case "nextMonth":
+      //   const startOfNextMonth = now.clone().add(1, "months").startOf("month");
+      //   const endOfNextMonth = now.clone().add(1, "months").endOf("month");
+      //   return apiData.filter((item) =>
+      //     moment(item.request_date).isBetween(
+      //       startOfNextMonth,
+      //       endOfNextMonth,
+      //       "day",
+      //       "[]"
+      //     )
+      //   );
       case "currentQuarter":
         const quarterStart = moment().startOf("quarter");
         const quarterEnd = moment().endOf("quarter");
@@ -1193,8 +1193,12 @@ export default function PurchaseManagementAllTransaction() {
             "[]"
           )
         );
+      case "today":
+        return apiData.filter((item) =>
+          moment(item.request_date).isSame(now, "day")
+        );
       default:
-        return apiData; // No filter applied
+        return apiData;
     }
   };
 
@@ -1349,12 +1353,13 @@ export default function PurchaseManagementAllTransaction() {
                     onChange={(e) => setDateFilter(e.target.value)}
                   >
                     <option value="">All</option>
+                    <option value="today">Today</option>
                     <option value="last7Days">Last 7 Days</option>
                     <option value="last30Days">Last 30 Days</option>
                     <option value="thisWeek">This Week</option>
                     <option value="lastWeek">Last Week</option>
                     <option value="currentMonth">Current Month</option>
-                    <option value="nextMonth">Next Month</option>
+                    {/* <option value="nextMonth">Next Month</option> */}
                     <option value="currentQuarter">This Quarter</option>
                   </select>
                 </div>
