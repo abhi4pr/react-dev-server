@@ -3,14 +3,14 @@ import FormContainer from "../../FormContainer";
 import FieldContainer from "../../FieldContainer";
 import axios from "axios";
 import { baseUrl } from "../../../../utils/config";
-import { useGlobalContext } from "../../../../Context/Context";
-import getDecodedToken from "../../../../utils/DecodedToken";
-import { useNavigate } from "react-router-dom";
-import CustomSelect from "../../../ReusableComponents/CustomSelect";
 import { useGetAllAccountTypeQuery } from "../../../Store/API/Sales/SalesAccountTypeApi";
 import { useGetAllCompanyTypeQuery } from "../../../Store/API/Sales/CompanyTypeApi";
 import { useGetAllBrandCategoryTypeQuery } from "../../../Store/API/Sales/BrandCategoryTypeApi";
 import { useAddAccountMutation } from "../../../Store/API/Sales/SalesAccountApi";
+import { useGlobalContext } from "../../../../Context/Context";
+import getDecodedToken from "../../../../utils/DecodedToken";
+import { useNavigate } from "react-router-dom";
+import CustomSelect from "../../../ReusableComponents/CustomSelect";
 import Modal from "react-modal";
 import CreateBrandCategory from "./CreateBrandCategory";
 import CreateAccountType from "./CreateAccountType";
@@ -44,8 +44,10 @@ const CreateSalesAccount = () => {
     isLoading: allBrandCatTypeLoading,
   } = useGetAllBrandCategoryTypeQuery();
 
-  const [createSalesAccount, { isLoading, isSuccess, isError }] =
-    useAddAccountMutation();
+  const [
+    createSalesAccount,
+    { isLoading: isCreateSalesLoading, isSuccess, isError },
+  ] = useAddAccountMutation();
 
   const [accountName, setAccountName] = useState("");
   const [selectedAccountType, setSelectedAccountType] = useState(null);
@@ -65,9 +67,9 @@ const CreateSalesAccount = () => {
   const [headBillingCity, setHeadBillingCity] = useState("");
   const [headBillingState, setHeadBillingState] = useState("");
   const [headBillingCountry, setHeadBillingCountry] = useState("");
-  const [pinCode, setPinCode] = useState("");
-  const [companyEmail, setCompanyEmail] = useState("");
-  const [description, setDescription] = useState("");
+  const [pinCode, setPinCode] = useState(null);
+  const [companyEmail, setCompanyEmail] = useState(null);
+  const [description, setDescription] = useState(null);
   const [accOwnerNameData, setAccOwnerNameData] = useState([]);
   const [modalContentType, setModalContentType] = useState(false);
 
@@ -98,17 +100,6 @@ const CreateSalesAccount = () => {
     ]);
   };
 
-  const handlePocChange = (index, key, value) => {
-    const updatedPocs = pocs.map((poc, pocIndex) =>
-      pocIndex === index ? { ...poc, [key]: value } : poc
-    );
-    setPocs(updatedPocs);
-  };
-  function isValidContactNumber(number) {
-    if (!number) return true;
-    const regex = /^[6-9]\d{9}$/;
-    return regex.test(number);
-  }
   function isValidEmail(email) {
     if (!email) return true;
     const regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
@@ -122,32 +113,40 @@ const CreateSalesAccount = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    const payloads = {
+      account_name: accountName,
+      account_type_id: selectedAccountType,
+      company_type_id: selectedCompanyType,
+      category_id: selectedCategory,
+      account_owner_id: selectedOwner,
+      website: website,
+      turn_over: turnover,
+      how_many_offices: officesCount,
+      connected_office: connectedOffices,
+      connect_billing_street: connectedBillingStreet,
+      connect_billing_city: connectedBillingCity,
+      connect_billing_state: connectedBillingState,
+      connect_billing_country: connectedBillingCountry,
+      head_office: headOffice,
+      head_billing_street: headBillingStreet,
+      head_billing_city: headBillingCity,
+      head_billing_state: headBillingState,
+      head_billing_country: headBillingCountry,
+      description: description,
+      created_by: loginUserId,
+      account_poc: pocs,
+    };
+
+    if (companyEmail) {
+      payloads.company_email = companyEmail;
+    }
+    if (pinCode) {
+      payloads.pin_code = Number(pinCode);
+    }
+
     try {
-      await createSalesAccount({
-        account_name: accountName,
-        account_type_id: selectedAccountType,
-        company_type_id: selectedCompanyType,
-        category_id: selectedCategory,
-        account_owner_id: selectedOwner,
-        website: website,
-        turn_over: turnover,
-        how_many_offices: officesCount,
-        connected_office: connectedOffices,
-        connect_billing_street: connectedBillingStreet,
-        connect_billing_city: connectedBillingCity,
-        connect_billing_state: connectedBillingState,
-        connect_billing_country: connectedBillingCountry,
-        head_office: headOffice,
-        head_billing_street: headBillingStreet,
-        head_billing_city: headBillingCity,
-        head_billing_state: headBillingState,
-        head_billing_country: headBillingCountry,
-        pin_code: pinCode,
-        company_email: companyEmail,
-        description: description,
-        created_by: loginUserId,
-        account_poc: pocs, // Include POCs in the submission
-      }).unwrap();
+      await createSalesAccount(payloads).unwrap();
 
       // Reset all states
       setAccountName("");
@@ -269,7 +268,6 @@ const CreateSalesAccount = () => {
           content: {
             position: "absolute",
 
-
             maxWidth: "900px",
             top: "50px",
             border: "1px solid #ccc",
@@ -286,17 +284,12 @@ const CreateSalesAccount = () => {
         {renderModalContent()}
       </Modal>
 
-      <FormContainer
-        mainTitle="Accounts Master"
-        link={true}
-
-      />
+      <FormContainer mainTitle="Accounts Master" link={true} />
       <div className="card">
         <div className="card-header">
           <h5 className="card-title">Create</h5>
         </div>
         <div className="card-body row">
-
           <FieldContainer
             label="Account Name"
             astric
@@ -399,6 +392,7 @@ const CreateSalesAccount = () => {
             value={website}
             onChange={(e) => setWebsite(e.target.value)}
             placeholder="Enter website"
+            required
           />
           <FieldContainer
             label="Turnover (in cr)"
@@ -486,7 +480,6 @@ const CreateSalesAccount = () => {
             placeholder="Enter head billing country"
           />
           <div className="col-4">
-
             <FieldContainer
               label="Pin Code"
               type="number"
@@ -495,39 +488,52 @@ const CreateSalesAccount = () => {
               onChange={(e) => setPinCode(e.target.value)}
               placeholder="Enter pin code"
             />
-            {!isValidPinCode(pinCode) && <div className="form-error">Please Enter Valid Pin Code</div>}
+            {!isValidPinCode(pinCode) && (
+              <div className="form-error">Please Enter Valid Pin Code</div>
+            )}
           </div>
           <div className="col-4">
-
             <FieldContainer
               label="Company Email"
+              astric
               type="email"
               fieldGrid={4}
               value={companyEmail}
               onChange={(e) => setCompanyEmail(e.target.value)}
               placeholder="Enter company email"
+              required
             />
-            {!isValidEmail(companyEmail) && <div className="form-error">Please Enter Valid Email</div>}
+            {!isValidEmail(companyEmail) && (
+              <div className="form-error">Please Enter Valid Email</div>
+            )}
           </div>
           <FieldContainer
             label="Description"
+            astric
             fieldGrid={4}
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             placeholder="Enter description"
+            required
           />
-
         </div>
       </div>
       <PointOfContact pocs={pocs} setPocs={setPocs} />
       <div className="flex-row sb mb-3">
-
-        <button className="btn cmnbtn btn-primary " onClick={() => handleSubmit}>
-          Submit
+        <button
+          className="btn cmnbtn btn-primary"
+          disabled={isCreateSalesLoading}
+          onClick={handleSubmit}
+        >
+          {!isCreateSalesLoading ? "Submit" : "Submitting"}
         </button>
-        <button className="btn cmnbtn btn-warning" onClick={() => handleAddPoc()}>Add Point of Contact</button>
+        <button
+          className="btn cmnbtn btn-warning"
+          onClick={() => handleAddPoc()}
+        >
+          Add Point of Contact
+        </button>
       </div>
-
     </div>
   );
 };

@@ -1,11 +1,9 @@
-import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { baseUrl } from "../../../../utils/config";
-import DataTable from "react-data-table-component";
 import FormContainer from "../../FormContainer";
 import DateISOtoNormal from "../../../../utils/DateISOtoNormal";
 import { Link } from "react-router-dom";
 import { useGetAllSaleBookingQuery } from "../../../Store/API/Sales/SaleBookingApi";
+import View from "../Account/View/View";
 
 const ViewSaleBooking = () => {
   const {
@@ -14,135 +12,165 @@ const ViewSaleBooking = () => {
     isLoading: allSaleBookingLoading,
   } = useGetAllSaleBookingQuery();
 
-  const [saleBookingData, setSaleBookingData] = useState(allSaleBooking);
-  const [originalData, setOriginalData] = useState(allSaleBooking);
-  const [search, setSearch] = useState("");
-
-  useEffect(() => {
-    const result = allSaleBooking?.filter((d) => {
-      return d?.customer_name?.toLowerCase()?.includes(search?.toLowerCase());
-    });
-    setSaleBookingData(result);
-  }, [search]);
+  // useEffect(() => {
+  //   const result = allSaleBooking?.filter((d) => {
+  //     return d?.customer_name?.toLowerCase()?.includes(search?.toLowerCase());
+  //   });
+  //   setSaleBookingData(result);
+  // }, [search]);
 
   const columns = [
     {
-      name: "S.no",
-      cell: (row, index) => <div>{index + 1}</div>,
+      key: "Serial_no",
+      name: "S.NO",
+      renderRowCell: (row, index) => <div>{index + 1}</div>,
+      width: 20,
+      showCol: true,
     },
     {
+      key: "customer_name",
       name: "Customer name",
-      cell: (row) => row.customer_name,
+      showCol: true,
+      width: 100,
     },
     {
+      key: "created_by_name",
       name: "Sales Executive name",
-      selector: (row) => row.created_by_name,
+      showCol: true,
+      width: 100,
     },
     {
+      key: "sale_booking_date",
       name: "Booking Date",
-      selector: (row) => DateISOtoNormal(row.sale_booking_date),
+      renderRowCell: (row) => DateISOtoNormal(row.sale_booking_date),
+
+      showCol: true,
+      width: 100,
     },
     {
+      key: "campaign_amount",
       name: "Campaign Amount / Net Amount",
-      selector: (row) => row.campaign_amount + "₹",
+      renderRowCell: (row) => row.campaign_amount + "₹",
+      showCol: true,
+      width: 100,
     },
     {
       name: "Paid Amount",
-      // selector: (row) => console.log(row),
+      showCol: true,
+      width: 100,
     },
     {
+      key: "base_amount",
       name: "Base Amount",
-      selector: (row) => row.base_amount,
+      renderRowCell: (row) => row.base_amount + "₹",
+      showCol: true,
+      width: 100,
     },
     {
+      key: "gst_amount",
       name: "GST Amount",
-      selector: (row) => row.gst_amount + "₹",
+      renderRowCell: (row) => row.gst_amount + "₹",
+      showCol: true,
+      width: 100,
     },
     {
       name: "Refund Amount",
+      showCol: true,
+      width: 100,
     },
     {
+      key: "service_taken_amount",
       name: "Service Taken Amount",
-      selector: (row) => row.service_taken_amount + "₹",
+      renderRowCell: (row) => row.service_taken_amount + "₹",
+      showCol: true,
+      width: 100,
     },
     {
       name: "Service Balance Amount",
+      showCol: true,
+      width: 100,
     },
     {
+      key: "incentive_status",
       name: "Incentive",
-      selector: (row) => (row.incentive_status === "incentive" ? "Yes" : "No"),
+      renderRowCell: (row) =>
+        row.incentive_status === "incentive" ? "Yes" : "No",
+      showCol: true,
+      width: 100,
     },
     {
       name: "Execution Running Status",
+      showCol: true,
+      width: 100,
     },
     {
       name: "Invoice Download",
+      showCol: true,
+      width: 100,
     },
     {
+      key: "booking_status_name",
       name: "Open Status",
-      selector: (row) => row.booking_status_name,
-      width: "250px",
+      showCol: true,
+      width: 100,
     },
     {
+      key: "",
       name: "Approve or Reject Reason",
+      showCol: true,
+      width: 100,
     },
     {
       name: "Refund Reasons",
+      showCol: true,
+      width: 100,
     },
     {
+      key: "createdAt",
       name: "Booking Date Created",
-      selector: (row) => DateISOtoNormal(row.createdAt),
+      renderRowCell: (row) => DateISOtoNormal(row.createdAt),
+      showCol: true,
+      width: 100,
     },
     {
+      key: "sale_booking_id",
       name: "Action",
-      cell: (row) => (
+      width: 100,
+      renderRowCell: (row) => (
         <>
           <Link to={`/admin/create-sales-booking/${row.sale_booking_id}`}>
             <div className="icon-1">
               <i class="bi bi-pencil"></i>
             </div>
-            <div className="icon-1">
-              <i class="bi bi-update"></i>
-            </div>
           </Link>
         </>
       ),
+      showCol: true,
     },
   ];
+
   return (
     <div>
       <div className="action_heading">
         <div className="action_title">
-          <FormContainer
-            mainTitle="Sales Booking"
-            link="/admin/create-sales-booking/0"
-            buttonAccess={true}
-            submitButton={false}
-          />
+          <FormContainer mainTitle={"Account Overview"} link={true} />
+        </div>
+        <div className="action_btns">
+          <Link to={"/admin/create-sales-booking/0"}>
+            <button className="btn cmnbtn btn-primary btn_sm">
+              Add account
+            </button>
+          </Link>
         </div>
       </div>
-
-      <div className="card">
-        <div className="card-header sb">
-          <div className="card-title">Sale Booking Overview</div>
-          <input
-            type="text"
-            placeholder="Search here"
-            className="w-25 form-control "
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-          />
-        </div>
-        <div className="card-body">
-          <DataTable
-            columns={columns}
-            data={saleBookingData}
-            pagination
-            fixedHeaderScrollHeight="64vh"
-            highlightOnHover
-          />
-        </div>
-      </div>
+      <View
+        columns={columns}
+        data={allSaleBooking}
+        isLoading={allSaleBookingLoading}
+        title={"Sale Booking"}
+        // rowSelectable={true}
+        pagination={[5, 10, 15]}
+      />
     </div>
   );
 };
