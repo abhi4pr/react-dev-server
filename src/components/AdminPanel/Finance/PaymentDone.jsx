@@ -24,6 +24,7 @@ import moment from "moment";
 import jsPDF from "jspdf";
 import JSZip from "jszip";
 import { saveAs } from "file-saver";
+import { Link } from "react-router-dom";
 
 export default function PaymentDone() {
   const token = sessionStorage.getItem("token");
@@ -68,6 +69,7 @@ export default function PaymentDone() {
   const [dateFilter, setDateFilter] = useState("");
   const { toastAlert, toastError } = useGlobalContext();
   const [rowSelectionModel, setRowSelectionModel] = useState([]);
+  const [tdsDeductionCount, setTdsDeductedCount] = useState(0);
 
   const callApi = () => {
     axios.get(baseUrl + "phpvendorpaymentrequest").then((res) => {
@@ -115,6 +117,11 @@ export default function PaymentDone() {
 
           const dateFilterData = filterDataBasedOnSelection(u);
           setFilterData(dateFilterData);
+
+          const tdsCount = u?.filter(
+            (data) => data?.TDSDeduction === "1" || data?.TDSDeduction === null
+          );
+          setTdsDeductedCount(tdsCount);
         });
     });
 
@@ -308,7 +315,6 @@ export default function PaymentDone() {
     });
     setUniqueVendorData(uvData);
   };
-  console.log(filterData, "filterData >>");
   const handleClearDateFilter = () => {
     setFilterData(data);
     setFromDate("");
@@ -411,7 +417,6 @@ export default function PaymentDone() {
   const handleOpenEditInvoice = (row) => {
     setInvoiceDialog(true);
     setInvoiceId(row.request_id);
-    console.log(row.request_id, "ddddddd");
   };
 
   const handleCloseEditInvoice = () => {
@@ -419,8 +424,6 @@ export default function PaymentDone() {
   };
 
   const handleUpdateInvoice = async () => {
-    console.log(invoiceId, "HII");
-
     const formData = new FormData();
 
     formData.append("request_id", invoiceId);
@@ -719,7 +722,6 @@ export default function PaymentDone() {
           <div
             style={{ position: "relative", overflow: "hidden", height: "40px" }}
             onClick={() => {
-              console.log("clicked");
               setOpenImageDialog(true);
               setViewImgSrc(imgUrl);
             }}
@@ -1157,6 +1159,33 @@ export default function PaymentDone() {
         return params.row.TDSDeduction == 1 ? "Yes" : "No";
       },
     },
+    {
+      field: "Action",
+      headerName: "Action",
+      width: 150,
+      renderCell: (params) => (
+        <Button variant="outline" className="btn cmnbtn btn-primary">
+          <Link
+            to={`/admin/finance-pruchasemanagement-paymentdone-transactionlist/${params.row.request_id}/$`}
+          >
+            Transaction List
+            {/* ({totalCount}) */}
+          </Link>
+        </Button>
+        // <Link
+        //   to={`/admin/finance-transaction-list/${params.row.sale_booking_id}`}
+        //   className="link-primary"
+        // >
+        //   {params.row.total_paid_amount > 0 ? (
+        //     <button className="icon-1" title="Transaction History">
+        //       <i className="bi bi-file-earmark-text-fill"></i>
+        //     </button>
+        //   ) : (
+        //     ""
+        //   )}
+        // </Link>;
+      ),
+    },
   ];
 
   const filterDataBasedOnSelection = (apiData) => {
@@ -1216,17 +1245,17 @@ export default function PaymentDone() {
             "[]"
           )
         );
-      case "nextMonth":
-        const startOfNextMonth = now.clone().add(1, "months").startOf("month");
-        const endOfNextMonth = now.clone().add(1, "months").endOf("month");
-        return apiData.filter((item) =>
-          moment(item.request_date).isBetween(
-            startOfNextMonth,
-            endOfNextMonth,
-            "day",
-            "[]"
-          )
-        );
+      // case "nextMonth":
+      //   const startOfNextMonth = now.clone().add(1, "months").startOf("month");
+      //   const endOfNextMonth = now.clone().add(1, "months").endOf("month");
+      //   return apiData.filter((item) =>
+      //     moment(item.request_date).isBetween(
+      //       startOfNextMonth,
+      //       endOfNextMonth,
+      //       "day",
+      //       "[]"
+      //     )
+      //   );
       case "currentQuarter":
         const quarterStart = moment().startOf("quarter");
         const quarterEnd = moment().endOf("quarter");
@@ -1238,11 +1267,14 @@ export default function PaymentDone() {
             "[]"
           )
         );
+      case "today":
+        return apiData.filter((item) =>
+          moment(item.request_date).isSame(now, "day")
+        );
       default:
-        return apiData; // No filter applied
+        return apiData;
     }
   };
-
   const handleRowSelectionModelChange = (rowIds) => {
     setRowSelectionModel(rowIds);
   };
@@ -1254,7 +1286,6 @@ export default function PaymentDone() {
     await Promise.all(
       rowSelectionModel.map(async (rowId) => {
         const rowData = filterData[rowId]; // Access the row data using rowId
-        console.log(rowData, "RD-------------");
         if (rowData) {
           const pdf = new jsPDF();
 
@@ -1321,7 +1352,6 @@ export default function PaymentDone() {
       />
     );
   }
-  console.log(filterData, "filter -----------------------------Data");
   return (
     <div>
       <FormContainer
@@ -1332,6 +1362,7 @@ export default function PaymentDone() {
         pendingRequestCount={pendingRequestCount}
         withInvoiceCount={withInvoiceCount}
         withoutInvoiceCount={withoutInvoiceCount}
+        tdsDeductionCount={tdsDeductionCount}
         handleOpenUniqueVendorClick={handleOpenUniqueVendorClick}
         paymentDoneAdditionalTitles={true}
       />
@@ -1489,12 +1520,13 @@ export default function PaymentDone() {
                     onChange={(e) => setDateFilter(e.target.value)}
                   >
                     <option value="">All</option>
+                    <option value="today">Today</option>
                     <option value="last7Days">Last 7 Days</option>
                     <option value="last30Days">Last 30 Days</option>
                     <option value="thisWeek">This Week</option>
                     <option value="lastWeek">Last Week</option>
                     <option value="currentMonth">Current Month</option>
-                    <option value="nextMonth">Next Month</option>
+                    {/* <option value="nextMonth">Next Month</option> */}
                     <option value="currentQuarter">This Quarter</option>
                   </select>
                 </div>
@@ -1509,7 +1541,9 @@ export default function PaymentDone() {
                       value={vendorName}
                       onChange={(event, newValue) => setVendorName(newValue)}
                       options={Array.from(
-                        new Set(data.map((option) => option.vendor_name))
+                        new Set(
+                          data?.map((option) => option?.vendor_name || [])
+                        )
                       )}
                       renderInput={(params) => (
                         <TextField
@@ -1518,7 +1552,7 @@ export default function PaymentDone() {
                           type="text"
                           variant="outlined"
                           InputProps={{
-                            ...params.InputProps,
+                            ...params?.InputProps,
                             className: "form-control", // Apply Bootstrap's form-control class
                           }}
                           style={{

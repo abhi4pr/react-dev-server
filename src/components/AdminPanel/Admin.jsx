@@ -337,6 +337,7 @@ import ViewPaymentUpdate from "./Sales/PaymentUpdate/ViewPaymentUpdate";
 import { FinanceContextComponent } from "../../Context/FinanceContext";
 import CreateSalesAccount from "./Sales/Account/CreateSalesAccount";
 import SalesAccountOverview from "./Sales/Account/SalesAccountOverview";
+import PaymentDoneTransactionList from "./Finance/PaymentDoneTransactionList";
 
 const Admin = () => {
   const [contextData, setData] = useState([]);
@@ -866,6 +867,10 @@ const Admin = () => {
                   <Route
                     path="/finance-pruchasemanagement-paymentdone"
                     element={<PaymentDone />}
+                  />
+                  <Route
+                    path="/finance-pruchasemanagement-paymentdone-transactionlist/:request_id"
+                    element={<PaymentDoneTransactionList />}
                   />
                   <Route
                     path="/finance-dashboard"

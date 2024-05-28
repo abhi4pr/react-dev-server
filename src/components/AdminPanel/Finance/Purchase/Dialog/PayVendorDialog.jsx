@@ -41,7 +41,8 @@ function PayVendorDialog(props) {
     setBaseAmount,
     payDialog,
     setPayDialog,
-    userName ,callApi
+    userName,
+    callApi,
   } = props;
 
   const token = sessionStorage.getItem("token");
@@ -81,6 +82,7 @@ function PayVendorDialog(props) {
       setPaymentModeData(res?.data);
     });
   }, []);
+  
   // useEffect(() => {
   //   const initialAdjustmentAmt = netAmount - Math.floor(paymentAmout);
   //   const formattedAdjustmentAmt = initialAdjustmentAmt.toFixed(1);
@@ -221,7 +223,7 @@ function PayVendorDialog(props) {
 
     if (paymentAmout < Math.floor(netAmount)) {
       setPaymentStatus("Partial-Payment");
-    }else{
+    } else {
       setPaymentStatus("Full-Payment");
     }
 
@@ -239,7 +241,10 @@ function PayVendorDialog(props) {
     // console.log(tdsvalue, "------------------------");
     // tdsvalue = Math.round(tdsvalue);
     setTDSValue(tdsvalue);
-    setPaymentAmount(paymentAmount);
+    // setPaymentAmount(paymentAmount);
+    if (rowData?.TDSDeduction !== "1") {
+      setPaymentAmount(paymentAmount);
+    }
     setNetAmount(paymentAmount);
     setAdjustAmount((paymentAmount - Math.floor(paymentAmount)).toFixed(2));
     setTdsAdjustAmount((paymentAmount - Math.floor(paymentAmount)).toFixed(2));
@@ -554,9 +559,9 @@ function PayVendorDialog(props) {
                   setPaymentAmount("");
                 }
 
-                if (currentValue <  Math.floor(netAmount)) {
+                if (currentValue < Math.floor(netAmount)) {
                   setPaymentStatus("Partial-Payment");
-                }else{
+                } else {
                   setPaymentStatus("Full-Payment");
                 }
               }}
@@ -572,7 +577,7 @@ function PayVendorDialog(props) {
                 paymentAmout == 0 ? paymentAmout : Math.floor(paymentAmout)
               }
             />
-            
+
             {TDSValue && (
               <TextField
                 // onChange={(e) => setAdjustAmount(e.target.value)}
