@@ -3206,6 +3206,8 @@ const UserMaster = () => {
                       label={key}
                       value={detail[key]}
                       onChange={(e) => handleEducationDetailsChange(index, e)}
+                      min={key === "To" ? detail.From : undefined}
+                      disabled={key === "To" && !detail.From}
                     />
                   ) : (
                     <FieldContainer
