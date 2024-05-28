@@ -153,12 +153,15 @@ const ViewSaleBooking = () => {
     <div>
       <div className="action_heading">
         <div className="action_title">
-          <FormContainer mainTitle={"Account Overview"} link={true} />
+          <FormContainer mainTitle={"Sale Bookings Overview"} link={true} />
         </div>
         <div className="action_btns">
+          <Link to={"/admin/sales-account-overview"}>
+            <button className="btn cmnbtn btn-primary btn_sm">Accounts</button>
+          </Link>
           <Link to={"/admin/create-sales-booking/0"}>
             <button className="btn cmnbtn btn-primary btn_sm">
-              Add account
+              Create Sale Booking
             </button>
           </Link>
         </div>

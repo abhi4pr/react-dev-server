@@ -270,7 +270,7 @@ const CreateSaleBooking = () => {
       >
         <div className="form-group col-4">
           <label className="form-label">
-            Customer Name <sup style={{ color: "red" }}>*</sup>
+            Account Name <sup style={{ color: "red" }}>*</sup>
           </label>
           <Select
             options={customerData.map((option) => ({
@@ -305,7 +305,7 @@ const CreateSaleBooking = () => {
           {selectedCustomerData && (
             <>
               {/* Customer Type: {selectedCustomerData?.Customer_type_data} */}
-              Customer Name: {selectedCustomerData?.customer_name}
+              Account Name: {selectedCustomerData?.customer_name}
               {/* Company Name: {selectedCustomerData?.company_name} */}
               GST No.: {selectedCustomerData?.company_gst_no}
               Primary Contact: {selectedCustomerData?.primary_contact_no}
