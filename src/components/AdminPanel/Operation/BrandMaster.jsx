@@ -395,19 +395,11 @@ export default function BrandMaster() {
     try {
       const response = await axios.get(`${baseUrl}get_all_data_platforms`);
       setDataPlatforms(response?.data);
-    } catch (error) {}
+    } catch (error) { }
   };
 
   return (
     <>
-      {/* <div className="form-heading">
-        <img className="img-bg" src="/bg-img.png" alt="" width="160" />
-        <div className="form_heading_title ">
-          <div className="pack">
-            <i className="bi bi-house"></i> Brand Master
-          </div>
-        </div>
-      </div> */}
       <FormContainer mainTitle="Brand Master" link="true" />
 
       <div className="card">
@@ -470,7 +462,6 @@ export default function BrandMaster() {
                     <TextField {...params} label="  * Category" />
                   )}
                   onChange={(event, newValue) => {
-                    // console.log(newValue.value);
                     setPostData({
                       ...postData,
                       category_id: newValue.value,
@@ -489,7 +480,6 @@ export default function BrandMaster() {
                     <TextField {...params} label="  * Subcategory" />
                   )}
                   onChange={(event, newValue) => {
-                    // console.log(newValue.value);
                     if (newValue) {
                       setPostData({
                         ...postData,

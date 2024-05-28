@@ -45,7 +45,7 @@ export default function TagCategoryListModal() {
             return (
               <>
                 <p className="fs-5" key={i}>
-                  {i + 1 + " " + item.page_category}
+                  {i + 1 + " " + item}
                 </p>
                 <hr />
               </>
@@ -57,7 +57,7 @@ export default function TagCategoryListModal() {
               <>
                 <p key={i} className="fs-5">
                   {" "}
-                  {i+1 + " " + item.platform_name}
+                  {i+1 + " " + item}
                 </p>
                 <hr />
               </>

@@ -218,7 +218,8 @@ const UserMaster = () => {
   const [isValidcontact1, setValidContact1] = useState(false);
   const [isContactTouched, setisContactTouched] = useState(false);
   const [isContactTouched1, setisContactTouched1] = useState(false);
-
+  const [isIFSCTouched, setisIFSCTouched] = useState(false);
+  const [isValidIFSC, setValidIFSC] = useState(false);
   const [usersData, getUsersData] = useState([]);
 
   const [isFormSubmitted, setIsFormSubmitted] = useState(false);
@@ -250,6 +251,7 @@ const UserMaster = () => {
     reportL1: false,
     personalContact: false,
     personalEmail: false,
+    contact: false,
     alternateContact: false,
     loginId: false,
     password: false,
@@ -947,17 +949,22 @@ const UserMaster = () => {
         setValidContact(false);
         setMandatoryFieldsEmpty({
           ...mandatoryFieldsEmpty,
-          personalContact: true,
+          contact: true,
         });
       } else {
+        setContact(newContact);
         setValidContact(
           /^(\+91[ \-\s]?)?[0]?(91)?[6789]\d{9}$/.test(newContact)
         );
         setMandatoryFieldsEmpty({
           ...mandatoryFieldsEmpty,
-          personalContact: false,
+          contact: false,
         });
       }
+    }
+    setisContactTouched(true);
+    if (newContact.length < 10) {
+      setValidContact(false);
     }
   }
   function handlePersonalContactChange(event) {
@@ -1019,27 +1026,27 @@ const UserMaster = () => {
     }
   }
 
-  function handleContentBlur(e, type) {
-    setisContactTouched(true);
-    setisContactTouched1(true);
-    if (type == "personalContact") {
-      if (personalContact == "" || personalContact == null) {
-        setMandatoryFieldsEmpty({
-          ...mandatoryFieldsEmpty,
-          personalContact: true,
-        });
-      } else {
-        setMandatoryFieldsEmpty({
-          ...mandatoryFieldsEmpty,
-          personalContact: false,
-        });
-      }
-    }
-    if (contact.length < 10) {
-      setValidContact(false);
-      setValidContact1(false);
-    }
-  }
+  // function handleContentBlur(e, type) {
+  //   setisContactTouched(true);
+  //   setisContactTouched1(true);
+  //   if (type == "personalContact") {
+  //     if (personalContact == "" || personalContact == null) {
+  //       setMandatoryFieldsEmpty({
+  //         ...mandatoryFieldsEmpty,
+  //         personalContact: true,
+  //       });
+  //     } else {
+  //       setMandatoryFieldsEmpty({
+  //         ...mandatoryFieldsEmpty,
+  //         personalContact: false,
+  //       });
+  //     }
+  //   }
+  //   if (contact.length < 10) {
+  //     setValidContact(false);
+  //     setValidContact1(false);
+  //   }
+  // }
 
   function handleAlternateBlur(e, type) {
     if (type == "alternateContact") {
@@ -1604,7 +1611,7 @@ const UserMaster = () => {
               }}
             />
             {!isPersonalEmailValid && personalEmail && (
-              <p className="form-error">*Please Enter valid email</p>
+              <p className="form-error">Please Enter valid email</p>
             )}
             {mandatoryFieldsEmpty.personalEmail && (
               <p className="form-error">Please Enter Personal Email</p>
@@ -2132,6 +2139,12 @@ const UserMaster = () => {
               onChange={handleContactChange}
               // onBlur={handleContentBlur}
             />
+            {(isContactTouched || contact.length >= 10) && !isValidcontact && (
+              <p className="form-error">Please Enter a valid Contact Number</p>
+            )}
+            {mandatoryFieldsEmpty.contact && (
+              <p className="form-error">Please Enter Official Contact</p>
+            )}
           </div>
 
           <div className="col-xl-3 col-lg-3 col-md-3 col-sm-12">
@@ -2587,7 +2600,7 @@ const UserMaster = () => {
             {/*  Parmanent Address here------------ */}
             <div className="">
               <label className="cstm_check form-error">
-                Same as Current Addresss
+                Same as Current Address
                 <input
                   className="form-control"
                   type="checkbox"
@@ -2923,14 +2936,21 @@ const UserMaster = () => {
             onChange={(e) => {
               const inputValue = e.target.value.toUpperCase();
               setIFSC(inputValue.slice(0, 11)); // Limiting the input to 11 characters
+              setisIFSCTouched(true);
+              if (inputValue.length < 11) {
+                setValidIFSC(false);
+                setisIFSCTouched(false);
+              }
 
               // onBlur functionality
               if (inputValue === "") {
+                setValidIFSC(false);
                 setMandatoryFieldsEmpty((prevState) => ({
                   ...prevState,
                   IFSC: true,
                 }));
               } else {
+                setValidIFSC(false);
                 setMandatoryFieldsEmpty({
                   ...mandatoryFieldsEmpty,
                   IFSC: false,
@@ -2938,6 +2958,10 @@ const UserMaster = () => {
               }
             }}
           />
+          {isIFSCTouched ||
+            (IFSC.length < 11 && !isValidIFSC && (
+              <p className="form-error">IFSC Code must be 11 digit</p>
+            ))}
           {mandatoryFieldsEmpty.IFSC && (
             <p className="form-error">Please Enter IFSC</p>
           )}
@@ -3182,6 +3206,8 @@ const UserMaster = () => {
                       label={key}
                       value={detail[key]}
                       onChange={(e) => handleEducationDetailsChange(index, e)}
+                      min={key === "To" ? detail.From : undefined}
+                      disabled={key === "To" && !detail.From}
                     />
                   ) : (
                     <FieldContainer

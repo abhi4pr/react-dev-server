@@ -25,6 +25,7 @@ const FormContainer = ({
   balanceAmountPartial,
   balanceAmountInstant,
   tdsDeductedCount,
+  tdsDeductionCount,
   partialTDSDeduction,
   instantTDSDeduction,
   // openCount,
@@ -159,10 +160,18 @@ const FormContainer = ({
                 Unique Vendor : <a href="#">{uniqueVendorPartialCount?.size}</a>
               </h2>
               <h2>
-                Pending Request Amount : <a href="#"> {pendingAmountPartial}</a>
+                Pending Request Amount :{" "}
+                <a href="#">
+                  {/* {pendingAmountPartial} */}
+                  <FormattedNumberWithTooltip value={pendingAmountPartial} />
+                </a>
               </h2>
               <h2>
-                Balance Amount : <a href="#"> {balanceAmountPartial}</a>
+                Balance Amount :{" "}
+                <a href="#">
+                  {/* {balanceAmountPartial} */}
+                  <FormattedNumberWithTooltip value={balanceAmountPartial} />
+                </a>
               </h2>
               <h2>
                 Pending Request : <a href="#"> {pendingPartialcount}</a>
@@ -193,10 +202,18 @@ const FormContainer = ({
                 <a href="#">{uniqueVendorsInstantCount?.size}</a>
               </h2>
               <h2>
-                Pending Request Amount : <a href="#"> {pendingAmountInstant}</a>
+                Pending Request Amount :{" "}
+                <a href="#">
+                  <FormattedNumberWithTooltip value={pendingAmountInstant} />
+                  {/* {pendingAmountInstant} */}
+                </a>
               </h2>
               <h2>
-                Balance Amount : <a href="#"> {balanceAmountInstant}</a>
+                Balance Amount :{" "}
+                <a href="#">
+                  <FormattedNumberWithTooltip value={balanceAmountInstant} />
+                  {/* {balanceAmountInstant} */}
+                </a>
               </h2>
               <h2>
                 Pending Request : <a href="#"> {pendingInstantcount}</a>
@@ -229,7 +246,11 @@ const FormContainer = ({
                 Unique Vendor : <a href="#">{uniqueVendorCount}</a>
               </h2>
               <h2>
-                Payment Done Amount : <a href="#"> {totalRequestAmount}</a>
+                Payment Done Amount :{" "}
+                <a href="#">
+                  <FormattedNumberWithTooltip value={totalRequestAmount} />
+                  {/* {totalRequestAmount} */}
+                </a>
               </h2>
               <h2>
                 Payment Done : <a href="#"> {pendingRequestCount}</a>
@@ -240,6 +261,10 @@ const FormContainer = ({
               <h2>
                 Without Invoice Count : <a href="#"> {withoutInvoiceCount}</a>
               </h2>
+              <h2>
+                TDS Deducted Count :{" "}
+                <a href="#"> {tdsDeductionCount?.length}</a>
+              </h2>
             </div>
           )}
           {gstHoldAdditionalTitles && (
@@ -248,7 +273,11 @@ const FormContainer = ({
                 Unique Vendor : <a href="#">{uniqueVendorCount}</a>
               </h2>
               <h2>
-                Payment Done Amount : <a href="#"> {totalRequestAmount}</a>
+                Payment Done Amount :{" "}
+                <a href="#">
+                  <FormattedNumberWithTooltip value={totalRequestAmount} />
+                  {/* {totalRequestAmount} */}
+                </a>
               </h2>
               <h2>
                 Payment Done : <a href="#"> {pendingRequestCount}</a>
@@ -261,7 +290,11 @@ const FormContainer = ({
                 Unique Vendor : <a href="#">{uniqueVendorCount}</a>
               </h2>
               <h2>
-                Payment Done Amount : <a href="#"> {totalRequestAmount}</a>
+                Payment Done Amount :{" "}
+                <a href="#">
+                  {/* {totalRequestAmount} */}
+                  <FormattedNumberWithTooltip value={totalRequestAmount} />
+                </a>
               </h2>
               <h2>
                 Payment Done : <a href="#"> {pendingRequestCount}</a>
@@ -274,7 +307,11 @@ const FormContainer = ({
                 Unique Vendor : <a href="#">{uniqueVendorCount}</a>
               </h2>
               <h2>
-                Requested Amount : <a href="#"> {totalRequestAmount}</a>
+                Requested Amount :{" "}
+                <a href="#">
+                  <FormattedNumberWithTooltip value={totalRequestAmount} />
+                  {/* {totalRequestAmount} */}
+                </a>
               </h2>
               <h2>
                 Pending Request Count : <a href="#"> {pendingRequestCount}</a>
@@ -293,7 +330,11 @@ const FormContainer = ({
                 Unique Vendor : <a href="#">{uniqueVendorCount}</a>
               </h2>
               <h2>
-                Requested Amount : <a href="#"> {totalRequestAmount}</a>
+                Requested Amount :{" "}
+                <a href="#">
+                  <FormattedNumberWithTooltip value={totalRequestAmount} />
+                  {/* {totalRequestAmount} */}
+                </a>
               </h2>
               <h2>
                 Discard Count : <a href="#"> {discardCount}</a>
@@ -306,7 +347,11 @@ const FormContainer = ({
                 Unique Customer : <a href="#">{uniqueCustomerCount}</a>
               </h2>
               <h2 onClick={handleOpenUniqueCustomerClick}>
-                Payment Amount : <a href="#">{totalRequestAmount}</a>
+                Payment Amount :{" "}
+                <a href="#">
+                  {/* {totalRequestAmount} */}
+                  <FormattedNumberWithTooltip value={totalRequestAmount} />
+                </a>
               </h2>
               <h2>
                 Pending count : <a href="#"> {pendingCount}</a>
@@ -334,7 +379,11 @@ const FormContainer = ({
                 Unique Customer : <a href="#">{uniqueCustomerCount}</a>
               </h2>
               <h2>
-                Payment Amount : <a href="#">{totalRequestAmount}</a>
+                Payment Amount :{" "}
+                <a href="#">
+                  {/* {totalRequestAmount} */}
+                  <FormattedNumberWithTooltip value={totalRequestAmount} />
+                </a>
               </h2>
               <h2>
                 Pending Count : <a href="#">{pendingCount}</a>
@@ -353,7 +402,11 @@ const FormContainer = ({
                 Unique Customer : <a href="#">{uniqueCustomerCount}</a>
               </h2>
               <h2>
-                Refund Amount : <a href="#">{refundAmountTotal}</a>
+                Refund Amount :{" "}
+                <a href="#">
+                  <FormattedNumberWithTooltip value={refundAmountTotal} />
+                  {/* {refundAmountTotal} */}
+                </a>
               </h2>
             </div>
           )}
@@ -363,7 +416,11 @@ const FormContainer = ({
                 Unique Customer : <a href="#">{uniqueCustomerCount}</a>
               </h2>
               <h2>
-                Refund Amount : <a href="#">{refundAmountTotal}</a>
+                Refund Amount :{" "}
+                <a href="#">
+                  {/* {refundAmountTotal} */}
+                  <FormattedNumberWithTooltip value={refundAmountTotal} />
+                </a>
               </h2>
               <h2>
                 Approved Count : <a href="#">{approvedCount}</a>
@@ -418,7 +475,11 @@ const FormContainer = ({
                 <a href="#">{uniqueSalesExecutiveCount}</a>
               </h2>
               <h2>
-                Requested Amount : <a href="#">{requestedAmountTotal}</a>
+                Requested Amount :{" "}
+                <a href="#">
+                  <FormattedNumberWithTooltip value={requestedAmountTotal} />
+                  {/* {requestedAmountTotal} */}
+                </a>
               </h2>
             </div>
           )}
@@ -432,7 +493,11 @@ const FormContainer = ({
                 Unique Customers : <a href="#">{uniqueCustomerCount}</a>
               </h2>
               <h2>
-                Base Amount : <a href="#">{baseAmountTotal}</a>
+                Base Amount :{" "}
+                <a href="#">
+                  <FormattedNumberWithTooltip value={baseAmountTotal} />
+                  {/* {baseAmountTotal} */}
+                </a>
               </h2>
             </div>
           ) : (
@@ -447,7 +512,11 @@ const FormContainer = ({
                   <a href="#">{uniqueSalesExecutiveInvoiceCount}</a>
                 </h2>
                 <h2>
-                  Campaign Amount : <a href="#">{campaignAmountTotal}</a>
+                  Campaign Amount :{" "}
+                  <a href="#">
+                    {/* {campaignAmountTotal} */}
+                    <FormattedNumberWithTooltip value={campaignAmountTotal} />
+                  </a>
                 </h2>
               </div>
             )
@@ -458,7 +527,11 @@ const FormContainer = ({
                 Unique Customers : <a href="#">{uniqueCustomerCount}</a>
               </h2>
               <h2>
-                Campaign Amount : <a href="#">{campaignAmountTotal}</a>
+                Campaign Amount :{" "}
+                <a href="#">
+                  {/* {campaignAmountTotal} */}
+                  <FormattedNumberWithTooltip value={campaignAmountTotal} />
+                </a>
               </h2>
             </div>
           )}
@@ -472,7 +545,11 @@ const FormContainer = ({
                 Unique Customers : <a href="#">{uniqueCustomerCount}</a>
               </h2>
               <h2>
-                Base Amount : <a href="#">{baseAmountTotal}</a>
+                Base Amount :{" "}
+                <a href="#">
+                  {/* {baseAmountTotal} */}
+                  <FormattedNumberWithTooltip value={baseAmountTotal} />
+                </a>
               </h2>
               {/* <h2>
                 Open Count : <a href="#">{openCount}</a>
@@ -495,7 +572,7 @@ const FormContainer = ({
                 Unique Customers : <a href="#">{uniqueCustomerCount}</a>
               </h2>
               <h2>
-                Base Amount : <a href="#">{baseAmountTotal}</a>
+                Base Amount : <a href="#">{/* {baseAmountTotal} */}m</a>
               </h2>
             </div>
           )}

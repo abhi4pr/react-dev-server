@@ -8,6 +8,8 @@ import Select from "react-select";
 import getDecodedToken from "../../../../utils/DecodedToken";
 import { useAPIGlobalContext } from "../../APIContext/APIContext";
 import { useNavigate, useParams } from "react-router-dom";
+import CustomSelect from "../../../ReusableComponents/CustomSelect";
+import { useGetAllBrandQuery } from "../../../Store/API/Sales/BrandApi";
 
 const todayDate = new Date().toISOString().split("T")[0];
 
@@ -17,6 +19,13 @@ const CreateSaleBooking = () => {
   const { loginUserData } = useAPIGlobalContext();
 
   const userCreditLimit = loginUserData?.user_credit_limit;
+
+  const {
+    data: allBrands,
+    error: allBrandsError,
+    isLoading: allBrandsLoading,
+  } = useGetAllBrandQuery();
+
   const token = getDecodedToken();
   const loginUserId = token.id;
   const { toastAlert, toastError } = useGlobalContext();
@@ -24,9 +33,11 @@ const CreateSaleBooking = () => {
   const [selectedCustomer, setSelectedCustomer] = useState("");
   const [selectedCustomerPart, setSelectedCustomerPart] = useState("");
   const [selectedCustomerData, setSelectedCustomerData] = useState([]);
+  const [selectedBrand, setSelectedBrand] = useState(null);
   const [bookingDate, setBookingDate] = useState(
     new Date().toISOString().split("T")[0]
   );
+
   const [baseAmount, setBaseAmount] = useState(0);
   const [gstAmount, setGstAmount] = useState(0);
   const [addGst, setAddGst] = useState(false);
@@ -38,7 +49,7 @@ const CreateSaleBooking = () => {
   const [reasonCreditApproval, setReasonCreditApproval] = useState("");
   const [selectedReasonDays, setSelectedReasonDays] = useState(0);
   const [selectedReasonType, setSelectedReasonType] = useState("");
-  const [balancePayDate, setBalancePayDate] = useState(new Date());
+  const [balancePayDate, setBalancePayDate] = useState("");
   // const [executiveSelfCredit, setExecutiveSelfCredit] = useState(false);
   const [excelFile, setExcelFile] = useState(null);
   const [incentiveCheck, setIncentiveCheck] = useState(false);
@@ -257,7 +268,7 @@ const CreateSaleBooking = () => {
         title="Creation"
         handleSubmit={handleSubmit}
       >
-        <div className="form-group col-3">
+        <div className="form-group col-4">
           <label className="form-label">
             Customer Name <sup style={{ color: "red" }}>*</sup>
           </label>
@@ -280,7 +291,16 @@ const CreateSaleBooking = () => {
             required
           />
         </div>
-
+        <CustomSelect
+          fieldGrid={4}
+          label="Brand"
+          dataArray={allBrands}
+          optionId="instaBrandId"
+          optionLabel="instaBrandName"
+          selectedId={selectedBrand}
+          setSelectedId={setSelectedBrand}
+          required
+        />
         <div className="card">
           {selectedCustomerData && (
             <>
@@ -300,17 +320,24 @@ const CreateSaleBooking = () => {
 
         <FieldContainer
           label="Sale Booking Date"
-          fieldGrid={4}
+          fieldGrid={3}
           astric={true}
           type="date"
           value={bookingDate}
           max={todayDate}
           onChange={(e) => setBookingDate(e.target.value)}
         />
-
-        <div>
-          <button onClick={() => handleDateChange("subtract")}>-</button>
+        <div className="flex-row gap-2 mt-4 col-1">
           <button
+            type="button"
+            className="btn btn_sm cmnbtn btn-primary"
+            onClick={() => handleDateChange("subtract")}
+          >
+            -
+          </button>
+          <button
+            type="button"
+            className="btn btn_sm cmnbtn btn-primary"
             onClick={() => handleDateChange("add")}
             disabled={bookingDate == todayDate}
           >
@@ -359,7 +386,7 @@ const CreateSaleBooking = () => {
           value={description}
           onChange={(e) => setDescription(e.target.value)}
         />
-        <div className="form-group col-3">
+        <div className="form-group col-4 mt-3">
           <label className="form-label">
             Payment Status <sup style={{ color: "red" }}>*</sup>
           </label>
@@ -405,16 +432,17 @@ const CreateSaleBooking = () => {
             )}
           </>
         )}
-
-        <FieldContainer
-          label="Balance Payment Date"
-          type="date"
-          fieldGrid={4}
-          value={balancePayDate}
-          onChange={(e) => setBalancePayDate(e.target.value)}
-        />
+        <div className="col-4 mt-3  ">
+          <FieldContainer
+            label="Balance Payment Date"
+            type="date"
+            fieldGrid={12}
+            value={balancePayDate}
+            onChange={(e) => setBalancePayDate(e.target.value)}
+          />
+        </div>
         {/* {selectedPaymentStatus.label == "Use Credit Limit" && ( */}
-        <div className="form-group">
+        <div className="form-group mt-4">
           {/* <input
             type="checkbox"
             value={executiveSelfCredit}
@@ -435,17 +463,18 @@ const CreateSaleBooking = () => {
         <FieldContainer
           type="file"
           name="Image"
+          fieldGrid={4}
           accept=".xls, .xlsx"
           onChange={(e) => setExcelFile(e.target.files[0])}
           required={false}
         />
-        <div className="form-group">
+        <div className="form-group col-12 mt-2">
           <input
             type="checkbox"
             value={incentiveCheck}
             onChange={(e) => setIncentiveCheck(e.target.checked)}
           />
-          <label>No Incentive</label>
+          <label className="mr-2"> No Incentive</label>
         </div>
       </FormContainer>
     </div>

@@ -272,8 +272,8 @@ export default function Discard() {
               {item.status == 0
                 ? "Pending"
                 : item.status == 2
-                  ? "Discarded"
-                  : "Paid"}
+                ? "Discarded"
+                : "Paid"}
             </p>
           ));
         } else {
@@ -754,11 +754,13 @@ export default function Discard() {
         const isCurrentMonthGreaterThanMarch = new Date().getMonth() + 1 > 3;
         const currentYear = new Date().getFullYear();
         const startDate = new Date(
-          `04/01/${isCurrentMonthGreaterThanMarch ? currentYear : currentYear - 1
+          `04/01/${
+            isCurrentMonthGreaterThanMarch ? currentYear : currentYear - 1
           }`
         );
         const endDate = new Date(
-          `03/31/${isCurrentMonthGreaterThanMarch ? currentYear + 1 : currentYear
+          `03/31/${
+            isCurrentMonthGreaterThanMarch ? currentYear + 1 : currentYear
           }`
         );
         const dataFY = nodeData.filter((e) => {
@@ -935,17 +937,17 @@ export default function Discard() {
             "[]"
           )
         );
-      case "nextMonth":
-        const startOfNextMonth = now.clone().add(1, "months").startOf("month");
-        const endOfNextMonth = now.clone().add(1, "months").endOf("month");
-        return apiData.filter((item) =>
-          moment(item.request_date).isBetween(
-            startOfNextMonth,
-            endOfNextMonth,
-            "day",
-            "[]"
-          )
-        );
+      // case "nextMonth":
+      //   const startOfNextMonth = now.clone().add(1, "months").startOf("month");
+      //   const endOfNextMonth = now.clone().add(1, "months").endOf("month");
+      //   return apiData.filter((item) =>
+      //     moment(item.request_date).isBetween(
+      //       startOfNextMonth,
+      //       endOfNextMonth,
+      //       "day",
+      //       "[]"
+      //     )
+      //   );
       case "currentQuarter":
         const quarterStart = moment().startOf("quarter");
         const quarterEnd = moment().endOf("quarter");
@@ -957,8 +959,12 @@ export default function Discard() {
             "[]"
           )
         );
+      case "today":
+        return apiData.filter((item) =>
+          moment(item.request_date).isSame(now, "day")
+        );
       default:
-        return apiData; // No filter applied
+        return apiData;
     }
   };
   const handleRowSelectionModelChange = async (rowIds) => {
@@ -1156,12 +1162,13 @@ export default function Discard() {
                     onChange={(e) => setDateFilter(e.target.value)}
                   >
                     <option value="">All</option>
+                    <option value="today">Today</option>
                     <option value="last7Days">Last 7 Days</option>
                     <option value="last30Days">Last 30 Days</option>
                     <option value="thisWeek">This Week</option>
                     <option value="lastWeek">Last Week</option>
                     <option value="currentMonth">Current Month</option>
-                    <option value="nextMonth">Next Month</option>
+                    {/* <option value="nextMonth">Next Month</option> */}
                     <option value="currentQuarter">This Quarter</option>
                   </select>
                 </div>

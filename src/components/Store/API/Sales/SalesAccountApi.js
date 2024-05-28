@@ -1,5 +1,5 @@
 import { createApi } from "@reduxjs/toolkit/query/react";
-import authBaseQuery from "../../../utils/authBaseQuery";
+import authBaseQuery from "../../../../utils/authBaseQuery";
 
 const SalesAccountApi = createApi({
   reducerPath: "salesAccountApi",
@@ -7,7 +7,7 @@ const SalesAccountApi = createApi({
   endpoints: (builder) => ({
     getAllAccount: builder.query({
       query: () => "accounts/get_all_account",
-      transformResponse: (returnValue, args) => returnValue.data,
+      transformResponse: (response, args) => response.data,
       keepUnusedDataFor: 60 * 60 * 24,
     }),
 

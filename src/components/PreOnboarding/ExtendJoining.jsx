@@ -4,6 +4,7 @@ import axios from "axios";
 import { useGlobalContext } from "../../Context/Context";
 import WhatsappAPI from "../WhatsappAPI/WhatsappAPI";
 import { baseUrl } from "../../utils/config";
+import { FaCloudUploadAlt } from "react-icons/fa";
 
 const url = baseUrl + "";
 
@@ -26,7 +27,7 @@ const ExtendJoining = ({
 
   const calculateMinDate = (dateStr) => {
     const parts = dateStr.split("-");
-    const inputDate = new Date(parts[2], parts[1] - 1, parts[0]);
+    const inputDate = new Date(parts[1], parts[1] - 1, parts[0]);
     inputDate.setDate(inputDate.getDate() + 30);
     return `${inputDate.getFullYear()}-${(inputDate.getMonth() + 1)
       .toString()
@@ -164,7 +165,10 @@ const ExtendJoining = ({
                           : "doc_item"
                       }
                     >
-                      <p>Upload file</p>
+                      <p>
+                        <FaCloudUploadAlt style={{ fontSize: "35px" }} /> Upload
+                        Reason file
+                      </p>
                       <input
                         type="file"
                         value=""

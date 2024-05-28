@@ -4,6 +4,61 @@
     flex-direction: column;
     height: 100%;
 
+    .button-wrapper {
+        display: flex;
+        gap: 10px;
+    }
+
+    .tool-btn,
+    .tool-input {
+        border: 1px solid #e1e5ea;
+        background-color: transparent;
+        color: #5b6b79;
+        text-transform: capitalize;
+        font-family: "Inter", sans-serif;
+        font-size: 12px;
+        line-height: 16px;
+        font-weight: 500;
+        border-radius: 8px;
+        padding: 2px 10px;
+        height: 30px;
+
+        &:hover {
+            border: 1px solid #782be4;
+            color: #782be4;
+
+            svg {
+                fill: #782be4;
+            }
+        }
+    }
+
+    .tool-input {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+
+        svg {
+            fill: #5b6b79;
+        }
+
+        input {
+            border: none;
+            background-color: transparent;
+            color: #5b6b79;
+            text-transform: capitalize;
+            font-family: "Inter", sans-serif;
+            font-size: 12px;
+            line-height: 16px;
+            font-weight: 500;
+            padding: 2px 10px;
+            height: 30px;
+            width: 100%;
+        }
+    }
+
+
 
     th {
         outline: 1px solid #f1f5f9;
@@ -242,9 +297,9 @@ th .table-header {
 
 .table-toolkit {
     display: flex;
-    justify-content: start;
+    justify-content: space-between;
     align-items: center;
-
+    gap: 10px;
     align-items: center;
     border: #e1e5ea 1px solid;
     border-radius: 15px 15px 0 0;

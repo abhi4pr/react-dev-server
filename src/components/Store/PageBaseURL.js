@@ -7,12 +7,12 @@ export const PageBaseURL = createApi({
   tagTypes: ["profileList", "categoryList"],
   endpoints: (builder) => ({
     getAllProfileList: builder.query({
-      query: () => `getProfileList`,
+      query: () => `v1/profile_type`,
       providesTags: ["profileList"],
     }),
     addProfileType: builder.mutation({
       query: (data) => ({
-        url: `addProfile`,
+        url: `v1/profile_type`,
         method: "POST",
         body: data,
       }),
@@ -20,7 +20,7 @@ export const PageBaseURL = createApi({
     }),
     updateProfileType: builder.mutation({
       query: (data) => ({
-        url: `updateProfile/${data._id}`,
+        url: `v1/profile_type/${data._id}`,
         method: "PUT",
         body: data,
       }),
@@ -28,19 +28,20 @@ export const PageBaseURL = createApi({
     }),
     addPageCategory: builder.mutation({
       query: (data) => ({
-        url: `addPageCatg`,
+        url: `v1/page_category`,
         method: "POST",
         body: data,
       }),
       invalidatesTags: ["categoryList"],
     }),
     getAllPageCategory: builder.query({
-      query: () => `getPageCatgList`,
+      // query: () => `getPageCatgList`,
+      query: () => `v1/page_category`,
       providesTags: ["categoryList"],
     }),
     updatePageCategory: builder.mutation({
       query: (data) => ({
-        url: `updatePageCatg/${data._id}`,
+        url: `v1/page_category/${data._id}`,
         method: "PUT",
         body: data,
       }),
@@ -52,13 +53,40 @@ export const PageBaseURL = createApi({
       query: () => `getPriceList`,
     }),
 
-    //add Platform Price
+    // Platform Price
     addPlatformPrice: builder.mutation({
       query: (data) => ({
-        url: `addPlatformPrice`,
+        url: `v1/pagePriceType`,
         method: "POST",
         body: data,
       }),
+    }),
+    getPlatformPrice: builder.query({
+      query: () => `v1/pagePriceType`,
+    }),
+    updatePlatformPrice: builder.mutation({
+      query: (data) => ({
+        url: `v1/pagePriceType/${data._id}`,
+        method: "PUT",
+        body: data,
+      }),
+    }),
+
+    //Page
+    getAllPageList: builder.query({
+      query: () => `v1/pageMaster`,
+    }),
+
+    //Page price Multiple
+    getMultiplePagePrice: builder.query({
+      query: (data) => `v1/pagePriceMultipleByPageId/${data}`,
+      transformResponse: (response) => response.data,
+    }),
+
+    // getpagePriceType
+    getpagePriceType: builder.query({
+      query: () => `v1/pagePriceType`,
+      transformResponse: (response) => response.data,
     }),
   }),
 });
@@ -71,5 +99,10 @@ export const {
   useGetAllPageCategoryQuery,
   useUpdatePageCategoryMutation,
   useGetAllPriceListQuery,
-    useAddPlatformPriceMutation,
+  useAddPlatformPriceMutation,
+  useGetPlatformPriceQuery,
+  useUpdatePlatformPriceMutation,
+  useGetAllPageListQuery,
+  useGetMultiplePagePriceQuery,
+  useGetpagePriceTypeQuery,
 } = PageBaseURL;

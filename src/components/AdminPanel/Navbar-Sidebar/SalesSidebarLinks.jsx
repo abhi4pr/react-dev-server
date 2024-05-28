@@ -95,10 +95,6 @@ const SalesSidebarLinks = () => {
             Credit Approval
           </NavLink>
 
-          <NavLink className="collapse-item" to="/admin/create-sales-account">
-            <i className="bi bi-dot" />
-            Account
-          </NavLink>
           <NavLink className="collapse-item" to="/admin/sales-account-overview">
             <i className="bi bi-dot" />
             Account Overview

@@ -1,5 +1,5 @@
 import { createApi } from "@reduxjs/toolkit/query/react";
-import authBaseQuery from "../../../utils/authBaseQuery";
+import authBaseQuery from "../../../../utils/authBaseQuery";
 
 const CompanyTypeApi = createApi({
   reducerPath: "companyTypeApi",
@@ -7,7 +7,7 @@ const CompanyTypeApi = createApi({
   endpoints: (builder) => ({
     getAllCompanyType: builder.query({
       query: () => "accounts/get_all_account_company_type",
-      transformResponse: (returnValue, args) => returnValue.data,
+      transformResponse: (response) => response.data,
       keepUnusedDataFor: 60 * 60 * 24,
     }),
 
@@ -21,7 +21,7 @@ const CompanyTypeApi = createApi({
         method: "POST",
         body: newCompanyType,
       }),
-      onQueryStarted: async (newCompanyType, { dispatch, queryFulfilled }) => {
+      onQueryStarted: async ({ dispatch, queryFulfilled }) => {
         try {
           const { data: addedCompanyType } = await queryFulfilled;
 
@@ -34,6 +34,7 @@ const CompanyTypeApi = createApi({
               }
             )
           );
+          // dispatch(newCompanyType.actions.addedCompanyType(addedCompanyType));
         } catch (error) {
           console.error("Failed to add company type:", error);
         }
@@ -46,10 +47,7 @@ const CompanyTypeApi = createApi({
         method: "PUT",
         body: updatedCompanyType,
       }),
-      onQueryStarted: async (
-        { id, ...updatedCompanyType },
-        { dispatch, queryFulfilled }
-      ) => {
+      onQueryStarted: async ({ id }, { dispatch, queryFulfilled }) => {
         try {
           const { data: returnedCompanyType } = await queryFulfilled;
 

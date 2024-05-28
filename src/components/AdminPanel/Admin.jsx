@@ -337,6 +337,7 @@ import ViewPaymentUpdate from "./Sales/PaymentUpdate/ViewPaymentUpdate";
 import { FinanceContextComponent } from "../../Context/FinanceContext";
 import CreateSalesAccount from "./Sales/Account/CreateSalesAccount";
 import SalesAccountOverview from "./Sales/Account/SalesAccountOverview";
+import PaymentDoneTransactionList from "./Finance/PaymentDoneTransactionList";
 
 const Admin = () => {
   const [contextData, setData] = useState([]);
@@ -410,8 +411,8 @@ const Admin = () => {
                       (contextData &&
                         contextData[38] &&
                         contextData[38].view_value === 1)) && (
-                        <Route path="/user" element={<UserMaster />} />
-                      )}
+                      <Route path="/user" element={<UserMaster />} />
+                    )}
 
                     {/* User Profile Routing Here  */}
                     <Route path="/user-timeline" element={<Timeline />} />
@@ -866,6 +867,10 @@ const Admin = () => {
                   <Route
                     path="/finance-pruchasemanagement-paymentdone"
                     element={<PaymentDone />}
+                  />
+                  <Route
+                    path="/finance-pruchasemanagement-paymentdone-transactionlist/:request_id"
+                    element={<PaymentDoneTransactionList />}
                   />
                   <Route
                     path="/finance-dashboard"
@@ -1468,7 +1473,7 @@ const Admin = () => {
                     element={<SalesServicesOverview />}
                   />
 
-                  {/* Harshal */}
+                  {/* Sales  harshal start*/}
                   <Route
                     path="/create-credit-reason-approval"
                     element={<CreditApprovalReasonCreate />}
@@ -1546,7 +1551,12 @@ const Admin = () => {
                     element={<CreateSalesAccount />}
                   />
 
-                  {/* Harshal */}
+                  <Route
+                    path="/sales-account-overview"
+                    element={<SalesAccountOverview />}
+                  />
+
+                  {/* Sales Harshal end */}
                   <Route
                     path="/sales-incentive-create"
                     element={<IncentiveCreate />}
@@ -1598,10 +1608,6 @@ const Admin = () => {
                   <Route
                     path="/op-campaign-executions"
                     element={<CampaignExecutions />}
-                  />
-                  <Route
-                    path="/sales-account-overview"
-                    element={<SalesAccountOverview />}
                   />
                 </Route>
               </Routes>

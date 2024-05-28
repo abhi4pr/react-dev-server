@@ -23,7 +23,7 @@ import VendorWhatsappLinkModla from "./VendorWhatsappLinkModla";
 import OpenWithIcon from "@mui/icons-material/OpenWith";
 import VendorPageModal from "./VendorPageModal";
 import {
-  useGetAllVendorQuery,
+  useGetAllVendorTypeQuery,
   useGetPmsPayCycleQuery,
   useGetPmsPaymentMethodQuery,
   useGetPmsPlatformQuery,
@@ -38,7 +38,7 @@ const VendorOverview = () => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
-  const { data: vendor } = useGetAllVendorQuery();
+  const { data: vendor } = useGetAllVendorTypeQuery();
   const typeData = vendor?.data;
 
   const showWhatsappModal = useSelector(

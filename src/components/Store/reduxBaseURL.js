@@ -1,6 +1,5 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { baseUrl } from "../../utils/config";
-import { get } from "jquery";
 
 export const reduxBaseURL = createApi({
   baseQuery: fetchBaseQuery({ baseUrl: baseUrl }),
@@ -24,7 +23,7 @@ export const reduxBaseURL = createApi({
       }),
       invalidatesTags: ["addVendor"],
     }),
-    getAllVendor: builder.query({
+    getAllVendorType: builder.query({
       // query: () => `getAllVendor`,
       query: () => `v1/vendor_type`,
       providesTags: ["addVendor"],
@@ -132,9 +131,33 @@ export const reduxBaseURL = createApi({
       query: (data) => `v1/bank_details_by_vendor_id/${data}`,
     }),
 
-    //venodr whatsapp group link 
+    //venodr whatsapp group link
     getVendorWhatsappLink: builder.query({
       query: (id) => `v1/vendor_group_link_vendor_id/${id}`,
+    }),
+
+    //Country Code
+    getCountryCode: builder.query({
+      query: () => `v1/country_code`,
+    }),
+    addCountryCode: builder.mutation({
+      query: (data) => ({
+        url: `v1/country_code`,
+        method: "POST",
+        body: data,
+      }),
+    }),
+    updateCountryCode: builder.mutation({
+      query: (data) => ({
+        url: `v1/country_code`,
+        method: "PUT",
+        body: data,
+      }),
+    }),
+
+    //Vendor
+    getAllVendor: builder.query({
+      query: () => `v1/vendor`,
     }),
   }),
 });
@@ -142,7 +165,7 @@ export const reduxBaseURL = createApi({
 export const {
   useGetnotAssignedVendorsQuery,
   useAddPmsVendorTypeMutation,
-  useGetAllVendorQuery,
+  useGetAllVendorTypeQuery,
   useUpdateVendorTypeMutation,
   useAddPmsPlatformMutation,
   useGetPmsPlatformQuery,
@@ -157,5 +180,9 @@ export const {
   useGetVendorWhatsappLinkTypeQuery,
   useUpdateVendorWhatsappLinkTypeMutation,
   useGetSingleBankDetailQuery,
-  useGetVendorWhatsappLinkQuery
+  useGetVendorWhatsappLinkQuery,
+  useGetCountryCodeQuery,
+  useAddCountryCodeMutation,
+  useUpdateCountryCodeMutation,
+  useGetAllVendorQuery
 } = reduxBaseURL;

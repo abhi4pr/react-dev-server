@@ -10,7 +10,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { setCloseWhatsappModal } from "../../Store/PageOverview";
 import { DataGrid } from "@mui/x-data-grid";
 import {
-  useGetAllVendorQuery,
+  useGetAllVendorTypeQuery,
   useGetVendorWhatsappLinkQuery,
 } from "../../Store/reduxBaseURL";
 
@@ -28,7 +28,7 @@ export default function VendorWhatsappLinkModla() {
   const { data } = useGetVendorWhatsappLinkQuery(row._id);
   const links = data?.data;
 
-  const { data: linkType } = useGetAllVendorQuery();
+  const { data: linkType } = useGetAllVendorTypeQuery();
 
   const dispatch = useDispatch();
   const showWhatsappModal = useSelector(

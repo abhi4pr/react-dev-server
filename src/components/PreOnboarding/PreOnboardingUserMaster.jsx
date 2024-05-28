@@ -568,9 +568,8 @@ const PreOnboardingUserMaster = () => {
   }, [documentData]);
 
   useEffect(() => {
-    // const approveCount = documentData.filter((doc) => doc.status == "Approved" ).length;
     const approveCount = documentData.filter(
-      (doc) => doc.status == "Verification Pending"
+      (doc) => doc.doc_image !== ""
     ).length;
 
     const documentPercentageTemp = Math.ceil(
@@ -1613,9 +1612,9 @@ const PreOnboardingUserMaster = () => {
                     <h2 className="policy_tab_name">
                       COC <small>Code of conduct</small>
                       <div className="cocInfo">
-                        {documentPercentage < 90 && (
+                        {/* {documentPercentage < 90 && (
                           <p>Please complete Mandatory Document</p>
-                        )}
+                        )} */}
                       </div>
                     </h2>
                   </div>
@@ -1687,7 +1686,6 @@ const PreOnboardingUserMaster = () => {
                       <div className="sidebar_iteminfo">
                         <div className="pack" style={{ flexDirection: "row" }}>
                           <h2 className="document_tab_name">Documents</h2>
-                          {/* <span>(verified)</span> */}
                           <h3>{documentPercentage}%</h3>
                         </div>
                         <h3>
@@ -1850,18 +1848,6 @@ const PreOnboardingUserMaster = () => {
                                   />
                                 </Modal>
                               </h3>
-                              {/* <div className="form-group">
-                                <TextField
-                                  id="outlined-basic"
-                                  label="Full Name"
-                                  variant="outlined"
-                                  type="text"
-                                  // className="form-control"
-                                  name="name"
-                                  // placeholder="Full Name"
-                                  value={username}
-                                  onChange={(e) => setUserName(e.target.value)}
-                                />*/}
                               <div className="form-group">
                                 <TextField
                                   id="outlined-basic"
@@ -1878,25 +1864,6 @@ const PreOnboardingUserMaster = () => {
                                   onChange={handleFullNameChange}
                                 />
                               </div>
-
-                              {/* <div className="form-group">
-                              <TextField
-                                id="outlined-basic"
-                                label="Official Email"
-                                variant="outlined"
-                                type="email"
-                                // className="form-control"
-                                name="Official Email"
-                                // placeholder="Official Email"
-                                value={email}
-                                onChange={handleEmailChange}
-                              />
-                              {!validEmail && (
-                                <p className="validation_message error">
-                                  *Please enter valid email
-                                </p>
-                              )}
-                            </div> */}
 
                               <div className="form-group">
                                 <TextField

@@ -17,9 +17,11 @@ import { useEffect, useState } from "react";
 import {
   useGetAllPageCategoryQuery,
   useGetAllProfileListQuery,
+  useGetPlatformPriceQuery,
 } from "../../Store/PageBaseURL";
 import DeleteButton from "../DeleteButton";
 import { FaEdit } from "react-icons/fa";
+import { useGetPmsPlatformQuery } from "../../Store/reduxBaseURL";
 
 export default function PageInfoModal() {
   const theme = useTheme();
@@ -41,21 +43,57 @@ export default function PageInfoModal() {
     data: profileList,
     error: profileListError,
     isLoading: ProfileListIsloading,
+    refetch: refetchProfileList,
   } = useGetAllProfileListQuery();
+
+  useEffect(() => {
+    if (modalType === "Profile Type Info") {
+      console.log("Profile Type Info");
+      return refetchProfileList();
+    } else if (modalType === "Category Info") {
+      refetchCategoryList();
+    } else if (modalType === "Price Type Info") {
+      refetchPriceList();
+    }
+  }, []);
 
   const {
     data: categoryList,
     error: categoryListError,
     isLoading: categoryListIsloading,
+    refetch: refetchCategoryList,
   } = useGetAllPageCategoryQuery();
 
-  const handlRowClick = (row,Type) => {
+  const handlRowClick = (row, Type) => {
     dispatch(setModalType(Type));
     dispatch(setOpenShowAddModal());
     dispatch(setRowData(row));
   };
 
-  const getData = () => {};
+  const {
+    data: priceList,
+    error: priceListError,
+    isLoading: priceListIsloading,
+    refetch: refetchPriceList,
+  } = useGetPlatformPriceQuery();
+
+  const {
+    data: platformList,
+    error: platformListError,
+    isLoading: platformListIsloading,
+    refetch: refetchPlatformList,
+  }=useGetPmsPlatformQuery();
+
+  const getData = () => {
+    handleClose();
+    if (modalType === "Profile Type Info") {
+      refetchProfileList();
+    } else if (modalType === "Category Info") {
+      refetchCategoryList();
+    } else if (modalType === "Price Type Info") {
+      refetchPriceList();
+    }
+  };
 
   const profileTypeColumn = [
     {
@@ -82,14 +120,14 @@ export default function PageInfoModal() {
           <button
             title="Edit"
             className="btn btn-outline-primary btn-sm"
-            onClick={() => handlRowClick(row,"Profile Type Update")}
+            onClick={() => handlRowClick(row, "Profile Type Update")}
             data-toggle="modal"
             data-target="#myModal"
           >
             <FaEdit />
           </button>
           <DeleteButton
-            endpoint="deleteProfile"
+            endpoint="v1/profile_type"
             id={row._id}
             getData={getData}
           />
@@ -123,13 +161,50 @@ export default function PageInfoModal() {
           <button
             title="Edit"
             className="btn btn-outline-primary btn-sm user-button"
-            onClick={() => handlRowClick(row,"Category Update")}
+            onClick={() => handlRowClick(row, "Category Update")}
             data-toggle="modal"
             data-target="#myModal"
           >
             <FaEdit />{" "}
           </button>
           <DeleteButton endpoint="deletePage" id={row._id} getData={getData} />
+        </>
+      ),
+    },
+  ];
+
+  const priceTypeColumn = [
+    {
+      name: "S.NO",
+      selector: (row, index) => <div>{index + 1}</div>,
+      sortable: true,
+    },
+    {
+      name: "Name",
+      selector: (row) => row.name,
+    },
+    {
+      name: "Platform Name",
+      selector: (row) => platformList?.data?.find((item) => item._id === row.platfrom_id)?.platform_name,
+    },
+    {
+      name: "Description",
+      selector: (row) => row.description,
+    },
+    {
+      name: "Action",
+      cell: (row) => (
+        <>
+          <button
+            title="Edit"
+            className="btn btn-outline-primary btn-sm user-button"
+            onClick={() => handlRowClick(row, "Price Type Update")}
+            data-toggle="modal"
+            data-target="#myModal"
+          >
+            <FaEdit />{" "}
+          </button>
+          <DeleteButton endpoint="v1/pagePriceType" id={row._id} getData={getData} />
         </>
       ),
     },
@@ -146,6 +221,11 @@ export default function PageInfoModal() {
       setLoading(categoryListIsloading);
       setData(categoryList?.data);
       setColumns(categoryColumn);
+    }else if (modalType === "Price Type Info") {
+      setTitle("Price Type");
+      setLoading(priceListIsloading);
+      setData(priceList?.data);
+      setColumns(priceTypeColumn);
     }
   }, [modalType]);
 
@@ -181,11 +261,8 @@ export default function PageInfoModal() {
           />
         </DialogContent>
         <DialogActions>
-          <Button autoFocus onClick={handleClose}>
-            Disagree
-          </Button>
-          <Button onClick={handleClose} autoFocus>
-            Agree
+          <Button onClick={handleClose} variant="contained" color="error" autoFocus>
+            Close
           </Button>
         </DialogActions>
       </Dialog>

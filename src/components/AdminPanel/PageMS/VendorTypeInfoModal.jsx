@@ -14,7 +14,7 @@ import {
 } from "../../Store/VendorMaster";
 import DataTable from "react-data-table-component";
 import {
-  useGetAllVendorQuery,
+  useGetAllVendorTypeQuery,
   useGetPmsPayCycleQuery,
   useGetPmsPaymentMethodQuery,
   useGetPmsPlatformQuery,
@@ -42,7 +42,7 @@ export default function VendorTypeInfoModal() {
     error: vendorError,
     data: vendorData,
     refetch: vendorRefetch,
-  } = useGetAllVendorQuery();
+  } = useGetAllVendorTypeQuery();
 
   const {
     data: platformData,

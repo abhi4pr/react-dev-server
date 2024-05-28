@@ -17,15 +17,13 @@ import {
   useAddPageCategoryMutation,
   useAddPlatformPriceMutation,
   useAddProfileTypeMutation,
-  useGetAllPriceListQuery,
   useUpdatePageCategoryMutation,
+  useUpdatePlatformPriceMutation,
   useUpdateProfileTypeMutation,
 } from "../../Store/PageBaseURL";
 import { useGlobalContext } from "../../../Context/Context";
-import {
-  useGetAllVendorQuery,
-  useGetPmsPlatformQuery,
-} from "../../Store/reduxBaseURL";
+import { useGetPmsPlatformQuery } from "../../Store/reduxBaseURL";
+import { setRowData } from "../../Store/PageMaster";
 
 export default function PageAddMasterModal() {
   const { toastAlert, toastError } = useGlobalContext();
@@ -49,6 +47,7 @@ export default function PageAddMasterModal() {
     register: register2,
     handleSubmit: handleSubmit2,
     formState: { errors: errors2 },
+    setValue: setValue2,
   } = useForm();
 
   const [title, setTitle] = useState("");
@@ -56,7 +55,13 @@ export default function PageAddMasterModal() {
   const handleClose = () => {
     dispatch(setCloseShowAddModal());
     setValue("name", "");
-    setValue("description", "");
+    console.log(setValue("description", ""));
+    console.log("close");
+    console.log(setValue2("priceType", null));
+    setValue2("description", null);
+    setValue2("platform", null);
+    setValue2("priceType", null);
+    dispatch(setRowData({}));
   };
 
   const [addProfileType] = useAddProfileTypeMutation();
@@ -79,6 +84,8 @@ export default function PageAddMasterModal() {
       setValue("description", rowData.description);
     } else if (modalType === "Price Type") {
       setTitle("Add Price Type");
+    } else if (modalType === "Price Type Update") {
+      setTitle("Update Price Type");
     }
   }, [modalType, rowData]);
 
@@ -92,6 +99,9 @@ export default function PageAddMasterModal() {
     };
 
     if (modalType === "Profile Type") {
+      delete obj.updated_by;
+      delete obj._id;
+
       addProfileType(obj)
         .unwrap()
         .then(() => {
@@ -102,6 +112,9 @@ export default function PageAddMasterModal() {
           toastError(err.message);
         });
     } else if (modalType === "Profile Type Update") {
+      delete obj.created_by;
+      delete obj.updated_by;
+      obj.last_updated_by = userID;
       updateProfileType(obj)
         .unwrap()
         .then(() => {
@@ -142,46 +155,50 @@ export default function PageAddMasterModal() {
     }
   };
 
-  const {
-    data: platformData,
-    islaoding: isPlatformLoading,
-    error,
-  } = useGetPmsPlatformQuery();
+  const { data: platformData } = useGetPmsPlatformQuery();
   const platformList = platformData?.data || [];
 
-  const {
-    data: priceData,
-    islaoding: isPriceLoading,
-    error: priceError,
-  } = useGetAllPriceListQuery();
-  const priceList = priceData?.data || [];
-
   const [addPlatformPrice] = useAddPlatformPriceMutation();
+  const [updatePlatformPrice] = useUpdatePlatformPriceMutation();
 
   if (modalType === "Price Type" || modalType === "Price Type Update") {
     const priceTypeFormSubmit = (data) => {
-      console.log("object");
       console.log(data);
       const obj = {
-        price_type_id: priceList.find(
-          (price) => price.price_type === data.priceType
-        )?._id,
-        platform_id: platformList.find(
+        name: data.priceType,
+        platfrom_id: platformList.find(
           (platform) => platform.platform_name === data.platform
         )._id,
         description: data.description,
         created_by: userID,
       };
-      addPlatformPrice(obj)
-        .unwrap()
-        .then(() => {
-          toastAlert("Price Type Added Successfully");
-          handleClose();
-        })
-        .catch((err) => {
-          toastError(err.message);
-        });
+
+      if (modalType === "Price Type") {
+        addPlatformPrice(obj)
+          .unwrap()
+          .then(() => {
+            toastAlert("Price Type Added Successfully");
+            handleClose();
+          })
+          .catch((err) => {
+            toastError(err.message);
+          });
+      } else {
+        obj._id = rowData._id;
+        updatePlatformPrice(obj)
+          .unwrap()
+          .then(() => {
+            toastAlert("Price Type Updated Successfully");
+            handleClose();
+            dispatch(setCloseShowPageInfoModal());
+          })
+          .catch((err) => toastError(err.message));
+      }
     };
+
+    setValue2("priceType", rowData.name);
+    setValue2("description", rowData.description);
+
     return (
       <div>
         <Dialog
@@ -193,29 +210,12 @@ export default function PageAddMasterModal() {
           <DialogTitle id="responsive-dialog-title">{title}</DialogTitle>
           <DialogContent>
             <Box component="form" onSubmit={handleSubmit2(priceTypeFormSubmit)}>
-              <Autocomplete
-                id="price-type-autocomplete"
-                options={priceList.map((option) => ({
-                  priceType: option.price_type,
-                  value: option._id,
-                }))}
-                getOptionLabel={(option) => option.priceType}
-                style={{ width: 300 }}
-                isOptionEqualToValue={(option, value) =>
-                  option.value === value.value
-                }
-                renderInput={(params) => (
-                  <TextField
-                    {...register2("priceType", {
-                      required: "Please Select the Price Type",
-                    })}
-                    {...params}
-                    label="Price Type *"
-                    variant="outlined"
-                    helperText={errors2.priceType?.message}
-                    error={Boolean(errors2.priceType)}
-                  />
-                )}
+              <TextField
+                label="Price Type"
+                required={true}
+                {...register2("priceType", {
+                  required: "Please Enter the Price Type",
+                })}
               />
               <Autocomplete
                 id="platform-autocomplete"
@@ -225,13 +225,18 @@ export default function PageAddMasterModal() {
                 }))}
                 getOptionLabel={(option) => option.platformName || ""}
                 style={{ width: 300 }}
-                isOptionEqualToValue={(option, value) =>
-                  option.value === value.value
-                }
+                defaultValue={{
+                  platformName: platformList.find(
+                    (platform) => platform._id === rowData.platfrom_id
+                  )?.platform_name,
+                }}
                 onChange={(event, newValue) => {
-                  setValue("platform", newValue ? newValue.value : "");
+                  setValue2("platform", newValue ? newValue.value : "");
                   console.log(newValue.value);
                 }}
+                isOptionEqualToValue={(option, value) =>
+                  option.platformName === value.platformName
+                }
                 renderInput={(params) => (
                   <TextField
                     {...register2("platform", {

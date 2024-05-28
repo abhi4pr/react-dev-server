@@ -872,7 +872,7 @@ const PageDetailingNew = ({ pageName, data, setPhaseDataError, phaseInfo }) => {
     },
     pageName != "planCreation" && {
       field: "remainingPages",
-      headerName: "remaining post",
+      headerName: "Remaining Post",
       width: 150,
       renderCell: (params) => {
         return (
@@ -891,7 +891,7 @@ const PageDetailingNew = ({ pageName, data, setPhaseDataError, phaseInfo }) => {
     },
     {
       field: "story_page",
-      headerName: "story / Page",
+      headerName: "Story / Page",
       width: 150,
 
       renderCell: (params) => {
@@ -918,7 +918,7 @@ const PageDetailingNew = ({ pageName, data, setPhaseDataError, phaseInfo }) => {
     },
     pageName != "planCreation" && {
       field: "remainingStory",
-      headerName: "remaining story",
+      headerName: "Remaining Story",
       width: 150,
       renderCell: (params) => {
         return (

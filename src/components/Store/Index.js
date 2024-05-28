@@ -5,11 +5,13 @@ import { reduxBaseURL } from "./reduxBaseURL";
 import { setupListeners } from "@reduxjs/toolkit/query";
 import vendorMaster from "./VendorMaster";
 import pageMaster from "./PageMaster";
-import SalesAccountApi from "./API/SalesAccountApi";
-import SalesAccountTypeApi from "./API/SalesAccountTypeApi";
-import CompanyTypeApi from "./API/CompanyTypeApi";
-import BrandCategoryTypeApi from "./API/BrandCategoryTypeApi";
 import { PageBaseURL } from "./PageBaseURL";
+import SalesAccountApi from "./API/Sales/SalesAccountApi";
+import SalesAccountTypeApi from "./API/Sales/SalesAccountTypeApi";
+import CompanyTypeApi from "./API/Sales/CompanyTypeApi";
+import BrandCategoryTypeApi from "./API/Sales/BrandCategoryTypeApi";
+import SaleBookingApi from "./API/Sales/SaleBookingApi";
+import BrandApi from "./API/Sales/BrandApi";
 
 const store = configureStore({
   reducer: {
@@ -23,6 +25,8 @@ const store = configureStore({
     [CompanyTypeApi.reducerPath]: CompanyTypeApi.reducer,
     [BrandCategoryTypeApi.reducerPath]: BrandCategoryTypeApi.reducer,
     [PageBaseURL.reducerPath]: PageBaseURL.reducer,
+    [SaleBookingApi.reducerPath]: SaleBookingApi.reducer,
+    [BrandApi.reducerPath]: BrandApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware()
@@ -30,7 +34,9 @@ const store = configureStore({
       .concat(SalesAccountApi.middleware)
       .concat(SalesAccountTypeApi.middleware)
       .concat(CompanyTypeApi.middleware)
-      .concat(BrandCategoryTypeApi.middleware).concat(PageBaseURL.middleware),
+      .concat(BrandCategoryTypeApi.middleware).concat(PageBaseURL.middleware)
+      .concat(SaleBookingApi.middleware)
+      .concat(BrandApi.middleware),
 });
     setupListeners(store.dispatch);
 
