@@ -24,12 +24,12 @@ const BrandApi = createApi({
         method: "POST",
         body: newBrand,
       }),
-      async onQueryStarted(arg, { dispatch, queryFulfilled }) {
+      onQueryStarted: async (newBrand, { dispatch, queryFulfilled }) => {
         try {
           const { data: addedBrand } = await queryFulfilled;
           dispatch(
             BrandApi.util.updateQueryData("getAllBrand", undefined, (draft) => {
-              draft.unshift(addedBrand);
+              draft.unshift(addedBrand.data);
             })
           );
         } catch (error) {
@@ -44,16 +44,17 @@ const BrandApi = createApi({
         method: "PUT",
         body: updatedBrand,
       }),
-      async onQueryStarted(arg, { dispatch, queryFulfilled }) {
+      onQueryStarted: async (
+        { id, ...updatedBrand },
+        { dispatch, queryFulfilled }
+      ) => {
         try {
           const { data: returnedBrand } = await queryFulfilled;
           dispatch(
             BrandApi.util.updateQueryData("getAllBrand", undefined, (draft) => {
-              const brandIndex = draft.findIndex(
-                (brand) => brand.id === arg.id
-              );
+              const brandIndex = draft.findIndex((brand) => brand.id === id);
               if (brandIndex !== -1) {
-                draft[brandIndex] = returnedBrand;
+                draft[brandIndex] = returnedBrand.data;
               }
             })
           );
@@ -68,7 +69,7 @@ const BrandApi = createApi({
         url: `/${id}`,
         method: "DELETE",
       }),
-      async onQueryStarted(arg, { dispatch, queryFulfilled }) {
+      onQueryStarted: async (arg, { dispatch, queryFulfilled }) => {
         try {
           await queryFulfilled;
           dispatch(
