@@ -184,16 +184,16 @@ function ExecutionPending() {
     axios
       .put(baseUrl + `update_all_list_token/${multipleToken}`)
       .then((res) => {
-        let data = res.data.data;
+        let data = res?.data?.data;
         const payload = {
           loggedin_user_id: userID,
           sale_booking_id: data.sale_booking_id,
           sale_booking_execution_id: data.sale_booking_execution_id,
           start_date_: new Date(),
           execution_status: 2,
-        }
+        };
         axios
-          .put(`${baseUrl}` + `edit_exe_sum`, payload)
+          .put(`${baseUrl}edit_exe_sum`, payload)
           .then((res) => {
             console.log(res);
             setReload((preVal) => !preVal);
@@ -201,7 +201,12 @@ function ExecutionPending() {
           .catch((err) => {
             console.log(err);
           });
-
+  
+        setConfirmation(false);
+        fetchData();
+        setMultipleToken("");
+        toastAlert("Token Verified");
+  
         const payload1 = {
           loggedin_user_id: userID,
           sale_booking_execution_id: data.sale_booking_execution_id,
@@ -217,7 +222,6 @@ function ExecutionPending() {
           )
           .then((res) => {
             console.log(res);
-
             setReload((preVal) => !preVal);
           })
           .catch((err) => {
@@ -228,16 +232,13 @@ function ExecutionPending() {
               severity: "error",
             });
           });
-
-        setConfirmation(false);
-        fetchData();
-        multipleToken("");
-        toastAlert("Token Verified");
       })
-      .catch((err) => {
-        toastError("Invalid Token");
-      });
+       .catch((err) => {
+        toastError('Invalid Token')
+      //   toastError(err);
+       });
   };
+  
   const handleAccept = (row) => {
     setRowData(row);
     setConfirmation(true);
@@ -285,6 +286,15 @@ function ExecutionPending() {
 
   const handleViewClick = (id) => {
     const selected = data.find((ele) => ele.sale_booking_id == id);
+  };
+
+  const [url, setUrl] = useState('');
+console.log(url,"<=====1======");
+  const handleButtonClick = (params) => {
+console.log(params?.row?.execution_excel,"mew fun");
+
+
+    setUrl(params.row.execution_excel);
   };
 
   const theme = createTheme({
@@ -493,7 +503,7 @@ function ExecutionPending() {
     },
     {
       field: "execution_excel",
-      headerName: "Excel",
+      headerName: "Excel--",
       width: 150,
       renderCell: (params) => {
         return (
@@ -504,6 +514,7 @@ function ExecutionPending() {
               className="btn btn_sm cmnbtn"
               variant="outlined"
               fontSize="inherit"
+              onClick={()=>handleButtonClick(params)}
               href={params.row.execution_excel}
             >
               Download
@@ -565,13 +576,11 @@ function ExecutionPending() {
           width: 400,
           cellClassName: "actions",
           getActions: (params) => {
-            const { id, row } = params; // Destructure the id and row from params
-            const executionStatus = row.execution_status; // Get the execution_status
+            const { id, row } = params; 
+            const executionStatus = row.execution_status; 
 
             if (executionStatus == "1") {
-              // Show Accept and Reject buttons when execution_status is "0"
               return [
-                // <Button key={id}><PointOfSaleTwoToneIcon/></Button>,
                 <div className="icon-1">
                   <GridActionsCellItem
                     key={id}
@@ -627,7 +636,6 @@ function ExecutionPending() {
                 </Button>,
               ];
             } else if (executionStatus == "2") {
-              // Show "Done" button when execution_status is "2"
               return [
                 <div className="icon-1">
                   <GridActionsCellItem

@@ -43,15 +43,15 @@ const DynamicTable = ({tableName,tableFields,tableApi,tableActions}) => {
       setSavedFilters(savedFiltersData);
 
       if (responseData && responseData.data && responseData.data.length > 0) {
-        const initialColumns = responseData.data[0].column_order_Obj || [tableFields];
+        const initialColumns = responseData.data[0].column_order_Obj || tableFields;
         setColumns(initialColumns);
       } else {
-        const defaultColumns = [tableFields];
+        const defaultColumns = tableFields;
         setColumns(defaultColumns);
       }
     } catch (error) {
       console.error("Error fetching dynamic table data:", error);
-      const defaultColumns = [tableFields];
+      const defaultColumns = tableFields;
       setColumns(defaultColumns);
     }
   };

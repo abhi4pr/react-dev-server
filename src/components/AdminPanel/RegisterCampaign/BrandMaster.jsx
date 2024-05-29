@@ -27,6 +27,7 @@ import ModeCommentTwoToneIcon from "@mui/icons-material/ModeCommentTwoTone";
 import { useNavigate } from "react-router-dom";
 import FieldContainer from "../FieldContainer";
 import FormContainer from "../FormContainer";
+import { FormatName } from "../../../utils/FormatName";
 
 export default function BrandMaster() {
   const navigate = useNavigate();
@@ -108,6 +109,23 @@ export default function BrandMaster() {
       </GridToolbarContainer>
     );
   }
+
+  const FormatName = (name) => {
+    const lettersOnly = /^[A-Za-z]+$/;
+  
+    const correctedNameParts = name?.split(" ").map((part) => {
+      let filteredPart = part
+        .split("")
+        .filter((char) => char.match(lettersOnly))
+        ?.join("");
+  
+      return (
+        filteredPart.charAt(0)?.toUpperCase() + filteredPart?.slice(1)?.toLowerCase()
+      );
+    });
+  
+    return correctedNameParts.join(" ");
+  };
   const handleChange = (event) => {
     const { name, value } = event.target;
 
@@ -448,7 +466,7 @@ export default function BrandMaster() {
               <>
                 <TextField
                   id="outlined-password-input"
-                  label="  * Brand"
+                  label="* Brand"
                   name="brand_name"
                   type="text"
                   value={postData.brand_name}
