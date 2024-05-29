@@ -634,9 +634,9 @@ export default function RegisterCampaigns() {
                       fullWidth
                       onChange={(event) => handleTextChange(event, index)}
                     />
-                    <Button onClick={(e) => handleRemoveField(e, index)}>
+                    {fields.length > 1 && <Button onClick={(e) => handleRemoveField(e, index)}>
                       <i className="fas fa-close"></i>
-                    </Button>
+                    </Button>}
                   </div>
                 ))}
               </FormControl>
@@ -713,7 +713,7 @@ export default function RegisterCampaigns() {
                     });
                   }}
                   sx={{ width: "100%" }}
-                />
+                /> 
               </>
             </Box>
           </DialogContent>

@@ -53,6 +53,7 @@ export default function RegisteredCampaigns() {
   const [filteredTable1DataLength, setFilteredTable1DataLength] = useState(0);
   const [filteredTable1Data, setFilterTable1Data] = useState([]);
   const [filteredTable2Data, setFilterTable2Data] = useState([]);
+  const [search, setSearch] = useState("");
 
   const handleDateFilterChange = (e) => {
     const newFilter = e.target.value;
@@ -270,10 +271,9 @@ export default function RegisteredCampaigns() {
     navigate(path);
   };
   const handleShowPlan = (event) => {
-    const path = `/admin/op-phase-creation/${event._id}`;
+    const path = `/admin/planOverview/${event._id}`;
     navigate(path);
   };
-  handleShowPlan;
   const handlePhase = (event) => {
     const path = `/admin/op-phase-creation/${event._id}`;
     navigate(path);
@@ -397,15 +397,10 @@ export default function RegisteredCampaigns() {
       width: 90,
     },
     {
-      field: "exeCmpId",
+      field: "exeCmpName",
       headerName: "Campaign Name",
+
       width: 170,
-      renderCell: (params) => {
-        const campaign = campignData.find(
-          (e) => e.exeCmpId === params.row.exeCmpId
-        );
-        return campaign ? capitalizeFirstWord(campaign.exeCmpName) : "";
-      },
     },
     {
       field: "brand_id",
@@ -630,6 +625,7 @@ export default function RegisteredCampaigns() {
       },
     },
   ];
+
   const videoType = [
     "2D Animation",
     "3D Animation",
@@ -664,6 +660,10 @@ export default function RegisteredCampaigns() {
     "Product Review",
     "Product Comparison",
   ];
+
+  const filtered1Data = table1Data.filter((item) =>
+    item.exeCmpName.toLowerCase().includes(search.toLowerCase())
+  );
 
   const style = {
     position: "absolute",
@@ -759,7 +759,7 @@ export default function RegisteredCampaigns() {
 
   const tab1 = (
     <div>
-      {loadTable1 && table1Data2 && (
+      {/* {loadTable1 && table1Data2 && (
         <DataGrid
           rows={filteredTable1Data}
           columns={tab1Columns}
@@ -768,7 +768,15 @@ export default function RegisteredCampaigns() {
             toolbar: GridToolbar,
           }}
         />
-      )}
+      )} */}
+      <DataGrid
+        rows={filtered1Data}
+        columns={tab1Columns}
+        getRowId={(row) => row?._id}
+        slots={{
+          toolbar: GridToolbar,
+        }}
+      />
       <Modal
         open={deleteRowModal}
         onClose={() => setDeleteRowModal(false)}
@@ -866,8 +874,8 @@ export default function RegisteredCampaigns() {
             <TextField
               type="text"
               label="Search Campaign"
-            // value={searchQuery}
-            // onChange={handleSearch}
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
             />
           </div>
           <div className="card-title">Count: {filteredTable1DataLength}</div>

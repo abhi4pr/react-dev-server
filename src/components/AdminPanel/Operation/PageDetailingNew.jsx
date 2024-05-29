@@ -53,10 +53,10 @@ let rejectedPages = [];
 
 const Loader = ({ message }) => {
   return (
-      <div className="loader-container">
-          <div className="loading-spinner"></div>
-          {message && <p className="loader-message">{message}</p>}
-      </div>
+    <div className="loader-container">
+      <div className="loading-spinner"></div>
+      {message && <p className="loader-message">{message}</p>}
+    </div>
   );
 }
 
@@ -704,7 +704,12 @@ const PageDetailingNew = ({ pageName, data, setPhaseDataError, phaseInfo }) => {
   };
 
   const submitPlan = async (e) => {
-    if (pageName == "planCreation") {
+    if (pageName === "planCreation") {
+      if (payload.length === 0) {
+        toastError(" pages are required.");
+        return;
+      }
+
       const planName = data.campaignName + "plan";
 
       const newdata = {
@@ -713,28 +718,33 @@ const PageDetailingNew = ({ pageName, data, setPhaseDataError, phaseInfo }) => {
         campaignId: data.campaignId,
         pages: payload,
       };
+
       let result;
       try {
         setIsLoadingPlan(true);
         result = await axios.post(baseUrl + "campaignplan", newdata);
         alert(result.data.message);
         setIsLoadingPlan(false);
-        toastAlert("Plan Created SuccessFully");
+        toastAlert("Plan Created Successfully");
         setTimeout(() => {
           navigate(`/admin/op-phase-creation/${data.campaignId}`);
         }, 2000);
       } catch (error) {
-        toastError(`Plan not Created `);
+        toastError(`Plan not Created`);
         toastError(`${error?.response?.data?.message}`);
         setIsLoadingPlan(false);
       }
     }
-    if (pageName == "phaseCreation") {
-      if (phaseInfo.phaseDataError === "") {
-        setPhaseDataError("Phase ID is Required");
+
+    if (pageName === "phaseCreation") {
+      if (payload.length === 0) {
+        toastError("Pages are required.");
+        return;
       }
+
       const planName = data.campaignName + "plan";
       e.preventDefault();
+
       const finalPages = payload.map((page) => {
         return {
           ...page,
@@ -742,6 +752,7 @@ const PageDetailingNew = ({ pageName, data, setPhaseDataError, phaseInfo }) => {
           storyRemaining: page.storyRemaining - page.storyPerPage,
         };
       });
+
       const newdata = {
         planName,
         campaignName: data.campaignName,
@@ -751,6 +762,7 @@ const PageDetailingNew = ({ pageName, data, setPhaseDataError, phaseInfo }) => {
         desciption: phaseInfo.description,
         commitment: phaseInfo.commitment,
       };
+
       try {
         setIsLoadingPhase(true);
         const result = await axios.post(baseUrl + "campaignphase", newdata);
@@ -759,15 +771,21 @@ const PageDetailingNew = ({ pageName, data, setPhaseDataError, phaseInfo }) => {
         phaseInfo.setShowPageDetails(false);
         phaseInfo.getPhaseData();
         resetToInitialState();
-        toastAlert("phase Created SuccessFully");
+        toastAlert("Phase Created Successfully");
 
         setIsLoadingPhase(false);
       } catch (error) {
-        toastError("phase not Created");
+        toastError("Phase not Created");
         setIsLoadingPhase(false);
       }
     }
-    if (pageName == "tempPlanCreation") {
+
+    if (pageName === "tempPlanCreation") {
+      if (payload.length === 0) {
+        toastError(" Pages are required.");
+        return;
+      }
+
       const planName = data.campaignName + "plan";
 
       const newdata = {
@@ -776,23 +794,24 @@ const PageDetailingNew = ({ pageName, data, setPhaseDataError, phaseInfo }) => {
         campaignId: data.campaignId,
         pages: payload,
       };
+
       let result;
       try {
         setIsLoadingPlan(true);
         result = await axios.post(baseUrl + "campaignplan", newdata);
-        // alert(result.data.message);
         setIsLoadingPlan(false);
-        toastAlert("Plan Created SuccessFully");
+        toastAlert("Plan Created Successfully");
         setTimeout(() => {
           navigate(`/admin/op-phase-creation/${data.campaignId}`);
         }, 2000);
       } catch (error) {
-        toastError(`Plan not Created `);
+        toastError(`Plan not Created`);
         toastError(`${error?.response?.data?.message}`);
         setIsLoadingPlan(false);
       }
     }
   };
+
 
   const columnForPages = [
     {
@@ -854,19 +873,19 @@ const PageDetailingNew = ({ pageName, data, setPhaseDataError, phaseInfo }) => {
         return (
           <div className="form-group m-0 pt-3 pb-3" >
 
-          <input
-          className="form-control pl-1"
-            style={{ width: "100%", padding:"0px", height:"20px"}}
-            type="number"
-            value={
-              params.row.postPerPage !== null
-              ? params.row.postPerPage
-              : params.value || ""
-            }
-            placeholder={params.row.postPerPage || ""}
-            onChange={(e) => handlePostPerPageChange(e, params, "post")}
+            <input
+              className="form-control pl-1"
+              style={{ width: "100%", padding: "0px", height: "20px" }}
+              type="number"
+              value={
+                params.row.postPerPage !== null
+                  ? params.row.postPerPage
+                  : params.value || ""
+              }
+              placeholder={params.row.postPerPage || ""}
+              onChange={(e) => handlePostPerPageChange(e, params, "post")}
             />
-            </div>
+          </div>
         );
       },
     },
@@ -878,13 +897,13 @@ const PageDetailingNew = ({ pageName, data, setPhaseDataError, phaseInfo }) => {
         return (
           <div className="form-group  m-0 pt-3 pb-3">
 
-          <input
-          className="form-control pl-1"
-          style={{ width: "100%" }}
-          type="number"
-          disabled
-          placeholder={params.row.postRemaining}
-          />
+            <input
+              className="form-control pl-1"
+              style={{ width: "100%" }}
+              type="number"
+              disabled
+              placeholder={params.row.postRemaining}
+            />
           </div>
         );
       },
@@ -896,22 +915,19 @@ const PageDetailingNew = ({ pageName, data, setPhaseDataError, phaseInfo }) => {
 
       renderCell: (params) => {
         return (
-              
-         
-         
-<div className="form-group  m-0 pt-3 pb-3">
-          <input
-          className="form-control pl-1"
-            style={{ width: "100%" }}
-            type="number"
-            value={
-              params.row.storyPerPage !== null
-                ? params.row.storyPerPage
-                : params.value || ""
-            }
-            placeholder={params.row.storyPerPage || ""}
-            onChange={(e) => handlePostPerPageChange(e, params, "story")}
-          />
+          <div className="form-group  m-0 pt-3 pb-3">
+            <input
+              className="form-control pl-1"
+              style={{ width: "100%" }}
+              type="number"
+              value={
+                params.row.storyPerPage !== null
+                  ? params.row.storyPerPage
+                  : params.value || ""
+              }
+              placeholder={params.row.storyPerPage || ""}
+              onChange={(e) => handlePostPerPageChange(e, params, "story")}
+            />
           </div>
         );
       },
@@ -923,13 +939,13 @@ const PageDetailingNew = ({ pageName, data, setPhaseDataError, phaseInfo }) => {
       renderCell: (params) => {
         return (
           <div className="form-group  m-0 pt-3 pb-3">
-          <input
-            className="form-control pl-1"
-            style={{ width: "100%" }}
-            type="number"
-            disabled
-            placeholder={params.row.storyRemaining}
-          />
+            <input
+              className="form-control pl-1"
+              style={{ width: "100%" }}
+              type="number"
+              disabled
+              placeholder={params.row.storyRemaining}
+            />
           </div>
         );
       },
@@ -1060,79 +1076,79 @@ const PageDetailingNew = ({ pageName, data, setPhaseDataError, phaseInfo }) => {
       <div className="card body-padding">
         <div className="d-flex justify-content-between gap4">
 
-      
-        <Autocomplete
-          multiple
-          id="combo-box-demo"
-          options={options ? options : []}
-          sx={{ width: 200 }}
-          renderInput={(params) => <TextField {...params} label="Category" />}
-          onChange={categoryChangeHandler}
+
+          <Autocomplete
+            multiple
+            id="combo-box-demo"
+            options={options ? options : []}
+            sx={{ width: 200 }}
+            renderInput={(params) => <TextField {...params} label="Category" />}
+            onChange={categoryChangeHandler}
           />
-        <Autocomplete
-          id="combo-box-demo"
-          options={Follower_Count}
-          getOptionLabel={(option) => option}
-          sx={{ width: 200 }}
-          renderInput={(params) => (
-            <TextField {...params} label="Follower Count" />
+          <Autocomplete
+            id="combo-box-demo"
+            options={Follower_Count}
+            getOptionLabel={(option) => option}
+            sx={{ width: 200 }}
+            renderInput={(params) => (
+              <TextField {...params} label="Follower Count" />
             )}
             onChange={followerChangeHandler}
-            />
-        <Autocomplete
-          id="combo-box-demo"
-          options={page_health}
-          getOptionLabel={(option) => option}
-          sx={{ width: 200 }}
-          renderInput={(params) => (
-            <TextField {...params} label="Page health" />
-            )}
-            />
-        <TextField
-          label="Search"
-          variant="outlined"
-          onChange={handleSearchChange}
           />
-            <label for="fileInput" className="btn btn-outline-primary"
-            style={{margin:"0",display:"flex",alignItems:"center"}}>
-              Upload Excel
-            </label>
+          <Autocomplete
+            id="combo-box-demo"
+            options={page_health}
+            getOptionLabel={(option) => option}
+            sx={{ width: 200 }}
+            renderInput={(params) => (
+              <TextField {...params} label="Page health" />
+            )}
+          />
+          <TextField
+            label="Search"
+            variant="outlined"
+            onChange={handleSearchChange}
+          />
+          <label for="fileInput" className="btn btn-outline-primary"
+            style={{ margin: "0", display: "flex", alignItems: "center" }}>
+            Upload Excel
+          </label>
           <button className="btn btn-outline-primary" onClick={handleCP} >
             Copy / Paste
           </button>
-        
 
-        
-            <input
-              type="file"
-              id="fileInput"
-              style={{ display:"none"}}
-              onChange={handleFileInputChange}
-              />
-              </div>
-          
-       
+
+
+          <input
+            type="file"
+            id="fileInput"
+            style={{ display: "none" }}
+            onChange={handleFileInputChange}
+          />
+        </div>
+
+
       </div>
       <div className="body-padding card">
-      <div className="d-flex justify-content-between gap4">
+        <div className="d-flex justify-content-between gap4">
 
-        <TextField
-         sx={{ width:"50%"}}
-          id="outlined-basic"
-          InputLabelProps={{ shrink: true }}
-          label="Post/pages"
-          variant="outlined"
-          onChange={(e) => handlePost(e, "post")}
-        />
-        <TextField
-          sx={{ ml: 2 ,width:"50%"}}
-          id="outlined-basic"
-          InputLabelProps={{ shrink: true }}
-          label="story/pages"
-          variant="outlined"
-          onChange={(e) => handlePost(e, "story")}
-        />
-       
+          <TextField
+            sx={{ width: "50%" }}
+            id="outlined-basic"
+            InputLabelProps={{ shrink: true }}
+            label="Post/pages"
+            variant="outlined"
+            onChange={(e) => handlePost(e, "post")}
+          />
+          <TextField
+            sx={{ ml: 2, width: "50%" }}
+            id="outlined-basic"
+            InputLabelProps={{ shrink: true }}
+            label="story/pages"
+            variant="outlined"
+            onChange={(e) => handlePost(e, "story")}
+          />
+
           {/* <Button
             onClick={() => exportToCSV(payload)}
             variant="text"
@@ -1142,48 +1158,48 @@ const PageDetailingNew = ({ pageName, data, setPhaseDataError, phaseInfo }) => {
           >
             <SiMicrosoftexcel />
           </Button> */}
-         
-       
+
+
         </div>
       </div>
       <div className="card body-padding">
-      <div
-        style={{ display: "flex", justifyContent: "space-between", gap: 0.5 }}
-      >
-        <div style={{ height:"700px", width:`${selectedRows.length !== 0?"60%":"100%"}`}}>
-          <DataGrid
-            rows={unregisteredPages || searchedPages || filteredPages || []}
-            columns={columnForPages}
-            getRowId={(row) => row.p_id}
-            pageSizeOptions={[5]}
-            checkboxSelection
-            disableRowSelectionOnClick
-            onRowSelectionModelChange={(row) => handleSelectionChange(row)}
-            rowSelectionModel={selectedRows?.map((row) => row)}
-            getRowClassName={(params) => {
-              return params.row.status == false ? "unavailable" : "available";
-            }}
-            sx={{
-              ".unavailable": {
-                bgcolor: " #FF4433",
-                "&:hover": {
-                  bgcolor: "#E30B5C",
+        <div
+          style={{ display: "flex", justifyContent: "space-between", gap: 0.5 }}
+        >
+          <div style={{ height: "700px", width: `${selectedRows.length !== 0 ? "60%" : "100%"}` }}>
+            <DataGrid
+              rows={unregisteredPages || searchedPages || filteredPages || []}
+              columns={columnForPages}
+              getRowId={(row) => row.p_id}
+              pageSizeOptions={[5]}
+              checkboxSelection
+              disableRowSelectionOnClick
+              onRowSelectionModelChange={(row) => handleSelectionChange(row)}
+              rowSelectionModel={selectedRows?.map((row) => row)}
+              getRowClassName={(params) => {
+                return params.row.status == false ? "unavailable" : "available";
+              }}
+              sx={{
+                ".unavailable": {
+                  bgcolor: " #FF4433",
+                  "&:hover": {
+                    bgcolor: "#E30B5C",
+                  },
                 },
-              },
-            }}
-          />
-          <div style={{ display: "flex", justifyContent: "flex-start" }}>
-            <Button
-              variant="contained"
-              sx={{ mt: 4, mb:1 }}
-              onClick={submitPlan}
-            >
-              submit
-            </Button>{" "}
+              }}
+            />
+            <div style={{ display: "flex", justifyContent: "flex-start" }}>
+              <Button
+                variant="contained"
+                sx={{ mt: 4, mb: 1 }}
+                onClick={submitPlan}
+              >
+                submit
+              </Button>{" "}
+            </div>
           </div>
+          <SummrayDetailes payload={payload} generatePDF={generatePDF} campName={campValue} drawer={false} />
         </div>
-        <SummrayDetailes payload={payload} generatePDF={generatePDF} campName={campValue} drawer={false} />
-      </div>
       </div>
       {
         //copy paste modal contents
