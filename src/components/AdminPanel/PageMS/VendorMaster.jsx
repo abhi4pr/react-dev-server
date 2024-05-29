@@ -655,7 +655,6 @@ const VendorMaster = () => {
     if (_id) {
       axios.get(baseUrl + `v1/vendor/${_id}`).then((res) => {
         const data = res.data.data;
-        console.log(data.vendor_type);
         setVendorName(data.vendor_name);
         setCountryCode(data.country_code);
         setMobile(data.mobile);
@@ -663,8 +662,8 @@ const VendorMaster = () => {
         setEmail(data.email);
         setPerAddress(data.personal_address);
         setPan(data.pan_no);
-        setPanImage(data?.pan_image);
-        setGstImage(data?.gst_image);
+        setPanImage(data?.pan_image_url);
+        setGstImage(data?.gst_image_url);
         setGst(data.gst_no);
         setCompName(data.company_name);
         setCompAddress(data.company_address);
@@ -909,6 +908,7 @@ const VendorMaster = () => {
           type="number"
           onChange={(e) => setCountryCode(e.target.value)}
         /> */}
+        {console.log(countryCode,"countries")}
         <div className="form-group col-6">
           <label className="form-label">
             Country Code <sup style={{ color: "red" }}>*</sup>
@@ -918,6 +918,7 @@ const VendorMaster = () => {
             sx={{ width: 300 }}
             options={countries}
             required={true}
+            value={countries?.find((option) => option.phone == countryCode)}
             onChange={(e, val) => {
               setCountryCode(val ? val.phone : null);
             }}
@@ -947,7 +948,7 @@ const VendorMaster = () => {
             )}
             renderInput={(params) => (
               <TextField
-                value={countries?.find((option) => option.phone == countryCode)}
+                // value={countries?.find((option) => option.phone == countryCode)}
                 {...params}
                 // label="Choose a country"
                 inputProps={{
@@ -1372,6 +1373,7 @@ const VendorMaster = () => {
         )}
 
         {panImage && _id && (
+          console.log(panImage,"panImage"),
           <img
             src={panImage}
             alt="pan"

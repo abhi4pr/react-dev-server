@@ -47,14 +47,14 @@ export default function PageInfoModal() {
   } = useGetAllProfileListQuery();
 
   useEffect(() => {
+    if(open==true){
     if (modalType === "Profile Type Info") {
-      console.log("Profile Type Info");
       return refetchProfileList();
     } else if (modalType === "Category Info") {
       refetchCategoryList();
     } else if (modalType === "Price Type Info") {
       refetchPriceList();
-    }
+    }}  
   }, []);
 
   const {
@@ -82,7 +82,7 @@ export default function PageInfoModal() {
     error: platformListError,
     isLoading: platformListIsloading,
     refetch: refetchPlatformList,
-  }=useGetPmsPlatformQuery();
+  } = useGetPmsPlatformQuery();
 
   const getData = () => {
     handleClose();
@@ -185,7 +185,9 @@ export default function PageInfoModal() {
     },
     {
       name: "Platform Name",
-      selector: (row) => platformList?.data?.find((item) => item._id === row.platfrom_id)?.platform_name,
+      selector: (row) =>
+        platformList?.data?.find((item) => item._id === row.platfrom_id)
+          ?.platform_name,
     },
     {
       name: "Description",
@@ -204,7 +206,11 @@ export default function PageInfoModal() {
           >
             <FaEdit />{" "}
           </button>
-          <DeleteButton endpoint="v1/pagePriceType" id={row._id} getData={getData} />
+          <DeleteButton
+            endpoint="v1/pagePriceType"
+            id={row._id}
+            getData={getData}
+          />
         </>
       ),
     },
@@ -221,7 +227,7 @@ export default function PageInfoModal() {
       setLoading(categoryListIsloading);
       setData(categoryList?.data);
       setColumns(categoryColumn);
-    }else if (modalType === "Price Type Info") {
+    } else if (modalType === "Price Type Info") {
       setTitle("Price Type");
       setLoading(priceListIsloading);
       setData(priceList?.data);
@@ -261,7 +267,12 @@ export default function PageInfoModal() {
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose} variant="contained" color="error" autoFocus>
+          <Button
+            onClick={handleClose}
+            variant="contained"
+            color="error"
+            autoFocus
+          >
             Close
           </Button>
         </DialogActions>

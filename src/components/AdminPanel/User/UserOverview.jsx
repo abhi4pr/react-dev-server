@@ -355,7 +355,7 @@ const UserOverview = () => {
     },
     {
       field: "user_name",
-      headerName: "Employe Name",
+      headerName: "Employee Name",
       width: 120,
       renderCell: (params) => (
         <Link
