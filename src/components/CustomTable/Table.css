@@ -67,7 +67,7 @@
     td {
         outline: 1px solid #ffffff;
         color: #5b6b79;
-        font-size: 15px;
+        font-size: 14px;
         font-weight: 400;
         height: 40px;
         padding-left: 10px;
@@ -166,7 +166,7 @@
                 }
             }
 
-            height: 40px;
+            height: 100px;
         }
     }
 
@@ -349,7 +349,7 @@ th .table-header {
     display: flex;
     justify-content: flex-start;
     align-items: center;
-    font-size: 16px;
+    font-size: 14px;
     font-weight: 500;
     color: #333;
     width: 100%;
@@ -395,9 +395,9 @@ th .table-header {
 }
 
 .empty-state {
-    position: absolute;
-    top: 50%;
-    left: 50%;
+    position: sticky;
+    top: 60%;
+    left: 47%;
 
 
 }

@@ -5,6 +5,7 @@ import PaginationComp from "./TableComponent/PaginationComp";
 import Dropdown from "./TableComponent/Dropdown";
 import TableToolkit from "./TableComponent/TableToolkit";
 import RenderedTable from "./TableComponent/RenderedTable";
+import { set } from "date-fns";
 
 const CustomTable = ({
   columns,
@@ -31,23 +32,15 @@ const CustomTable = ({
   const [selectedRowsData, setSelectedRowsData] = useState([]);
   const [selectAll, setSelectAll] = useState(false);
   const [editablesRows, setEditablesRows] = useState(
-    columns.map((column) => (column.editable ? column.editable : false))
+    columns.map((column) => (column.editable === undefined ? false : column.editable))
   );
-  const [searchQuery, setSearchQuery] = useState('');
 
+  const [searchQuery, setSearchQuery] = useState('');
+  const [sortedData, setSortedData] = useState([])
   const filteredData = searchQuery
     ? data?.filter(item => (columnsheader.map(column => column.key).some(key => item[key]?.toString().toLowerCase().includes(searchQuery.toLowerCase()))))
     : data;
 
-  useEffect(() => {
-    setColumns(columns);
-    setWidths(columns);
-    setAscFlag({ ...columns?.map(() => true) });
-    setVisibleColumns(columns.map((column) => column.showCol === undefined ? true : column.showCol));
-    setEditablesRows(
-      columns.map((column) => (column.editable ? column.editable : false))
-    );
-  }, [dataLoading, columns]);
 
   let pagination = Pagination?.length > 0 ? Pagination : [10, 50, 100];
 
@@ -60,16 +53,30 @@ const CustomTable = ({
       visibleColumns.map((visible, i) => (i === index ? !visible : visible))
     );
   };
+  useEffect(() => {
+    setSortedData(tabledata)
+  }, [itemsPerPage, currentPage, searchQuery])
 
-  let sortedData = tabledata?.sort((a, b) => {
-    if (a[sortKey] < b[sortKey]) {
-      return sortDirection === "asc" ? -1 : 1;
-    }
-    if (a[sortKey] > b[sortKey]) {
-      return sortDirection === "asc" ? 1 : -1;
-    }
-    return 0;
-  });
+  // setSortedData(tabledata?.sort((a, b) => {
+  //   if (a[sortKey] < b[sortKey]) {
+  //     return sortDirection === "asc" ? -1 : 1;
+  //   }
+  //   if (a[sortKey] > b[sortKey]) {
+  //     return sortDirection === "asc" ? 1 : -1;
+  //   }
+  //   return 0;
+  // }))
+
+  useEffect(() => {
+    setColumns(columns);
+    setWidths(columns);
+    setAscFlag({ ...columns?.map(() => true) });
+    setVisibleColumns(columns.map((column) => column.showCol === undefined ? true : column.showCol));
+    setEditablesRows(
+      columns.map((column) => (column.editable === undefined ? false : column.editable))
+    );
+    setSortedData(tabledata);
+  }, [dataLoading, columns]);
 
   return (
     <div className="table-pagination-container">
@@ -111,6 +118,9 @@ const CustomTable = ({
             widths={widths}
             setWidths={setWidths}
             sortedData={sortedData}
+            setSortedData={setSortedData}
+            editableRows={editablesRows}
+
           />
         }
       </div>
