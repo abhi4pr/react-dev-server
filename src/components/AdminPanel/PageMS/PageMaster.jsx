@@ -37,9 +37,9 @@ import {
 
 const PageMaster = () => {
   const vendorInfoModalOpen = useSelector(
-    (state) => state.pageMaster.showInfoModal
+    (state) => state.vendorMaster.showVendorInfoModal
   );
-
+const pageInfoModlaOpen = useSelector((state) => state.pageMaster.showInfoModal);
   const { toastAlert, toastError } = useGlobalContext();
   const [pageName, setPageName] = useState("");
   const [link, setLink] = useState("");

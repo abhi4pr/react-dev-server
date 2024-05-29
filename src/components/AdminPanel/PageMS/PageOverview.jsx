@@ -52,6 +52,8 @@ import {
   useGetMultiplePagePriceQuery,
   useGetpagePriceTypeQuery,
 } from "../../Store/PageBaseURL";
+import AddIcon from "@mui/icons-material/Add";
+import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 
 const PageOverview = () => {
   // const { toastAlert } = useGlobalContext();
@@ -359,6 +361,11 @@ const PageOverview = () => {
     dispatch(setShowVendorNotAssignedModal());
   }
 
+  // const handlePageChange = ()=>{
+  //   // if()
+
+  // }
+
   const { data: allPriceTypeList } = useGetpagePriceTypeQuery();
   // const handleEditCellChange = (params) => {
   //   (async () => {
@@ -451,7 +458,7 @@ const PageOverview = () => {
     });
   };
 
-  const { data: pageList } = useGetAllPageListQuery();
+  const { data: pageList, refetch: refetchPageList } = useGetAllPageListQuery();
   useEffect(() => {
     if (pageList) {
       setVendorTypes(pageList.data);
@@ -716,7 +723,7 @@ const PageOverview = () => {
       width: 300,
       renderCell: (params) => (
         <div className="d-flex align-center ">
-          <Link
+          {/* <Link
             className="mt-2"
             to={`/admin/pms-purchase-price/${params.row.pageMast_id}`}
           >
@@ -734,11 +741,11 @@ const PageOverview = () => {
             >
               <FaEdit />{" "}
             </button>
-          </Link>
+          </Link> */}
           <DeleteButton
-            endpoint="deletePageMast"
+            endpoint="v1/pageMaster"
             id={params.row._id}
-            getData={getData}
+            getData={refetchPageList}
           />
         </div>
       ),
@@ -1313,7 +1320,7 @@ const PageOverview = () => {
   return (
     <>
       {/* Design Start */}
-      <div className="pageOverviewWrapper">
+      {/* <div className="pageOverviewWrapper">
         <div className="pageOverviewWrapperLeft">
           <div className="pageOverviewBoard card">
             <div className="card-body">
@@ -1343,7 +1350,7 @@ const PageOverview = () => {
                             >
                               <span>0.00%</span>Stats
                               <button className="btn toggleArrowBtn">
-                                <i class="bi bi-chevron-down"></i>
+                                <i className="bi bi-chevron-down"></i>
                               </button>
                             </Dropdown.Toggle>
                             <Dropdown.Menu>
@@ -1362,9 +1369,9 @@ const PageOverview = () => {
                               variant="default"
                               id="dropdownMore"
                             >
-                              <i class="bi bi-three-dots-vertical"></i> More
+                              <i className="bi bi-three-dots-vertical"></i> More
                               <button className="btn toggleArrowBtn">
-                                <i class="bi bi-chevron-down"></i>
+                                <i className="bi bi-chevron-down"></i>
                               </button>
                             </Dropdown.Toggle>
                             <Dropdown.Menu>
@@ -1424,7 +1431,7 @@ const PageOverview = () => {
                   <div className="pageChartHead">
                     <h2>Demographics (Age Group)</h2>
                     <button className="btn">
-                      View image <i class="bi bi-image-fill"></i>
+                      View image <i className="bi bi-image-fill"></i>
                     </button>
                   </div>
                   <div className="pageChartArea">
@@ -1443,7 +1450,7 @@ const PageOverview = () => {
                   <div className="pageChartHead">
                     <h2>Top Country</h2>
                     <button className="btn">
-                      View image <i class="bi bi-image-fill"></i>
+                      View image <i className="bi bi-image-fill"></i>
                     </button>
                   </div>
                   <div className="pageChartArea">
@@ -1462,7 +1469,7 @@ const PageOverview = () => {
                   <div className="pageChartHead">
                     <h2>Top City</h2>
                     <button className="btn">
-                      View image <i class="bi bi-image-fill"></i>
+                      View image <i className="bi bi-image-fill"></i>
                     </button>
                   </div>
                   <div className="pageChartArea">
@@ -1511,10 +1518,10 @@ const PageOverview = () => {
         </div>
         <div className="pageOverviewWrapperRight">
           <div className="pageHistoryBoard card">
-            <div class="card-header flexCenterBetween">
-              <h5 class="card-title">History</h5>
+            <div className="card-header flexCenterBetween">
+              <h5 className="card-title">History</h5>
               <button id="closeHistory" className="btn iconBtn">
-                <i class="bi bi-x-lg"></i>
+                <i className="bi bi-x-lg"></i>
               </button>
             </div>
             <div className="card-body">
@@ -1617,11 +1624,11 @@ const PageOverview = () => {
       </div>
       <div className="stateHistoryWrapper">
         <div className="card">
-          <div class="card-body flexCenterBetween">
-            <h5 class="card-title">Stats History</h5>
-            <div class="form-group flexCenter colGap8 w-40 m0">
-              <label class="w-25 m0">Stats for</label>
-              <select class="form-control form_sm">
+          <div className="card-body flexCenterBetween">
+            <h5 className="card-title">Stats History</h5>
+            <div className="form-group flexCenter colGap8 w-40 m0">
+              <label className="w-25 m0">Stats for</label>
+              <select className="form-control form_sm">
                 <option value="">All</option>
                 <option value="daily">Daily</option>
                 <option value="monthly">Monthly</option>
@@ -1632,98 +1639,98 @@ const PageOverview = () => {
           </div>
         </div>
         <div className="card">
-          <div class="card-header">
-            <h5 class="card-title">Followers Bifurcation</h5>
+          <div className="card-header">
+            <h5 className="card-title">Followers Bifurcation</h5>
           </div>
           <div className="card-body pb8">
             <div className="row thm_form">
               <div className="col-md-4 col-sm-12">
-                <div class="form-group">
+                <div className="form-group">
                   <label>
                     Reach <span className="dangerText">*</span>
                   </label>
-                  <div class="input-group">
-                    <input type="text" class="form-control" />
+                  <div className="input-group">
+                    <input type="text" className="form-control" />
                     <button
-                      class="btn iconBtn btn-outline-border"
+                      className="btn iconBtn btn-outline-border"
                       type="button"
                     >
-                      <i class="bi bi-cloud-arrow-up-fill"></i>
+                      <i className="bi bi-cloud-arrow-up-fill"></i>
                     </button>
                   </div>
                 </div>
               </div>
               <div className="col-md-4 col-sm-12">
-                <div class="form-group">
+                <div className="form-group">
                   <label>
                     Impressions <span className="dangerText">*</span>
                   </label>
-                  <div class="input-group">
-                    <input type="text" class="form-control" />
+                  <div className="input-group">
+                    <input type="text" className="form-control" />
                     <button
-                      class="btn iconBtn btn-outline-border"
+                      className="btn iconBtn btn-outline-border"
                       type="button"
                     >
-                      <i class="bi bi-cloud-arrow-up-fill"></i>
+                      <i className="bi bi-cloud-arrow-up-fill"></i>
                     </button>
                   </div>
                 </div>
               </div>
               <div className="col-md-4 col-sm-12">
-                <div class="form-group">
+                <div className="form-group">
                   <label>
                     Engagement <span className="dangerText">*</span>
                   </label>
-                  <div class="input-group">
-                    <input type="text" class="form-control" />
+                  <div className="input-group">
+                    <input type="text" className="form-control" />
                     <button
-                      class="btn iconBtn btn-outline-border"
+                      className="btn iconBtn btn-outline-border"
                       type="button"
                     >
-                      <i class="bi bi-cloud-arrow-up-fill"></i>
+                      <i className="bi bi-cloud-arrow-up-fill"></i>
                     </button>
                   </div>
                 </div>
               </div>
               <div className="col-md-4 col-sm-12">
-                <div class="form-group">
+                <div className="form-group">
                   <label>
                     Story View <span className="dangerText">*</span>
                   </label>
-                  <div class="input-group">
-                    <input type="text" class="form-control" />
+                  <div className="input-group">
+                    <input type="text" className="form-control" />
                     <button
-                      class="btn iconBtn btn-outline-border"
+                      className="btn iconBtn btn-outline-border"
                       type="button"
                     >
-                      <i class="bi bi-cloud-arrow-up-fill"></i>
+                      <i className="bi bi-cloud-arrow-up-fill"></i>
                     </button>
                   </div>
                 </div>
               </div>
               <div className="col-md-4 col-sm-12">
-                <div class="form-group">
+                <div className="form-group">
                   <label>Story View Date</label>
-                  <input type="date" class="form-control" />
+                  <input type="date" className="form-control" />
                 </div>
               </div>
               <div className="col-md-4 col-sm-12">
-                <div class="form-group">
+                <div className="form-group">
                   <label>Profile Visit</label>
-                  <input type="text" class="form-control" />
+                  <input type="text" className="form-control" />
                 </div>
               </div>
             </div>
           </div>
         </div>
         <div className="card">
-          <div class="card-header">
-            <h5 class="card-title">City</h5>
+          <div className="card-header">
+            <h5 className="card-title">City</h5>
           </div>
           <div className="card-body pb8">
             <div className="row thm_form">
               <div className="col-md-4 col-sm-12">
-                <div class="form-group">
+                <div className="form-group">
                   <label>City 1</label>
                   <div className="row m0">
                     <div className="col-md-9 p0 mr8">
@@ -1740,19 +1747,19 @@ const PageOverview = () => {
                       </select>
                     </div>
                     <div className="col p0">
-                      <div class="input-group">
+                      <div className="input-group">
                         <input
                           type="text"
-                          class="form-control pl4 pr4 text-center"
+                          className="form-control pl4 pr4 text-center"
                         />
-                        <span class="input-group-text">%</span>
+                        <span className="input-group-text">%</span>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
               <div className="col-md-4 col-sm-12">
-                <div class="form-group">
+                <div className="form-group">
                   <label>City 2</label>
                   <div className="row m0">
                     <div className="col-md-9 p0 mr8">
@@ -1769,19 +1776,19 @@ const PageOverview = () => {
                       </select>
                     </div>
                     <div className="col p0">
-                      <div class="input-group">
+                      <div className="input-group">
                         <input
                           type="text"
-                          class="form-control pl4 pr4 text-center"
+                          className="form-control pl4 pr4 text-center"
                         />
-                        <span class="input-group-text">%</span>
+                        <span className="input-group-text">%</span>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
               <div className="col-md-4 col-sm-12">
-                <div class="form-group">
+                <div className="form-group">
                   <label>City 3</label>
                   <div className="row m0">
                     <div className="col-md-9 p0 mr8">
@@ -1798,19 +1805,19 @@ const PageOverview = () => {
                       </select>
                     </div>
                     <div className="col p0">
-                      <div class="input-group">
+                      <div className="input-group">
                         <input
                           type="text"
-                          class="form-control pl4 pr4 text-center"
+                          className="form-control pl4 pr4 text-center"
                         />
-                        <span class="input-group-text">%</span>
+                        <span className="input-group-text">%</span>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
               <div className="col-md-4 col-sm-12">
-                <div class="form-group">
+                <div className="form-group">
                   <label>City 4</label>
                   <div className="row m0">
                     <div className="col-md-9 p0 mr8">
@@ -1827,19 +1834,19 @@ const PageOverview = () => {
                       </select>
                     </div>
                     <div className="col p0">
-                      <div class="input-group">
+                      <div className="input-group">
                         <input
                           type="text"
-                          class="form-control pl4 pr4 text-center"
+                          className="form-control pl4 pr4 text-center"
                         />
-                        <span class="input-group-text">%</span>
+                        <span className="input-group-text">%</span>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
               <div className="col-md-4 col-sm-12">
-                <div class="form-group">
+                <div className="form-group">
                   <label>City 5</label>
                   <div className="row m0">
                     <div className="col-md-9 p0 mr8">
@@ -1856,21 +1863,21 @@ const PageOverview = () => {
                       </select>
                     </div>
                     <div className="col p0">
-                      <div class="input-group">
+                      <div className="input-group">
                         <input
                           type="text"
-                          class="form-control pl4 pr4 text-center"
+                          className="form-control pl4 pr4 text-center"
                         />
-                        <span class="input-group-text">%</span>
+                        <span className="input-group-text">%</span>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
               <div className="col-md-4 col-sm-12">
-                <div class="form-group">
+                <div className="form-group">
                   <button className="btn cmnbtn btn-primary mt24">
-                    <i class="bi bi-cloud-arrow-up-fill"></i> Image
+                    <i className="bi bi-cloud-arrow-up-fill"></i> Image
                   </button>
                 </div>
               </div>
@@ -1878,13 +1885,13 @@ const PageOverview = () => {
           </div>
         </div>
         <div className="card">
-          <div class="card-header">
-            <h5 class="card-title">Country</h5>
+          <div className="card-header">
+            <h5 className="card-title">Country</h5>
           </div>
           <div className="card-body pb8">
             <div className="row thm_form">
               <div className="col-md-4 col-sm-12">
-                <div class="form-group">
+                <div className="form-group">
                   <label>Country 1</label>
                   <div className="row m0">
                     <div className="col-md-9 p0 mr8">
@@ -1901,19 +1908,19 @@ const PageOverview = () => {
                       </select>
                     </div>
                     <div className="col p0">
-                      <div class="input-group">
+                      <div className="input-group">
                         <input
                           type="text"
-                          class="form-control pl4 pr4 text-center"
+                          className="form-control pl4 pr4 text-center"
                         />
-                        <span class="input-group-text">%</span>
+                        <span className="input-group-text">%</span>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
               <div className="col-md-4 col-sm-12">
-                <div class="form-group">
+                <div className="form-group">
                   <label>Country 2</label>
                   <div className="row m0">
                     <div className="col-md-9 p0 mr8">
@@ -1930,19 +1937,19 @@ const PageOverview = () => {
                       </select>
                     </div>
                     <div className="col p0">
-                      <div class="input-group">
+                      <div className="input-group">
                         <input
                           type="text"
-                          class="form-control pl4 pr4 text-center"
+                          className="form-control pl4 pr4 text-center"
                         />
-                        <span class="input-group-text">%</span>
+                        <span className="input-group-text">%</span>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
               <div className="col-md-4 col-sm-12">
-                <div class="form-group">
+                <div className="form-group">
                   <label>Country 3</label>
                   <div className="row m0">
                     <div className="col-md-9 p0 mr8">
@@ -1959,19 +1966,19 @@ const PageOverview = () => {
                       </select>
                     </div>
                     <div className="col p0">
-                      <div class="input-group">
+                      <div className="input-group">
                         <input
                           type="text"
-                          class="form-control pl4 pr4 text-center"
+                          className="form-control pl4 pr4 text-center"
                         />
-                        <span class="input-group-text">%</span>
+                        <span className="input-group-text">%</span>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
               <div className="col-md-4 col-sm-12">
-                <div class="form-group">
+                <div className="form-group">
                   <label>Country 4</label>
                   <div className="row m0">
                     <div className="col-md-9 p0 mr8">
@@ -1988,19 +1995,19 @@ const PageOverview = () => {
                       </select>
                     </div>
                     <div className="col p0">
-                      <div class="input-group">
+                      <div className="input-group">
                         <input
                           type="text"
-                          class="form-control pl4 pr4 text-center"
+                          className="form-control pl4 pr4 text-center"
                         />
-                        <span class="input-group-text">%</span>
+                        <span className="input-group-text">%</span>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
               <div className="col-md-4 col-sm-12">
-                <div class="form-group">
+                <div className="form-group">
                   <label>Country 5</label>
                   <div className="row m0">
                     <div className="col-md-9 p0 mr8">
@@ -2017,21 +2024,21 @@ const PageOverview = () => {
                       </select>
                     </div>
                     <div className="col p0">
-                      <div class="input-group">
+                      <div className="input-group">
                         <input
                           type="text"
-                          class="form-control pl4 pr4 text-center"
+                          className="form-control pl4 pr4 text-center"
                         />
-                        <span class="input-group-text">%</span>
+                        <span className="input-group-text">%</span>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
               <div className="col-md-4 col-sm-12">
-                <div class="form-group">
+                <div className="form-group">
                   <button className="btn cmnbtn btn-primary mt24">
-                    <i class="bi bi-cloud-arrow-up-fill"></i> Image
+                    <i className="bi bi-cloud-arrow-up-fill"></i> Image
                   </button>
                 </div>
               </div>
@@ -2039,83 +2046,83 @@ const PageOverview = () => {
           </div>
         </div>
         <div className="card">
-          <div class="card-header">
-            <h5 class="card-title">Age Group</h5>
+          <div className="card-header">
+            <h5 className="card-title">Age Group</h5>
           </div>
           <div className="card-body pb8">
             <div className="row thm_form">
               <div className="col-md-4 col-sm-12">
-                <div class="form-group">
+                <div className="form-group">
                   <label>13 - 17</label>
-                  <div class="input-group">
-                    <input type="text" class="form-control" />
-                    <span class="input-group-text">%</span>
+                  <div className="input-group">
+                    <input type="text" className="form-control" />
+                    <span className="input-group-text">%</span>
                   </div>
                 </div>
               </div>
               <div className="col-md-4 col-sm-12">
-                <div class="form-group">
+                <div className="form-group">
                   <label>18 - 24</label>
-                  <div class="input-group">
-                    <input type="text" class="form-control" />
-                    <span class="input-group-text">%</span>
+                  <div className="input-group">
+                    <input type="text" className="form-control" />
+                    <span className="input-group-text">%</span>
                   </div>
                 </div>
               </div>
               <div className="col-md-4 col-sm-12">
-                <div class="form-group">
+                <div className="form-group">
                   <label>25 - 34</label>
-                  <div class="input-group">
-                    <input type="text" class="form-control" />
-                    <span class="input-group-text">%</span>
+                  <div className="input-group">
+                    <input type="text" className="form-control" />
+                    <span className="input-group-text">%</span>
                   </div>
                 </div>
               </div>
               <div className="col-md-4 col-sm-12">
-                <div class="form-group">
+                <div className="form-group">
                   <label>35 - 44</label>
-                  <div class="input-group">
-                    <input type="text" class="form-control" />
-                    <span class="input-group-text">%</span>
+                  <div className="input-group">
+                    <input type="text" className="form-control" />
+                    <span className="input-group-text">%</span>
                   </div>
                 </div>
               </div>
               <div className="col-md-4 col-sm-12">
-                <div class="form-group">
+                <div className="form-group">
                   <label>45 - 54</label>
-                  <div class="input-group">
-                    <input type="text" class="form-control" />
-                    <span class="input-group-text">%</span>
+                  <div className="input-group">
+                    <input type="text" className="form-control" />
+                    <span className="input-group-text">%</span>
                   </div>
                 </div>
               </div>
               <div className="col-md-4 col-sm-12">
-                <div class="form-group">
+                <div className="form-group">
                   <label>55 - 64</label>
-                  <div class="input-group">
-                    <input type="text" class="form-control" />
-                    <span class="input-group-text">%</span>
+                  <div className="input-group">
+                    <input type="text" className="form-control" />
+                    <span className="input-group-text">%</span>
                   </div>
                 </div>
               </div>
               <div className="col-md-4 col-sm-12">
-                <div class="form-group">
+                <div className="form-group">
                   <label>65+</label>
-                  <div class="input-group">
-                    <input type="text" class="form-control" />
-                    <span class="input-group-text">%</span>
+                  <div className="input-group">
+                    <input type="text" className="form-control" />
+                    <span className="input-group-text">%</span>
                   </div>
                 </div>
               </div>
               <div className="col-md-4 col-sm-12">
-                <div class="form-group">
+                <div className="form-group">
                   <button className="btn cmnbtn btn-primary mt24">
-                    <i class="bi bi-cloud-arrow-up-fill"></i> Image
+                    <i className="bi bi-cloud-arrow-up-fill"></i> Image
                   </button>
                 </div>
               </div>
               <div className="col-md-4 col-sm-12">
-                <div class="form-group">
+                <div className="form-group">
                   <p className="mt24 dangerText">
                     Note: Total percentage must be at least 98%
                   </p>
@@ -2125,26 +2132,26 @@ const PageOverview = () => {
           </div>
         </div>
         <div className="card">
-          <div class="card-header">
-            <h5 class="card-title">Gender</h5>
+          <div className="card-header">
+            <h5 className="card-title">Gender</h5>
           </div>
           <div className="card-body pb8">
             <div className="row thm_form">
               <div className="col-md-4 col-sm-12">
-                <div class="form-group">
+                <div className="form-group">
                   <label>Male</label>
-                  <div class="input-group">
-                    <input type="text" class="form-control" />
-                    <span class="input-group-text">%</span>
+                  <div className="input-group">
+                    <input type="text" className="form-control" />
+                    <span className="input-group-text">%</span>
                   </div>
                 </div>
               </div>
               <div className="col-md-4 col-sm-12">
-                <div class="form-group">
+                <div className="form-group">
                   <label>Female</label>
-                  <div class="input-group">
-                    <input type="text" class="form-control" />
-                    <span class="input-group-text">%</span>
+                  <div className="input-group">
+                    <input type="text" className="form-control" />
+                    <span className="input-group-text">%</span>
                   </div>
                 </div>
               </div>
@@ -2152,58 +2159,31 @@ const PageOverview = () => {
           </div>
         </div>
 
-        <div class="card">
-          <div class="card-body">
-            <div class="flexCenter colGap16">
-              <button class="btn cmnbtn btn-primary" type="button">
+        <div className="card">
+          <div className="card-body">
+            <div className="flexCenter colGap16">
+              <button className="btn cmnbtn btn-primary" type="button">
                 Save
               </button>
-              <button class="btn cmnbtn btn-secondary" type="button">
+              <button className="btn cmnbtn btn-secondary" type="button">
                 Cancel
               </button>
             </div>
           </div>
         </div>
-      </div>
+      </div> */}
       {/* Design End */}
-      <Link to={`/admin/pms-page-master`}>
-        <button
-          title="Add"
-          className="btn btn-outline-primary"
-          style={{ marginBottom: "10px" }}
+      <Stack direction={"row"} gap={2} justifyContent={"flex-end"}>
+        <Link to={`/admin/pms-page-master`} className="btn btn-primary btn-sm">
+          Add Page <AddIcon />
+        </Link>
+        <Link
+          to={`/admin/pms-vendor-overview`}
+          className="btn btn-primary btn-sm"
         >
-          Add Page
-        </button>
-      </Link>
-      {/* <Stack direction="row" spacing={1}>
-        <button
-          title="Add"
-          className="btn btn-outline-primary"
-          style={{ marginBottom: "10px" }}
-          onClick={() => copySelectedRows(1)}
-        >
-          <ContentCopyOutlinedIcon />
-          Copy Selected Pages
-        </button>
-        <button
-          title="Add"
-          className="btn btn-outline-primary"
-          style={{ marginBottom: "10px" }}
-          onClick={copyAllRows}
-        >
-          <CopyAllOutlinedIcon />
-          Copy All Pages
-        </button>
-        <button
-          title="Add"
-          className="btn btn-outline-primary"
-          style={{ marginBottom: "10px" }}
-          onClick={() => copySelectedRows(0)}
-        >
-          <ContentPasteIcon />
-          Copy Selected Page Name & Links
-        </button>
-      </Stack> */}
+          Vendor <KeyboardArrowRightIcon />
+        </Link>
+      </Stack>
       <Stack direction="row" spacing={1}>
         <Switch
           checked={showPageHealthColumn}
@@ -2221,7 +2201,7 @@ const PageOverview = () => {
             <div className="card-body">
               <h5 className="card-title">Page</h5>
               <div className="card-text">
-                <div className="row">
+                {/* <div className="row">
                   <div className="col-md-2">
                     <Link
                       to="/admin/pms-profile-type"
@@ -2267,126 +2247,37 @@ const PageOverview = () => {
                       Platform Price
                     </Link>
                   </div>
-                </div>
-                {/* <div className="row my-2">
-                  {platformData?.map((item, i) => {
-                    return (
-                      <div key={i} className="col-md-2">
-                        <button
-                          onClick={() => {
-                            let result = vendorTypes.filter((d) => {
-                              return d.platform_id == item._id;
-                            });
-
-                            setFilterData(result);
-                          }}
-                          className="btn btn-primary btn-sm"
-                          id="pageName"
-                        >
-                          {item.platform_name} (
-                          {
-                            vendorTypes.filter((d) => {
-                              return d.platform_id == item._id;
-                            }).length
-                          }
-                          )
-                        </button>
-                      </div>
-                    );
-                  })}
                 </div> */}
 
-                <div className="mt-2">
-                  <h4>Platform</h4>
-                  <Autocomplete
-                    id="platform-autocomplete"
-                    options={platformData}
-                    getOptionLabel={(option) => {
-                      const count = vendorTypes.filter(
-                        (d) => d.platform_id == option._id
-                      ).length;
-                      return `${option.platform_name} (${count})`;
-                    }}
-                    style={{ width: 300 }}
-                    renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        label="Platform"
-                        variant="outlined"
-                      />
-                    )}
-                    onChange={(event, newValue) => {
-                      let result = vendorTypes.filter(
-                        (d) => d.platform_id == newValue._id
-                      );
-                      setFilterData(result);
-                    }}
-                  />
-                </div>
-                <div>
-                  {/* {[
-                    ...new Set(
-                      vendorTypes.map((item) => {
-                        return item?.ownership_type;
-                      })
-                    ),
-                  ].map((item, i) => {
-                    return (
-                      <button
-                        key={i}
-                        onClick={() => {
-                          let result = vendorTypes.filter((d) => {
-                            return d.ownership_type == item;
-                          });
-                          setFilterData(result);
-                        }}
-                        className="btn btn-primary btn-sm me-5"
-                        id="pageName"
-                      >
-                        {item} (
-                        {
-                          vendorTypes.filter((d) => {
-                            return d.ownership_type == item;
-                          }).length
-                        }
-                        )
-                      </button>
-                    );
-                  })} */}
-                  {/* <div className="mt-2">
-                    <h4>Page Status</h4>
-
-                    {[
-                      ...new Set(
-                        vendorTypes.map((item) => {
-                          return item?.page_status;
-                        })
-                      ),
-                    ].map((item, i) => {
-                      return (
-                        <button
-                          key={i}
-                          onClick={() => {
-                            let result = vendorTypes.filter((d) => {
-                              return d.page_status == item;
-                            });
-                            setFilterData(result);
-                          }}
-                          className="btn btn-primary btn-sm me-5 mt-2"
-                          id="pageName"
-                        >
-                          {item} (
-                          {
-                            vendorTypes.filter((d) => {
-                              return d.page_status == item;
-                            }).length
-                          }
-                          )
-                        </button>
-                      );
-                    })}
-                  </div> */}
-
+                <Stack direction={"row"} spacing={2} flexWrap={"wrap"}>
+                  <div className="mt-2">
+                    <h4>Platform</h4>
+                    <Autocomplete
+                      id="platform-autocomplete"
+                      options={platformData}
+                      getOptionLabel={(option) => {
+                        const count = vendorTypes.filter(
+                          (d) => d.platform_id == option._id
+                        ).length;
+                        return `${option.platform_name} (${count})`;
+                      }}
+                      style={{ width: 300 }}
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          label="Platform"
+                          variant="outlined"
+                        />
+                      )}
+                      onChange={(event, newValue) => {
+                        let result = vendorTypes.filter(
+                          (d) => d.platform_id == newValue._id
+                        );
+                        setFilterData(result);
+                      }}
+                    />
+                  </div>
+                  {/* <div> */}
                   <div className="mt-2">
                     <h4>Ownership Type</h4>
                     <Autocomplete
@@ -2454,40 +2345,6 @@ const PageOverview = () => {
                       }}
                     />
                   </div>
-
-                  {/* <div className="mt-2">
-                    <h4>Page Name Type</h4>
-                    {[
-                      ...new Set(
-                        vendorTypes.map((item) => {
-                          return item?.page_name_type;
-                        })
-                      ),
-                    ].map((item, i) => {
-                      return (
-                        <button
-                          key={i}
-                          onClick={() => {
-                            let result = vendorTypes.filter((d) => {
-                              return d.page_name_type == item;
-                            });
-                            setFilterData(result);
-                          }}
-                          className="btn btn-primary btn-sm me-5 mt-2"
-                          id="pageName"
-                        >
-                          {item} (
-                          {
-                            vendorTypes.filter((d) => {
-                              return d.page_name_type == item;
-                            }).length
-                          }
-                          )
-                        </button>
-                      );
-                    })}
-                  </div> */}
-
                   <div className="mt-2">
                     <h4>Page Name Type</h4>
                     <Autocomplete
@@ -2521,44 +2378,6 @@ const PageOverview = () => {
                       }}
                     />
                   </div>
-                  {/* <div className="mt-2">
-                    <h4>Closed By</h4>
-                    {[
-                      ...new Set(
-                        vendorTypes.map((item) => {
-                          return item?.page_closed_by;
-                        })
-                      ),
-                    ].map((item, i) => {
-                      return (
-                        <button
-                          key={i}
-                          onClick={() => {
-                            let result = vendorTypes.filter((d) => {
-                              return d.page_closed_by == item;
-                            });
-                            setFilterData(result);
-                          }}
-                          className="btn btn-primary btn-sm me-5 mt-2"
-                          id="pageName"
-                        >
-                          {
-                            user?.find((e) => {
-                              return e.user_id == item;
-                            })?.user_name
-                          }{" "}
-                          (
-                          {
-                            vendorTypes.filter((d) => {
-                              return d.page_closed_by == item;
-                            }).length
-                          }
-                          )
-                        </button>
-                      );
-                    })}
-                  </div> */}
-
                   <div className="mt-2">
                     <h4>Closed By</h4>
                     <Autocomplete
@@ -2593,50 +2412,6 @@ const PageOverview = () => {
                       }}
                     />
                   </div>
-
-                  {/* <div className="mt-2">
-                    <h4>Category</h4>
-                    {[
-                      ...new Set(
-                        vendorTypes.map((item) => {
-                          return item?.page_catg_id;
-                        })
-                      ),
-                    ].map((item, i) => {
-                      return (
-                        <button
-                          key={i}
-                          onClick={() => {
-                            let result = vendorTypes.filter((d) => {
-                              return d.page_catg_id == item;
-                            });
-                            setFilterData(result);
-                          }}
-                          className="btn btn-primary btn-sm me-5 mt-2"
-                          id="pageName"
-                        >
-                          {
-                            cat?.find((e) => {
-                              return e._id == item;
-                            })?.page_category
-                          }{" "}
-                          (
-                          {
-                            vendorTypes.filter((d) => {
-                              return d.page_catg_id == item;
-                            }).length
-                          }
-                          )
-                        </button>
-                      );
-                    })}
-                  </div> */}
-
-                  {/* import Autocomplete from '@mui/material/Autocomplete';
-import TextField from '@mui/material/TextField';
-
-// ... */}
-
                   <div className="mt-2">
                     <h4>Category</h4>
                     <Autocomplete
@@ -2671,40 +2446,6 @@ import TextField from '@mui/material/TextField';
                       }}
                     />
                   </div>
-
-                  {/* <div className="mt-2">
-                    <h4>Ownership</h4>
-                    {[
-                      ...new Set(
-                        vendorTypes.map((item) => {
-                          return item?.ownership_type;
-                        })
-                      ),
-                    ].map((item, i) => {
-                      return (
-                        <button
-                          key={i}
-                          onClick={() => {
-                            let result = vendorTypes.filter((d) => {
-                              return d.ownership_type == item;
-                            });
-                            setFilterData(result);
-                          }}
-                          className="btn btn-primary btn-sm me-5 mt-2"
-                          id="pageName"
-                        >
-                          {item} (
-                          {
-                            vendorTypes.filter((d) => {
-                              return d.ownership_type == item;
-                            }).length
-                          }
-                          )
-                        </button>
-                      );
-                    })}
-                  </div> */}
-
                   <div className="mt-2">
                     <h4>Ownership</h4>
                     <Autocomplete
@@ -2738,9 +2479,9 @@ import TextField from '@mui/material/TextField';
                       }}
                     />
                   </div>
-                  <br />
-                  <hr />
-                  {!isNotAssignedVendorLoading && (
+                  {/* <br />
+                  <hr /> */}
+                  {/* {!isNotAssignedVendorLoading && (
                     <div className="mt-2">
                       <button
                         onClick={handleNotAssignedVendorClick}
@@ -2750,27 +2491,30 @@ import TextField from '@mui/material/TextField';
                         Not Assigned Vendor {notAssignedVenodrData.length}
                       </button>
                     </div>
-                  )}
-                </div>
+                  )} */}
+                  {/* </div> */}
+                </Stack>
+                <div className=" mb-2 mt-2">
+              <h4>
+                <span className="text-primary">
+                  Total Page:{filterData.length}
+                </span>
+              </h4>
+            </div>
               </div>
             </div>
           </div>
 
           {loading ? (
             <Box
-              sx={
-                {
-                  textAlign: "center",
-                  position: "relative",
-                  margin: "auto",
-                  width: "100%",
-                  display: "flex",
-                  justifyContent: "center",
-                }
-                // {
-
-                // }
-              }
+              sx={{
+                textAlign: "center",
+                position: "relative",
+                margin: "auto",
+                width: "100%",
+                display: "flex",
+                justifyContent: "center",
+              }}
             >
               <CircularProgress variant="determinate" value={progress} />
               <Box
@@ -2807,9 +2551,11 @@ import TextField from '@mui/material/TextField';
                 onRowDoubleClick={(params) => {
                   navigate(`/admin/pms-page-edit/${params.row._id}`);
                 }}
-                onCellEditStop={(params) =>
-                  setTimeout(() => handleEditCellChange(params), 1000)
-                }
+                // onCellEditStop={(params) =>
+                //   setTimeout(() => handleEditCellChange(params), 1000)
+                // }
+
+                // onPaginationModelChange={handlePageChange}
                 pageSize={5}
                 rowsPerPageOptions={[5]}
                 rowHeight={38}

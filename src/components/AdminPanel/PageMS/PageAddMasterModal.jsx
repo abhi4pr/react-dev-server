@@ -55,9 +55,6 @@ export default function PageAddMasterModal() {
   const handleClose = () => {
     dispatch(setCloseShowAddModal());
     setValue("name", "");
-    console.log(setValue("description", ""));
-    console.log("close");
-    console.log(setValue2("priceType", null));
     setValue2("description", null);
     setValue2("platform", null);
     setValue2("priceType", null);
@@ -232,7 +229,6 @@ export default function PageAddMasterModal() {
                 }}
                 onChange={(event, newValue) => {
                   setValue2("platform", newValue ? newValue.value : "");
-                  console.log(newValue.value);
                 }}
                 isOptionEqualToValue={(option, value) =>
                   option.platformName === value.platformName
