@@ -10,6 +10,8 @@ import { useAPIGlobalContext } from "../../APIContext/APIContext";
 import { useNavigate, useParams } from "react-router-dom";
 import CustomSelect from "../../../ReusableComponents/CustomSelect";
 import { useGetAllBrandQuery } from "../../../Store/API/Sales/BrandApi";
+import ExcelToInputFields from "../../../ReusableComponents/ExcelToInputFields";
+import { useGetAllAccountQuery } from "../../../Store/API/Sales/SalesAccountApi";
 
 const todayDate = new Date().toISOString().split("T")[0];
 
@@ -26,10 +28,17 @@ const CreateSaleBooking = () => {
     isLoading: allBrandsLoading,
   } = useGetAllBrandQuery();
 
+  const {
+    data: allAccounts,
+    error: allAccoutsError,
+    isLoading: allAccountLoading,
+  } = useGetAllAccountQuery();
+
   const token = getDecodedToken();
   const loginUserId = token.id;
   const { toastAlert, toastError } = useGlobalContext();
   const [customerData, setCustomerData] = useState([]);
+  const [selectedAccount, setSelectedAccount] = useState(null);
   const [selectedCustomer, setSelectedCustomer] = useState("");
   const [selectedCustomerPart, setSelectedCustomerPart] = useState("");
   const [selectedCustomerData, setSelectedCustomerData] = useState([]);
@@ -99,7 +108,7 @@ const CreateSaleBooking = () => {
         setSelectedCustomer(res.customer_id);
         // setSelectedCustomerPart(res.CustomerMast_data._id);
       } catch (error) {
-        console.log(error);
+        console.error(error);
       }
     };
 
@@ -291,7 +300,17 @@ const CreateSaleBooking = () => {
             required
           />
         </div>
-        <CustomSelect
+        {/* <CustomSelect
+          fieldGrid={4}
+          label="Accounts"
+          dataArray={allAccounts}
+          optionId="account_id"
+          optionLabel="account_name"
+          selectedId={selectedAccount}
+          setSelectedId={setSelectedAccount}
+          required
+        /> */}
+        {/* <CustomSelect
           fieldGrid={4}
           label="Brand"
           dataArray={allBrands}
@@ -300,7 +319,7 @@ const CreateSaleBooking = () => {
           selectedId={selectedBrand}
           setSelectedId={setSelectedBrand}
           required
-        />
+        /> */}
         <div className="card">
           {selectedCustomerData && (
             <>
@@ -477,6 +496,8 @@ const CreateSaleBooking = () => {
           <label className="mr-2"> No Incentive</label>
         </div>
       </FormContainer>
+
+      <ExcelToInputFields />
     </div>
   );
 };

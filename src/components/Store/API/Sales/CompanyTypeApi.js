@@ -21,7 +21,7 @@ const CompanyTypeApi = createApi({
         method: "POST",
         body: newCompanyType,
       }),
-      onQueryStarted: async ({ dispatch, queryFulfilled }) => {
+      onQueryStarted: async (newCompanyType, { dispatch, queryFulfilled }) => {
         try {
           const { data: addedCompanyType } = await queryFulfilled;
 

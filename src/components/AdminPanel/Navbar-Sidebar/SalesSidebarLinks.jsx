@@ -23,18 +23,12 @@ const SalesSidebarLinks = () => {
         data-parent="#accordionSidebar"
       >
         <div className="internal collapse-inner">
-          <NavLink className="collapse-item" to="/admin/sales-dashboard">
+          {/* <NavLink className="collapse-item" to="/admin/sales-dashboard">
             <i className="bi bi-dot" />
             Dashboard
           </NavLink>
 
-          <NavLink
-            className="collapse-item"
-            to="/admin/sales-services-overview"
-          >
-            <i className="bi bi-dot" />
-            Services
-          </NavLink>
+          
 
           <NavLink className="collapse-item" to="/admin/pms-vendor-overview">
             <i className="bi bi-dot" />
@@ -47,10 +41,7 @@ const SalesSidebarLinks = () => {
             <i className="bi bi-dot" />
             Credit Reason Approval
           </NavLink>
-          <NavLink className="collapse-item" to="/admin/view-sales-booking">
-            <i className="bi bi-dot" />
-            Sale Booking Overview
-          </NavLink>
+          
 
           <NavLink className="collapse-item" to="/admin/deleted-sales-booking">
             <i className="bi bi-dot" />
@@ -70,10 +61,7 @@ const SalesSidebarLinks = () => {
             <i className="bi bi-dot" />
             Rejected Payment Request
           </NavLink>
-          <NavLink className="collapse-item" to="/admin/record-servcies">
-            <i className="bi bi-dot" />
-            Record Services
-          </NavLink>
+          
 
           <NavLink className="collapse-item" to="/admin/view-payment-update">
             <i className="bi bi-dot" />
@@ -93,11 +81,26 @@ const SalesSidebarLinks = () => {
           <NavLink className="collapse-item" to="/admin/credit-approval">
             <i className="bi bi-dot" />
             Credit Approval
-          </NavLink>
+          </NavLink> */}
 
           <NavLink className="collapse-item" to="/admin/sales-account-overview">
             <i className="bi bi-dot" />
-            Account Overview
+            Account
+          </NavLink>
+          <NavLink className="collapse-item" to="/admin/view-sales-booking">
+            <i className="bi bi-dot" />
+            Sale Booking
+          </NavLink>
+          <NavLink className="collapse-item" to="/admin/record-servcies">
+            <i className="bi bi-dot" />
+            Record Services
+          </NavLink>
+          <NavLink
+            className="collapse-item"
+            to="/admin/sales-services-overview"
+          >
+            <i className="bi bi-dot" />
+            Services
           </NavLink>
         </div>
       </div>
