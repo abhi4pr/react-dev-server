@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Dropdown from "./Dropdown";
+import SkeletonLoader from "./SkeletonLoader";
+import { set } from "date-fns";
 const RenderedTable = ({
   data,
   fixedHeader,
@@ -21,10 +23,14 @@ const RenderedTable = ({
   setWidths,
   setColumns,
   sortedData,
+  setSortedData,
   selectedRowsIndex,
   dataLoading,
+  editableRows,
 }) => {
+
   const [preventSelect, setPreventSelect] = useState(false);
+  const [editflag, setEditFlag] = useState(false)
   const handleRowSelection = (index) => {
     const actualIndex = (currentPage - 1) * itemsPerPage + index;
     setSelectedRowsIndex((prevState) => {
@@ -96,10 +102,21 @@ const RenderedTable = ({
     setColumns(newColumns);
     setWidths(newColumns);
   };
+  const handelchange = (e) => {
+    let newData = [...sortedData];
+    newData[index] = { ...newData[index], [column.key]: e.target.value }
+    setSortedData(newData);
+    if (e.target.value === "" || editflag === false) {
+      let prevData = [...sortedData];
+      prevData[index] = { ...prevData[index], [column.key]: data[index][column.key] }
+      setSortedData(prevData);
+    }
+  }
+
   return (
     <>
       {dataLoading ? (
-        <div>Loading...</div>
+        <SkeletonLoader />
       ) : (
         <table className={`${preventSelect ? "prevent-select" : ""}`}>
           <thead className={fixedHeader ? "sticky-header" : ""}>
@@ -113,6 +130,7 @@ const RenderedTable = ({
                     justifyContent: "center",
                     alignItems: "center",
                     paddingTop: "4px",
+                    padding: "0",
                   }}
                 >
                   <input
@@ -172,8 +190,8 @@ const RenderedTable = ({
                             className="resizable"
                             onMouseDown={onMouseDown(index)}
                           >
-                            {" "}
-                            |{" "}
+
+                            |
                           </div>
                         </div>
                       </div>
@@ -193,13 +211,8 @@ const RenderedTable = ({
                   {visibleColumns.some((value) => value) && rowSelectable && (
                     <td
                       style={{
-                        width: "40px",
-                        height: "50px",
-                        display: "flex",
-                        justifyContent: "center",
-                        alignItems: "center",
                         paddingTop: "4px",
-                        paddingLeft: "0px",
+                        paddingLeft: "14px"
                       }}
                     >
                       <input
@@ -215,12 +228,13 @@ const RenderedTable = ({
                     (column, colIndex) =>
                       visibleColumns[colIndex] && (
                         <td key={colIndex}>
-                          {column.renderRowCell
-                            ? column.renderRowCell(row, index)
-                            : row[column.key]}
+                          {console.log(column.key)}
+                          {editableRows[colIndex] && editflag === index ? column.customEditElement ? column.customEditElement(row, index, setEditFlag, handelchange) : (<input className="form-input" type="text" placeholder={row[column.key]} onChange={(e) => handelchange(e)} />) : (column.renderRowCell
+                            ? column.renderRowCell(row, index, setEditFlag, handelchange)
+                            : row[column.key])}
                         </td>
-                      )
-                  )}
+
+                      ))}
                 </tr>
               ))
             )}
