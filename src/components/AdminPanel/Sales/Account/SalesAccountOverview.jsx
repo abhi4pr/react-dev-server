@@ -86,7 +86,7 @@ const SalesAccountOverview = () => {
       sortable: true,
       showCol: true,
       editable: true,
-      customEditElement: (row, index, setEditFlag, handelchange) => (<input type="text" onChange={(e => handelchange(e))} placeholder={row.description} />),
+      customEditElement: (row, index, setEditFlag, handelchange) => (<input type="text" onChange={e => handelchange(e)} placeholder={row.description} />),
 
     },
     {
