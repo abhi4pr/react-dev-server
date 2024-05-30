@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import {
   useAddPageStateMutation,
   useGetAllCitiesQuery,
@@ -7,7 +7,7 @@ import {
 } from "../../Store/PageBaseURL";
 import { Autocomplete, FormControl, TextField } from "@mui/material";
 import { Country } from "country-state-city";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import jwtDecode from "jwt-decode";
 import { useGlobalContext } from "../../../Context/Context";
 import { useSelector } from "react-redux";
@@ -35,6 +35,7 @@ export default function PageStats() {
     formState: { errors },
     watch,
     setValue,
+    control
   } = useForm();
   let isStatsFor = watch("statsFor");
   switch (isStatsFor) {
@@ -77,8 +78,11 @@ export default function PageStats() {
         cities?.find((city) => city.city_name === pageStateData?.city1_name)
           ?.city_name
       );
-      console.log( cities.find((city) => city.city_name === pageStateData?.city1_name)
-      ?.city_name, "city1")
+      console.log(
+        cities?.find((city) => city.city_name === pageStateData?.city1_name)
+          ?.city_name,
+        "city1"
+      );
       setValue("city1Percentage", pageStateData?.percentage_city1_name);
       setValue("city2", pageStateData?.city2_name);
       setValue("city2Percentage", pageStateData?.percentage_city2_name);
@@ -107,15 +111,14 @@ export default function PageStats() {
       // setValue("storyViewDate", pageStateData?.story_view_date);
       setValue("profileVisit", pageStateData?.profile_visit);
       setValue("womenPercentage", pageStateData?.female_percent);
-      setValue("menPercentage",pageStateData?.male_percent);
-      setValue("ageGroup1", pageStateData?.Age_13_17_percent)
-      setValue("ageGroup2", pageStateData?.Age_18_24_percent)
-        setValue("ageGroup3", pageStateData?.Age_25_34_percent)
-        setValue("ageGroup4", pageStateData?.Age_35_44_percent)
-        setValue("ageGroup5", pageStateData?.Age_45_54_percent)
-        setValue("ageGroup6", pageStateData?.Age_55_64_percent)
-        setValue("ageGroup7", pageStateData?.Age_65_plus_percent)
-
+      setValue("menPercentage", pageStateData?.male_percent);
+      setValue("ageGroup1", pageStateData?.Age_13_17_percent);
+      setValue("ageGroup2", pageStateData?.Age_18_24_percent);
+      setValue("ageGroup3", pageStateData?.Age_25_34_percent);
+      setValue("ageGroup4", pageStateData?.Age_35_44_percent);
+      setValue("ageGroup5", pageStateData?.Age_45_54_percent);
+      setValue("ageGroup6", pageStateData?.Age_55_64_percent);
+      setValue("ageGroup7", pageStateData?.Age_65_plus_percent);
     }
   }, [update]);
 
@@ -1018,7 +1021,7 @@ export default function PageStats() {
               </div>
             </div>
           </div>
-          <div className="card">
+          {/* <div className="card">
             <div className="card-header">
               <h5 className="card-title">City</h5>
             </div>
@@ -1029,7 +1032,7 @@ export default function PageStats() {
                     <label>City 1</label>
                     <div className="row m0">
                       <div className="col-md-9 p0 mr8">
-                        {/* <select className="form-control">
+                        { <select className="form-control">
                           <option value="">Select City</option>
                           <option value="Bhopal">Bhopal</option>
                           <option value="Indore">Indore</option>
@@ -1039,7 +1042,7 @@ export default function PageStats() {
                           <option value="Kolkata">Kolkata</option>
                           <option value="Chennai">Chennai</option>
                           <option value="Pune">Pune</option>
-                        </select> */}
+                        </select> *
                         <Autocomplete
                           options={cities}
                           getOptionLabel={(option) => option.city_name}
@@ -1074,7 +1077,7 @@ export default function PageStats() {
                     <label>City 2</label>
                     <div className="row m0">
                       <div className="col-md-9 p0 mr8">
-                        {/* <select className="form-control">
+                         <select className="form-control">
                           <option value="">Select City</option>
                           <option value="Bhopal">Bhopal</option>
                           <option value="Indore">Indore</option>
@@ -1084,7 +1087,7 @@ export default function PageStats() {
                           <option value="Kolkata">Kolkata</option>
                           <option value="Chennai">Chennai</option>
                           <option value="Pune">Pune</option>
-                        </select> */}
+                        </select> 
                         <Autocomplete
                           options={cities}
                           getOptionLabel={(option) => option.city_name}
@@ -1119,7 +1122,7 @@ export default function PageStats() {
                     <label>City 3</label>
                     <div className="row m0">
                       <div className="col-md-9 p0 mr8">
-                        {/* <select className="form-control">
+                        <select className="form-control">
                           <option value="">Select City</option>
                           <option value="Bhopal">Bhopal</option>
                           <option value="Indore">Indore</option>
@@ -1129,7 +1132,7 @@ export default function PageStats() {
                           <option value="Kolkata">Kolkata</option>
                           <option value="Chennai">Chennai</option>
                           <option value="Pune">Pune</option>
-                        </select> */}
+                        </select> 
                         <Autocomplete
                           options={cities}
                           getOptionLabel={(option) => option.city_name}
@@ -1164,7 +1167,7 @@ export default function PageStats() {
                     <label>City 4</label>
                     <div className="row m0">
                       <div className="col-md-9 p0 mr8">
-                        {/* <select className="form-control">
+                         <select className="form-control">
                           <option value="">Select City</option>
                           <option value="Bhopal">Bhopal</option>
                           <option value="Indore">Indore</option>
@@ -1174,7 +1177,7 @@ export default function PageStats() {
                           <option value="Kolkata">Kolkata</option>
                           <option value="Chennai">Chennai</option>
                           <option value="Pune">Pune</option>
-                        </select> */}
+                        </select> 
                         <Autocomplete
                           options={cities}
                           getOptionLabel={(option) => option.city_name}
@@ -1209,8 +1212,8 @@ export default function PageStats() {
                     <label>City 5</label>
                     <div className="row m0">
                       <div className="col-md-9 p0 mr8">
-                        {/* <select className="form-control"> */}
-                        {/* <option value="">Select City</option>
+                        <select className="form-control"> 
+                         <option value="">Select City</option>
                           <option value="Bhopal">Bhopal</option>
                           <option value="Indore">Indore</option>
                           <option value="Delhi">Delhi</option>
@@ -1219,7 +1222,7 @@ export default function PageStats() {
                           <option value="Kolkata">Kolkata</option>
                           <option value="Chennai">Chennai</option>
                           <option value="Pune">Pune</option>
-                        </select> */}
+                        </select> 
                         <Autocomplete
                           options={cities}
                           getOptionLabel={(option) => option.city_name}
@@ -1270,6 +1273,91 @@ export default function PageStats() {
                 </div>
               </div>
             </div>
+          </div> */}
+          <div className="card">
+            <div className="card-header">
+              <h5 className="card-title">City</h5>
+            </div>
+            <div className="card-body pb8">
+              {cities && (
+                <div className="row thm_form">
+                  {["city1", "city2", "city3", "city4", "city5"].map(
+                    (city, index) => (
+                      <div className="col-md-4 col-sm-12" key={city}>
+                        <div className="form-group">
+                          <label>{`City ${index + 1}`}</label>
+                          <div className="row m0">
+                            <div className="col-md-9 p0 mr8">
+                              <Controller
+                                name={city}
+                                control={control}
+                                render={({ field }) => (
+                                  <Autocomplete
+                                    {...field}
+                                    options={cities}
+                                    getOptionLabel={(option) =>
+                                      option.city_name || ""
+                                    }
+                                    isOptionEqualToValue={(option, value) =>
+                                      option.city_name === value?.city_name
+                                    }
+                                    onChange={(event, value) =>
+                                      setValue(city, value?.city_name || "")
+                                    }
+                                    value={
+                                      cities?.find(
+                                        (cityItem) =>
+                                          cityItem.city_name === watch(city)
+                                      ) || null
+                                    }
+                                    renderInput={(params) => (
+                                      <TextField
+                                        {...params}
+                                        label="Select City"
+                                        variant="outlined"
+                                      />
+                                    )}
+                                  />
+                                )}
+                              />
+                            </div>
+                            <div className="col p0">
+                              <div className="input-group">
+                                <input
+                                  type="text"
+                                  className="form-control pl4 pr4 text-center"
+                                  {...register(`${city}Percentage`)}
+                                />
+                                <span className="input-group-text">%</span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    )
+                  )}
+                  <div className="col-md-4 col-sm-12">
+                    <div className="form-group">
+                      <input
+                        type="file"
+                        id="cityFileInput"
+                        style={{ display: "none" }}
+                        {...register("cityImage")}
+                      />
+                      <button
+                        type="button"
+                        className="btn cmnbtn btn-primary mt24"
+                        onClick={() =>
+                          document.getElementById("cityFileInput").click()
+                        }
+                      >
+                        <i className="bi bi-cloud-arrow-up-fill"></i> Image
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
           <div className="card">
             <div className="card-header">
@@ -1277,22 +1365,12 @@ export default function PageStats() {
             </div>
             <div className="card-body pb8">
               <div className="row thm_form">
-                <div className="col-md-4 col-sm-12">
+              {/*  <div className="col-md-4 col-sm-12">
                   <div className="form-group">
                     <label>Country 1</label>
                     <div className="row m0">
                       <div className="col-md-9 p0 mr8">
-                        {/* <select className="form-control">
-                          <option value="">Select Country</option>
-                          <option value="Bhopal">Bhopal</option>
-                          <option value="Indore">Indore</option>
-                          <option value="Delhi">Delhi</option>
-                          <option value="Noida">Noida</option>
-                          <option value="Kolkata">Kolkata</option>
-                          <option value="Kolkata">Kolkata</option>
-                          <option value="Chennai">Chennai</option>
-                          <option value="Pune">Pune</option>
-                        </select> */}
+                      
                         <Autocomplete
                           options={countryList}
                           getOptionLabel={(option) => option.name}
@@ -1332,17 +1410,7 @@ export default function PageStats() {
                     <label>Country 2</label>
                     <div className="row m0">
                       <div className="col-md-9 p0 mr8">
-                        {/* <select className="form-control">
-                          <option value="">Select Country</option>
-                          <option value="Bhopal">Bhopal</option>
-                          <option value="Indore">Indore</option>
-                          <option value="Delhi">Delhi</option>
-                          <option value="Noida">Noida</option>
-                          <option value="Kolkata">Kolkata</option>
-                          <option value="Kolkata">Kolkata</option>
-                          <option value="Chennai">Chennai</option>
-                          <option value="Pune">Pune</option>
-                        </select> */}
+                       
                         <Autocomplete
                           options={countryList}
                           getOptionLabel={(option) => option.name}
@@ -1382,17 +1450,7 @@ export default function PageStats() {
                     <label>Country 3</label>
                     <div className="row m0">
                       <div className="col-md-9 p0 mr8">
-                        {/* <select className="form-control">
-                          <option value="">Select Country</option>
-                          <option value="Bhopal">Bhopal</option>
-                          <option value="Indore">Indore</option>
-                          <option value="Delhi">Delhi</option>
-                          <option value="Noida">Noida</option>
-                          <option value="Kolkata">Kolkata</option>
-                          <option value="Kolkata">Kolkata</option>
-                          <option value="Chennai">Chennai</option>
-                          <option value="Pune">Pune</option>
-                        </select> */}
+                       
                         <Autocomplete
                           options={countryList}
                           getOptionLabel={(option) => option.name}
@@ -1432,17 +1490,7 @@ export default function PageStats() {
                     <label>Country 4</label>
                     <div className="row m0">
                       <div className="col-md-9 p0 mr8">
-                        {/* <select className="form-control">
-                          <option value="">Select Country</option>
-                          <option value="Bhopal">Bhopal</option>
-                          <option value="Indore">Indore</option>
-                          <option value="Delhi">Delhi</option>
-                          <option value="Noida">Noida</option>
-                          <option value="Kolkata">Kolkata</option>
-                          <option value="Kolkata">Kolkata</option>
-                          <option value="Chennai">Chennai</option>
-                          <option value="Pune">Pune</option>
-                        </select> */}
+                       
                         <Autocomplete
                           options={countryList}
                           getOptionLabel={(option) => option.name}
@@ -1482,17 +1530,7 @@ export default function PageStats() {
                     <label>Country 5</label>
                     <div className="row m0">
                       <div className="col-md-9 p0 mr8">
-                        {/* <select className="form-control">
-                          <option value="">Select Country</option>
-                          <option value="Bhopal">Bhopal</option>
-                          <option value="Indore">Indore</option>
-                          <option value="Delhi">Delhi</option>
-                          <option value="Noida">Noida</option>
-                          <option value="Kolkata">Kolkata</option>
-                          <option value="Kolkata">Kolkata</option>
-                          <option value="Chennai">Chennai</option>
-                          <option value="Pune">Pune</option>
-                        </select> */}
+                       
                         <Autocomplete
                           options={countryList}
                           getOptionLabel={(option) => option.name}
@@ -1526,7 +1564,59 @@ export default function PageStats() {
                       </div>
                     </div>
                   </div>
-                </div>
+                </div>*/}
+                {['country1', 'country2', 'country3', 'country4', 'country5'].map(
+                  (country, index) => (
+                    <div className="col-md-4 col-sm-12" key={country}>
+                      <div className="form-group">
+                        <label>{`Country ${index + 1}`}</label>
+                        <div className="row m0">
+                          <div className="col-md-9 p0 mr8">
+                            <Controller
+
+                              name={country}
+                              control={control}
+                              render={({ field }) => (
+                                <Autocomplete
+
+                                  {...field}
+                                  options={countryList}
+                                  getOptionLabel={(option) => option.name}
+                                  isOptionEqualToValue={(option, value) => option.name === value?.name}
+                                  onChange={(event, value) => setValue(country, value?.name || "")}
+                                  value={countryList?.find(countryItem => countryItem.name === watch(country)) || null}
+                                  renderInput={(params) => (
+                                    <TextField
+                                      {...params}
+                                      label="Select Country"
+                                      variant="outlined"
+                                    />
+                                  )}
+                                />
+                              )}
+                            />
+                          </div>
+                          <div className="col p0">
+                            <div className="input-group">
+                              <input
+                                type="text"
+                                className="form-control pl4 pr4 text-center"
+                                {...register(`${country}Percentage`)}
+                                onKeyPress={(event) => {
+                                  if (!/[0-9]/.test(event.key)) {
+                                    event.preventDefault();
+                                  }
+                                }}
+                              />
+                              <span className="input-group-text">%</span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )
+                )}
+
                 <div className="col-md-4 col-sm-12">
                   <div className="form-group">
                     {/* <button className="btn cmnbtn btn-primary mt24">

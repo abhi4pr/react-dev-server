@@ -397,13 +397,10 @@ const PageOverview = () => {
     (state) => state.PageOverview.showPageHelathColumn
   );
 
-  useEffect(() => {
+  function pageHealthToggleCheck (){
     if (showPageHealthColumn) {
-      // let d = pageStates?.filter((state) => {
-      //   return filterData.some((item) => state.page_master_id == item._id);
-      // });
-
-      let data = filterData.map((item) => {
+      console.log("calling",)
+      let data = filterData?.map((item) => {
         let d = pageStates?.find((state) => state.page_master_id == item._id);
         // let c={...d}
         // console.log(c._id,"c")
@@ -412,15 +409,21 @@ const PageOverview = () => {
         //   delete c?._id;
         // }
       // console.log(c,"c")
+      console.log(d,"d")
         return {
           ...item,
           ...d,
         };
       });
-      setFilterData(data);
+    return  setFilterData(data);
     }
+  }
+
+  useEffect(() => {
+    pageHealthToggleCheck()
   }, [showPageHealthColumn]);
   useEffect(() => {
+    pageHealthToggleCheck()
     if (userID && contextData == false) {
       axios
         .get(`${baseUrl}` + `get_single_user_auth_detail/${userID}`)

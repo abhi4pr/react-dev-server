@@ -875,6 +875,7 @@ const VendorMaster = () => {
         mainTitle={_id ? "Edit Vendor Master" : "Add Vendor Master"}
         title={_id ? "Edit Vendor Master" : "Add Vendor Master"}
         handleSubmit={handleSubmit}
+        
       >
         <FieldContainer
           label="Vendor Name "
@@ -1149,7 +1150,7 @@ const VendorMaster = () => {
             <FieldContainer
               label="Account Number "
               type="number"
-              maxLength={17}
+              maxLength={20}
               max={20}
               required={false}
               value={bankRows[i].account_number}
