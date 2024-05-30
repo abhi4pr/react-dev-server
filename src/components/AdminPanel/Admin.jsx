@@ -1402,7 +1402,10 @@ const Admin = () => {
                     element={<VendorEdit />}
                   /> */}
                   <Route path="/pms-vendor-master" element={<VendorMaster />} />
-                  <Route path="/pms-vendor-master/:_id" element={<VendorMaster />} />
+                  <Route
+                    path="/pms-vendor-master/:_id"
+                    element={<VendorMaster />}
+                  />
                   <Route
                     path="/pms-vendor-overview"
                     element={<VendorOverview />}
@@ -1549,7 +1552,7 @@ const Admin = () => {
 
                   <Route path="/credit-approval" element={<CreditApproval />} />
                   <Route
-                    path="/create-sales-account"
+                    path="/create-sales-account/:id"
                     element={<CreateSalesAccount />}
                   />
 

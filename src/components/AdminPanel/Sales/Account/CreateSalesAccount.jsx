@@ -6,10 +6,13 @@ import { baseUrl } from "../../../../utils/config";
 import { useGetAllAccountTypeQuery } from "../../../Store/API/Sales/SalesAccountTypeApi";
 import { useGetAllCompanyTypeQuery } from "../../../Store/API/Sales/CompanyTypeApi";
 import { useGetAllBrandCategoryTypeQuery } from "../../../Store/API/Sales/BrandCategoryTypeApi";
-import { useAddAccountMutation } from "../../../Store/API/Sales/SalesAccountApi";
+import {
+  useAddAccountMutation,
+  useGetSingleAccountQuery,
+} from "../../../Store/API/Sales/SalesAccountApi";
 import { useGlobalContext } from "../../../../Context/Context";
 import getDecodedToken from "../../../../utils/DecodedToken";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import CustomSelect from "../../../ReusableComponents/CustomSelect";
 import Modal from "react-modal";
 import CreateBrandCategory from "./CreateBrandCategory";
@@ -20,11 +23,15 @@ import { ViewBrandCategoryColumns } from "./Columns/ViewBrandCategoryColumns";
 import { ViewCompanyTypeColumns } from "./Columns/ViewCompanyTypeColumns";
 import { ViewAccountTypeColumns } from "./Columns/ViewAccountTypeColumns";
 import PointOfContact from "./PointOfContact";
+import DocumentUpload from "./DocumentUpload";
+
 const CreateSalesAccount = () => {
   const { toastAlert, toastError } = useGlobalContext();
   const navigate = useNavigate();
   const token = getDecodedToken();
   const loginUserId = token.id;
+
+  const { id } = useParams();
 
   const {
     data: allAccountTypes,
@@ -49,6 +56,10 @@ const CreateSalesAccount = () => {
     { isLoading: isCreateSalesLoading, isSuccess, isError },
   ] = useAddAccountMutation();
 
+  const { data: singleAccountData } = useGetSingleAccountQuery(id, {
+    skip: !id,
+  });
+
   const [accountName, setAccountName] = useState("");
   const [selectedAccountType, setSelectedAccountType] = useState(null);
   const [selectedCompanyType, setSelectedCompanyType] = useState(null);
@@ -57,7 +68,7 @@ const CreateSalesAccount = () => {
   const [website, setWebsite] = useState("");
   const [turnover, setTurnover] = useState("");
   const [officesCount, setOfficesCount] = useState("");
-  const [connectedOffices, setConnectedOffices] = useState("");
+  const [connectedOffice, setConnectedOffice] = useState("");
   const [connectedBillingStreet, setConnectedBillingStreet] = useState("");
   const [connectedBillingCity, setConnectedBillingCity] = useState("");
   const [connectedBillingState, setConnectedBillingState] = useState("");
@@ -72,9 +83,17 @@ const CreateSalesAccount = () => {
   const [description, setDescription] = useState(null);
   const [accOwnerNameData, setAccOwnerNameData] = useState([]);
   const [modalContentType, setModalContentType] = useState(false);
+  const [fillHeadFields, setFillHeadFields] = useState(false);
 
-  // State for POCs
   const [pocs, setPocs] = useState([]);
+
+  const [documents, setDocuments] = useState([]);
+
+  const documentTypes = [
+    { id: 1, type: "Passport" },
+    { id: 2, type: "Driver's License" },
+    { id: 3, type: "Utility Bill" },
+  ];
 
   useEffect(() => {
     async function getData() {
@@ -83,6 +102,67 @@ const CreateSalesAccount = () => {
     }
     getData();
   }, []);
+
+  useEffect(() => {
+    if (id && singleAccountData) {
+      const {
+        account_name,
+        account_type_id,
+        company_type_id,
+        category_id,
+        account_owner_id,
+        website,
+        turn_over,
+        description,
+        pin_code,
+        company_email,
+        account_poc,
+      } = singleAccountData;
+
+      setAccountName(account_name);
+      setSelectedAccountType(account_type_id);
+      setSelectedCompanyType(company_type_id);
+      setSelectedCategory(category_id);
+      setSelectedOwner(account_owner_id);
+      setWebsite(website);
+      setTurnover(turn_over);
+      setPinCode(pin_code);
+      setCompanyEmail(company_email);
+      setDescription(description);
+      setPocs(account_poc);
+
+      async function getBilling() {
+        const response = await axios.get(
+          `${baseUrl}/accounts/get_single_account_billing/${singleAccountData.account_id}?_id=false`
+        );
+        const {
+          how_many_offices,
+          connected_office,
+          connect_billing_street,
+          connect_billing_city,
+          connect_billing_state,
+          connect_billing_country,
+          head_office,
+          head_billing_street,
+          head_billing_city,
+          head_billing_state,
+          head_billing_country,
+        } = response.data.data;
+        setOfficesCount(how_many_offices);
+        setConnectedOffice(connected_office);
+        setConnectedBillingStreet(connect_billing_street);
+        setConnectedBillingCity(connect_billing_city);
+        setConnectedBillingState(connect_billing_state);
+        setConnectedBillingCountry(connect_billing_country);
+        setHeadOffice(head_office);
+        setHeadBillingStreet(head_billing_street);
+        setHeadBillingCity(head_billing_city);
+        setHeadBillingState(head_billing_state);
+        setHeadBillingCountry(head_billing_country);
+      }
+      getBilling();
+    }
+  }, [id, singleAccountData]);
 
   const handleAddPoc = () => {
     setPocs([
@@ -97,6 +177,34 @@ const CreateSalesAccount = () => {
         description: "",
       },
     ]);
+  };
+
+  const handleAddDocument = () => {
+    setDocuments([
+      ...documents,
+      {
+        file: null,
+        type: "",
+      },
+    ]);
+  };
+
+  const handleCheckboxChange = () => {
+    setFillHeadFields(!fillHeadFields);
+    if (!fillHeadFields) {
+      setHeadOffice(connectedOffice);
+      setHeadBillingStreet(connectedBillingStreet);
+      setHeadBillingCity(connectedBillingCity);
+      setHeadBillingState(connectedBillingState);
+      setHeadBillingCountry(connectedBillingCountry);
+    } else {
+      // Clear Head fields
+      setHeadOffice("");
+      setHeadBillingStreet("");
+      setHeadBillingCity("");
+      setHeadBillingState("");
+      setHeadBillingCountry("");
+    }
   };
 
   function isValidEmail(email) {
@@ -122,7 +230,7 @@ const CreateSalesAccount = () => {
       website: website,
       turn_over: turnover,
       how_many_offices: officesCount,
-      connected_office: connectedOffices,
+      connected_office: connectedOffice,
       connect_billing_street: connectedBillingStreet,
       connect_billing_city: connectedBillingCity,
       connect_billing_state: connectedBillingState,
@@ -135,14 +243,14 @@ const CreateSalesAccount = () => {
       description: description,
       created_by: loginUserId,
       account_poc: pocs,
+      account_documents: documents,
+      company_email: companyEmail,
+      pin_code: Number(pinCode),
     };
 
-    if (companyEmail) {
-      payloads.company_email = companyEmail;
-    }
-    if (pinCode) {
-      payloads.pin_code = Number(pinCode);
-    }
+    // if (pinCode) {
+    //   payloads.pin_code = Number(pinCode);
+    // }
 
     try {
       await createSalesAccount(payloads).unwrap();
@@ -156,7 +264,7 @@ const CreateSalesAccount = () => {
       setWebsite("");
       setTurnover("");
       setOfficesCount("");
-      setConnectedOffices("");
+      setConnectedOffice("");
       setConnectedBillingStreet("");
       setConnectedBillingCity("");
       setConnectedBillingState("");
@@ -170,6 +278,7 @@ const CreateSalesAccount = () => {
       setCompanyEmail("");
       setDescription("");
       setPocs([]); // Reset POCs
+      setDocuments([]);
 
       navigate("/admin/sales-account-overview");
       toastAlert("Payment Details Updated");
@@ -393,6 +502,7 @@ const CreateSalesAccount = () => {
             placeholder="Enter website"
             required
           />
+
           <FieldContainer
             label="Turnover (in cr)"
             type="number"
@@ -401,6 +511,23 @@ const CreateSalesAccount = () => {
             onChange={(e) => setTurnover(e.target.value)}
             placeholder="Enter turnover in crores"
           />
+
+          <div className="col-4">
+            <FieldContainer
+              label="Company Email"
+              astric
+              type="email"
+              fieldGrid={4}
+              value={companyEmail}
+              onChange={(e) => setCompanyEmail(e.target.value)}
+              placeholder="Enter company email"
+              required
+            />
+            {!isValidEmail(companyEmail) && (
+              <div className="form-error">Please Enter Valid Email</div>
+            )}
+          </div>
+
           <FieldContainer
             label="How Many Offices"
             fieldGrid={4}
@@ -409,10 +536,10 @@ const CreateSalesAccount = () => {
             placeholder="Enter number of offices"
           />
           <FieldContainer
-            label="Connected Offices"
+            label="Connected Office"
             fieldGrid={4}
-            value={connectedOffices}
-            onChange={(e) => setConnectedOffices(e.target.value)}
+            value={connectedOffice}
+            onChange={(e) => setConnectedOffice(e.target.value)}
             placeholder="Enter connected offices"
           />
           <FieldContainer
@@ -443,6 +570,14 @@ const CreateSalesAccount = () => {
             onChange={(e) => setConnectedBillingCountry(e.target.value)}
             placeholder="Enter connected billing country"
           />
+          <label>
+            <input
+              type="checkbox"
+              checked={fillHeadFields}
+              onChange={handleCheckboxChange}
+            />
+            Same as Connected Office
+          </label>
           <FieldContainer
             label="Head Office"
             fieldGrid={4}
@@ -491,21 +626,7 @@ const CreateSalesAccount = () => {
               <div className="form-error">Please Enter Valid Pin Code</div>
             )}
           </div>
-          <div className="col-4">
-            <FieldContainer
-              label="Company Email"
-              astric
-              type="email"
-              fieldGrid={4}
-              value={companyEmail}
-              onChange={(e) => setCompanyEmail(e.target.value)}
-              placeholder="Enter company email"
-              required
-            />
-            {!isValidEmail(companyEmail) && (
-              <div className="form-error">Please Enter Valid Email</div>
-            )}
-          </div>
+
           <FieldContainer
             label="Description"
             astric
@@ -518,6 +639,11 @@ const CreateSalesAccount = () => {
         </div>
       </div>
       <PointOfContact pocs={pocs} setPocs={setPocs} />
+      <DocumentUpload
+        documents={documents}
+        setDocuments={setDocuments}
+        documentTypes={documentTypes}
+      />
       <div className="flex-row sb mb-3">
         <button
           className="btn cmnbtn btn-primary"
@@ -531,7 +657,14 @@ const CreateSalesAccount = () => {
           onClick={() => handleAddPoc()}
         >
           Add Point of Contact
+        </button>
 
+        <button
+          type="button"
+          className="btn cmnbtn btn-warning"
+          onClick={handleAddDocument}
+        >
+          Add Document
         </button>
       </div>
     </div>
