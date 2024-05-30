@@ -1,82 +1,57 @@
-import { Button, TextField } from "@mui/material";
-import { Page } from "@react-pdf/renderer";
 import axios from "axios";
+import Swal from "sweetalert2";
 import { useState } from "react";
-import classes from "./forgetPassword.module.css";
-import SendIcon from "@mui/icons-material/Send";
 import loginlogo from "../../assets/img/logo/logo_login1.png";
 import { Link } from "react-router-dom";
 import { baseUrl } from "../../utils/config";
+import { useGlobalContext } from "../../Context/Context";
 
 export default function ForgetPassword() {
   const [email, setEmail] = useState("");
   const [errMessage, setErrMessage] = useState("");
+  const { toastAlert } = useGlobalContext();
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // console.log(email);
+
     if (email.trim() === "") {
-      // alert("Please enter email");
       setErrMessage("Please enter Email !");
       return;
-    } else {
-      axios
-        .post(baseUrl + "forgot_pass", {
-          user_email_id: email,
-        })
-        .then((res) => {
-          // console.log(res);
-          if (res.data.message === "Successfully Sent email.") {
-            // alert("Email sent successfully");
-            setErrMessage("Email sent successfully !");
-            setEmail("");
-          } else {
-            // alert(res.data.message);
-            setErrMessage("No such email found in database");
-          }
-        });
     }
+    Swal.fire({
+      title: "Are you sure?",
+      text: "Do you want to proceed with password reset and cheqe mail?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, reset it!",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // Proceed with API call
+        axios
+          .post(baseUrl + "forgot_pass", {
+            user_email_id: email,
+          })
+          .then((res) => {
+            setErrMessage("Successfully Sent email !");
+            setEmail("");
+            toastAlert("Mail Send Successfully");
+            if (res.data.message === "Successfully Sent email.") {
+            } else {
+              setErrMessage("No such email found in database");
+            }
+          })
+          .catch((error) => {
+            console.error("Error:", error);
+            setErrMessage("Failed to reset password. Please try again later.");
+          });
+      }
+    });
   };
 
   return (
     <>
-      {/* <div className={classes.background}>
-        <div
-          style={{
-            display: "grid",
-            alignItems: "center",
-            height: "100vh",
-            width: "100vw",
-            justifyContent: "center",
-          }}
-        >
-          <form
-            onSubmit={(e) => {
-              handleSubmit(e);
-            }}
-            className={classes.form}
-          >
-            <div
-              className={`d-flex flex-column justify-content-center align-items-center  p-5 border-radius-3 ${classes.formCh} `}
-            >
-              <p style={{ marginBottom: "30px" }}>
-                Please fill associated email id to get your password
-              </p>
-              <TextField
-                label="Email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                variant="outlined"
-              />
-              <Button type="submit" className="mt-3">
-                <SendIcon variant="contained" />
-              </Button>
-              <p>{errMessage}</p>
-            </div>
-          </form>
-        </div>
-      </div> */}
-
       <section className="section authwrapper">
         <div className="authbox">
           <div
