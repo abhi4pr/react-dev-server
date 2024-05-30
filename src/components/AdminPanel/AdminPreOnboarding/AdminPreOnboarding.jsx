@@ -104,6 +104,13 @@ const AdminPreOnboarding = () => {
   const [age, setAge] = useState("");
   const [gender, setGender] = useState("");
 
+  const [isApplicable, setIsApplicable] = useState("");
+  const IsApplicableData = [
+    { label: "PF", value: "pf" },
+    { label: "PF & ESIC", value: "pf_and_esic" },
+    { label: "IN Hand", value: "in_hand" },
+  ];
+
   const [isRequired, setIsRequired] = useState({
     username: false,
     reportL1: false,
@@ -117,6 +124,7 @@ const AdminPreOnboarding = () => {
     personalContact: false,
     subDepartment: false,
     password: false,
+    isApplicable: false,
   });
 
   useEffect(() => {
@@ -179,6 +187,7 @@ const AdminPreOnboarding = () => {
     return correctedUserName.replace(/\s+/g, " ").trim();
   }
 
+  console.log(isApplicable.value, "vlaue");
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -224,6 +233,9 @@ const AdminPreOnboarding = () => {
     if (personalContact == "") {
       setIsRequired((perv) => ({ ...perv, personalContact: true }));
     }
+    if (isApplicable == "") {
+      setIsRequired((perv) => ({ ...perv, isApplicable: true }));
+    }
 
     if (!username) {
       return toastError("Fill the Mandatory fields");
@@ -252,6 +264,8 @@ const AdminPreOnboarding = () => {
     } else if (!gender || gender == "") {
       return toastError("Fill the Mandatory fields");
     } else if (!userCtc || userCtc == "") {
+      return toastError("Fill the Mandatory fields");
+    } else if (!isApplicable || isApplicable == "") {
       return toastError("Fill the Mandatory fields");
     }
 
@@ -290,6 +304,7 @@ const AdminPreOnboarding = () => {
       releaving_date: releavingDate,
       salary: Number(salary),
       onboard_status: onBoardStatus,
+      emergency_contact_person_name2: isApplicable.value, //This Payload use for Is Applicable Conditon
     };
 
     try {
@@ -957,7 +972,7 @@ const AdminPreOnboarding = () => {
         {/* {jobType == "WFO" && ( */}
         <div className="col-3">
           <FieldContainer
-            label="Yearly CTC"
+            label="Annual CTC"
             astric
             type="number"
             fieldGrid={3}
@@ -983,39 +998,39 @@ const AdminPreOnboarding = () => {
           />
           {isRequired.userCtc && <p className="form-error">Please Enter CTC</p>}
         </div>
+
         {/* )} */}
 
-        {/* {jobType == "WFO" && ( */}
-        {/* <div className="form-group col-3">
+        <div className="form-group col-3">
           <label className="form-label">
-            Offer Letter Send <sup className="form-error">*</sup>
+            Custom Rang <sup className="form-error">*</sup>
           </label>
           <Select
-            options={offerLetter.map((option) => ({
+            options={IsApplicableData.map((option) => ({
               value: `${option.value}`,
               label: `${option.label}`,
             }))}
             value={{
-              value: sendLetter.value,
-              label: sendLetter.label || "", // Fallback to empty string if label is undefined
+              value: isApplicable.value,
+              label: isApplicable.label || "",
             }}
             onChange={(e) => {
-              setSendLetter(e);
+              setIsApplicable(e);
 
               sendLetter !== "" &&
                 setIsRequired((prev) => {
-                  return { ...prev, sendLetter: true };
+                  return { ...prev, isApplicable: true };
                 });
               sendLetter &&
                 setIsRequired((prev) => {
-                  return { ...prev, sendLetter: false };
+                  return { ...prev, isApplicable: false };
                 });
             }}
           />
-          {isRequired.sendLetter && (
-            <p className="form-error">*Please select a Letter</p>
+          {isRequired.isApplicable && (
+            <p className="form-error">Please select a Is Applicable</p>
           )}
-        </div> */}
+        </div>
         {/* )} */}
 
         {/* {sendLetter.label == "Yes" && (

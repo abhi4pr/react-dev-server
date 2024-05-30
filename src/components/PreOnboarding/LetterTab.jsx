@@ -8,6 +8,18 @@ import { baseUrl } from "../../utils/config";
 import html2pdf from "html2pdf.js";
 import logo from "/logo.png";
 import DateISOtoNormal from "../../utils/DateISOtoNormal";
+import LetterTablePreview1 from "./LetterTab/LetterTablePreview1WithPF";
+import LetterTabPdf1 from "./LetterTab/LetterTabPdf1WithPF";
+import LetterTabPdf1WithPF from "./LetterTab/LetterTabPdf1WithPF";
+import LetterTablePreview1WithPF from "./LetterTab/LetterTablePreview1WithPF";
+import LetterTabPreviewWIthPFandESIC from "./LetterTab/LetterTabPreviewESIC";
+import LetterTabPreviewInHand from "./LetterTab/LetterTabPreviewESIC";
+import LetterTablePreviewMinSalaryInHand from "./LetterTab/LetterTablePreviewMinSalaryInHand";
+import LetterTablePreviewMaxSalaryInHand from "./LetterTab/LetterTablePreviewMax";
+import LetterTabPreviewESIC from "./LetterTab/LetterTabPreviewESIC";
+import LetterTabPdf2Max from "./LetterTab/LetterTabPdf2Max";
+import LetterTabPdf3Min from "./LetterTab/LetterTabPdf3Min";
+import LetterTabPdf4ESIC from "./LetterTab/LetterTabPdf4ESIC";
 
 const LetterTab = ({ allUserData, gettingData }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -23,24 +35,25 @@ const LetterTab = ({ allUserData, gettingData }) => {
   const year = date.getFullYear();
   const todayDate = `${year}-${month}-${day}`;
 
-  const monthlySalary = allUserData?.ctc / 12;
-  const basicMonthSal = monthlySalary * 0.6;
-  const hraMonthSal = monthlySalary * 0.6 * 0.4;
-  const advanceMonthSal = monthlySalary * 0.6 * 0.2;
-  const monthLeaveEnhance = ((monthlySalary * 0.6) / 26) * 3;
-  const monthPf =
-    monthlySalary < 9000
-      ? 0
-      : monthlySalary >= 9000 && monthlySalary < 15000
-      ? monthlySalary * 0.12
-      : 1800;
-  const yearCalPf = monthPf * 12;
-  const totalMonthearning =
-    basicMonthSal + hraMonthSal + advanceMonthSal + monthLeaveEnhance - monthPf;
-  const totalMonthearning1 =
-    basicMonthSal + hraMonthSal + advanceMonthSal + monthLeaveEnhance + monthPf;
-  const totalAnnualearning =
-    (basicMonthSal + hraMonthSal + advanceMonthSal + monthLeaveEnhance) * 12;
+  const UserDetails = allUserData;
+  // const monthlySalary = allUserData?.ctc / 12;
+  // const basicMonthSal = monthlySalary * 0.6;
+  // const hraMonthSal = monthlySalary * 0.6 * 0.4;
+  // const advanceMonthSal = monthlySalary * 0.6 * 0.2;
+  // const monthLeaveEnhance = ((monthlySalary * 0.6) / 26) * 3;
+  // const monthPf =
+  //   monthlySalary < 9000
+  //     ? 0
+  //     : monthlySalary >= 9000 && monthlySalary < 15000
+  //     ? monthlySalary * 0.12
+  //     : 1800;
+  // const yearCalPf = monthPf * 12;
+  // const totalMonthearning =
+  //   basicMonthSal + hraMonthSal + advanceMonthSal + monthLeaveEnhance - monthPf;
+  // const totalMonthearning1 =
+  //   basicMonthSal + hraMonthSal + advanceMonthSal + monthLeaveEnhance + monthPf;
+  // const totalAnnualearning =
+  //   (basicMonthSal + hraMonthSal + advanceMonthSal + monthLeaveEnhance) * 12;
 
   const handleReject = () => {
     const formData = new FormData();
@@ -62,19 +75,6 @@ const LetterTab = ({ allUserData, gettingData }) => {
   const handelClose = () => {
     setpreview(!previewOffer);
   };
-  // const downloadOfferLetter = () => {
-  //   console.log(allUserData, "allUserData");
-  //   var element = document.getElementById("element-to-print");
-  //   var opt = {
-  //     margin: 1,
-  //     filename: `${allUserData.user_name}_offer_letter.pdf`,
-  //     image: { type: "jpeg", quality: 1.0 },
-  //     html2canvas: { scale: 4 },
-  //     jsPDF: { unit: "in", format: "letter", orientation: "portrait" },
-  //   };
-
-  //   html2pdf().from(element).set(opt).save();
-  // };
 
   const downloadOfferLetter = () => {
     setIsLoading(true);
@@ -553,33 +553,8 @@ const LetterTab = ({ allUserData, gettingData }) => {
                   <br />
                   {allUserData?.permanent_address}
                   <br />
-                  {/* Date{" "}
-                  {allUserData?.joining_date && (
-                    <span>
-                      Date{" "}
-                      {allUserData.joining_date
-                        ? new Date(
-                            allUserData.joining_date
-                          ).toLocaleDateString()
-                        : ""}
-                    </span>
-                  )} */}
                 </p>
               </div>
-              {/* <div>
-                <h5>Name: - {allUserData?.user_name}</h5>
-                <h5>Designation: - {allUserData?.designation_name}</h5>
-                <h5>
-                  D.O.J: -{" "}
-                  {allUserData.joining_date_extend
-                    ? new Date(
-                        allUserData.joining_date_extend
-                      ).toLocaleDateString()
-                    : allUserData?.joining_date
-                    ? new Date(allUserData.joining_date).toLocaleDateString()
-                    : ""}
-                </h5>
-              </div> */}
             </div>
           </article>
           <footer
@@ -609,179 +584,31 @@ const LetterTab = ({ allUserData, gettingData }) => {
             <p className="bold underlined ">Creativefuel Private Limited</p>
           </div>
           <div>
-            {/* <p>Basic Salary - {(monthlySalary) * (0.60)}</p>
-                    <p>HRA - {(((monthlySalary) * (0.60)) * 0.40)}</p>
-                    <p>Advance Bonus - {(((monthlySalary) * (0.60)) / 20)}</p>
-                    <p>Monthly Leave Enhancement - {(((monthlySalary * 0.60) / 26) * 3).toFixed(2)}</p>
-                    <p>PF - {monthlySalary <= 12000 ? 0 : 1800}</p>
-                    <p>PT - {(monthlySalary >= 18500 && monthlySalary <= 25000) ? 125 :
-                      (monthlySalary >= 25001 && monthlySalary <= 34999) ? 167 :
-                        (monthlySalary >= 35000) ? 208 : 0
-                    }
-                    </p>
-                    <p>ESIC - {monthlySalary <= 21000 ? monthlySalary * (0.0075) : 0}</p> */}
             <p>Employee Name: {allUserData.user_name}</p>
             <p>Designation: {allUserData.designation_name}</p>
             <p>D.O.J : {DateISOtoNormal(allUserData.joining_date)}</p>
           </div>
           <br />
-          <div className="ol-table">
-            <p className="underlined bold">
-              Renumeration Structure & Break-up{" "}
-            </p>
-            <br />
-            <table>
-              <thead>
-                <tr>
-                  <th>EARNINGS</th>
-                  <th>MONTHLY</th>
-                  <th>ANNUALY</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>Basic Salary</td>
-                  <td>INR {(monthlySalary * 0.6).toFixed(0)}</td>
-                  <td>INR {(monthlySalary * 0.6 * 12).toFixed(0)}</td>
-                </tr>
-                <tr>
-                  <td>HRA</td>
-                  <td>INR {(monthlySalary * 0.6 * 0.4).toFixed(0)}</td>
-                  <td>INR {(monthlySalary * 0.6 * 0.4 * 12).toFixed(0)}</td>
-                </tr>
-                <tr>
-                  <td>Advance Bonus</td>
-                  <td>INR {(monthlySalary * 0.6 * 0.2).toFixed(0)}</td>
-                  <td>INR {(monthlySalary * 0.6 * 0.2 * 12).toFixed(0)}</td>
-                </tr>
-                <tr>
-                  <td>Monthly Leave Enhancement</td>
-                  <td>INR {monthLeaveEnhance.toFixed(0)}</td>
-                  <td>INR {(monthLeaveEnhance * 12).toFixed(0)}</td>
-                </tr>
-                <tr>
-                  <td>Total Earning</td>
-                  <td>
-                    INR{" "}
-                    {(
-                      basicMonthSal +
-                      hraMonthSal +
-                      advanceMonthSal +
-                      monthLeaveEnhance
-                    ).toFixed(0)}
-                  </td>
-                  <td>INR {totalAnnualearning.toFixed(0)}</td>
-                </tr>
-              </tbody>
-              <thead>
-                <tr>
-                  <th>DEDUCTIONS</th>
-                  <th>MONTHLY</th>
-                  <th>ANNUALY</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>PF Employee</td>
-                  <td>INR {monthPf}</td>
-                  <td>INR {monthPf * 12}</td>
-                </tr>
-                {/* <tr>
-                          <td>PT</td>
-                          <td>
-                            {monthlySalary >= 18500 && monthlySalary <= 25000
-                              ? 125
-                              : monthlySalary >= 25001 && monthlySalary <= 34999
-                              ? 167
-                              : monthlySalary >= 35000
-                              ? 208
-                              : 0}
-                          </td>
-                          <td>
-                            {monthlySalary >= 18500 && monthlySalary <= 25000
-                              ? 125 * 12
-                              : monthlySalary >= 25001 && monthlySalary <= 34999
-                              ? 167 * 12
-                              : monthlySalary >= 35000
-                              ? 208 * 12
-                              : 0}
-                          </td>
-                        </tr> */}
 
-                <tr>
-                  <td>Net Pay Before Tax</td>
-                  <td>
-                    INR {totalMonthearning.toFixed(0)}
-                    {/* {(monthlySalary <= 12000 ? 0 : 1800) +
-                              (monthlySalary >= 18500 && monthlySalary <= 25000
-                                ? 125
-                                : monthlySalary >= 25001 &&
-                                  monthlySalary <= 34999
-                                ? 167
-                                : monthlySalary >= 35000
-                                ? 208
-                                : 0) +
-                              (monthlySalary <= 21000
-                                ? monthlySalary * 0.0075
-                                : 0)} */}
-                  </td>
-                  <td>
-                    INR {(totalAnnualearning - yearCalPf).toFixed(0)}
-                    {/* {((monthlySalary <= 12000 ? 0 : 1800) +
-                              (monthlySalary >= 18500 && monthlySalary <= 25000
-                                ? 125
-                                : monthlySalary >= 25001 &&
-                                  monthlySalary <= 34999
-                                ? 167
-                                : monthlySalary >= 35000
-                                ? 208
-                                : 0) +
-                              (monthlySalary <= 21000
-                                ? monthlySalary * 0.0075
-                                : 0)) *
-                              12} */}
-                  </td>
-                </tr>
-              </tbody>
-              <thead>
-                <tr>
-                  <th>Contribution</th>
-                  <th>MONTHLY</th>
-                  <th>ANNUALY</th>
-                </tr>
-              </thead>
-              <tbody>
-                {/* {monthlySalary <= 21000 && ( */}
-                <tr>
-                  <td>ESIC</td>
-                  <td>
-                    INR
-                    {(monthlySalary <= 21000
-                      ? monthlySalary * 0.0075
-                      : 0
-                    ).toFixed(0)}
-                  </td>
-                  <td>
-                    INR{" "}
-                    {(
-                      (monthlySalary <= 21000 ? monthlySalary * 0.0075 : 0) * 12
-                    ).toFixed(0)}
-                  </td>
-                </tr>
-                {/* )} */}
-                <tr>
-                  <td>PF Employer</td>
-                  <td>INR {monthPf}</td>
-                  <td>INR {monthPf * 12}</td>
-                </tr>
-                <tr>
-                  <td>Total CTC</td>
-                  <td>INR {totalMonthearning1.toFixed(0)}</td>
-                  <td>INR {(totalAnnualearning + yearCalPf).toFixed(0)}</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
+          {/* Letter Tab PDF Section--------------------------------------------------------------------------------- */}
+
+          {allUserData.emergency_contact_person_name2 == "pf" && (
+            <LetterTabPdf1WithPF UserDetails={UserDetails} />
+          )}
+
+          {allUserData.emergency_contact_person_name2 == "pf_and_esic" && (
+            <LetterTabPdf4ESIC UserDetails={UserDetails} />
+          )}
+          {allUserData.emergency_contact_person_name2 == "in_hand" &&
+            allUserData.ctc < 20000 && (
+              <LetterTabPdf3Min UserDetails={UserDetails} />
+            )}
+          <LetterTabPdf1WithPF UserDetails={UserDetails} />
+          {allUserData.emergency_contact_person_name2 == "in_hand" &&
+            allUserData.ctc > 20000 && (
+              <LetterTabPdf2Max UserDetails={UserDetails} />
+            )}
+
           <br style={{ pageBreakAfter: "always" }} />
           <header className="header-letter">
             <img src={logo} alt="Creativefuel Logo" width={70} height={70} />
@@ -1486,170 +1313,31 @@ const LetterTab = ({ allUserData, gettingData }) => {
                     <p>D.O.J : {DateISOtoNormal(allUserData.joining_date)}</p>
                   </div>
                   <br />
-                  <div className="ol-table">
-                    <p className="underlined bold">
-                      Renumeration Structure & Break-up{" "}
-                    </p>
-                    <table>
-                      <thead>
-                        <tr>
-                          <th>EARNINGS</th>
-                          <th>MONTHLY</th>
-                          <th>ANNUALY</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr>
-                          <td>Basic Salary</td>
-                          <td>INR {(monthlySalary * 0.6).toFixed(0)}</td>
-                          <td>INR {(monthlySalary * 0.6 * 12).toFixed(0)}</td>
-                        </tr>
-                        <tr>
-                          <td>HRA</td>
-                          <td>INR {(monthlySalary * 0.6 * 0.4).toFixed(0)}</td>
-                          <td>
-                            INR {(monthlySalary * 0.6 * 0.4 * 12).toFixed(0)}
-                          </td>
-                        </tr>
-                        <tr>
-                          <td>Advance Bonus</td>
-                          <td>INR {(monthlySalary * 0.6 * 0.2).toFixed(0)}</td>
-                          <td>
-                            INR {(monthlySalary * 0.6 * 0.2 * 12).toFixed(0)}
-                          </td>
-                        </tr>
-                        <tr>
-                          <td>Monthly Leave Enhancement</td>
-                          <td>INR {monthLeaveEnhance.toFixed(0)}</td>
-                          <td>INR {(monthLeaveEnhance * 12).toFixed(0)}</td>
-                        </tr>
-                        <tr>
-                          <td>Total Earning</td>
-                          <td>
-                            INR{" "}
-                            {(
-                              basicMonthSal +
-                              hraMonthSal +
-                              advanceMonthSal +
-                              monthLeaveEnhance
-                            ).toFixed(0)}
-                          </td>
-                          <td>INR {totalAnnualearning.toFixed(0)}</td>
-                        </tr>
-                      </tbody>
-                      <thead>
-                        <tr>
-                          <th>DEDUCTIONS</th>
-                          <th>MONTHLY</th>
-                          <th>ANNUALY</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr>
-                          <td>PF Employee</td>
-                          <td>INR {monthPf}</td>
-                          <td>INR {monthPf * 12}</td>
-                        </tr>
-                        {/* <tr>
-                          <td>PT</td>
-                          <td>
-                            {monthlySalary >= 18500 && monthlySalary <= 25000
-                              ? 125
-                              : monthlySalary >= 25001 && monthlySalary <= 34999
-                              ? 167
-                              : monthlySalary >= 35000
-                              ? 208
-                              : 0}
-                          </td>
-                          <td>
-                            {monthlySalary >= 18500 && monthlySalary <= 25000
-                              ? 125 * 12
-                              : monthlySalary >= 25001 && monthlySalary <= 34999
-                              ? 167 * 12
-                              : monthlySalary >= 35000
-                              ? 208 * 12
-                              : 0}
-                          </td>
-                        </tr> */}
 
-                        <tr>
-                          <td>Net Pay Before Tax</td>
-                          <td>
-                            INR {totalMonthearning.toFixed(0)}
-                            {/* {(monthlySalary <= 12000 ? 0 : 1800) +
-                              (monthlySalary >= 18500 && monthlySalary <= 25000
-                                ? 125
-                                : monthlySalary >= 25001 &&
-                                  monthlySalary <= 34999
-                                ? 167
-                                : monthlySalary >= 35000
-                                ? 208
-                                : 0) +
-                              (monthlySalary <= 21000
-                                ? monthlySalary * 0.0075
-                                : 0)} */}
-                          </td>
-                          <td>
-                            INR {(totalAnnualearning - yearCalPf).toFixed(0)}
-                            {/* {((monthlySalary <= 12000 ? 0 : 1800) +
-                              (monthlySalary >= 18500 && monthlySalary <= 25000
-                                ? 125
-                                : monthlySalary >= 25001 &&
-                                  monthlySalary <= 34999
-                                ? 167
-                                : monthlySalary >= 35000
-                                ? 208
-                                : 0) +
-                              (monthlySalary <= 21000
-                                ? monthlySalary * 0.0075
-                                : 0)) *
-                              12} */}
-                          </td>
-                        </tr>
-                      </tbody>
-                      <thead>
-                        <tr>
-                          <th>Contribution</th>
-                          <th>MONTHLY</th>
-                          <th>ANNUALY</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {monthlySalary <= 21000 && (
-                          <tr>
-                            <td>ESIC</td>
-                            <td>
-                              INR
-                              {(monthlySalary <= 21000
-                                ? monthlySalary * 0.0075
-                                : 0
-                              ).toFixed(0)}
-                            </td>
-                            <td>
-                              INR{" "}
-                              {(
-                                (monthlySalary <= 21000
-                                  ? monthlySalary * 0.0075
-                                  : 0) * 12
-                              ).toFixed(0)}
-                            </td>
-                          </tr>
-                        )}
-                        <tr>
-                          <td>PF Employer</td>
-                          <td>INR {monthPf}</td>
-                          <td>INR {monthPf * 12}</td>
-                        </tr>
-                        <tr>
-                          <td>Total CTC</td>
-                          <td>INR {totalMonthearning1.toFixed(0)}</td>
-                          <td>
-                            INR {(totalAnnualearning + yearCalPf).toFixed(0)}
-                          </td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div>
+                  {/* Preview Tab 1----------------------------------------- */}
+
+                  {allUserData.emergency_contact_person_name2 == "pf" && (
+                    <LetterTablePreview1WithPF UserDetails={UserDetails} />
+                  )}
+
+                  {allUserData.emergency_contact_person_name2 ==
+                    "pf_and_esic" && (
+                    <LetterTabPreviewESIC UserDetails={UserDetails} />
+                  )}
+
+                  {allUserData.emergency_contact_person_name2 == "in_hand" &&
+                    allUserData.ctc < 20000 && (
+                      <LetterTablePreviewMinSalaryInHand
+                        UserDetails={UserDetails}
+                      />
+                    )}
+                  {allUserData.emergency_contact_person_name2 == "in_hand" &&
+                    allUserData.ctc > 20000 && (
+                      <LetterTablePreviewMaxSalaryInHand
+                        UserDetails={UserDetails}
+                      />
+                    )}
+
                   <br />
                   <p>
                     I, {allUserData.user_name} acknowledge that i have received,
