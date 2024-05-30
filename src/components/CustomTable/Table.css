@@ -64,6 +64,8 @@
         outline: 1px solid #f1f5f9;
     }
 
+
+
     td {
         outline: 1px solid #ffffff;
         color: #5b6b79;
@@ -142,9 +144,6 @@
 
         tr {
             min-width: 100%;
-
-
-
         }
 
         tbody {

@@ -12,6 +12,8 @@ import CompanyTypeApi from "./API/Sales/CompanyTypeApi";
 import BrandCategoryTypeApi from "./API/Sales/BrandCategoryTypeApi";
 import SaleBookingApi from "./API/Sales/SaleBookingApi";
 import BrandApi from "./API/Sales/BrandApi";
+import AccountDocumentApi from "./API/Sales/SalesDocumentMasterApi";
+
 
 const store = configureStore({
   reducer: {
@@ -27,6 +29,7 @@ const store = configureStore({
     [PageBaseURL.reducerPath]: PageBaseURL.reducer,
     [SaleBookingApi.reducerPath]: SaleBookingApi.reducer,
     [BrandApi.reducerPath]: BrandApi.reducer,
+    [AccountDocumentApi.reducerPath]: AccountDocumentApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware()
@@ -36,7 +39,8 @@ const store = configureStore({
       .concat(CompanyTypeApi.middleware)
       .concat(BrandCategoryTypeApi.middleware).concat(PageBaseURL.middleware)
       .concat(SaleBookingApi.middleware)
-      .concat(BrandApi.middleware),
+      .concat(BrandApi.middleware)
+      .concat(AccountDocumentApi.middleware),
 });
     setupListeners(store.dispatch);
 

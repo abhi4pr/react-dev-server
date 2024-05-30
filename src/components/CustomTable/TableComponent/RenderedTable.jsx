@@ -102,7 +102,7 @@ const RenderedTable = ({
     setColumns(newColumns);
     setWidths(newColumns);
   };
-  const handelchange = (e) => {
+  const handelchange = (e, index, column) => {
     let newData = [...sortedData];
     newData[index] = { ...newData[index], [column.key]: e.target.value }
     setSortedData(newData);
@@ -228,8 +228,8 @@ const RenderedTable = ({
                     (column, colIndex) =>
                       visibleColumns[colIndex] && (
                         <td key={colIndex}>
-                          {console.log(column.key)}
-                          {editableRows[colIndex] && editflag === index ? column.customEditElement ? column.customEditElement(row, index, setEditFlag, handelchange) : (<input className="form-input" type="text" placeholder={row[column.key]} onChange={(e) => handelchange(e)} />) : (column.renderRowCell
+
+                          {editableRows[colIndex] && editflag === index ? column.customEditElement ? column.customEditElement(row, index, setEditFlag, handelchange, column) : (<input className="form-control" type="text" placeholder={row[column.key]} onChange={(e) => handelchange(e, index, column)} />) : (column.renderRowCell
                             ? column.renderRowCell(row, index, setEditFlag, handelchange)
                             : row[column.key])}
                         </td>
