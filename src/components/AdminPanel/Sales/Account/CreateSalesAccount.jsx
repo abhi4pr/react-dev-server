@@ -8,6 +8,7 @@ import { useGetAllCompanyTypeQuery } from "../../../Store/API/Sales/CompanyTypeA
 import { useGetAllBrandCategoryTypeQuery } from "../../../Store/API/Sales/BrandCategoryTypeApi";
 import {
   useAddAccountMutation,
+  useEditAccountMutation,
   useGetSingleAccountQuery,
 } from "../../../Store/API/Sales/SalesAccountApi";
 import { useGlobalContext } from "../../../../Context/Context";
@@ -24,9 +25,19 @@ import { ViewCompanyTypeColumns } from "./Columns/ViewCompanyTypeColumns";
 import { ViewAccountTypeColumns } from "./Columns/ViewAccountTypeColumns";
 import PointOfContact from "./PointOfContact";
 import DocumentUpload from "./DocumentUpload";
+import {
+  useEditDocumentMutation,
+  useGetDocumentByIdQuery,
+} from "../../../Store/API/Sales/AccountDocumentApi";
+import {
+  useEditPOCMutation,
+  useGetSinglePOCQuery,
+} from "../../../Store/API/Sales/PointOfContactApi";
+import { useGetAllDocumentTypeQuery } from "../../../Store/API/Sales/DocumentTypeApi";
 
 const CreateSalesAccount = () => {
   const { toastAlert, toastError } = useGlobalContext();
+  const normalToken = sessionStorage.getItem("token");
   const navigate = useNavigate();
   const token = getDecodedToken();
   const loginUserId = token.id;
@@ -50,15 +61,33 @@ const CreateSalesAccount = () => {
     error: allBrandCatTypeError,
     isLoading: allBrandCatTypeLoading,
   } = useGetAllBrandCategoryTypeQuery();
+  const {
+    data: allDocType,
+    error: allDocTypeError,
+    isLoading: allDocTypeLoading,
+  } = useGetAllDocumentTypeQuery();
 
   const [
     createSalesAccount,
-    { isLoading: isCreateSalesLoading, isSuccess, isError },
+    {
+      isLoading: isCreateSalesLoading,
+      isSuccess: isAccountCreationSuccess,
+      isError: isAccountCreationError,
+    },
   ] = useAddAccountMutation();
 
   const { data: singleAccountData } = useGetSingleAccountQuery(id, {
     skip: !id,
   });
+
+  const [
+    updateSalesAccount,
+    {
+      isLoading: isUpdateSalesLoading,
+      isSuccess: isUpdateSalesSuccess,
+      isError: isUpdateSalesError,
+    },
+  ] = useEditAccountMutation();
 
   const [accountName, setAccountName] = useState("");
   const [selectedAccountType, setSelectedAccountType] = useState(null);
@@ -86,8 +115,26 @@ const CreateSalesAccount = () => {
   const [fillHeadFields, setFillHeadFields] = useState(false);
 
   const [pocs, setPocs] = useState([]);
-
   const [documents, setDocuments] = useState([]);
+  const [accountId, setAccountId] = useState(null);
+
+  const { data: singleAccountDocuments } = useGetDocumentByIdQuery(accountId, {
+    skip: !accountId,
+  });
+
+  const [
+    updatePocs,
+    { isLoading: isPocUpdating, isSuccess: isPocUpdated, isError: isPocError },
+  ] = useEditPOCMutation();
+
+  const [
+    updateDocs,
+    {
+      isLoading: isDocumentUpdating,
+      isSuccess: isDocumentUpdated,
+      isError: isDocumentError,
+    },
+  ] = useEditDocumentMutation();
 
   const documentTypes = [
     { id: 1, type: "Passport" },
@@ -114,11 +161,9 @@ const CreateSalesAccount = () => {
         website,
         turn_over,
         description,
-        pin_code,
-        company_email,
-        account_poc,
       } = singleAccountData;
 
+      setAccountId(singleAccountData?.account_id);
       setAccountName(account_name);
       setSelectedAccountType(account_type_id);
       setSelectedCompanyType(company_type_id);
@@ -126,16 +171,19 @@ const CreateSalesAccount = () => {
       setSelectedOwner(account_owner_id);
       setWebsite(website);
       setTurnover(turn_over);
-      setPinCode(pin_code);
-      setCompanyEmail(company_email);
       setDescription(description);
-      setPocs(account_poc);
 
       async function getBilling() {
         const response = await axios.get(
-          `${baseUrl}/accounts/get_single_account_billing/${singleAccountData.account_id}?_id=false`
+          `${baseUrl}/accounts/get_single_account_billing/${singleAccountData.account_id}?_id=false`,
+          {
+            headers: {
+              Authorization: `Bearer ${normalToken}`,
+            },
+          }
         );
         const {
+          company_email,
           how_many_offices,
           connected_office,
           connect_billing_street,
@@ -147,7 +195,9 @@ const CreateSalesAccount = () => {
           head_billing_city,
           head_billing_state,
           head_billing_country,
+          pin_code,
         } = response.data.data;
+        setCompanyEmail(company_email);
         setOfficesCount(how_many_offices);
         setConnectedOffice(connected_office);
         setConnectedBillingStreet(connect_billing_street);
@@ -159,7 +209,9 @@ const CreateSalesAccount = () => {
         setHeadBillingCity(head_billing_city);
         setHeadBillingState(head_billing_state);
         setHeadBillingCountry(head_billing_country);
+        setPinCode(pin_code);
       }
+
       getBilling();
     }
   }, [id, singleAccountData]);
@@ -198,7 +250,6 @@ const CreateSalesAccount = () => {
       setHeadBillingState(connectedBillingState);
       setHeadBillingCountry(connectedBillingCountry);
     } else {
-      // Clear Head fields
       setHeadOffice("");
       setHeadBillingStreet("");
       setHeadBillingCity("");
@@ -248,14 +299,20 @@ const CreateSalesAccount = () => {
       pin_code: Number(pinCode),
     };
 
-    // if (pinCode) {
-    //   payloads.pin_code = Number(pinCode);
-    // }
+    if (id == 0) {
+      payloads.account_poc = pocs;
+      payloads.account_documents = documents;
+    }
 
     try {
-      await createSalesAccount(payloads).unwrap();
+      if (id == 0) {
+        await createSalesAccount(payloads).unwrap();
+      } else {
+        await updateSalesAccount(payloads).unwrap();
+        await updateDocs(documents).unwrap();
+        await updatePocs(pocs).unwrap();
+      }
 
-      // Reset all states
       setAccountName("");
       setSelectedAccountType(null);
       setSelectedCompanyType(null);
@@ -277,7 +334,7 @@ const CreateSalesAccount = () => {
       setPinCode("");
       setCompanyEmail("");
       setDescription("");
-      setPocs([]); // Reset POCs
+      setPocs([]);
       setDocuments([]);
 
       navigate("/admin/sales-account-overview");
@@ -288,12 +345,12 @@ const CreateSalesAccount = () => {
   };
 
   useEffect(() => {
-    if (isSuccess) {
+    if (isAccountCreationSuccess) {
       toastAlert("Account created successfully!");
-    } else if (isError) {
+    } else if (isAccountCreationError) {
       toastError("Failed to create account.");
     }
-  }, [isSuccess, isError]);
+  }, [isAccountCreationSuccess, isAccountCreationError]);
 
   const openModal = (contentType) => {
     setModalContentType(contentType);
