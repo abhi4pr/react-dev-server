@@ -1,10 +1,12 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { set } from "date-fns";
 
 const initialState = {
   showAddModal: false,
   modalType: "",
   showInfoModal: false,
   rowData: {},
+  statsUpdate: false,
 };
 
 const pageMasterSlice = createSlice({
@@ -28,9 +30,19 @@ const pageMasterSlice = createSlice({
     },
     setRowData(state, action) {
       state.rowData = action.payload;
-    }
+    },
+    setStatsUpdate(state, action) {
+      state.statsUpdate = action.payload;
+    },
   },
 });
-export const { setOpenShowAddModal, setCloseShowAddModal, setModalType, setOpenShowPageInfoModal, setCloseShowPageInfoModal, setRowData } =
-  pageMasterSlice.actions;
+export const {
+  setOpenShowAddModal,
+  setCloseShowAddModal,
+  setModalType,
+  setOpenShowPageInfoModal,
+  setCloseShowPageInfoModal,
+  setRowData,
+  setStatsUpdate
+} = pageMasterSlice.actions;
 export default pageMasterSlice.reducer;

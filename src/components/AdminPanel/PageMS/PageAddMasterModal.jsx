@@ -254,7 +254,7 @@ export default function PageAddMasterModal() {
               />
               <DialogActions>
                 <Button autoFocus type="submit">
-                  Sbumit
+                  Submit
                 </Button>
               </DialogActions>
             </Box>

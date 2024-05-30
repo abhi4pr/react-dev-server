@@ -110,10 +110,6 @@ export default function PageInfoModal() {
       selector: (row) => row.description,
     },
     {
-      name: "Created By",
-      selector: (row) => row.created_by_name, // Adjust to match your data model, if necessary
-    },
-    {
       name: "Action",
       cell: (row) => (
         <>
@@ -149,10 +145,6 @@ export default function PageInfoModal() {
     {
       name: "Description",
       selector: (row) => row.description,
-    },
-    {
-      name: "Created By",
-      selector: (row) => row.created_by_name,
     },
     {
       name: "Action",
@@ -255,15 +247,15 @@ export default function PageInfoModal() {
             fixedHeaderScrollHeight="64vh"
             highlightOnHover
             subHeader
-            subHeaderComponent={
-              <input
-                type="text"
-                placeholder="Search Here"
-                className="w-50 form-control"
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-              />
-            }
+            // subHeaderComponent={
+            //   <input
+            //     type="text"
+            //     placeholder="Search Here"
+            //     className="w-50 form-control"
+            //     value={search}
+            //     onChange={(e) => setSearch(e.target.value)}
+            //   />
+            // }
           />
         </DialogContent>
         <DialogActions>

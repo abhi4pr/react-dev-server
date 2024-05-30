@@ -11,6 +11,8 @@ import { Box, Grid, Skeleton, Stack } from "@mui/material";
 // import ContentCopyOutlinedIcon from "@mui/icons-material/ContentCopyOutlined";
 // import CopyAllOutlinedIcon from "@mui/icons-material/CopyAllOutlined";
 import { useGlobalContext } from "../../../Context/Context";
+import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
+
 import {
   setRowData,
   setShowBankDetailsModal,
@@ -450,6 +452,12 @@ const VendorOverview = () => {
         <Link to={`/admin/pms-vendor-master`} className="me-3 btn btn-primary btn-sm">
         
             Add Vendor <i className="fa fa-plus"/>
+        </Link>
+        <Link
+          to={`/admin/pms-page-overview`}
+          className="btn btn-primary btn-sm"
+        >
+          Page <KeyboardArrowRightIcon />
         </Link>
         {/* <Link to={`/admin/pms-vendor-page-price-overview`}>
           <button

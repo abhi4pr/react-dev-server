@@ -220,7 +220,6 @@ const pageInfoModlaOpen = useSelector((state) => state.pageMaster.showInfoModal)
       toastError("Please Fill Engagement Rate");
       return;
     }
-    // return console.log(tag, "Tags....");
 
     const payload = {
       page_name: pageName,
@@ -269,12 +268,15 @@ const pageInfoModlaOpen = useSelector((state) => state.pageMaster.showInfoModal)
   };
 
   const handlePriceTypeChange = (e, index) => {
-    rowCount[index].page_price_type_id = e.value;
-    handleFilterPriceType();
+    const newRowCount = [...rowCount];
+    newRowCount[index].page_price_type_id = e.value;
+    setRowCount(newRowCount);
   };
 
   const handlePriceChange = (e, index) => {
-    rowCount[index].price = e.target.value;
+    const newRowCount = [...rowCount];
+    newRowCount[index].price = e.target.value;
+    setRowCount(newRowCount);
   };
 
   const handleFilterPriceType = () => {
@@ -435,19 +437,22 @@ const pageInfoModlaOpen = useSelector((state) => state.pageMaster.showInfoModal)
           ></Select>
         </div>
         <FieldContainer
-          label="Page Name *"
+          label="Page Name"
+          astric={true}
           value={pageName}
           required={true}
           onChange={(e) => setPageName(e.target.value)}
         />
         <FieldContainer
-          label="Link *"
+          label="Link"
+          astric={true}
           value={link}
           required={true}
           onChange={(e) => setLink(e.target.value)}
         />
         <FieldContainer
-          label="Followers Count *"
+          label="Followers Count"
+          astric={true}
           type="number"
           value={followCount}
           required={true}
@@ -468,7 +473,8 @@ const pageInfoModlaOpen = useSelector((state) => state.pageMaster.showInfoModal)
           />
         </div>
         <FieldContainer
-          label="Ownership type *"
+          label="Ownership type"
+          astric={true}
           value={ownerType}
           required={true}
           onChange={(e) => setOwnerType(e.target.value)}
@@ -561,7 +567,8 @@ const pageInfoModlaOpen = useSelector((state) => state.pageMaster.showInfoModal)
           ></Select>
         </div>
         <FieldContainer
-          label="Engagement Rate *"
+          label="Engagement Rate"
+          astric={true}
           type="number"
           value={rate}
           required={true}
@@ -670,7 +677,8 @@ const pageInfoModlaOpen = useSelector((state) => state.pageMaster.showInfoModal)
                 </IconButton>
               </div>
               <FieldContainer
-                label=" Price *"
+                label="Price"
+                astric={true}
                 required={true}
                 type="number"
                 onChange={(e) => handlePriceChange(e, index)}

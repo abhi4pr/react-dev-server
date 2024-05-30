@@ -609,12 +609,14 @@ const VendorMaster = () => {
   };
 
   const handleAccountNoChange = (e, i) => {
+    if(e.target.value.length > 20) return;
     const updatedRows = [...bankRows];
     updatedRows[i].account_number = e.target.value;
     setBankRows(updatedRows);
   };
 
   const handleIFSCChange = (e, i) => {
+    if(e.target.value.length > 11) return;
     const updatedRows = [...bankRows];
     updatedRows[i].ifcs = e.target.value;
     setBankRows(updatedRows);
@@ -761,6 +763,7 @@ const VendorMaster = () => {
   };
 
   const handlePanChange = (e) => {
+    if(e.target.value.length > 13) return;
     const inputValue = e.target.value.toUpperCase();
     // Validate PAN format
     // const panRegex = /[A-Z]{5}[0-9]{4}[A-Z]{1}/;
@@ -800,7 +803,6 @@ const VendorMaster = () => {
       toastError("Please select pay cycle");
       return;
     }
-    // return console.log(bankRows);
     const formData = new FormData();
     formData.append("vendor_name", vendorName);
     formData.append("country_code", countryCode);
@@ -875,8 +877,9 @@ const VendorMaster = () => {
         handleSubmit={handleSubmit}
       >
         <FieldContainer
-          label="Vendor Name *"
+          label="Vendor Name "
           value={vendorName}
+          astric={true}
           required={true}
           onChange={(e) => setVendorName(e.target.value)}
         />
@@ -908,7 +911,6 @@ const VendorMaster = () => {
           type="number"
           onChange={(e) => setCountryCode(e.target.value)}
         /> */}
-        {console.log(countryCode,"countries")}
         <div className="form-group col-6">
           <label className="form-label">
             Country Code <sup style={{ color: "red" }}>*</sup>
@@ -961,8 +963,9 @@ const VendorMaster = () => {
         </div>
 
         <FieldContainer
-          label="Mobile *"
+          label="Mobile"
           value={mobile}
+          astric
           required={true}
           onChange={(e) => handleMobileNumSet(e, setMobile)}
         />
@@ -975,7 +978,8 @@ const VendorMaster = () => {
         />
 
         <FieldContainer
-          label="Email *"
+          label="Email"
+          astric
           value={email}
           required={true}
           type="email"
@@ -1144,6 +1148,9 @@ const VendorMaster = () => {
 
             <FieldContainer
               label="Account Number "
+              type="number"
+              maxLength={17}
+              max={20}
               required={false}
               value={bankRows[i].account_number}
               onChange={(e) => handleAccountNoChange(e, i)}
@@ -1280,13 +1287,14 @@ const VendorMaster = () => {
             {" "}
             <FieldContainer
               label="GST"
+              astric
               value={gst}
-              required={false}
+              required={gstApplicable == "Yes" ? true : false}
               onChange={(e) => setGst(e.target.value.toUpperCase())}
             />
             <FieldContainer
               type="file"
-              label="Gst Image"
+              label="GST Image"
               // value={gstImage}
               required={false}
               onChange={(e) => setGstImage(e.target.files[0])}
@@ -1319,7 +1327,8 @@ const VendorMaster = () => {
           label="Company Pincode"
           value={compPin}
           required={false}
-          onChange={(e) => setCompPin(e.target.value)}
+          maxLength={6}
+          onChange={(e) =>{if(isNaN(e.target.value))return; setCompPin(e.target.value)}}
         />
 
         <FieldContainer
@@ -1373,7 +1382,6 @@ const VendorMaster = () => {
         )}
 
         {panImage && _id && (
-          console.log(panImage,"panImage"),
           <img
             src={panImage}
             alt="pan"

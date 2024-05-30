@@ -4,7 +4,6 @@ const initialState = {
   tagCategories: [],
   platforms: [],
   showTagCategoriesModal: false,
-  showPageHelathColumn: false,
   showWhatsappModal: false,
   venodrRowData: [],
   showPageModal: false,

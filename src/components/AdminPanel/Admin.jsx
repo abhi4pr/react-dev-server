@@ -338,6 +338,7 @@ import { FinanceContextComponent } from "../../Context/FinanceContext";
 import CreateSalesAccount from "./Sales/Account/CreateSalesAccount";
 import SalesAccountOverview from "./Sales/Account/SalesAccountOverview";
 import PaymentDoneTransactionList from "./Finance/PaymentDoneTransactionList";
+import PageStats from "./PageMS/PageStats";
 
 const Admin = () => {
   const [contextData, setData] = useState([]);
@@ -494,6 +495,7 @@ const Admin = () => {
                   />
                   <Route path="/attendence-mast" element={<Attendence />} />
                   <Route path="/stats" element={<Stats />} />
+                  <Route path="/pageStats/:id" element={<PageStats />} />
                   {/* Salary */}
                   <Route path="/salaryWFH" element={<SalaryWFH />} />
 

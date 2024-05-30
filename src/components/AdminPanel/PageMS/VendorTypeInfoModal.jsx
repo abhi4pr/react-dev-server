@@ -23,7 +23,6 @@ import {
 import { useEffect, useState } from "react";
 import { FaEdit } from "react-icons/fa";
 import DeleteButton from "../DeleteButton";
-import { set } from "date-fns";
 
 export default function VendorTypeInfoModal() {
   const dispatch = useDispatch();
@@ -31,7 +30,7 @@ export default function VendorTypeInfoModal() {
   const open = useSelector((state) => state.vendorMaster.showVendorInfoModal);
   const modalType = useSelector((state) => state.vendorMaster.modalType);
 
-  const [search, setSearch] = useState("");
+  // const [search, setSearch] = useState("");
   const [columns, setColumns] = useState([]);
   const [data, setData] = useState([{}]);
   const [title, setTitle] = useState("");
@@ -135,10 +134,7 @@ export default function VendorTypeInfoModal() {
       name: "Description",
       selector: (row) => row.description,
     },
-    {
-      name: "Created By",
-      selector: (row) => row.created_by_name,
-    },
+   
     {
       name: "Action",
       cell: (row) => (
@@ -176,10 +172,7 @@ export default function VendorTypeInfoModal() {
       name: "Description",
       selector: (row) => row.description,
     },
-    {
-      name: "Created By",
-      selector: (row) => row.created_by_name,
-    },
+   
     {
       name: "Action",
       cell: (row) => (
@@ -218,10 +211,7 @@ export default function VendorTypeInfoModal() {
       name: "Description",
       selector: (row) => row.description,
     },
-    {
-      name: "Created By",
-      selector: (row) => row.created_by_name,
-    },
+   
     {
       name: "Action",
       cell: (row) => (
@@ -259,10 +249,7 @@ export default function VendorTypeInfoModal() {
       name: "Description",
       selector: (row) => row.description,
     },
-    {
-      name: "Created By",
-      selector: (row) => row.created_by_name,
-    },
+   
     {
       name: "Action",
       cell: (row) => (
@@ -296,10 +283,7 @@ export default function VendorTypeInfoModal() {
       name: "Description",
       selector: (row) => row.description,
     },
-    {
-      name: "Created By",
-      selector: (row) => row.created_by_name,
-    },
+    
     {
       name: "Action",
       cell: (row) => (
@@ -378,15 +362,15 @@ export default function VendorTypeInfoModal() {
                   fixedHeaderScrollHeight="64vh"
                   highlightOnHover
                   subHeader
-                  subHeaderComponent={
-                    <input
-                      type="text"
-                      placeholder="Search Here"
-                      className="w-50 form-control"
-                      value={search}
-                      onChange={(e) => setSearch(e.target.value)}
-                    />
-                  }
+                  // subHeaderComponent={
+                  //   <input
+                  //     type="text"
+                  //     placeholder="Search Here"
+                  //     className="w-50 form-control"
+                  //     value={search}
+                  //     onChange={(e) => setSearch(e.target.value)}
+                  //   />
+                  // }
                 />
               ) : (
                 <div>Loading...</div>

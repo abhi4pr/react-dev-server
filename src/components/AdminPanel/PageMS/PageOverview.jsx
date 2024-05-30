@@ -50,10 +50,12 @@ import {
   useGetAllPageListQuery,
   useGetAllPriceListQuery,
   useGetMultiplePagePriceQuery,
+  useGetPageStateQuery,
   useGetpagePriceTypeQuery,
 } from "../../Store/PageBaseURL";
 import AddIcon from "@mui/icons-material/Add";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
+import { setStatsUpdate } from "../../Store/PageMaster";
 
 const PageOverview = () => {
   // const { toastAlert } = useGlobalContext();
@@ -355,11 +357,11 @@ const PageOverview = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const { isLoading: isNotAssignedVendorLoading, data: notAssignedVenodrData } =
-    useGetnotAssignedVendorsQuery();
-  function handleNotAssignedVendorClick() {
-    dispatch(setShowVendorNotAssignedModal());
-  }
+  // const { isLoading: isNotAssignedVendorLoading, data: notAssignedVenodrData } =
+  //   useGetnotAssignedVendorsQuery();
+  // function handleNotAssignedVendorClick() {
+  //   dispatch(setShowVendorNotAssignedModal());
+  // }
 
   // const handlePageChange = ()=>{
   //   // if()
@@ -394,17 +396,41 @@ const PageOverview = () => {
   const showPageHealthColumn = useSelector(
     (state) => state.PageOverview.showPageHelathColumn
   );
+
   useEffect(() => {
-    //   if (userID && contextData == false) {
-    //     axios
-    //       .get(`${baseUrl}` + `get_single_user_auth_detail/${userID}`)
-    //       .then((res) => {
-    //         if (res.data[33].view_value == 1) {
-    //           setContextData(true);
-    //         }
-    //       });
-    //   }
-    //   setTimeout(() => {}, 500);
+    if (showPageHealthColumn) {
+      // let d = pageStates?.filter((state) => {
+      //   return filterData.some((item) => state.page_master_id == item._id);
+      // });
+
+      let data = filterData.map((item) => {
+        let d = pageStates?.find((state) => state.page_master_id == item._id);
+        // let c={...d}
+        // console.log(c._id,"c")
+        // if (c) {
+        //   c.pageId = c?._id;
+        //   delete c?._id;
+        // }
+      // console.log(c,"c")
+        return {
+          ...item,
+          ...d,
+        };
+      });
+      setFilterData(data);
+    }
+  }, [showPageHealthColumn]);
+  useEffect(() => {
+    if (userID && contextData == false) {
+      axios
+        .get(`${baseUrl}` + `get_single_user_auth_detail/${userID}`)
+        .then((res) => {
+          if (res.data[33].view_value == 1) {
+            setContextData(true);
+          }
+        });
+    }
+    setTimeout(() => {}, 500);
     getData();
   }, []);
 
@@ -421,20 +447,23 @@ const PageOverview = () => {
       dispatch(openTagCategoriesModal());
     };
   };
-
+  const handleSetState = () => {
+    dispatch(addRow(false));
+  };
   const handleUpdateRowClick = async (row) => {
-    await axios
-      .get(`${baseUrl}` + `get_exe_history/${row.pageMast_id}`)
-      .then((res) => {
-        let data = res.data.data.filter((e) => {
-          return e.isDeleted !== true;
-        });
-        data = data[0];
+    // await axios
+    //   .get(`${baseUrl}` + `get_exe_history/${row.pageMast_id}`)
+    //   .then((res) => {
+    //     let data = res.data.data.filter((e) => {
+    //       return e.isDeleted !== true;
+    //     });
+    //     data = data[0];
 
-        navigate(`/admin/exe-update/${data._id}`, {
-          state: row.pageMast_id,
-        });
-      });
+    //     navigate(`/admin/exe-update/${data._id}`, {
+    //       state: row.pageMast_id,
+    //     });
+    //   });
+    dispatch(setStatsUpdate(true));
   };
 
   const handleHistoryRowClick = (row) => {
@@ -459,6 +488,7 @@ const PageOverview = () => {
   };
 
   const { data: pageList, refetch: refetchPageList } = useGetAllPageListQuery();
+  const { data: pageStates } = useGetPageStateQuery();
   useEffect(() => {
     if (pageList) {
       setVendorTypes(pageList.data);
@@ -786,16 +816,17 @@ const PageOverview = () => {
       renderCell: (params) => {
         const totalPercentage = params.row.totalPercentage;
         return (
-          totalPercentage == 100 ||
-          (totalPercentage == 0.0 && (
+          // totalPercentage == 100 ||
+          // (totalPercentage == 0.0 && (
+          <>
             <button
               type="button"
               className="btn cmnbtn btn_sm btn-outline-primary"
               data-toggle="modal"
               data-target="#myModal1"
-              disabled={
-                totalPercentage == 0 || totalPercentage == 100 ? false : true
-              }
+              // disabled={
+              //   totalPercentage == 0 || totalPercentage == 100 ? false : true
+              // }
               onClick={() => {
                 dispatch(addRow(params.row));
                 navigate(`/admin/stats`);
@@ -803,7 +834,23 @@ const PageOverview = () => {
             >
               Set Stats
             </button>
-          ))
+            <Link
+              to={{
+                pathname: `/admin/pageStats/${params.row._id}`,
+                state: { update: false },
+              }}
+            >
+              <button
+                type="button"
+                className="btn cmnbtn btn_sm btn-outline-primary"
+                onClick={handleSetState()}
+              >
+                Page Stats
+              </button>
+            </Link>
+          </>
+          // )
+          // )
         );
       },
     },
@@ -834,18 +881,32 @@ const PageOverview = () => {
       headerName: "Stats Update",
       renderCell: (params) => {
         return (
-          <button
-            type="button"
-            className="btn cmnbtn btn_sm btn-outline-primary"
-            onClick={() => handleUpdateRowClick(params.row)}
-            disabled={
-              params?.row?.latestEntry?.stats_update_flag
-                ? !params?.row?.latestEntry.stats_update_flag
-                : true
-            }
+          // <button
+          //   type="button"
+          //   className="btn cmnbtn btn_sm btn-outline-primary"
+          //   onClick={() => handleUpdateRowClick(params.row)}
+          //   // disabled={
+          //   //   params?.row?.latestEntry?.stats_update_flag
+          //   //     ? !params?.row?.latestEntry.stats_update_flag
+          //   //     : true
+          //   // }
+          // >
+          //   Update
+          // </button>
+          <Link
+            to={{
+              pathname: `/admin/pageStats/${params.row._id}`,
+              state: { update: true },
+            }}
           >
-            Update
-          </button>
+            <button
+              type="button"
+              className="btn cmnbtn btn_sm btn-outline-primary"
+              onClick={handleUpdateRowClick}
+            >
+              Update
+            </button>
+          </Link>
         );
       },
     },
@@ -875,7 +936,7 @@ const PageOverview = () => {
       width: 150,
       headerName: "Age 13-17 %",
       renderCell: (params) => {
-        let data = params.row?.exehistorymodelsData?.Age_13_17_percent;
+        let data = params.row?.Age_13_17_percent;
         return +data ? data + "%" : "NA";
       },
     },
@@ -884,7 +945,7 @@ const PageOverview = () => {
       width: 150,
       headerName: "Age 18-24 %",
       renderCell: (params) => {
-        let data = params.row?.exehistorymodelsData?.Age_18_24_percent;
+        let data = params.row?.Age_18_24_percent;
         return +data ? data + "%" : "NA";
       },
     },
@@ -893,7 +954,7 @@ const PageOverview = () => {
       width: 150,
       headerName: "Age 25-34 %",
       renderCell: (params) => {
-        let data = params.row?.exehistorymodelsData?.Age_25_34_percent;
+        let data = params.row?.Age_25_34_percent;
         return +data ? data + "%" : "NA";
       },
     },
@@ -902,7 +963,7 @@ const PageOverview = () => {
       width: 150,
       headerName: "Age 35-44 %",
       renderCell: (params) => {
-        let data = params.row?.exehistorymodelsData?.Age_35_44_percent;
+        let data = params.row?.Age_35_44_percent;
         return +data ? data + "%" : "NA";
       },
     },
@@ -911,7 +972,7 @@ const PageOverview = () => {
       width: 150,
       headerName: "Age 45-54 %",
       renderCell: (params) => {
-        let data = params.row?.exehistorymodelsData?.Age_45_54_percent;
+        let data = params.row?.Age_45_54_percent;
         return +data ? data + "%" : "NA";
       },
     },
@@ -920,7 +981,7 @@ const PageOverview = () => {
       width: 150,
       headerName: "Age 55-64 %",
       renderCell: (params) => {
-        let data = params.row?.exehistorymodelsData?.Age_55_64_percent;
+        let data = params.row?.Age_55_64_percent;
         return +data ? data + "%" : "NA";
       },
     },
@@ -929,7 +990,7 @@ const PageOverview = () => {
       width: 150,
       headerName: "Age 65+ %",
       renderCell: (params) => {
-        let data = params.row?.exehistorymodelsData?.Age_65_plus_percent;
+        let data = params.row?.Age_65_plus_percent;
         return +data ? data + "%" : "NA";
       },
     },
@@ -938,7 +999,7 @@ const PageOverview = () => {
       width: 150,
       headerName: "Age Upload",
       renderCell: (params) => {
-        let url = params.row?.exehistorymodelsData?.Age_upload;
+        let url = params.row?.Age_upload;
         return url ? (
           <img src={url} style={{ width: "50px", height: "50px" }} />
         ) : (
@@ -951,7 +1012,7 @@ const PageOverview = () => {
       width: 150,
       headerName: "City 1",
       renderCell: (params) => {
-        let data = params.row?.exehistorymodelsData?.city1_name;
+        let data = params.row?.city1_name;
         return data ? data : "NA";
       },
     },
@@ -960,7 +1021,7 @@ const PageOverview = () => {
       width: 150,
       headerName: "City 2",
       renderCell: (params) => {
-        let data = params.row?.exehistorymodelsData?.city2_name;
+        let data = params.row?.city2_name;
         return data ? data : "NA";
       },
     },
@@ -969,7 +1030,7 @@ const PageOverview = () => {
       width: 150,
       headerName: "City 3",
       renderCell: (params) => {
-        let data = params.row?.exehistorymodelsData?.city3_name;
+        let data = params.row?.city3_name;
         return data ? data : "NA";
       },
     },
@@ -978,7 +1039,7 @@ const PageOverview = () => {
       width: 150,
       headerName: "City 4",
       renderCell: (params) => {
-        let data = params.row?.exehistorymodelsData?.city4_name;
+        let data = params.row?.city4_name;
         return data ? data : "NA";
       },
     },
@@ -987,7 +1048,7 @@ const PageOverview = () => {
       width: 150,
       headerName: "City 5",
       renderCell: (params) => {
-        let data = params.row?.exehistorymodelsData?.city5_name;
+        let data = params.row?.city5_name;
         return data ? data : "NA";
       },
     },
@@ -996,7 +1057,7 @@ const PageOverview = () => {
       width: 150,
       headerName: "City Image",
       renderCell: (params) => {
-        let data = params.row?.exehistorymodelsData?.city_image_upload;
+        let data = params.row?.city_image_upload;
         return data ? (
           <img src={data} style={{ width: "50px", height: "50px" }} />
         ) : (
@@ -1009,7 +1070,7 @@ const PageOverview = () => {
       width: 150,
       headerName: "Country 1",
       renderCell: (params) => {
-        let data = params.row?.exehistorymodelsData?.country1_name;
+        let data = params.row?.country1_name;
         return data ? data : "NA";
       },
     },
@@ -1018,7 +1079,7 @@ const PageOverview = () => {
       width: 150,
       headerName: "Country 2",
       renderCell: (params) => {
-        let data = params.row?.exehistorymodelsData?.country2_name;
+        let data = params.row?.country2_name;
         return data ? data : "NA";
       },
     },
@@ -1027,7 +1088,7 @@ const PageOverview = () => {
       width: 150,
       headerName: "Country 3",
       renderCell: (params) => {
-        let data = params.row?.exehistorymodelsData?.country3_name;
+        let data = params.row?.country3_name;
         return data ? data : "NA";
       },
     },
@@ -1036,7 +1097,7 @@ const PageOverview = () => {
       width: 150,
       headerName: "Country 4",
       renderCell: (params) => {
-        let data = params.row?.exehistorymodelsData?.country4_name;
+        let data = params.row?.country4_name;
         return data ? data : "NA";
       },
     },
@@ -1045,7 +1106,7 @@ const PageOverview = () => {
       width: 150,
       headerName: "Country 5",
       renderCell: (params) => {
-        let data = params.row?.exehistorymodelsData?.country5_name;
+        let data = params.row?.country5_name;
         return data ? data : "NA";
       },
     },
@@ -1054,7 +1115,7 @@ const PageOverview = () => {
       width: 150,
       headerName: "Country Image",
       renderCell: (params) => {
-        let data = params.row?.exehistorymodelsData?.country_image_upload;
+        let data = params.row?.country_image_upload;
         return data ? (
           <img src={data} style={{ width: "50px", height: "50px" }} />
         ) : (
@@ -1067,7 +1128,7 @@ const PageOverview = () => {
       width: 150,
       headerName: "Creation Date",
       renderCell: (params) => {
-        let data = params.row?.exehistorymodelsData?.creation_date;
+        let data = params.row?.creation_date;
         return data ? <DateFormattingComponent date={data} /> : "NA";
       },
     },
@@ -1076,7 +1137,7 @@ const PageOverview = () => {
       width: 150,
       headerName: "End Date",
       renderCell: (params) => {
-        let data = params.row?.exehistorymodelsData?.end_date;
+        let data = params.row?.end_date;
         return data ? <DateFormattingComponent date={data} /> : "NA";
       },
     },
@@ -1085,7 +1146,7 @@ const PageOverview = () => {
       width: 150,
       headerName: "Engagement",
       renderCell: (params) => {
-        let data = params.row?.exehistorymodelsData?.engagement;
+        let data = params.row?.engagement;
         return data ? data : "NA";
       },
     },
@@ -1094,7 +1155,7 @@ const PageOverview = () => {
       width: 150,
       headerName: "Engagement Image",
       renderCell: (params) => {
-        let data = params.row?.exehistorymodelsData?.engagement_upload_image;
+        let data = params.row?.engagement_upload_image;
         return data ? (
           <img src={data} style={{ width: "50px", height: "50px" }} />
         ) : (
@@ -1107,7 +1168,7 @@ const PageOverview = () => {
       width: 150,
       header: "Female",
       renderCell: (params) => {
-        let data = params.row?.exehistorymodelsData?.female_percent;
+        let data = params.row?.female_percent;
         return data ? data + "%" : "NA";
       },
     },
@@ -1116,7 +1177,7 @@ const PageOverview = () => {
       width: 150,
       headerName: "Impression",
       renderCell: (params) => {
-        let data = params.row?.exehistorymodelsData?.impression;
+        let data = params.row?.impression;
         return data ? data : "NA";
       },
     },
@@ -1125,7 +1186,7 @@ const PageOverview = () => {
       width: 150,
       headerName: "Impression Image",
       renderCell: (params) => {
-        let data = params.row?.exehistorymodelsData?.impression_upload_image;
+        let data = params.row?.impression_upload_image;
         return data ? (
           <img src={data} style={{ width: "50px", height: "50px" }} />
         ) : (
@@ -1138,7 +1199,7 @@ const PageOverview = () => {
       width: 150,
       header: "Male",
       renderCell: (params) => {
-        let data = params.row?.exehistorymodelsData?.male_percent;
+        let data = params.row?.male_percent;
         return data ? data + "%" : "NA";
       },
     },
@@ -1147,7 +1208,7 @@ const PageOverview = () => {
       width: 150,
       headerName: "City 1 %",
       renderCell: (params) => {
-        let data = params.row?.exehistorymodelsData?.percentage_city1_name;
+        let data = params.row?.percentage_city1_name;
         return data ? data + "%" : "NA";
       },
     },
@@ -1156,7 +1217,7 @@ const PageOverview = () => {
       width: 150,
       headerName: "City 2 %",
       renderCell: (params) => {
-        let data = params.row?.exehistorymodelsData?.percentage_city2_name;
+        let data = params.row?.percentage_city2_name;
         return data ? data + "%" : "NA";
       },
     },
@@ -1165,7 +1226,7 @@ const PageOverview = () => {
       width: 150,
       headerName: "City 3 %",
       renderCell: (params) => {
-        let data = params.row?.exehistorymodelsData?.percentage_city3_name;
+        let data = params.row?.percentage_city3_name;
         return data ? data + "%" : "NA";
       },
     },
@@ -1174,7 +1235,7 @@ const PageOverview = () => {
       width: 150,
       headerName: "City 4 %",
       renderCell: (params) => {
-        let data = params.row?.exehistorymodelsData?.percentage_city4_name;
+        let data = params.row?.percentage_city4_name;
         return data ? data + "%" : "NA";
       },
     },
@@ -1183,7 +1244,7 @@ const PageOverview = () => {
       width: 150,
       headerName: "City 5 %",
       renderCell: (params) => {
-        let data = params.row?.exehistorymodelsData?.percentage_city5_name;
+        let data = params.row?.percentage_city5_name;
         return data ? data + "%" : "NA";
       },
     },
@@ -1192,7 +1253,7 @@ const PageOverview = () => {
       width: 150,
       headerName: "Country 1 %",
       renderCell: (params) => {
-        let data = params.row?.exehistorymodelsData?.percentage_country1_name;
+        let data = params.row?.percentage_country1_name;
         return data ? data + "%" : "NA";
       },
     },
@@ -1201,7 +1262,7 @@ const PageOverview = () => {
       width: 150,
       headerName: "Country 2 %",
       renderCell: (params) => {
-        let data = params.row?.exehistorymodelsData?.percentage_country2_name;
+        let data = params.row?.percentage_country2_name;
         return data ? data + "%" : "NA";
       },
     },
@@ -1210,7 +1271,7 @@ const PageOverview = () => {
       width: 150,
       headerName: "Country 3 %",
       renderCell: (params) => {
-        let data = params.row?.exehistorymodelsData?.percentage_country3_name;
+        let data = params.row?.percentage_country3_name;
         return data ? data + "%" : "NA";
       },
     },
@@ -1219,7 +1280,7 @@ const PageOverview = () => {
       width: 150,
       headerName: "Country 4 %",
       renderCell: (params) => {
-        let data = params.row?.exehistorymodelsData?.percentage_country4_name;
+        let data = params.row?.percentage_country4_name;
         return data ? data + "%" : "NA";
       },
     },
@@ -1228,7 +1289,7 @@ const PageOverview = () => {
       width: 150,
       headerName: "Country 5 %",
       renderCell: (params) => {
-        let data = params.row?.exehistorymodelsData?.percentage_country5_name;
+        let data = params.row?.percentage_country5_name;
         return data ? data + "%" : "NA";
       },
     },
@@ -1237,7 +1298,7 @@ const PageOverview = () => {
       width: 150,
       headerName: "Profile Visit",
       renderCell: (params) => {
-        let data = params.row?.exehistorymodelsData?.profile_visit;
+        let data = params.row?.profile_visit;
         return data ? data : "NA";
       },
     },
@@ -1246,7 +1307,7 @@ const PageOverview = () => {
       width: 150,
       headerName: "Quater",
       renderCell: (params) => {
-        let data = params.row?.exehistorymodelsData?.quater;
+        let data = params.row?.quater;
         return data ? data : "NA";
       },
     },
@@ -1255,7 +1316,7 @@ const PageOverview = () => {
       width: 150,
       headerName: "Reach",
       renderCell: (params) => {
-        let data = params.row?.exehistorymodelsData?.reach;
+        let data = params.row?.reach;
         return data ? data : "NA";
       },
     },
@@ -1264,7 +1325,7 @@ const PageOverview = () => {
       width: 150,
       headerName: "Reach Image",
       renderCell: (params) => {
-        let data = params.row?.exehistorymodelsData?.reach_upload_image;
+        let data = params.row?.reach_upload_image;
         return data ? (
           <img src={data} style={{ width: "50px", height: "50px" }} />
         ) : (
@@ -1277,7 +1338,7 @@ const PageOverview = () => {
       width: 150,
       headerName: "Start Date",
       renderCell: (params) => {
-        let data = params.row?.exehistorymodelsData?.story_click;
+        let data = params.row?.story_click;
         return data ? <DateFormattingComponent date={data} /> : "NA";
       },
     },
@@ -1286,7 +1347,7 @@ const PageOverview = () => {
       width: 150,
       headerName: "Stats For",
       renderCell: (params) => {
-        let data = params.row?.exehistorymodelsData?.stats_for;
+        let data = params.row?.stats_for;
         return data ? data : "NA";
       },
     },
@@ -1295,7 +1356,7 @@ const PageOverview = () => {
       width: 150,
       headerName: "Story View",
       renderCell: (params) => {
-        let data = params.row?.exehistorymodelsData?.story_view;
+        let data = params.row?.story_view;
         return data ? data : "NA";
       },
     },
@@ -1304,7 +1365,7 @@ const PageOverview = () => {
       width: 150,
       headerName: "Story View Image",
       renderCell: (params) => {
-        let data = params.row?.exehistorymodelsData?.story_view_upload_image;
+        let data = params.row?.story_view_upload_image;
         return data ? (
           <img src={data} style={{ width: "50px", height: "50px" }} />
         ) : (
@@ -2495,12 +2556,12 @@ const PageOverview = () => {
                   {/* </div> */}
                 </Stack>
                 <div className=" mb-2 mt-2">
-              <h4>
-                <span className="text-primary">
-                  Total Page:{filterData.length}
-                </span>
-              </h4>
-            </div>
+                  <h4>
+                    <span className="text-primary">
+                      Total Page:{filterData.length}
+                    </span>
+                  </h4>
+                </div>
               </div>
             </div>
           </div>
