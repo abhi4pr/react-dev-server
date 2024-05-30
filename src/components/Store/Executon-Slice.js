@@ -10,7 +10,6 @@ const executonSlice = createSlice({
   reducers: {
     addRow: (state, action) => {
       state.row = [action.payload];
-      console.log(action.payload)
     },
   },
 });

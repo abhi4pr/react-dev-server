@@ -108,9 +108,9 @@ export const PageBaseURL = createApi({
     }),
     updatePageState: builder.mutation({
       query: (data) => ({
-        url: `v1/page_states/${data._id}`,
+        url: `v1/page_states/${data.id}`,
         method: "PUT",
-        body: data,
+        body: data.formData,
       }),
     }),
 

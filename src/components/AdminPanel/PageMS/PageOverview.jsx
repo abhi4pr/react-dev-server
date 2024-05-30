@@ -59,6 +59,12 @@ import { setStatsUpdate } from "../../Store/PageMaster";
 
 const PageOverview = () => {
   // const { toastAlert } = useGlobalContext();
+  const {
+    data: pageList,
+    refetch: refetchPageList,
+    isLoading: isPageListLoading,
+  } = useGetAllPageListQuery();
+  const { data: pageStates } = useGetPageStateQuery();
   const [vendorTypes, setVendorTypes] = useState([]);
   const [pieChart, setPieChart] = useState({
     series: [40, 60],
@@ -397,43 +403,44 @@ const PageOverview = () => {
     (state) => state.PageOverview.showPageHelathColumn
   );
 
-  function pageHealthToggleCheck (){
+  function pageHealthToggleCheck() {
     if (showPageHealthColumn) {
-      console.log("calling",)
-      let data = filterData?.map((item) => {
-        let d = pageStates?.find((state) => state.page_master_id == item._id);
-        // let c={...d}
-        // console.log(c._id,"c")
-        // if (c) {
-        //   c.pageId = c?._id;
-        //   delete c?._id;
-        // }
-      // console.log(c,"c")
-      console.log(d,"d")
+      const data = filterData?.map((item) => {
+        // debugger;
+        const matchingState = pageStates?.find(
+          (state) => state?.page_master_id === item?._id
+        );  
         return {
           ...item,
-          ...d,
+          pageId: matchingState?._id,
+          ...matchingState,
+          _id: item._id,
         };
+
       });
-    return  setFilterData(data);
+
+      setFilterData(data);
     }
   }
 
   useEffect(() => {
-    pageHealthToggleCheck()
+    pageHealthToggleCheck();
+
   }, [showPageHealthColumn]);
   useEffect(() => {
-    pageHealthToggleCheck()
-    if (userID && contextData == false) {
+    if(showPageHealthColumn){
+      dispatch(setShowPageHealthColumn(false));
+    }
+    if (userID && !contextData) {
       axios
-        .get(`${baseUrl}` + `get_single_user_auth_detail/${userID}`)
+        .get(`${baseUrl}get_single_user_auth_detail/${userID}`)
         .then((res) => {
-          if (res.data[33].view_value == 1) {
+          if (res.data[33].view_value === 1) {
             setContextData(true);
           }
         });
     }
-    setTimeout(() => {}, 500);
+
     getData();
   }, []);
 
@@ -452,6 +459,7 @@ const PageOverview = () => {
   };
   const handleSetState = () => {
     dispatch(addRow(false));
+    dispatch(setStatsUpdate(false));
   };
   const handleUpdateRowClick = async (row) => {
     // await axios
@@ -490,8 +498,6 @@ const PageOverview = () => {
     });
   };
 
-  const { data: pageList, refetch: refetchPageList } = useGetAllPageListQuery();
-  const { data: pageStates } = useGetPageStateQuery();
   useEffect(() => {
     if (pageList) {
       setVendorTypes(pageList.data);
@@ -629,7 +635,7 @@ const PageOverview = () => {
         let data = platformData?.filter((item) => {
           return params.row.platform_active_on.includes(item._id);
         });
-        return data.map((item) => item.platform_name).join(", ");
+        return data?.map((item) => item.platform_name).join(", ");
       },
     },
     {
@@ -840,7 +846,7 @@ const PageOverview = () => {
             <Link
               to={{
                 pathname: `/admin/pageStats/${params.row._id}`,
-                state: { update: false },
+                
               }}
             >
               <button
@@ -898,7 +904,7 @@ const PageOverview = () => {
           // </button>
           <Link
             to={{
-              pathname: `/admin/pageStats/${params.row._id}`,
+              pathname: `/admin/pageStats/${params.row.pageId}`,
               state: { update: true },
             }}
           >

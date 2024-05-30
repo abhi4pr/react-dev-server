@@ -4,6 +4,7 @@ import {
   useAddPageStateMutation,
   useGetAllCitiesQuery,
   useGetPageStateByIdQuery,
+  useUpdatePageStateMutation,
 } from "../../Store/PageBaseURL";
 import { Autocomplete, FormControl, TextField } from "@mui/material";
 import { Country } from "country-state-city";
@@ -18,7 +19,6 @@ import { useSelector } from "react-redux";
 
 export default function PageStats() {
   const update = useSelector((state) => state.pageMaster.statsUpdate);
-  console.log(update, "update");
 
   const navitage = useNavigate();
   const { toastAlert, toastError } = useGlobalContext();
@@ -35,7 +35,7 @@ export default function PageStats() {
     formState: { errors },
     watch,
     setValue,
-    control
+    control,
   } = useForm();
   let isStatsFor = watch("statsFor");
   switch (isStatsFor) {
@@ -62,27 +62,22 @@ export default function PageStats() {
   }
 
   const [addPageState] = useAddPageStateMutation();
+  const [updatePageState] = useUpdatePageStateMutation();
 
   useEffect(() => {
-    if (update) {
-      console.log(pageStateData, "pageStateData");
+    if (update && pageStateData) {
       setValue("reach", pageStateData?.reach);
       setValue("impressions", pageStateData?.impression);
       setValue("engagement", pageStateData?.engagement);
       setValue("storyView", pageStateData?.story_view);
-      setValue("storyViewDate", pageStateData?.story_view_date);
-      console.log(pageStateData?.story_view_date, "story_view_date");
+      // setValue("storyViewDate", pageStateData?.story_view_date);
 
       setValue(
         "city1",
         cities?.find((city) => city.city_name === pageStateData?.city1_name)
           ?.city_name
       );
-      console.log(
-        cities?.find((city) => city.city_name === pageStateData?.city1_name)
-          ?.city_name,
-        "city1"
-      );
+     
       setValue("city1Percentage", pageStateData?.percentage_city1_name);
       setValue("city2", pageStateData?.city2_name);
       setValue("city2Percentage", pageStateData?.percentage_city2_name);
@@ -106,9 +101,9 @@ export default function PageStats() {
       setValue("country5Percentage", pageStateData?.percentage_country5_name);
 
       setValue("statsFor", pageStateData?.stats_for);
-      setValue("startDate", pageStateData?.start_date);
-      setValue("endDate", pageStateData?.end_date);
-      // setValue("storyViewDate", pageStateData?.story_view_date);
+      setValue("startDate", pageStateData?.start_date.split("T")[0]);
+      setValue("endDate", pageStateData?.end_date.split("T")[0]);
+      setValue("storyViewDate", pageStateData?.story_view_date.split("T")[0]);
       setValue("profileVisit", pageStateData?.profile_visit);
       setValue("womenPercentage", pageStateData?.female_percent);
       setValue("menPercentage", pageStateData?.male_percent);
@@ -121,7 +116,6 @@ export default function PageStats() {
       setValue("ageGroup7", pageStateData?.Age_65_plus_percent);
     }
   }, [update]);
-
   const handleSubmitForm = (data) => {
     const formData = new FormData();
     formData.append("page_master_id", id);
@@ -186,15 +180,30 @@ export default function PageStats() {
     formData.append("city_image", data.cityImage[0]);
     formData.append("Age_upload", data.ageGroupImage[0]);
     formData.append("country_image", data.countryImage[0]);
-    addPageState(formData)
-      .unwrap()
-      .then((res) => {
-        toastAlert("Stats Added Successfully");
-        navitage(`/admin/pms-page-overview`);
-      })
-      .catch((err) => {
-        toastError(`Something Went Wrong ${err.message}`);
-      });
+    if (!update) {
+      addPageState(formData)
+        .unwrap()
+        .then((res) => {
+          toastAlert("Stats Added Successfully");
+          navitage(`/admin/pms-page-overview`);
+        })
+        .catch((err) => {
+          toastError(`Something Went Wrong ${err.message}`);
+        });
+    } else {
+
+      updatePageState({
+        id,
+        formData})
+        .unwrap()
+        .then((res) => {
+          toastAlert("Stats Updated Successfully");
+          navitage(`/admin/pms-page-overview`);
+        })
+        .catch((err) => {
+          toastError(`Something Went Wrong ${err.message}`);
+        });
+    }
   };
 
   // const [pieChart, setPieChart] = useState({
@@ -1010,7 +1019,7 @@ export default function PageStats() {
                       type="text"
                       className="form-control"
                       {...register("profileVisit")}
-                      onKeyDown={(event) => {
+                      onKeyPress={(event) => {
                         if (!/[0-9]/.test(event.key)) {
                           event.preventDefault();
                         }
@@ -1365,7 +1374,7 @@ export default function PageStats() {
             </div>
             <div className="card-body pb8">
               <div className="row thm_form">
-              {/*  <div className="col-md-4 col-sm-12">
+                {/*  <div className="col-md-4 col-sm-12">
                   <div className="form-group">
                     <label>Country 1</label>
                     <div className="row m0">
@@ -1565,57 +1574,68 @@ export default function PageStats() {
                     </div>
                   </div>
                 </div>*/}
-                {['country1', 'country2', 'country3', 'country4', 'country5'].map(
-                  (country, index) => (
-                    <div className="col-md-4 col-sm-12" key={country}>
-                      <div className="form-group">
-                        <label>{`Country ${index + 1}`}</label>
-                        <div className="row m0">
-                          <div className="col-md-9 p0 mr8">
-                            <Controller
-
-                              name={country}
-                              control={control}
-                              render={({ field }) => (
-                                <Autocomplete
-
-                                  {...field}
-                                  options={countryList}
-                                  getOptionLabel={(option) => option.name}
-                                  isOptionEqualToValue={(option, value) => option.name === value?.name}
-                                  onChange={(event, value) => setValue(country, value?.name || "")}
-                                  value={countryList?.find(countryItem => countryItem.name === watch(country)) || null}
-                                  renderInput={(params) => (
-                                    <TextField
-                                      {...params}
-                                      label="Select Country"
-                                      variant="outlined"
-                                    />
-                                  )}
-                                />
-                              )}
-                            />
-                          </div>
-                          <div className="col p0">
-                            <div className="input-group">
-                              <input
-                                type="text"
-                                className="form-control pl4 pr4 text-center"
-                                {...register(`${country}Percentage`)}
-                                onKeyPress={(event) => {
-                                  if (!/[0-9]/.test(event.key)) {
-                                    event.preventDefault();
-                                  }
-                                }}
+                {[
+                  "country1",
+                  "country2",
+                  "country3",
+                  "country4",
+                  "country5",
+                ].map((country, index) => (
+                  <div className="col-md-4 col-sm-12" key={country}>
+                    <div className="form-group">
+                      <label>{`Country ${index + 1}`}</label>
+                      <div className="row m0">
+                        <div className="col-md-9 p0 mr8">
+                          <Controller
+                            name={country}
+                            control={control}
+                            render={({ field }) => (
+                              <Autocomplete
+                                {...field}
+                                options={countryList}
+                                getOptionLabel={(option) => option.name}
+                                isOptionEqualToValue={(option, value) =>
+                                  option.name === value?.name
+                                }
+                                onChange={(event, value) =>
+                                  setValue(country, value?.name || "")
+                                }
+                                value={
+                                  countryList?.find(
+                                    (countryItem) =>
+                                      countryItem.name === watch(country)
+                                  ) || null
+                                }
+                                renderInput={(params) => (
+                                  <TextField
+                                    {...params}
+                                    label="Select Country"
+                                    variant="outlined"
+                                  />
+                                )}
                               />
-                              <span className="input-group-text">%</span>
-                            </div>
+                            )}
+                          />
+                        </div>
+                        <div className="col p0">
+                          <div className="input-group">
+                            <input
+                              type="text"
+                              className="form-control pl4 pr4 text-center"
+                              {...register(`${country}Percentage`)}
+                              onKeyPress={(event) => {
+                                if (!/[0-9]/.test(event.key)) {
+                                  event.preventDefault();
+                                }
+                              }}
+                            />
+                            <span className="input-group-text">%</span>
                           </div>
                         </div>
                       </div>
                     </div>
-                  )
-                )}
+                  </div>
+                ))}
 
                 <div className="col-md-4 col-sm-12">
                   <div className="form-group">
