@@ -208,6 +208,11 @@ const SalesAccountOverview = () => {
           <FormContainer mainTitle={"Account Overview"} link={true} />
         </div>
         <div className="action_btns">
+          <Link to={"/admin/sales-document-type-overview"}>
+            <button className="btn cmnbtn btn-primary btn_sm">
+              Document Type
+            </button>
+          </Link>
           <Link to={"/admin/create-sales-account/0"}>
             <button className="btn cmnbtn btn-primary btn_sm">
               Add account

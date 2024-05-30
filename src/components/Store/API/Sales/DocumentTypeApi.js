@@ -1,23 +1,23 @@
 import { createApi } from "@reduxjs/toolkit/query/react";
 import authBaseQuery from "../../../../utils/authBaseQuery";
 
-const AccountDocumentApi = createApi({
-  reducerPath: "accountDocumentApi",
+const DocumentTypeApi = createApi({
+  reducerPath: "documentTypeApi",
   baseQuery: authBaseQuery,
   endpoints: (builder) => ({
-    getSingleDocument: builder.query({
+    getSingleDocumentType: builder.query({
       query: (id) => `/accounts/get_document_master/${id}`,
       transformResponse: (response) => response.data,
       keepUnusedDataFor: 60 * 60 * 24,
     }),
 
-    getAllDocuments: builder.query({
+    getAllDocumentType: builder.query({
       query: () => "/accounts/get_document_master_list",
       transformResponse: (response) => response.data,
       keepUnusedDataFor: 60 * 60 * 24,
     }),
 
-    addDocuments: builder.mutation({
+    addDocumentType: builder.mutation({
       query: (Documentsdata) => ({
         url: "/accounts/add_document_master",
         method: "POST",
@@ -28,8 +28,8 @@ const AccountDocumentApi = createApi({
           const { data: addedDocumnet } = await queryFulfilled;
 
           dispatch(
-            AccountDocumentApi.util.updateQueryData(
-              "getAllDocuments",
+            DocumentTypeApi.util.updateQueryData(
+              "getAllDocumentType",
               undefined,
               (draft) => {
                 draft.unshift(addedDocumnet.data);
@@ -42,7 +42,7 @@ const AccountDocumentApi = createApi({
       },
     }),
 
-    editDocument: builder.mutation({
+    editDocumentType: builder.mutation({
       query: ({ id, ...updatedDocument }) => ({
         url: `/accounts/update_document_master/${id}`,
         method: "PUT",
@@ -56,8 +56,8 @@ const AccountDocumentApi = createApi({
           const { data: returnedDocument } = await queryFulfilled;
 
           dispatch(
-            AccountDocumentApi.util.updateQueryData(
-              "getAllDocuments",
+            DocumentTypeApi.util.updateQueryData(
+              "getAllDocumentType",
               undefined,
               (draft) => {
                 const DocumentIndex = draft.findIndex((Doc) => Doc.id === id);
@@ -83,8 +83,8 @@ const AccountDocumentApi = createApi({
           await queryFulfilled;
 
           dispatch(
-            AccountDocumentApi.util.updateQueryData(
-              "getAllDocuments",
+            DocumentTypeApi.util.updateQueryData(
+              "getAllDocumentType",
               undefined,
               (draft) => {
                 return draft.filter((account) => account.id !== id);
@@ -100,11 +100,11 @@ const AccountDocumentApi = createApi({
 });
 
 export const {
-  useGetAllDocumentsQuery,
-  useGetSingleDocumentQuery,
-  useAddDocumentsMutation,
-  useEditDocumentMutation,
+  useGetAllDocumentTypeQuery,
+  useGetSingleDocumentTypeQuery,
+  useAddDocumentTypeMutation,
+  useEditDocumentTypeMutation,
   useDeleteDocumentMutation,
-} = AccountDocumentApi;
+} = DocumentTypeApi;
 
-export default AccountDocumentApi;
+export default DocumentTypeApi;
