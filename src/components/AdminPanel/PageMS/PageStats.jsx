@@ -74,7 +74,7 @@ export default function PageStats() {
 
       setValue(
         "city1",
-        cities.find((city) => city.city_name === pageStateData?.city1_name)
+        cities?.find((city) => city.city_name === pageStateData?.city1_name)
           ?.city_name
       );
       console.log( cities.find((city) => city.city_name === pageStateData?.city1_name)
@@ -104,9 +104,18 @@ export default function PageStats() {
       setValue("statsFor", pageStateData?.stats_for);
       setValue("startDate", pageStateData?.start_date);
       setValue("endDate", pageStateData?.end_date);
-      setValue("male_percent", pageStateData?.menPercentage);
       // setValue("storyViewDate", pageStateData?.story_view_date);
       setValue("profileVisit", pageStateData?.profile_visit);
+      setValue("womenPercentage", pageStateData?.female_percent);
+      setValue("menPercentage",pageStateData?.male_percent);
+      setValue("ageGroup1", pageStateData?.Age_13_17_percent)
+      setValue("ageGroup2", pageStateData?.Age_18_24_percent)
+        setValue("ageGroup3", pageStateData?.Age_25_34_percent)
+        setValue("ageGroup4", pageStateData?.Age_35_44_percent)
+        setValue("ageGroup5", pageStateData?.Age_45_54_percent)
+        setValue("ageGroup6", pageStateData?.Age_55_64_percent)
+        setValue("ageGroup7", pageStateData?.Age_65_plus_percent)
+
     }
   }, [update]);
 
@@ -1038,9 +1047,6 @@ export default function PageStats() {
                           onChange={(e, value) => {
                             setValue("city1", value.city_name);
                           }}
-                          value={cities.find(
-                            (city) => city.city_name === watch("city1")
-                          )}
                           renderInput={(params) => (
                             <TextField
                               {...params}

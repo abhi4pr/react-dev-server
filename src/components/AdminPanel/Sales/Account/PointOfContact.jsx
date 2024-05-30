@@ -3,7 +3,7 @@ import FieldContainer from "../../FieldContainer";
 
 const PointOfContact = ({ pocs, setPocs }) => {
   const handlePocChange = (index, key, value) => {
-    const updatedPocs = pocs.map((poc, pocIndex) =>
+    const updatedPocs = pocs?.map((poc, pocIndex) =>
       pocIndex === index ? { ...poc, [key]: value } : poc
     );
     setPocs(updatedPocs);
@@ -29,7 +29,7 @@ const PointOfContact = ({ pocs, setPocs }) => {
 
   return (
     <>
-      {pocs.map((poc, index) => (
+      {pocs?.map((poc, index) => (
         <div className="card">
           <div className="card-header">
             <h4>Point of Contact ({index + 1})</h4>

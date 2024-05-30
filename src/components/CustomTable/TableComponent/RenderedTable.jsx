@@ -28,9 +28,8 @@ const RenderedTable = ({
   dataLoading,
   editableRows,
 }) => {
-
   const [preventSelect, setPreventSelect] = useState(false);
-  const [editflag, setEditFlag] = useState(false)
+  const [editflag, setEditFlag] = useState(false);
   const handleRowSelection = (index) => {
     const actualIndex = (currentPage - 1) * itemsPerPage + index;
     setSelectedRowsIndex((prevState) => {
@@ -102,16 +101,19 @@ const RenderedTable = ({
     setColumns(newColumns);
     setWidths(newColumns);
   };
-  const handelchange = (e) => {
+  const handelchange = (e, index, column) => {
     let newData = [...sortedData];
-    newData[index] = { ...newData[index], [column.key]: e.target.value }
+    newData[index] = { ...newData[index], [column.key]: e.target.value };
     setSortedData(newData);
     if (e.target.value === "" || editflag === false) {
       let prevData = [...sortedData];
-      prevData[index] = { ...prevData[index], [column.key]: data[index][column.key] }
+      prevData[index] = {
+        ...prevData[index],
+        [column.key]: data[index][column.key],
+      };
       setSortedData(prevData);
     }
-  }
+  };
 
   return (
     <>
@@ -190,7 +192,6 @@ const RenderedTable = ({
                             className="resizable"
                             onMouseDown={onMouseDown(index)}
                           >
-
                             |
                           </div>
                         </div>
@@ -212,7 +213,7 @@ const RenderedTable = ({
                     <td
                       style={{
                         paddingTop: "4px",
-                        paddingLeft: "14px"
+                        paddingLeft: "14px",
                       }}
                     >
                       <input
@@ -228,13 +229,36 @@ const RenderedTable = ({
                     (column, colIndex) =>
                       visibleColumns[colIndex] && (
                         <td key={colIndex}>
-                          {console.log(column.key)}
-                          {editableRows[colIndex] && editflag === index ? column.customEditElement ? column.customEditElement(row, index, setEditFlag, handelchange) : (<input className="form-input" type="text" placeholder={row[column.key]} onChange={(e) => handelchange(e)} />) : (column.renderRowCell
-                            ? column.renderRowCell(row, index, setEditFlag, handelchange)
-                            : row[column.key])}
+                          {editableRows[colIndex] && editflag === index ? (
+                            column.customEditElement ? (
+                              column.customEditElement(
+                                row,
+                                index,
+                                setEditFlag,
+                                handelchange,
+                                column
+                              )
+                            ) : (
+                              <input
+                                className="form-control"
+                                type="text"
+                                placeholder={row[column.key]}
+                                onChange={(e) => handelchange(e, index, column)}
+                              />
+                            )
+                          ) : column.renderRowCell ? (
+                            column.renderRowCell(
+                              row,
+                              index,
+                              setEditFlag,
+                              handelchange
+                            )
+                          ) : (
+                            row[column.key]
+                          )}
                         </td>
-
-                      ))}
+                      )
+                  )}
                 </tr>
               ))
             )}

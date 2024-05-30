@@ -819,7 +819,7 @@ const PageOverview = () => {
           // totalPercentage == 100 ||
           // (totalPercentage == 0.0 && (
           <>
-            <button
+            {/* <button
               type="button"
               className="btn cmnbtn btn_sm btn-outline-primary"
               data-toggle="modal"
@@ -833,7 +833,7 @@ const PageOverview = () => {
               }}
             >
               Set Stats
-            </button>
+            </button> */}
             <Link
               to={{
                 pathname: `/admin/pageStats/${params.row._id}`,

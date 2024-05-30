@@ -339,6 +339,8 @@ import CreateSalesAccount from "./Sales/Account/CreateSalesAccount";
 import SalesAccountOverview from "./Sales/Account/SalesAccountOverview";
 import PaymentDoneTransactionList from "./Finance/PaymentDoneTransactionList";
 import PageStats from "./PageMS/PageStats";
+import DocumentMaster from "./Sales/Account/DocumentMaster";
+import DocumentOverview from "./Sales/Account/DocumentOverview";
 
 const Admin = () => {
   const [contextData, setData] = useState([]);
@@ -412,8 +414,8 @@ const Admin = () => {
                       (contextData &&
                         contextData[38] &&
                         contextData[38].view_value === 1)) && (
-                      <Route path="/user" element={<UserMaster />} />
-                    )}
+                        <Route path="/user" element={<UserMaster />} />
+                      )}
 
                     {/* User Profile Routing Here  */}
                     <Route path="/user-timeline" element={<Timeline />} />
@@ -1402,7 +1404,10 @@ const Admin = () => {
                     element={<VendorEdit />}
                   /> */}
                   <Route path="/pms-vendor-master" element={<VendorMaster />} />
-                  <Route path="/pms-vendor-master/:_id" element={<VendorMaster />} />
+                  <Route
+                    path="/pms-vendor-master/:_id"
+                    element={<VendorMaster />}
+                  />
                   <Route
                     path="/pms-vendor-overview"
                     element={<VendorOverview />}
@@ -1549,13 +1554,22 @@ const Admin = () => {
 
                   <Route path="/credit-approval" element={<CreditApproval />} />
                   <Route
-                    path="/create-sales-account"
+                    path="/create-sales-account/:id"
                     element={<CreateSalesAccount />}
                   />
 
                   <Route
                     path="/sales-account-overview"
                     element={<SalesAccountOverview />}
+                  />
+
+                  <Route
+                    path="/sales-document-type-master"
+                    element={<DocumentMaster />}
+                  />
+                  <Route
+                    path="/sales-document-type-overview"
+                    element={<DocumentOverview />}
                   />
 
                   {/* Sales Harshal end */}

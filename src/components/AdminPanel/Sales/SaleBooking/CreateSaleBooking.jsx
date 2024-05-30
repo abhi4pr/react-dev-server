@@ -37,6 +37,7 @@ const CreateSaleBooking = () => {
   const token = getDecodedToken();
   const loginUserId = token.id;
   const { toastAlert, toastError } = useGlobalContext();
+  const [campaignName, setCampaignName] = useState("");
   const [customerData, setCustomerData] = useState([]);
   const [selectedAccount, setSelectedAccount] = useState(null);
   const [selectedCustomer, setSelectedCustomer] = useState("");
@@ -60,7 +61,7 @@ const CreateSaleBooking = () => {
   const [selectedReasonType, setSelectedReasonType] = useState("");
   const [balancePayDate, setBalancePayDate] = useState("");
   // const [executiveSelfCredit, setExecutiveSelfCredit] = useState(false);
-  const [excelFile, setExcelFile] = useState(null);
+  // const [excelFile, setExcelFile] = useState(null);
   const [incentiveCheck, setIncentiveCheck] = useState(false);
 
   const paymentStatusList = [
@@ -80,14 +81,14 @@ const CreateSaleBooking = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const customerListRes = await axios.get(
-          `${baseUrl}get_all_customer_name_data`
-        );
+        // const customerListRes = await axios.get(
+        //   `${baseUrl}get_all_customer_name_data`
+        // );
         const creditAppList = await axios.get(
           `${baseUrl}sales/getlist_reason_credit_approval`
         );
         setCreditApprovalList(creditAppList.data.data);
-        setCustomerData(customerListRes.data.customerMastList);
+        // setCustomerData(customerListRes.data.customerMastList);
       } catch (error) {
         toastError(error);
       }
@@ -124,20 +125,6 @@ const CreateSaleBooking = () => {
         .then((res) => setSelectedCustomerData(res.data.data[0]));
     }
   }, [selectedCustomerPart]);
-
-  const handleDateChange = (operation) => {
-    const currentDate = new Date(bookingDate);
-    const today = new Date();
-    if (operation === "add" && currentDate < today) {
-      const nextDate = new Date(currentDate);
-      nextDate.setDate(nextDate.getDate() + 1);
-      setBookingDate(nextDate.toISOString().split("T")[0]);
-    } else if (operation === "subtract") {
-      const prevDate = new Date(currentDate);
-      prevDate.setDate(prevDate.getDate() - 1);
-      setBookingDate(prevDate.toISOString().split("T")[0]);
-    }
-  };
 
   const handleGstChange = (e) => {
     setAddGst(e.target.checked);
@@ -204,9 +191,9 @@ const CreateSaleBooking = () => {
         "executive_self_credit",
         selectedPaymentStatus.label == "Use Credit Limit"
       );
-      if (excelFile) {
-        formData.append("excel_file", excelFile);
-      }
+      // if (excelFile) {
+      //   formData.append("excel_file", excelFile);
+      // }
       formData.append(
         "incentive_status",
         incentiveCheck ? "no-incentive" : "incentive"
@@ -236,7 +223,7 @@ const CreateSaleBooking = () => {
       setReasonCreditApproval("");
       setBalancePayDate("");
       // setExecutiveSelfCredit(false);
-      setExcelFile(null);
+      // setExcelFile(null);
       setIncentiveCheck(false);
 
       toastAlert(response.data.message);
@@ -277,30 +264,15 @@ const CreateSaleBooking = () => {
         title="Creation"
         handleSubmit={handleSubmit}
       >
-        <div className="form-group col-4">
-          <label className="form-label">
-            Account Name <sup style={{ color: "red" }}>*</sup>
-          </label>
-          <Select
-            options={customerData.map((option) => ({
-              id: option._id,
-              value: option.customer_id,
-              label: option.customer_name,
-            }))}
-            value={{
-              value: selectedCustomer,
-              label:
-                customerData.find(
-                  (item) => item.customer_id == selectedCustomer
-                )?.customer_name || "",
-            }}
-            onChange={(e) => {
-              handleCustomer(e);
-            }}
-            required
-          />
-        </div>
-        {/* <CustomSelect
+        <FieldContainer
+          fieldGrid={4}
+          astric
+          label="Campaign Name"
+          placeholder="Campaign Name"
+          value={campaignName}
+          onChange={(e) => setCampaignName(e.target.value)}
+        />
+        <CustomSelect
           fieldGrid={4}
           label="Accounts"
           dataArray={allAccounts}
@@ -309,8 +281,8 @@ const CreateSaleBooking = () => {
           selectedId={selectedAccount}
           setSelectedId={setSelectedAccount}
           required
-        /> */}
-        {/* <CustomSelect
+        />
+        <CustomSelect
           fieldGrid={4}
           label="Brand"
           dataArray={allBrands}
@@ -319,7 +291,7 @@ const CreateSaleBooking = () => {
           selectedId={selectedBrand}
           setSelectedId={setSelectedBrand}
           required
-        /> */}
+        />
         <div className="card">
           {selectedCustomerData && (
             <>
@@ -346,23 +318,6 @@ const CreateSaleBooking = () => {
           max={todayDate}
           onChange={(e) => setBookingDate(e.target.value)}
         />
-        <div className="flex-row gap-2 mt-4 col-1">
-          <button
-            type="button"
-            className="btn btn_sm cmnbtn btn-primary"
-            onClick={() => handleDateChange("subtract")}
-          >
-            -
-          </button>
-          <button
-            type="button"
-            className="btn btn_sm cmnbtn btn-primary"
-            onClick={() => handleDateChange("add")}
-            disabled={bookingDate == todayDate}
-          >
-            +
-          </button>
-        </div>
 
         <FieldContainer
           label="Base Amount"
@@ -479,14 +434,14 @@ const CreateSaleBooking = () => {
         </div>
         {/* )} */}
 
-        <FieldContainer
+        {/* <FieldContainer
           type="file"
           name="Image"
           fieldGrid={4}
           accept=".xls, .xlsx"
           onChange={(e) => setExcelFile(e.target.files[0])}
           required={false}
-        />
+        /> */}
         <div className="form-group col-12 mt-2">
           <input
             type="checkbox"
