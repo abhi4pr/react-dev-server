@@ -46,6 +46,7 @@ import { Dropdown } from "react-bootstrap";
 import ReactApexChart from "react-apexcharts";
 import avatarOne from "../../../assets/img/product/Avtrar1.png";
 import {
+  useGetAllCitiesQuery,
   useGetAllPageCategoryQuery,
   useGetAllPageListQuery,
   useGetAllPriceListQuery,
@@ -403,6 +404,7 @@ const PageOverview = () => {
     (state) => state.PageOverview.showPageHelathColumn
   );
 
+  const { data: cities } = useGetAllCitiesQuery();
   function pageHealthToggleCheck() {
     if (showPageHealthColumn) {
       const data = filterData?.map((item) => {
@@ -890,32 +892,22 @@ const PageOverview = () => {
       headerName: "Stats Update",
       renderCell: (params) => {
         return (
-          // <button
-          //   type="button"
-          //   className="btn cmnbtn btn_sm btn-outline-primary"
-          //   onClick={() => handleUpdateRowClick(params.row)}
-          //   // disabled={
-          //   //   params?.row?.latestEntry?.stats_update_flag
-          //   //     ? !params?.row?.latestEntry.stats_update_flag
-          //   //     : true
-          //   // }
-          // >
-          //   Update
-          // </button>
-          <Link
-            to={{
-              pathname: `/admin/pageStats/${params.row.pageId}`,
-              state: { update: true },
-            }}
-          >
-            <button
-              type="button"
-              className="btn cmnbtn btn_sm btn-outline-primary"
-              onClick={handleUpdateRowClick}
+           params.row?.pageId && 
+            <Link
+              to={{
+                pathname: `/admin/pageStats/${params.row.pageId}`,
+                state: { update: true },
+              }}
             >
-              Update
-            </button>
-          </Link>
+              <button
+                type="button"
+                className="btn cmnbtn btn_sm btn-outline-primary"
+                onClick={handleUpdateRowClick}
+              >
+                Update
+              </button>
+            </Link>
+          
         );
       },
     },

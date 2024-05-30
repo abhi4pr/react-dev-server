@@ -65,7 +65,7 @@ export default function PageStats() {
   const [updatePageState] = useUpdatePageStateMutation();
 
   useEffect(() => {
-    if (update && pageStateData) {
+    if ( pageStateData) {
       setValue("reach", pageStateData?.reach);
       setValue("impressions", pageStateData?.impression);
       setValue("engagement", pageStateData?.engagement);
@@ -77,7 +77,7 @@ export default function PageStats() {
         cities?.find((city) => city.city_name === pageStateData?.city1_name)
           ?.city_name
       );
-     
+
       setValue("city1Percentage", pageStateData?.percentage_city1_name);
       setValue("city2", pageStateData?.city2_name);
       setValue("city2Percentage", pageStateData?.percentage_city2_name);
@@ -101,9 +101,9 @@ export default function PageStats() {
       setValue("country5Percentage", pageStateData?.percentage_country5_name);
 
       setValue("statsFor", pageStateData?.stats_for);
-      setValue("startDate", pageStateData?.start_date.split("T")[0]);
-      setValue("endDate", pageStateData?.end_date.split("T")[0]);
-      setValue("storyViewDate", pageStateData?.story_view_date.split("T")[0]);
+      setValue("startDate", pageStateData?.start_date?.split("T")[0]);
+      setValue("endDate", pageStateData?.end_date?.split("T")[0]);
+      setValue("storyViewDate", pageStateData?.story_view_date?.split("T")[0]);
       setValue("profileVisit", pageStateData?.profile_visit);
       setValue("womenPercentage", pageStateData?.female_percent);
       setValue("menPercentage", pageStateData?.male_percent);
@@ -115,7 +115,7 @@ export default function PageStats() {
       setValue("ageGroup6", pageStateData?.Age_55_64_percent);
       setValue("ageGroup7", pageStateData?.Age_65_plus_percent);
     }
-  }, [update]);
+  }, [pageStateData]);
   const handleSubmitForm = (data) => {
     const formData = new FormData();
     formData.append("page_master_id", id);
@@ -180,7 +180,7 @@ export default function PageStats() {
     formData.append("city_image", data.cityImage[0]);
     formData.append("Age_upload", data.ageGroupImage[0]);
     formData.append("country_image", data.countryImage[0]);
-    if (!update) {
+    if (!pageStateData) {
       addPageState(formData)
         .unwrap()
         .then((res) => {
@@ -191,10 +191,12 @@ export default function PageStats() {
           toastError(`Something Went Wrong ${err.message}`);
         });
     } else {
-
+      delete formData.created_by;
+      delete formData.page_master_id;
       updatePageState({
         id,
-        formData})
+        formData,
+      })
         .unwrap()
         .then((res) => {
           toastAlert("Stats Updated Successfully");
