@@ -13,6 +13,7 @@ const SalesAccountApi = createApi({
 
     getSingleAccount: builder.query({
       query: (id) => `accounts/get_single_account/${id}`,
+      transformResponse: (response, args) => response.data,
     }),
 
     addAccount: builder.mutation({
@@ -30,7 +31,7 @@ const SalesAccountApi = createApi({
               "getAllAccount",
               undefined,
               (draft) => {
-                draft.unshift(addedAccount.data);
+                draft.unshift(addedAccount.data.accountMaster);
               }
             )
           );

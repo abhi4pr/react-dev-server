@@ -12,13 +12,6 @@ const ViewSaleBooking = () => {
     isLoading: allSaleBookingLoading,
   } = useGetAllSaleBookingQuery();
 
-  // useEffect(() => {
-  //   const result = allSaleBooking?.filter((d) => {
-  //     return d?.customer_name?.toLowerCase()?.includes(search?.toLowerCase());
-  //   });
-  //   setSaleBookingData(result);
-  // }, [search]);
-
   const columns = [
     {
       key: "Serial_no",

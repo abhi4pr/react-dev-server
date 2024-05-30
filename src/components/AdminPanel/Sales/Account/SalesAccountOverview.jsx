@@ -8,6 +8,7 @@ import { useGetAllCompanyTypeQuery } from "../../../Store/API/Sales/CompanyTypeA
 import { useGetAllBrandCategoryTypeQuery } from "../../../Store/API/Sales/BrandCategoryTypeApi";
 import DateISOtoNormal from "../../../../utils/DateISOtoNormal";
 import { useGlobalContext } from "../../../../Context/Context";
+
 const SalesAccountOverview = () => {
   const {
     data: allAccount,
@@ -48,16 +49,32 @@ const SalesAccountOverview = () => {
   const { toastAlert, toastError } = useGlobalContext();
 
   if (allAccountError) {
-    toastError(allAccountError.data?.message || allAccountError.error || "An error occurred")
+    toastError(
+      allAccountError.data?.message ||
+        allAccountError.error ||
+        "An error occurred"
+    );
   }
   if (allAccountTypesError) {
-    toastError(allAccountTypesError.data?.message || allAccountTypesError.error || "An error occurred")
+    toastError(
+      allAccountTypesError.data?.message ||
+        allAccountTypesError.error ||
+        "An error occurred"
+    );
   }
   if (allCompanyTypeError) {
-    toastError(allCompanyTypeError.data?.message || allCompanyTypeError.error || "An error occurred")
+    toastError(
+      allCompanyTypeError.data?.message ||
+        allCompanyTypeError.error ||
+        "An error occurred"
+    );
   }
   if (allBrandCatTypeError) {
-    toastError(allBrandCatTypeError.data?.message || allBrandCatTypeError.error || "An error occurred")
+    toastError(
+      allBrandCatTypeError.data?.message ||
+        allBrandCatTypeError.error ||
+        "An error occurred"
+    );
   }
   const ViewSalesAccountColumns = [
     {
@@ -74,9 +91,6 @@ const SalesAccountOverview = () => {
       renderRowCell: (row) => row.account_name,
       width: 100,
       sortable: true,
-
-      editable: true,
-      // customEditElement: (row, index, setEditFlag, handelchange) => (<input type="text" onChange={(e => handelchange(e))} />),
     },
     {
       key: "description",
@@ -86,8 +100,13 @@ const SalesAccountOverview = () => {
       sortable: true,
       showCol: true,
       editable: true,
-      customEditElement: (row, index, setEditFlag, handelchange) => (<input type="text" onChange={e => handelchange(e)} placeholder={row.description} />),
-
+      customEditElement: (row, index, setEditFlag, handelchange) => (
+        <input
+          type="text"
+          onChange={(e) => handelchange(e)}
+          placeholder={row.description}
+        />
+      ),
     },
     {
       key: "turn_over",
@@ -167,16 +186,18 @@ const SalesAccountOverview = () => {
     {
       key: "Action_edits",
       name: "Actions",
-      renderRowCell: (row, index, setEditFlag) => (<div className="flex-row">
-
-        <button onClick={() => setEditFlag(index)} className="icon-1" ><i className="bi bi-pencil"></i></button>
-        <button onClick={() => setEditFlag(false)} className="icon-1" ><i className="bi bi-x"></i></button>
-
-      </div>),
+      renderRowCell: (row) => (
+        <div className="flex-row">
+          <Link to={`/admin/create-sales-account/${row._id}`}>
+            <button className="icon-1">
+              <i className="bi bi-pencil"></i>
+            </button>
+          </Link>
+        </div>
+      ),
       width: 100,
       sortable: true,
       showCol: true,
-
     },
   ];
 
@@ -187,7 +208,7 @@ const SalesAccountOverview = () => {
           <FormContainer mainTitle={"Account Overview"} link={true} />
         </div>
         <div className="action_btns">
-          <Link to={"/admin/create-sales-account"}>
+          <Link to={"/admin/create-sales-account/0"}>
             <button className="btn cmnbtn btn-primary btn_sm">
               Add account
             </button>
@@ -202,8 +223,6 @@ const SalesAccountOverview = () => {
         rowSelectable={true}
         pagination={[5, 10, 15]}
       />
-
-
     </div>
   );
 };
