@@ -603,7 +603,7 @@ const LetterTab = ({ allUserData, gettingData }) => {
             allUserData.ctc < 20000 && (
               <LetterTabPdf3Min UserDetails={UserDetails} />
             )}
-          <LetterTabPdf1WithPF UserDetails={UserDetails} />
+          {/* <LetterTabPdf1WithPF UserDetails={UserDetails} /> */}
           {allUserData.emergency_contact_person_name2 == "in_hand" &&
             allUserData.ctc > 20000 && (
               <LetterTabPdf2Max UserDetails={UserDetails} />
