@@ -592,18 +592,18 @@ const LetterTab = ({ allUserData, gettingData }) => {
 
           {/* Letter Tab PDF Section--------------------------------------------------------------------------------- */}
 
-          {allUserData.emergency_contact_person_name2 == "pf" && (
+          {/* {allUserData.emergency_contact_person_name2 == "pf" && (
             <LetterTabPdf1WithPF UserDetails={UserDetails} />
           )}
 
           {allUserData.emergency_contact_person_name2 == "pf_and_esic" && (
             <LetterTabPdf4ESIC UserDetails={UserDetails} />
-          )}
+          )} */}
           {allUserData.emergency_contact_person_name2 == "in_hand" &&
             allUserData.ctc < 20000 && (
               <LetterTabPdf3Min UserDetails={UserDetails} />
             )}
-          <LetterTabPdf1WithPF UserDetails={UserDetails} />
+
           {allUserData.emergency_contact_person_name2 == "in_hand" &&
             allUserData.ctc > 20000 && (
               <LetterTabPdf2Max UserDetails={UserDetails} />
