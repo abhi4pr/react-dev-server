@@ -20,17 +20,23 @@ const PaymentSummary = () => {
 
   function getData() {
     const formData = new FormData();
-    formData.append("loggedin_user_id",36)
-    formData.append("cust_id",id)
+    formData.append("loggedin_user_id", 36);
+    formData.append("cust_id", id);
 
-    axios.post("https://sales.creativefuel.io/webservices/RestController.php?view=sales-customer_purchase_finance_approval", formData, {
-      headers:{
-        "Content-Type":"multipart/form-data"
-      }
-    }).then((res) => {
-      setData(res.data.body);
-      setFilterData(res.data.body);
-    });
+    axios
+      .post(
+        "https://sales.creativefuel.io/webservices/RestController.php?view=sales-customer_purchase_finance_approval",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      )
+      .then((res) => {
+        setData(res.data.body);
+        setFilterData(res.data.body);
+      });
   }
 
   useEffect(() => {
@@ -39,9 +45,7 @@ const PaymentSummary = () => {
 
   useEffect(() => {
     const result = datas.filter((d) => {
-      return (
-        d.cust_name?.toLowerCase().match(search.toLowerCase())
-      );
+      return d.cust_name?.toLowerCase().match(search.toLowerCase());
     });
     setFilterData(result);
   }, [search]);
@@ -94,9 +98,9 @@ const PaymentSummary = () => {
           ) : (
             <span className="badge bg-warning">Pending</span>
           )}
-        </div>)
-
-    }
+        </div>
+      ),
+    },
   ];
 
   return (

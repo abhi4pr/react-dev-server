@@ -93,7 +93,7 @@ const SaleBookingClose = ({
   function getData() {
     axios
       .post(baseUrl + "add_php_sale_booking_tds_data_in_node")
-      .then((res) => { });
+      .then((res) => {});
 
     let formData = new FormData();
     formData.append("loggedin_user_id", 36);
@@ -145,9 +145,9 @@ const SaleBookingClose = ({
     getData();
     setButtonaccess(
       contextData &&
-      contextData[2] &&
-      contextData[2].insert_value === 1 &&
-      false
+        contextData[2] &&
+        contextData[2].insert_value === 1 &&
+        false
     );
   }, [tdsStatus, aboutToClose, dateFilter]);
 
@@ -412,7 +412,6 @@ const SaleBookingClose = ({
       fieldName: "balance_refund_amount",
       width: 250,
 
-
       renderCell: (params) => params.row.balance_refund_amount,
     },
     {
@@ -501,7 +500,6 @@ const SaleBookingClose = ({
     {
       field: "Refund Balance Amount",
       width: 250,
-
 
       fieldName: "balance_refund_amount",
       renderCell: (params) => params.row.balance_refund_amount,
@@ -610,7 +608,6 @@ const SaleBookingClose = ({
       fieldName: "balance_refund_amount",
       width: 250,
 
-
       renderCell: (params) => params.row.balance_refund_amount,
     },
     {
@@ -718,7 +715,6 @@ const SaleBookingClose = ({
       field: "Refund Balance Amount",
       fieldName: "balance_refund_amount",
       width: 250,
-
 
       renderCell: (params) => params.row.balance_refund_amount,
     },
@@ -861,7 +857,6 @@ const SaleBookingClose = ({
       width: 250,
 
       renderCell: (params) => params.row.balance_refund_amount,
-
     },
     {
       field: "net_balance_amount_to_pay_percentage",
@@ -975,17 +970,17 @@ const SaleBookingClose = ({
             "[]"
           )
         );
-      case "nextMonth":
-        const startOfNextMonth = now.clone().add(1, "months").startOf("month");
-        const endOfNextMonth = now.clone().add(1, "months").endOf("month");
-        return apiData.filter((item) =>
-          moment(item.sale_booking_date).isBetween(
-            startOfNextMonth,
-            endOfNextMonth,
-            "day",
-            "[]"
-          )
-        );
+      // case "nextMonth":
+      //   const startOfNextMonth = now.clone().add(1, "months").startOf("month");
+      //   const endOfNextMonth = now.clone().add(1, "months").endOf("month");
+      //   return apiData.filter((item) =>
+      //     moment(item.request_date).isBetween(
+      //       startOfNextMonth,
+      //       endOfNextMonth,
+      //       "day",
+      //       "[]"
+      //     )
+      //   );
       case "currentQuarter":
         const quarterStart = moment().startOf("quarter");
         const quarterEnd = moment().endOf("quarter");
@@ -997,8 +992,12 @@ const SaleBookingClose = ({
             "[]"
           )
         );
+      case "today":
+        return apiData.filter((item) =>
+          moment(item.sale_booking_date).isSame(now, "day")
+        );
       default:
-        return apiData; // No filter applied
+        return apiData;
     }
   };
 
@@ -1309,12 +1308,12 @@ const SaleBookingClose = ({
                 onChange={(e) => setDateFilter(e.target.value)}
               >
                 <option value="">All</option>
+                <option value="today">Today</option>
                 <option value="last7Days">Last 7 Days</option>
                 <option value="last30Days">Last 30 Days</option>
                 <option value="thisWeek">This Week</option>
                 <option value="lastWeek">Last Week</option>
                 <option value="currentMonth">Current Month</option>
-                <option value="nextMonth">Next Month</option>
                 <option value="currentQuarter">This Quarter</option>
               </select>
             </div>

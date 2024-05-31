@@ -1201,22 +1201,34 @@ export default function PurchaseManagementAllTransaction() {
         return apiData;
     }
   };
-
   const handleRowSelectionModelChange = async (rowIds) => {
     setRowSelectionModel(rowIds);
   };
+
+  // csv download----
   const handleDownloadInvoices = async () => {
     const zip = new JSZip();
 
-    // Generate PDFs and add them to the zip
-    await Promise.all(
-      rowSelectionModel.map(async (rowId) => {
-        const pdf = new jsPDF();
-        // Customize your PDF content here
-        pdf.text(`PDF content for row ${rowId}`, 10, 10);
-        zip.file(`invoice_${rowId}.pdf`, pdf.output());
-      })
-    );
+    // Generate CSVs and add them to the zip
+    rowSelectionModel.forEach((rowId) => {
+      const rowData = filterData.find((row) => row.request_id === rowId); // Adjusted to find the correct row data
+      if (rowData) {
+        // Prepare CSV content
+        let csvContent = ""; // Initialize CSV content
+
+        // Generate headers row
+        const headers = Object.keys(rowData);
+        csvContent += headers.join(",") + "\n";
+
+        // Generate CSV content for the row
+        const values = Object.values(rowData);
+        const rowContent = values.map((value) => `"${value}"`).join(",");
+        csvContent += `${rowContent}\n`;
+
+        // Add CSV to the zip
+        zip.file(`invoice_${rowId}.csv`, csvContent);
+      }
+    });
 
     // Generate the zip file
     const zipBlob = await zip.generateAsync({ type: "blob" });
@@ -1234,6 +1246,7 @@ export default function PurchaseManagementAllTransaction() {
       />
     );
   }
+
   return (
     <div>
       <FormContainer
@@ -1744,7 +1757,7 @@ export default function PurchaseManagementAllTransaction() {
                     showQuickFilter: true,
                   },
                 }}
-                getRowId={(row) => row.request_id}
+                getRowId={(row) => row?.request_id}
                 onRowSelectionModelChange={(rowIds) => {
                   handleRowSelectionModelChange(rowIds);
                   console.log(rowIds, "IDS");

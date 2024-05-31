@@ -20,7 +20,8 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import EditIcon from "@mui/icons-material/Edit";
 
 import moment from "moment";
-
+import JSZip from "jszip";
+import { saveAs } from "file-saver";
 import dayjs from "dayjs";
 import { Link } from "react-router-dom";
 import Tab from "../../Tab/Tab";
@@ -121,6 +122,7 @@ const BalancePaymentList = () => {
   const [saleBookingIdForInvoiceImg, setSaleBookingIdforInvoiceImg] =
     useState("");
   const [invoiceImageDataField, setInvoiceImageDataField] = useState("");
+  const [rowSelectionModel, setRowSelectionModel] = useState([]);
   const accordionButtons = [
     "Invoice Created",
     "Non Invoice Created",
@@ -697,7 +699,8 @@ const BalancePaymentList = () => {
     const formData = new FormData();
 
     formData.append("sale_booking_id", saleBookingIdForInvoiceImg);
-    formData.append("invoice_mnj_number", invoiceImageDataField);
+    // formData.append("invoice_mnj_number", invoiceImageDataField);
+    formData.append("invoice", invoiceImageDataField);
 
     axios
       .post(
@@ -1606,9 +1609,26 @@ const BalancePaymentList = () => {
   //   }
   // };
   const filterDataBasedOnSelection = (apiData) => {
-    console.log(apiData, "api data >>");
     const now = moment();
     switch (dateFilter) {
+      case "last7Days":
+        return apiData.filter((item) =>
+          moment(item.expected_payment_receive_date).isBetween(
+            now.clone().subtract(7, "days"),
+            now,
+            "day",
+            "[]"
+          )
+        );
+      case "last30Days":
+        return apiData.filter((item) =>
+          moment(item.expected_payment_receive_date).isBetween(
+            now.clone().subtract(30, "days"),
+            now,
+            "day",
+            "[]"
+          )
+        );
       case "thisWeek":
         const startOfWeek = now.clone().startOf("week");
         const endOfWeek = now.clone().endOf("week");
@@ -1620,18 +1640,21 @@ const BalancePaymentList = () => {
             "[]"
           )
         );
-      case "nextMonth":
-        const startOfNextMonth = now.clone().add(1, "months").startOf("month");
-        const endOfNextMonth = now.clone().add(1, "months").endOf("month");
+      case "lastWeek":
+        const startOfLastWeek = now
+          .clone()
+          .subtract(1, "weeks")
+          .startOf("week");
+        const endOfLastWeek = now.clone().subtract(1, "weeks").endOf("week");
         return apiData.filter((item) =>
           moment(item.expected_payment_receive_date).isBetween(
-            startOfNextMonth,
-            endOfNextMonth,
+            startOfLastWeek,
+            endOfLastWeek,
             "day",
             "[]"
           )
         );
-      case "thisMonth":
+      case "currentMonth":
         const startOfMonth = now.clone().startOf("month");
         const endOfMonth = now.clone().endOf("month");
         return apiData.filter((item) =>
@@ -1642,8 +1665,34 @@ const BalancePaymentList = () => {
             "[]"
           )
         );
+      // case "nextMonth":
+      //   const startOfNextMonth = now.clone().add(1, "months").startOf("month");
+      //   const endOfNextMonth = now.clone().add(1, "months").endOf("month");
+      //   return apiData.filter((item) =>
+      //     moment(item.request_date).isBetween(
+      //       startOfNextMonth,
+      //       endOfNextMonth,
+      //       "day",
+      //       "[]"
+      //     )
+      //   );
+      case "currentQuarter":
+        const quarterStart = moment().startOf("quarter");
+        const quarterEnd = moment().endOf("quarter");
+        return apiData.filter((item) =>
+          moment(item.expected_payment_receive_date).isBetween(
+            quarterStart,
+            quarterEnd,
+            "day",
+            "[]"
+          )
+        );
+      case "today":
+        return apiData.filter((item) =>
+          moment(item.expected_payment_receive_date).isSame(now, "day")
+        );
       default:
-        return apiData; // No filter applied
+        return apiData;
     }
   };
 
@@ -1716,7 +1765,6 @@ const BalancePaymentList = () => {
   // non gst counts :-
   const nonGstCounts = filterData.filter((count) => count.gst_status === "0");
 
-  console.log(nonGstCounts, "nongstCOUNT>>>");
   // Total non gst - balance amounts
   const totalNonGstBalanceAmount = nonGstCounts?.reduce(
     (total, item) =>
@@ -1765,7 +1813,52 @@ const BalancePaymentList = () => {
   const totalPA = () => {
     return +campaignAmountData - (+paidAmountData + paidAmount);
   };
-  console.log(filterData, "filterData >>>");
+
+  const handleRowSelectionModelChange = async (rowIds) => {
+    setRowSelectionModel(rowIds);
+  };
+
+  // csv download----
+  const handleDownloadInvoices = async () => {
+    const zip = new JSZip();
+
+    // Generate CSVs and add them to the zip
+    rowSelectionModel.forEach((rowId) => {
+      const rowData = filterData.find((row) => row.request_id === rowId); // Adjusted to find the correct row data
+      if (rowData) {
+        // Prepare CSV content
+        let csvContent = ""; // Initialize CSV content
+
+        // Generate headers row
+        const headers = Object.keys(rowData);
+        csvContent += headers.join(",") + "\n";
+
+        // Generate CSV content for the row
+        const values = Object.values(rowData);
+        const rowContent = values.map((value) => `"${value}"`).join(",");
+        csvContent += `${rowContent}\n`;
+
+        // Add CSV to the zip
+        zip.file(`invoice_${rowId}.csv`, csvContent);
+      }
+    });
+
+    // Generate the zip file
+    const zipBlob = await zip.generateAsync({ type: "blob" });
+
+    // Save the zip file
+    saveAs(zipBlob, "invoices.zip");
+  };
+  function CustomColumnMenu(props) {
+    return (
+      <GridColumnMenu
+        {...props}
+        slots={{
+          columnMenuColumnsItem: null,
+        }}
+      />
+    );
+  }
 
   return (
     <div>
@@ -2435,6 +2528,7 @@ const BalancePaymentList = () => {
                         onChange={(e) => setDateFilter(e.target.value)}
                       >
                         <option value="">All</option>
+                        <option value="today">Today</option>
                         <option value="thisWeek">This Week</option>
                         <option value="nextMonth">Next Month</option>
                         <option value="thisMonth">This Month</option>
@@ -2627,6 +2721,19 @@ const BalancePaymentList = () => {
         onTabClick={handleAccordionButtonClick}
       />
       <div className="card">
+        <div className="pack w-75">
+          {rowSelectionModel.length > 0 && (
+            <Button
+              className="btn btn-primary cmnbtn btn_sm"
+              variant="contained"
+              color="primary"
+              size="small"
+              onClick={handleDownloadInvoices}
+            >
+              Download PDF Zip
+            </Button>
+          )}
+        </div>
         <div className="card-body thm_table fx-head">
           {activeAccordionIndex === 0 && (
             <DataGrid
@@ -2635,6 +2742,7 @@ const BalancePaymentList = () => {
               pageSize={5}
               rowsPerPageOptions={[5]}
               disableSelectionOnClick
+              // checkboxSelection
               slots={{ toolbar: GridToolbar }}
               slotProps={{
                 toolbar: {
@@ -2642,6 +2750,12 @@ const BalancePaymentList = () => {
                 },
               }}
               getRowId={(row) => filterData.indexOf(row)}
+              // getRowId={(row) => row?.sale_booking_id}
+              // onRowSelectionModelChange={(rowIds) => {
+              //   handleRowSelectionModelChange(rowIds);
+              //   console.log(rowIds, "IDS>>>>");
+              // }}
+              // rowSelectionModel={rowSelectionModel}
             />
           )}
           {activeAccordionIndex === 1 && (
@@ -2651,6 +2765,7 @@ const BalancePaymentList = () => {
               pageSize={5}
               rowsPerPageOptions={[5]}
               disableSelectionOnClick
+              // checkboxSelection
               slots={{ toolbar: GridToolbar }}
               slotProps={{
                 toolbar: {
@@ -2658,6 +2773,12 @@ const BalancePaymentList = () => {
                 },
               }}
               getRowId={(row) => filterData.indexOf(row)}
+              // getRowId={(row) => row?.sale_booking_id}
+              // onRowSelectionModelChange={(rowIds) => {
+              //   handleRowSelectionModelChange(rowIds);
+              //   console.log(rowIds, "IDS");
+              // }}
+              // rowSelectionModel={rowSelectionModel}
             />
           )}
           {activeAccordionIndex === 2 && <ApprovedList />}

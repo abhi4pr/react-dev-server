@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import FormContainer from "../FormContainer";
-import axios from "axios";
+import axios, { AxiosHeaders } from "axios";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import pdf from "./pdf-file.png";
 import logo from "./../../../../public/logo.png";
@@ -38,6 +38,9 @@ import { saveAs } from "file-saver";
 import Overview from "./Overview";
 import Loader from "./Loader/Loader";
 import PayVendorDialog from "./Purchase/Dialog/PayVendorDialog";
+import DynamicTable from "../Object/DynamicTable";
+import TableData from "./TableData";
+import { Link } from "react-router-dom";
 
 export default function PendingPaymentRequest() {
   const whatsappApi = WhatsappAPI();
@@ -104,7 +107,7 @@ export default function PendingPaymentRequest() {
   const [rowSelectionModel, setRowSelectionModel] = useState([]);
   const [adjustAmount, setAdjustAmount] = useState("");
   const [adjustmentAmt, setAdjustmentAmt] = useState("");
-  const [preview, setPreview] = useState("");
+  // const [preview, setPreview] = useState("");
   const [openDialog, setOpenDialog] = useState(false);
   const [overviewDialog, setOverviewDialog] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -172,139 +175,155 @@ export default function PendingPaymentRequest() {
     },
   ];
 
-  const callApi = () => {
+  const callApi = async () => {
     //Reminder API
     let remindData = "";
-    axios
+    await axios
       .get(
         "https://purchase.creativefuel.io//webservices/RestController.php?view=getpaymentrequestremind"
       )
       .then((res) => {
+        console.log(res, "getting reminder data");
         setPhpRemainderData(res.data.body);
         remindData = res.data.body;
+      })
+      .catch((error) => {
+        console.log("Error while getting reminder data");
       });
 
-    axios.get(baseUrl + "phpvendorpaymentrequest").then((res) => {
-      const x = res.data.modifiedData;
-      setNodeData(x);
-      axios
-        .get(
-          "https://purchase.creativefuel.io/webservices/RestController.php?view=getpaymentrequest"
-        )
-        .then((res) => {
-          let y = res.data.body.filter((item) => {
-            return !x.some((item2) => item.request_id === item2.request_id);
-          });
-          setPhpData(y); // Setting the filtered data to state
+    axios
+      .get(baseUrl + "phpvendorpaymentrequest")
+      .then((res) => {
+        console.log(res, "getting node vendorpaymentrequest data");
+        const x = res.data.modifiedData;
+        setNodeData(x);
+        axios
+          .get(
+            "https://purchase.creativefuel.io/webservices/RestController.php?view=getpaymentrequest"
+          )
+          .then((res) => {
+            console.log(res, "getting paymentrequest user data from php");
+            let y = res.data.body.filter((item) => {
+              return !x.some((item2) => item.request_id === item2.request_id);
+            });
+            setPhpData(y); // Setting the filtered data to state
 
-          let c = res.data.body.filter((item) => {
-            return remindData.some(
-              (item2) => item.request_id === item2.request_id
-            );
-          });
+            let c = res.data.body.filter((item) => {
+              return remindData.some(
+                (item2) => item.request_id === item2.request_id
+              );
+            });
 
-          y.push(...c); // Merging the filtered items with items matching certain conditions
+            y.push(...c); // Merging the filtered items with items matching certain conditions
 
-          let mergedArray = [...y, ...c];
+            let mergedArray = [...y, ...c];
 
-          // Creating a set of unique request_ids from the merged data
-          let t = new Set(mergedArray.map((item) => item.request_id));
-          mergedArray = Array.from(t).map((request_id) => {
-            return mergedArray.find((item) => item.request_id === request_id);
-          });
+            // Creating a set of unique request_ids from the merged data
+            let t = new Set(mergedArray.map((item) => item.request_id));
+            mergedArray = Array.from(t).map((request_id) => {
+              return mergedArray.find((item) => item.request_id === request_id);
+            });
 
-          mergedArray = mergedArray.filter(
-            (item) => item.status == 0 || item.status == 3 || item.status == 2
-          );
-
-          mergedArray = mergedArray.sort((a, b) => {
-            // console.log(a, "A--------------------", b, "b data");
-            const aReminder = remindData.some(
-              (remind) => remind.request_id === a.request_id
-            );
-            const bReminder = remindData.some(
-              (remind) => remind.request_id === b.request_id
+            mergedArray = mergedArray.filter(
+              (item) => item.status == 0 || item.status == 3 || item.status == 2
             );
 
-            if (aReminder && !bReminder) return -1;
-            if (!aReminder && bReminder) return 1;
+            mergedArray = mergedArray.sort((a, b) => {
+              const aReminder = remindData.some(
+                (remind) => remind.request_id === a.request_id
+              );
+              const bReminder = remindData.some(
+                (remind) => remind.request_id === b.request_id
+              );
 
-            // Add aging sorting logic if required
-            return new Date(a.request_date) - new Date(b.request_date);
-          });
+              if (aReminder && !bReminder) return -1;
+              if (!aReminder && bReminder) return 1;
 
-          mergedArray = mergedArray.sort((a, b) => {
-            console.log(a, "A--------------------", b, "b data");
-            const aReminder = remindData.some(
-              (remind) => remind.request_id === a.request_id
+              // Add aging sorting logic if required
+              return new Date(a.request_date) - new Date(b.request_date);
+            });
+
+            mergedArray = mergedArray.sort((a, b) => {
+              const aReminder = remindData.some(
+                (remind) => remind.request_id === a.request_id
+              );
+              const bReminder = remindData.some(
+                (remind) => remind.request_id === b.request_id
+              );
+
+              if (aReminder && !bReminder) return -1;
+              if (!aReminder && bReminder) return 1;
+
+              // Add aging sorting logic if required
+              return b.aging - a.aging;
+            });
+
+            setData(mergedArray);
+            setFilterData(mergedArray);
+            setPendingRequestCount(mergedArray.length);
+            const uniqueVendors = new Set(
+              mergedArray.map((item) => item.vendor_name)
             );
-            const bReminder = remindData.some(
-              (remind) => remind.request_id === b.request_id
+            setUniqueVendorCount(uniqueVendors.size);
+            const uvData = [];
+            uniqueVendors.forEach((vendorName) => {
+              const vendorRows = mergedArray.filter(
+                (item) => item.vendor_name === vendorName
+              );
+              uvData.push(vendorRows[0]);
+            });
+            setUniqueVendorData(uvData);
+            const nonGstCount = mergedArray.filter(
+              (gst) => gst.gstHold === "0"
             );
+            setNonGstCount(nonGstCount.length);
 
-            if (aReminder && !bReminder) return -1;
-            if (!aReminder && bReminder) return 1;
-
-            // Add aging sorting logic if required
-            return b.aging - a.aging;
-          });
-
-          setData(mergedArray);
-          setFilterData(mergedArray);
-          setPendingRequestCount(mergedArray.length);
-          const uniqueVendors = new Set(
-            mergedArray.map((item) => item.vendor_name)
-          );
-          setUniqueVendorCount(uniqueVendors.size);
-          const uvData = [];
-          uniqueVendors.forEach((vendorName) => {
-            const vendorRows = mergedArray.filter(
-              (item) => item.vendor_name === vendorName
+            const withInvoiceImage = mergedArray.filter(
+              (item) => item.invc_img && item.invc_img.length > 0
             );
-            uvData.push(vendorRows[0]);
+            const withoutInvoiceImage = mergedArray.filter(
+              (item) => !item.invc_img || item.invc_img.length === 0
+            );
+            setInvoiceCount(withInvoiceImage.length);
+            setNonInvoiceCount(withoutInvoiceImage.length);
+
+            // calculate Partial Data :-
+            const dateFilterData = filterDataBasedOnSelection(mergedArray);
+            setFilterData(dateFilterData);
+
+            const tdsCount = mergedArray?.filter(
+              (data) =>
+                data?.TDSDeduction === "1" || data?.TDSDeduction === null
+            );
+            setTdsDeductedCount(tdsCount);
+          })
+          .catch((error) => {
+            console.log("Error while getting Node Data");
           });
-          setUniqueVendorData(uvData);
-          console.log(uvData);
-          const nonGstCount = mergedArray.filter((gst) => gst.gstHold === "0");
-          setNonGstCount(nonGstCount.length);
+      })
+      .catch((error) => {
+        console.log("Error while getting php pending payment request data");
+      });
 
-          const withInvoiceImage = mergedArray.filter(
-            (item) => item.invc_img && item.invc_img.length > 0
-          );
-          const withoutInvoiceImage = mergedArray.filter(
-            (item) => !item.invc_img || item.invc_img.length === 0
-          );
-          setInvoiceCount(withInvoiceImage.length);
-          setNonInvoiceCount(withoutInvoiceImage.length);
-
-          // calculate Partial Data :-
-          const dateFilterData = filterDataBasedOnSelection(mergedArray);
-          setFilterData(dateFilterData);
-
-          const tdsCount = mergedArray?.filter(
-            (data) => data?.TDSDeduction === "1" || data?.TDSDeduction === null
-          );
-          console.log(tdsCount, "tdsCount--------------");
-          setTdsDeductedCount(tdsCount);
-        });
-    });
-
-    // axios.get(`${baseUrl}` + `get_all_payment_mode`).then((res) => {
-    //   setPaymentModeData(res?.data);
-    // });
-
-    axios.get(`${baseUrl}` + `get_single_user/${userID}`).then((res) => {
-      setUserName(res.data.user_name);
-    });
-  };
-  const handleRemainderModal = (reaminderData) => {
-    setReminderData(reaminderData);
-    setRemainderDialog(true);
+    axios
+      .get(`${baseUrl}` + `get_single_user/${userID}`)
+      .then((res) => {
+        console.log(res, "getting single user data");
+        setUserName(res.data.user_name);
+      })
+      .catch((error) => {
+        console.log("Error while getting single user data");
+      });
   };
 
   useEffect(() => {
     callApi();
   }, [dateFilter]);
+
+  const handleRemainderModal = (reaminderData) => {
+    setReminderData(reaminderData);
+    setRemainderDialog(true);
+  };
 
   const convertDateToDDMMYYYY = (date) => {
     const date1 = new Date(date);
@@ -1648,38 +1667,33 @@ export default function PendingPaymentRequest() {
   }, [data]);
 
   const handleRowSelectionModelChange = async (rowIds) => {
-    // console.log(rowIds, "-----------------");
     setRowSelectionModel(rowIds);
   };
 
+  // csv download----
   const handleDownloadInvoices = async () => {
     const zip = new JSZip();
 
-    // Generate PDFs and add them to the zip
-    await Promise.all(
-      rowSelectionModel.map(async (rowId) => {
-        const rowData = filterData[rowId]; // Access the row data using rowId
-        // console.log(rowData, "RD-------------");
-        if (rowData) {
-          const pdf = new jsPDF();
+    // Generate CSVs and add them to the zip
+    rowSelectionModel.forEach((rowId) => {
+      const rowData = filterData.find((row) => row.request_id === rowId); // Adjusted to find the correct row data
+      if (rowData) {
+        // Prepare CSV content
+        let csvContent = ""; // Initialize CSV content
 
-          const keys = Object.keys(rowData);
-          const values = Object.values(rowData);
+        // Generate headers row
+        const headers = Object.keys(rowData);
+        csvContent += headers.join(",") + "\n";
 
-          // Convert data to table format
-          const tableData = keys.map((key, index) => [key, values[index]]);
+        // Generate CSV content for the row
+        const values = Object.values(rowData);
+        const rowContent = values.map((value) => `"${value}"`).join(",");
+        csvContent += `${rowContent}\n`;
 
-          // Add table to PDF
-          pdf.autoTable({
-            startY: 10,
-            head: [["Key", "Value"]],
-            body: tableData,
-          });
-
-          zip.file(`invoice_${rowId}.pdf`, pdf.output());
-        }
-      })
-    );
+        // Add CSV to the zip
+        zip.file(`invoice_${rowId}.csv`, csvContent);
+      }
+    });
 
     // Generate the zip file
     const zipBlob = await zip.generateAsync({ type: "blob" });
@@ -1687,35 +1701,6 @@ export default function PendingPaymentRequest() {
     // Save the zip file
     saveAs(zipBlob, "invoices.zip");
   };
-  // csv download----
-  // const handleDownloadInvoices = async () => {
-  //   // Prepare CSV content
-  //   let csvContent = ""; // Initialize CSV content
-
-  //   // Generate headers row
-  //   const headers = Object.keys(filterData[rowSelectionModel[0]]);
-  //   csvContent += headers.join(",") + "\n";
-
-  //   // Generate CSV content for each row
-  //   rowSelectionModel.forEach((rowId) => {
-  //     const rowData = filterData[rowId]; // Access the row data using rowId
-  //     console.log(rowData, "RD-------------");
-  //     if (rowData) {
-  //       const values = Object.values(rowData);
-
-  //       // Construct CSV row
-  //       const rowContent = values.map((value) => `"${value}"`).join(",");
-  //       csvContent += `${rowContent}\n`;
-  //     }
-  //   });
-
-  //   // Create Blob containing the CSV data
-  //   const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8" });
-
-  //   // Trigger download
-  //   saveAs(blob, "invoices.csv");
-  // };
-
   function CustomColumnMenu(props) {
     return (
       <GridColumnMenu
@@ -1727,12 +1712,6 @@ export default function PendingPaymentRequest() {
     );
   }
 
-  const handleFileChange = (e) => {
-    const file = e.target.files[0];
-    setPayMentProof(file);
-    setPreview(URL.createObjectURL(file));
-  };
-
   const openImgDialog = () => {
     setOpenDialog(true);
   };
@@ -1742,6 +1721,394 @@ export default function PendingPaymentRequest() {
     const formattedAdjustmentAmt = initialAdjustmentAmt.toFixed(1);
     setAdjustAmount(formattedAdjustmentAmt);
   }, [rowData, paymentAmout]);
+
+  const tableActions = [
+    {
+      label: "s_no",
+      header: "S.NO",
+      action: (row) => {
+        const rowIndex =
+          activeAccordionIndex == 0
+            ? filterData.indexOf(row)
+            : activeAccordionIndex == 1
+            ? filterData.filter((d) => d.status === "3").indexOf(row)
+            : filterData.filter((d) => d.status === "0").indexOf(row);
+
+        return <div>{rowIndex + 1}</div>;
+      },
+    },
+    {
+      label: "invc_img",
+      header: "Invoice Image",
+      action: (row) => {
+        if (row.invc_img) {
+          return "No Image";
+        }
+        // Extract file extension and check if it's a PDF
+        const fileExtension = row.invc_img.split(".").pop().toLowerCase();
+        const isPdf = fileExtension === "pdf";
+
+        const imgUrl = `https://purchase.creativefuel.io/${row.invc_img}`;
+
+        return isPdf ? (
+          <img
+            onClick={() => {
+              setOpenImageDialog(true);
+              setViewImgSrc(imgUrl);
+            }}
+            src={pdf}
+            style={{ width: "40px", height: "40px" }}
+            title="PDF Preview"
+          />
+        ) : (
+          <img
+            onClick={() => {
+              setOpenImageDialog(true);
+              setViewImgSrc(imgUrl);
+            }}
+            src={imgUrl}
+            alt="Invoice"
+            style={{ width: "100px", height: "100px" }}
+          />
+        );
+      },
+    },
+    {
+      label: "invc_Date",
+      header: "Invoice Date",
+      action: (row) => {
+        new Date(row.invc_Date).toLocaleDateString("en-IN") +
+          " " +
+          new Date(row.invc_Date).toLocaleTimeString("en-IN");
+      },
+    },
+
+    {
+      label: "request_date",
+      header: "Requested Date",
+      action: (row) => {
+        new Date(row.request_date).toLocaleDateString("en-IN") +
+          " " +
+          new Date(row.request_date).toLocaleTimeString("en-IN");
+      },
+    },
+    {
+      label: "name",
+      header: "Requested By",
+      action: (row) => {
+        return (
+          <>
+            <span>{row.name}</span> &nbsp;{" "}
+          </>
+        );
+      },
+    },
+    {
+      label: "Reminder",
+      header: "Reminder",
+      // valueGetter: (params) => {
+      //   const reminder = phpRemainderData.filter(
+      //     (item) => item.request_id == params.row.request_id
+      //   );
+      //   return reminder.length;
+      // },
+      action: (row) => {
+        const reminder = phpRemainderData.filter(
+          (item) => item.request_id == row.request_id
+        );
+
+        return (
+          <>
+            <span>
+              {reminder.length > 0 ? (
+                <Badge badgeContent={reminder?.length} color="primary">
+                  <NotificationsActiveTwoToneIcon
+                    onClick={() => handleRemainderModal(reminder)}
+                  />
+                </Badge>
+              ) : (
+                0
+              )}
+            </span>
+          </>
+        );
+      },
+    },
+    {
+      label: "vendor_name",
+      header: "Vendor Name",
+      action: (row) => {
+        return (
+          <div style={{ display: "flex", alignItems: "center" }}>
+            {/* Hold for confirmation of sourabh sir */}
+            <Button
+              disabled={
+                row.payment_details ? !row.payment_details.length > 0 : true
+              }
+              onClick={() => handleOpenBankDetail(row)}
+            >
+              <AccountBalanceIcon style={{ fontSize: "25px" }} />
+            </Button>
+            <a
+              style={{ cursor: "pointer", marginRight: "20px", color: "blue" }}
+              onClick={() => handleOpenSameVender(row.vendor_name)}
+            >
+              {row.vendor_name}
+            </a>
+          </div>
+        );
+      },
+    },
+    {
+      label: "total_paid",
+      header: "Total Paid",
+      // valueGetter: (params) => {
+      //   const totalPaid = nodeData
+      //     .filter(
+      //       (e) => e.vendor_name === params.row.vendor_name && e.status == 1
+      //     )
+      //     .reduce((acc, item) => acc + +item.payment_amount, 0);
+      //   return totalPaid;
+      // },
+      action: (row) => {
+        return nodeData.filter((e) => e.vendor_name === row.vendor_name)
+          .length > 0 ? (
+          <span className="row ml-2 ">
+            <h5
+              onClick={() => handleOpenPaymentHistory(row, "TP")}
+              style={{ cursor: "pointer" }}
+              className="fs-5 col-3 pointer font-sm lead  text-decoration-underline text-black-50"
+            >
+              {/* Total Paid */}
+              {nodeData
+                .filter(
+                  (e) => e.vendor_name === row.vendor_name && e.status == 1
+                )
+                .reduce((acc, item) => acc + +item.payment_amount, 0)}
+            </h5>
+          </span>
+        ) : (
+          <h5
+            style={{ cursor: "pointer" }}
+            className="fs-5 col-3 pointer font-sm lead  text-decoration-underline text-black-50"
+          >
+            0
+          </h5>
+        );
+      },
+    },
+    {
+      label: "F.Y",
+      header: "F.Y",
+      // valueGetter: (row) => {
+      //   const isCurrentMonthGreaterThanMarch = new Date().getMonth() + 1 > 3;
+      //   const currentYear = new Date().getFullYear();
+      //   const startDate = new Date(
+      //     `04/01/${
+      //       isCurrentMonthGreaterThanMarch ? currentYear : currentYear - 1
+      //     }`
+      //   );
+      //   const endDate = new Date(
+      //     `03/31/${
+      //       isCurrentMonthGreaterThanMarch ? currentYear + 1 : currentYear
+      //     }`
+      //   );
+
+      //   const dataFY = nodeData.filter((e) => {
+      //     const paymentDate = new Date(e?.request_date);
+      //     return (
+      //       paymentDate >= startDate &&
+      //       paymentDate <= endDate &&
+      //       e?.vendor_name === params?.row?.vendor_name &&
+      //       e.status !== 0 &&
+      //       e.status !== 2 &&
+      //       e.status !== 3
+      //     );
+      //   });
+
+      //   const totalFY = dataFY.reduce(
+      //     (acc, item) => acc + parseFloat(item.payment_amount),
+      //     0
+      //   );
+
+      //   return totalFY;
+      // },
+      action: (row) => {
+        const isCurrentMonthGreaterThanMarch = new Date().getMonth() + 1 > 3;
+        const currentYear = new Date().getFullYear();
+        const startDate = new Date(
+          `04/01/${
+            isCurrentMonthGreaterThanMarch ? currentYear : currentYear - 1
+          }`
+        );
+        const endDate = new Date(
+          `03/31/${
+            isCurrentMonthGreaterThanMarch ? currentYear + 1 : currentYear
+          }`
+        );
+        const dataFY = nodeData.filter((e) => {
+          const paymentDate = new Date(e.request_date);
+          return (
+            paymentDate >= startDate &&
+            paymentDate <= endDate &&
+            e.vendor_name === row.vendor_name &&
+            e.status !== 0 &&
+            e.status !== 2 &&
+            e.status !== 3
+          );
+        });
+        return nodeData.filter((e) => e.vendor_name === row.vendor_name)
+          .length > 0 ? (
+          <h5
+            onClick={() => handleOpenPaymentHistory(row, "FY")}
+            style={{ cursor: "pointer" }}
+            className="fs-5 col-3  font-sm lead  text-decoration-underline text-black-50"
+          >
+            {/* Financial Year */}
+
+            {dataFY.reduce(
+              (acc, item) => acc + parseFloat(item.payment_amount),
+              0
+            )}
+          </h5>
+        ) : (
+          <h5
+            style={{ cursor: "pointer" }}
+            className="fs-5 col-3  font-sm lead  text-decoration-underline text-black-50"
+          >
+            0
+          </h5>
+        );
+      },
+    },
+    {
+      label: "Pan Img",
+      header: "Pan Img",
+      // valueGetter: (params) =>
+      //   params.row.pan_img.includes("uploads") ? params.row.pan_img : "NA",
+      action: (row) => {
+        const ImgUrl = `https://purchase.creativefuel.io/${row.pan_img}`;
+        return row.pan_img.includes("uploads") ? (
+          <img
+            onClick={() => {
+              setOpenImageDialog(true);
+              setViewImgSrc(ImgUrl);
+            }}
+            src={ImgUrl}
+            alt="Pan"
+            style={{ width: "40px", height: "40px" }}
+          />
+        ) : (
+          "NA"
+        );
+      },
+    },
+    {
+      label: "request_amount",
+      header: "Requested Amount",
+      action: (row) => {
+        return <p> &#8377; {row.request_amount}</p>;
+      },
+    },
+    {
+      label: "paid_amount",
+      header: "Paid Amount",
+      action: (row) => {
+        return <p> &#8377; {row.paid_amount}</p>;
+      },
+    },
+    {
+      label: "balance_amount",
+      header: "Balance Amount",
+      action: (row) => {
+        return <p> &#8377; {row.balance_amount}</p>;
+      },
+    },
+    {
+      label: "base_amount",
+      header: "Base Amount",
+      action: (row) => {
+        return row.base_amount ? <p> &#8377; {row.base_amount}</p> : "NA";
+      },
+    },
+    {
+      label: "gst_amount",
+      header: "GST Amount",
+      action: (row) => {
+        return row.gst_amount ? <p>&#8377; {row.gst_amount}</p> : "NA";
+      },
+    },
+    {
+      label: "outstandings",
+      header: "OutStanding ",
+      action: (row) => {
+        return <p> &#8377; {row.outstandings}</p>;
+      },
+    },
+    {
+      label: "TDSDeduction",
+      header: "TDS Deducted ",
+      action: (row) => {
+        return <p> &#8377; {row.TDSDeduction === "1" ? "Yes" : "No"}</p>;
+      },
+    },
+    {
+      label: "aging",
+      header: "Aging",
+      // valueGetter: (params) => {
+      //   const hours = calculateHours(params.row.request_date, new Date());
+      //   const days = Math.round(hours / 24);
+      //   // console.log(`Calculating aging for request_date ${params.row.request_date}: ${hours} hours, ${days} days`);
+      //   return `${days} Days`;
+      // },
+      action: (row) => (
+        <p>
+          {row.aging}
+          Days
+        </p>
+      ),
+    },
+    {
+      label: "Status",
+      header: "Status",
+      // valueGetter: (params) => getStatusText(params.row.status),
+      action: (row) => (
+        <div>
+          {row.status === "0"
+            ? "Pending"
+            : row.status === "1"
+            ? "Paid"
+            : row.status === "2"
+            ? "Discard"
+            : row.status === "3"
+            ? "Partial"
+            : ""}
+        </div>
+      ),
+    },
+    {
+      label: "Action",
+      header: "Action",
+      action: (row) => {
+        return (
+          <div className="flexCenter colGap8">
+            <button
+              className="btn cmnbtn btn_sm btn-success"
+              onClick={(e) => handlePayClick(e, row)}
+            >
+              Pay
+            </button>
+            <button
+              className="btn cmnbtn btn_sm btn-danger"
+              onClick={(e) => handleDiscardClick(e, row)}
+            >
+              Discard
+            </button>
+          </div>
+        );
+      },
+    },
+  ];
 
   return (
     <div>
@@ -2252,8 +2619,8 @@ export default function PendingPaymentRequest() {
 
         <div className="card">
           <div className="card-header sb">
-            <div className="caard-title">Pending Payment Oveview</div>
-            {/* <div className="pack w-75">
+            <div className="caard-title">Pending Payment Overview</div>
+            <div className="pack w-75">
               {rowSelectionModel.length > 0 && (
                 <Button
                   className="btn btn-primary cmnbtn btn_sm"
@@ -2265,7 +2632,7 @@ export default function PendingPaymentRequest() {
                   Download PDF Zip
                 </Button>
               )}
-            </div> */}
+            </div>
           </div>
           <div className="card-body thm_table fx-head">
             {activeAccordionIndex === 0 && (
@@ -2276,21 +2643,55 @@ export default function PendingPaymentRequest() {
                 rowsPerPageOptions={[5]}
                 getRowClassName={getValidationCSSForRemainder}
                 slots={{ toolbar: GridToolbar }}
-                // disableSelectionOnClick
-                // checkboxSelection
+                disableSelectionOnClick
+                checkboxSelection
                 slotProps={{
                   toolbar: {
                     showQuickFilter: true,
                   },
                 }}
-                // getRowId={(row) => filterData?.indexOf(row)}
                 getRowId={(row) => row?.request_id}
-                // onRowSelectionModelChange={(rowIds) => {
-                //   handleRowSelectionModelChange(rowIds);
-                //   console.log(rowIds, "IDS");
-                // }}
-                // rowSelectionModel={rowSelectionModel}
+                onRowSelectionModelChange={(rowIds) => {
+                  handleRowSelectionModelChange(rowIds);
+                  console.log(rowIds, "IDS");
+                }}
+                rowSelectionModel={rowSelectionModel}
               />
+              // <TableData
+              //   tableName="Pending Payment Request Table"
+              //   tableFields={[
+              //     "invc_no",
+              //     "page_name",
+              //     "payment_cycle",
+              //     "gst",
+              //     "remark_audit",
+              //     "priority",
+              //   ]}
+              //   getData={callApi}
+              //   setData={setData}
+              //   setFilterData={setFilterData}
+              //   datas={data}
+              //   filterData={filterData}
+              //   tableActions={tableActions}
+              //   // tableApi="phpvendorpaymentrequest"
+              // />
+              //   <DynamicTable
+              //   tableName="Overview Table"
+              //   tableFields={[
+              //     "invc_img",
+              //     "invc_no",
+              //     "invc_Date",
+              //     "request_by",
+              //     "Reminder",
+              //     "vendor_name",
+              //     "page_name",
+              //     "payment_cycle",
+              //     "total_paid",
+              //     "finacial_year",
+              //   ]}
+              //   tableActions={tableActions}
+              //   tableApi="phpvendorpaymentrequest"
+              // />
             )}
             {openImageDialog && (
               <ImageView
@@ -2311,20 +2712,20 @@ export default function PendingPaymentRequest() {
                 h
                 getRowClassName={getValidationCSSForRemainder}
                 slots={{ toolbar: GridToolbar }}
-                // checkboxSelection
-                // disableSelectionOnClick
+                checkboxSelection
+                disableSelectionOnClick
                 disableColumnMenu
-                getRowId={(row) => filterData.indexOf(row)}
+                getRowId={(row) => row?.request_id}
                 slotProps={{
                   toolbar: {
                     showQuickFilter: true,
                   },
                 }}
-                // onRowSelectionModelChange={(rowIds) => {
-                //   handleRowSelectionModelChange(rowIds);
-                //   console.log(rowIds, "IDS");
-                // }}
-                // rowSelectionModel={rowSelectionModel}
+                onRowSelectionModelChange={(rowIds) => {
+                  handleRowSelectionModelChange(rowIds);
+                  console.log(rowIds, "IDS");
+                }}
+                rowSelectionModel={rowSelectionModel}
               />
             )}
             {openImageDialog && (
@@ -2343,20 +2744,20 @@ export default function PendingPaymentRequest() {
                 rowsPerPageOptions={[5]}
                 getRowClassName={getValidationCSSForRemainder}
                 slots={{ toolbar: GridToolbar }}
-                // checkboxSelection
-                // disableSelectionOnClick
+                checkboxSelection
+                disableSelectionOnClick
                 disableColumnMenu
-                getRowId={(row) => filterData.indexOf(row)}
+                getRowId={(row) => row?.request_id}
                 slotProps={{
                   toolbar: {
                     showQuickFilter: true,
                   },
                 }}
-                // onRowSelectionModelChange={(rowIds) => {
-                //   handleRowSelectionModelChange(rowIds);
-                //   console.log(rowIds, "IDS");
-                // }}
-                // rowSelectionModel={rowSelectionModel}
+                onRowSelectionModelChange={(rowIds) => {
+                  handleRowSelectionModelChange(rowIds);
+                  console.log(rowIds, "IDS");
+                }}
+                rowSelectionModel={rowSelectionModel}
               />
             )}
             {openImageDialog && (
