@@ -178,7 +178,7 @@ export default function RegisterCampaigns() {
   const [campaignList, setCampignList] = useState([]);
   const handleChange = (event) => {
     setBrandName(
-      showBrandName.filter((e) => event.target.value == e.brand_name)[0]
+      showBrandName.filter((e) => event.target.value.toLowerCase() == e.brand_name.toLowerCase())[0]
         ?.brand_id
     );
   };
@@ -388,6 +388,16 @@ export default function RegisterCampaigns() {
       } catch (error) { }
     }
   };
+
+  const formatString = (s) => {
+    let formattedString = s?.replace(/^_+/, "");
+    if (formattedString) {
+      formattedString =
+        formattedString.charAt(0).toUpperCase() +
+        formattedString.slice(1).toLowerCase();
+    }
+    return formattedString;
+  };
   return (
     <div>
       <div className="action_heading">
@@ -440,7 +450,7 @@ export default function RegisterCampaigns() {
               <div className="form-group col-4">
                 <Autocomplete
                   disablePortal
-                  options={showBrandName.map((option) => option.brand_name)}
+                  options={showBrandName.map((option) => formatString(option.brand_name))}
                   require={true}
                   value={
                     showBrandName.filter((e) => brandName == e.brand_id)[0]
@@ -466,7 +476,7 @@ export default function RegisterCampaigns() {
                   disablePortal
                   id="combo-box-demo"
                   options={campignData.map((option) => ({
-                    label: option.exeCmpName,
+                    label: formatString(option.exeCmpName),
                     value: option.exeCmpId,
                   }))}
                   require={true}
@@ -554,7 +564,7 @@ export default function RegisterCampaigns() {
                   id="campaign-closed-by-dropdown"
                   options={
                     salesUsers?.length > 0 &&
-                    salesUsers?.map((user) => user.user_name)
+                    salesUsers?.map((user) => formatString(user.user_name))
                   }
                   value={campaignClosedBy}
                   onChange={(event, newValue) => {
@@ -713,7 +723,7 @@ export default function RegisterCampaigns() {
                     });
                   }}
                   sx={{ width: "100%" }}
-                /> 
+                />
               </>
             </Box>
           </DialogContent>

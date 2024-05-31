@@ -1,15 +1,11 @@
 import React from "react";
 import { useEffect, useState, useCallback, useRef } from "react";
-
 import { TextareaAutosize as BaseTextareaAutosize } from "@mui/base/TextareaAutosize";
 import { styled } from "@mui/system";
 import { DataGrid } from "@mui/x-data-grid";
-import DeleteIcon from "@mui/icons-material/Delete";
 import millify from "millify";
-import PictureAsPdfIcon from "@mui/icons-material/PictureAsPdf";
-import { SiMicrosoftexcel } from "react-icons/si";
+
 import {
-  Paper,
   TextField,
   Button,
   Autocomplete,
@@ -25,12 +21,9 @@ import {
   Radio,
 } from "@mui/material";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
-
+import { useLocation, useNavigate } from "react-router-dom";
 import SummrayDetailes from "./SummrayDetailes";
 import { useGlobalContext } from "../../../Context/Context";
-// import Loader from "./Loader/Loader";
-import exportToCSV from "../../../utils/ExcelConverter";
 import generatePDF from "../../../utils/PdfConverter";
 import * as XLSX from "xlsx";
 import { baseUrl } from "../../../utils/config";
@@ -60,7 +53,11 @@ const Loader = ({ message }) => {
   );
 }
 
+
 const PageDetailingNew = ({ pageName, data, setPhaseDataError, phaseInfo }) => {
+  const location = useLocation();
+  const executionExcel = location.state?.executionExcel;
+  console.log(executionExcel,"excel")
   const campValue = data?.campaignName;
 
   const { toastAlert, toastError } = useGlobalContext();
@@ -83,7 +80,7 @@ const PageDetailingNew = ({ pageName, data, setPhaseDataError, phaseInfo }) => {
   const [searchedPages, setSearchedPages] = useState(null);
 
   const [isModalOpenCP, setIsModalOpenCP] = useState(false);
-  const [unregisteredPages, setUnregisteredPages] = useState(null);
+  const [UnregisteredPages, setUnregisteredPages] = useState(null);
 
   const [externalPPP, setExternalPPP] = useState(null);
   const [externalSPP, setExternalSPP] = useState(null);
@@ -174,7 +171,7 @@ const PageDetailingNew = ({ pageName, data, setPhaseDataError, phaseInfo }) => {
   }, [payload]);
 
   useEffect(() => {
-    if (radioSelected != "unregistered") {
+    if (radioSelected != "Unregistered") {
       setUnregisteredPages(null);
       filterHandler();
     } else {
@@ -195,12 +192,12 @@ const PageDetailingNew = ({ pageName, data, setPhaseDataError, phaseInfo }) => {
         pageNames = [...pageNames, page.page_name];
       }
     }
-  }, [unregisteredPages]);
+  }, [UnregisteredPages]);
 
   //this useEffect is to insure that the selectedRows data does not lost during  reRendering
   useEffect(() => {
     setSelectedRows(x);
-  }, [filteredPages, searchedPages, unregisteredPages]);
+  }, [filteredPages, searchedPages, UnregisteredPages]);
 
   useEffect(() => { }, [externalPPP]);
 
@@ -298,12 +295,12 @@ const PageDetailingNew = ({ pageName, data, setPhaseDataError, phaseInfo }) => {
     const radioData = planPages?.filter((page) => {
       if (radioSelected == "all") {
         return page;
-      } else if (radioSelected == "selected") {
+      } else if (radioSelected == "Selected") {
         // console.log("first")
         if (selectedRows.includes(page.p_id)) {
           return page;
         }
-      } else if (radioSelected == "unselected") {
+      } else if (radioSelected == "Unselected") {
         if (!selectedRows.includes(page.p_id)) {
           return page;
         }
@@ -423,8 +420,6 @@ const PageDetailingNew = ({ pageName, data, setPhaseDataError, phaseInfo }) => {
       x = selectedRows;
       setFilteredPages(data);
     }
-
-    // setFilteredPages(data)
   };
 
   const handleSearchChange = (e) => {
@@ -575,7 +570,7 @@ const PageDetailingNew = ({ pageName, data, setPhaseDataError, phaseInfo }) => {
     }
     // setFilteredPages([...filteredPages, {...pageReplacement,postPerPage:0,storyPerPage:0} ])
     setSelectedRows([...selectedRows, pageReplacement.p_id]);
-    setRadioSelected("selected");
+    setRadioSelected("Selected");
   };
   //copy paste logic ends here
 
@@ -610,8 +605,8 @@ const PageDetailingNew = ({ pageName, data, setPhaseDataError, phaseInfo }) => {
     setPlanPages(newFilteredPages);
 
     if (selectedCategory.length == 0 && selectedFollower == null) {
-      if (radioSelected == "unselected") {
-      } else if (radioSelected == "selected") {
+      if (radioSelected == "Unselected") {
+      } else if (radioSelected == "Selected") {
         const ne = newFilteredPages.filter((page) => {
           if (selectedRows.includes(page.p_id)) {
             return page;
@@ -620,8 +615,8 @@ const PageDetailingNew = ({ pageName, data, setPhaseDataError, phaseInfo }) => {
         setFilteredPages(ne);
       } else setFilteredPages(newFilteredPages);
     } else {
-      if (radioSelected == "unselected") {
-      } else if (radioSelected == "selected") {
+      if (radioSelected == "Unselected") {
+      } else if (radioSelected == "Selected") {
         const ne = filteredPages.filter((page) => {
           if (selectedRows.includes(page.p_id)) {
             return page;
@@ -669,7 +664,7 @@ const PageDetailingNew = ({ pageName, data, setPhaseDataError, phaseInfo }) => {
           : page
       );
 
-      if (radioSelected == "selected") {
+      if (radioSelected == "Selected") {
         const filter = updatedPages.filter((page) => {
           if (selectedRows.includes(page.p_id)) {
             return page;
@@ -681,7 +676,7 @@ const PageDetailingNew = ({ pageName, data, setPhaseDataError, phaseInfo }) => {
       } else {
         x = selectedRows;
 
-        if (radioSelected != "unselected") {
+        if (radioSelected != "Unselected") {
           setFilteredPages(updatedPages);
         }
       }
@@ -829,7 +824,7 @@ const PageDetailingNew = ({ pageName, data, setPhaseDataError, phaseInfo }) => {
       width: 150,
       renderCell: (params) => {
         const link = params.row.page_link;
-        return radioSelected === "unregistered" ? (
+        return radioSelected === "Unregistered" ? (
           <Autocomplete
             id={`auto-complete-${params.id}`}
             options={pageNames}
@@ -954,6 +949,7 @@ const PageDetailingNew = ({ pageName, data, setPhaseDataError, phaseInfo }) => {
 
   //for uploading the excel
   const handleFile = (file) => {
+    console.log(file,"file 1");
     setExcelUpload(true);
     const reader = new FileReader();
 
@@ -1014,7 +1010,7 @@ const PageDetailingNew = ({ pageName, data, setPhaseDataError, phaseInfo }) => {
       setPlanPages(forLoad);
     };
 
-    reader.readAsArrayBuffer(file);
+    reader.readAsArrayBuffer(file || executionExcel);
   };
 
   const combineSheets = (workbook, sheetNames) => {
@@ -1029,9 +1025,12 @@ const PageDetailingNew = ({ pageName, data, setPhaseDataError, phaseInfo }) => {
 
   const handleFileInputChange = (e) => {
     const file = e.target.files[0];
-
+console.log(executionExcel,"new data")
     if (file) {
       handleFile(file);
+    }
+    if (executionExcel) {
+      handleFile(executionExcel);
     }
   };
 
@@ -1056,27 +1055,25 @@ const PageDetailingNew = ({ pageName, data, setPhaseDataError, phaseInfo }) => {
           >
             <FormControlLabel value="all" control={<Radio />} label="all" />
             <FormControlLabel
-              value="selected"
+              value="Selected"
               control={<Radio />}
-              label="selected"
+              label="Selected"
             />
             <FormControlLabel
-              value="unselected"
+              value="Unselected"
               control={<Radio />}
-              label="unselected"
+              label="Unselected"
             />
             <FormControlLabel
-              value="unregistered"
+              value="Unregistered"
               control={<Radio />}
-              label="unregistered"
+              label="Unregistered"
             />
           </RadioGroup>
         </FormControl>
       </div>
       <div className="card body-padding">
         <div className="d-flex justify-content-between gap4">
-
-
           <Autocomplete
             multiple
             id="combo-box-demo"
@@ -1095,7 +1092,7 @@ const PageDetailingNew = ({ pageName, data, setPhaseDataError, phaseInfo }) => {
             )}
             onChange={followerChangeHandler}
           />
-          <Autocomplete
+          {/* <Autocomplete
             id="combo-box-demo"
             options={page_health}
             getOptionLabel={(option) => option}
@@ -1103,7 +1100,7 @@ const PageDetailingNew = ({ pageName, data, setPhaseDataError, phaseInfo }) => {
             renderInput={(params) => (
               <TextField {...params} label="Page health" />
             )}
-          />
+          /> */}
           <TextField
             label="Search"
             variant="outlined"
@@ -1116,9 +1113,6 @@ const PageDetailingNew = ({ pageName, data, setPhaseDataError, phaseInfo }) => {
           <button className="btn btn-outline-primary" onClick={handleCP} >
             Copy / Paste
           </button>
-
-
-
           <input
             type="file"
             id="fileInput"
@@ -1140,6 +1134,7 @@ const PageDetailingNew = ({ pageName, data, setPhaseDataError, phaseInfo }) => {
             variant="outlined"
             onChange={(e) => handlePost(e, "post")}
           />
+      
           <TextField
             sx={{ ml: 2, width: "50%" }}
             id="outlined-basic"
@@ -1148,18 +1143,6 @@ const PageDetailingNew = ({ pageName, data, setPhaseDataError, phaseInfo }) => {
             variant="outlined"
             onChange={(e) => handlePost(e, "story")}
           />
-
-          {/* <Button
-            onClick={() => exportToCSV(payload)}
-            variant="text"
-            color="success"
-            sx={{ fontSize: "30px" }}
-            title="Download Excel"
-          >
-            <SiMicrosoftexcel />
-          </Button> */}
-
-
         </div>
       </div>
       <div className="card body-padding">
@@ -1168,7 +1151,7 @@ const PageDetailingNew = ({ pageName, data, setPhaseDataError, phaseInfo }) => {
         >
           <div style={{ height: "700px", width: `${selectedRows.length !== 0 ? "60%" : "100%"}` }}>
             <DataGrid
-              rows={unregisteredPages || searchedPages || filteredPages || []}
+              rows={UnregisteredPages || searchedPages || filteredPages || []}
               columns={columnForPages}
               getRowId={(row) => row.p_id}
               pageSizeOptions={[5]}

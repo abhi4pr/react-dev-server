@@ -8,6 +8,7 @@ import FormContainer from "../../FormContainer";
 import CampaignExecutionSummary from "./CampaignExecutionSummary";
 import ScreenRotationAltRoundedIcon from "@mui/icons-material/ScreenRotationAltRounded";
 import { useGlobalContext } from "../../../../Context/Context";
+import { useLocation } from 'react-router-dom';
 
 const style = {
   position: "absolute",
@@ -22,8 +23,10 @@ const style = {
 };
 
 const CampaignExecutions = () => {
+  const location = useLocation();
+  const executionExcel = location.state?.executionExcel;
+  console.log(executionExcel,"new data");
   const { toastAlert, toastError } = useGlobalContext();
-
   const [shortcode, setShortcode] = useState([]);
   const [pageDetails, setPageDetails] = useState([]);
   const [assignData, setAssignData] = useState([]);

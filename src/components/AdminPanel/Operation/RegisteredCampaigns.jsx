@@ -399,8 +399,11 @@ export default function RegisteredCampaigns() {
     {
       field: "exeCmpName",
       headerName: "Campaign Name",
-
       width: 170,
+      renderCell: (params) => {
+        const camp =  params.row.exeCmpName
+        return camp ? capitalizeFirstWord(camp) : "";
+      },
     },
     {
       field: "brand_id",
