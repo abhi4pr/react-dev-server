@@ -411,14 +411,13 @@ const PageOverview = () => {
         // debugger;
         const matchingState = pageStates?.find(
           (state) => state?.page_master_id === item?._id
-        );  
+        );
         return {
           ...item,
           pageId: matchingState?._id,
           ...matchingState,
           _id: item._id,
         };
-
       });
 
       setFilterData(data);
@@ -427,10 +426,9 @@ const PageOverview = () => {
 
   useEffect(() => {
     pageHealthToggleCheck();
-
   }, [showPageHealthColumn]);
   useEffect(() => {
-    if(showPageHealthColumn){
+    if (showPageHealthColumn) {
       dispatch(setShowPageHealthColumn(false));
     }
     if (userID && !contextData) {
@@ -848,7 +846,6 @@ const PageOverview = () => {
             <Link
               to={{
                 pathname: `/admin/pageStats/${params.row._id}`,
-                
               }}
             >
               <button
@@ -892,7 +889,7 @@ const PageOverview = () => {
       headerName: "Stats Update",
       renderCell: (params) => {
         return (
-           params.row?.pageId && 
+          params.row?.pageId && (
             <Link
               to={{
                 pathname: `/admin/pageStats/${params.row.pageId}`,
@@ -907,7 +904,7 @@ const PageOverview = () => {
                 Update
               </button>
             </Link>
-          
+          )
         );
       },
     },
@@ -2256,12 +2253,13 @@ const PageOverview = () => {
           color="primary"
         />
         <Typography variant="h6">Page Health</Typography>
+        <Typography variant="h6">: {filterData.length}</Typography>
       </Stack>
       <div className="card">
         <div className="data_tbl table-responsive">
           <div className="card">
             <div className="card-body">
-              <h5 className="card-title">Page</h5>
+              {/* <h5 className="card-title">Page</h5> */}
               <div className="card-text">
                 {/* <div className="row">
                   <div className="col-md-2">
@@ -2311,9 +2309,8 @@ const PageOverview = () => {
                   </div>
                 </div> */}
 
-                <Stack direction={"row"} spacing={2} flexWrap={"wrap"}>
-                  <div className="mt-2">
-                    <h4>Platform</h4>
+                <Stack spacing={1}>
+                  <Stack direction={"row"}>
                     <Autocomplete
                       id="platform-autocomplete"
                       options={platformData}
@@ -2323,7 +2320,7 @@ const PageOverview = () => {
                         ).length;
                         return `${option.platform_name} (${count})`;
                       }}
-                      style={{ width: 300 }}
+                      style={{ width: 270 }}
                       renderInput={(params) => (
                         <TextField
                           {...params}
@@ -2338,10 +2335,7 @@ const PageOverview = () => {
                         setFilterData(result);
                       }}
                     />
-                  </div>
-                  {/* <div> */}
-                  <div className="mt-2">
-                    <h4>Ownership Type</h4>
+
                     <Autocomplete
                       id="ownership-type-autocomplete"
                       options={[
@@ -2357,7 +2351,7 @@ const PageOverview = () => {
                         ).length;
                         return `${option} (${count})`;
                       }}
-                      style={{ width: 300 }}
+                      style={{ width: 270 }}
                       renderInput={(params) => (
                         <TextField
                           {...params}
@@ -2372,10 +2366,7 @@ const PageOverview = () => {
                         setFilterData(result);
                       }}
                     />
-                  </div>
 
-                  <div className="mt-2">
-                    <h4>Page Status</h4>
                     <Autocomplete
                       id="page-status-autocomplete"
                       options={[
@@ -2391,7 +2382,7 @@ const PageOverview = () => {
                         ).length;
                         return `${option} (${count})`;
                       }}
-                      style={{ width: 300 }}
+                      style={{ width: 270 }}
                       renderInput={(params) => (
                         <TextField
                           {...params}
@@ -2406,9 +2397,7 @@ const PageOverview = () => {
                         setFilterData(result);
                       }}
                     />
-                  </div>
-                  <div className="mt-2">
-                    <h4>Page Name Type</h4>
+
                     <Autocomplete
                       id="pagename-type-autocomplete"
                       options={[
@@ -2424,7 +2413,7 @@ const PageOverview = () => {
                         ).length;
                         return `${option} (${count})`;
                       }}
-                      style={{ width: 300 }}
+                      style={{ width: 270 }}
                       renderInput={(params) => (
                         <TextField
                           {...params}
@@ -2439,9 +2428,8 @@ const PageOverview = () => {
                         setFilterData(result);
                       }}
                     />
-                  </div>
-                  <div className="mt-2">
-                    <h4>Closed By</h4>
+                  </Stack>
+                  <Stack direction={"row"}>
                     <Autocomplete
                       id="closedby-autocomplete"
                       options={[
@@ -2458,7 +2446,7 @@ const PageOverview = () => {
                         ).length;
                         return `${users?.user_name} (${count})`;
                       }}
-                      style={{ width: 300 }}
+                      style={{ width: 270 }}
                       renderInput={(params) => (
                         <TextField
                           {...params}
@@ -2473,9 +2461,7 @@ const PageOverview = () => {
                         setFilterData(result);
                       }}
                     />
-                  </div>
-                  <div className="mt-2">
-                    <h4>Category</h4>
+
                     <Autocomplete
                       id="category-autocomplete"
                       options={[
@@ -2492,7 +2478,7 @@ const PageOverview = () => {
                         ).length;
                         return `${category?.page_category} (${count})`;
                       }}
-                      style={{ width: 300 }}
+                      style={{ width: 270 }}
                       renderInput={(params) => (
                         <TextField
                           {...params}
@@ -2507,9 +2493,7 @@ const PageOverview = () => {
                         setFilterData(result);
                       }}
                     />
-                  </div>
-                  <div className="mt-2">
-                    <h4>Ownership</h4>
+
                     <Autocomplete
                       id="ownership-autocomplete"
                       options={[
@@ -2525,7 +2509,7 @@ const PageOverview = () => {
                         ).length;
                         return `${option} (${count})`;
                       }}
-                      style={{ width: 300 }}
+                      style={{ width: 270 }}
                       renderInput={(params) => (
                         <TextField
                           {...params}
@@ -2540,11 +2524,11 @@ const PageOverview = () => {
                         setFilterData(result);
                       }}
                     />
-                  </div>
+                  </Stack>
                   {/* <br />
                   <hr /> */}
                   {/* {!isNotAssignedVendorLoading && (
-                    <div className="mt-2">
+                    
                       <button
                         onClick={handleNotAssignedVendorClick}
                         className="btn btn-primary btn-sm me-5 mt-2"
@@ -2556,13 +2540,13 @@ const PageOverview = () => {
                   )} */}
                   {/* </div> */}
                 </Stack>
-                <div className=" mb-2 mt-2">
+                {/* <div className=" mb-2 mt-2">
                   <h4>
                     <span className="text-primary">
-                      Total Page:{filterData.length}
+                      Total Page:
                     </span>
                   </h4>
-                </div>
+                </div> */}
               </div>
             </div>
           </div>

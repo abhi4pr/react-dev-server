@@ -12,8 +12,9 @@ import CompanyTypeApi from "./API/Sales/CompanyTypeApi";
 import BrandCategoryTypeApi from "./API/Sales/BrandCategoryTypeApi";
 import SaleBookingApi from "./API/Sales/SaleBookingApi";
 import BrandApi from "./API/Sales/BrandApi";
-import AccountDocumentApi from "./API/Sales/SalesDocumentMasterApi";
-
+import DocumentTypeApi from "./API/Sales/DocumentTypeApi";
+import PointOfContactApi from "./API/Sales/PointOfContactApi";
+import AccountDocumentApi from "./API/Sales/AccountDocumentApi";
 
 const store = configureStore({
   reducer: {
@@ -29,6 +30,8 @@ const store = configureStore({
     [PageBaseURL.reducerPath]: PageBaseURL.reducer,
     [SaleBookingApi.reducerPath]: SaleBookingApi.reducer,
     [BrandApi.reducerPath]: BrandApi.reducer,
+    [DocumentTypeApi.reducerPath]: DocumentTypeApi.reducer,
+    [PointOfContactApi.reducerPath]: PointOfContactApi.reducer,
     [AccountDocumentApi.reducerPath]: AccountDocumentApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
@@ -37,12 +40,14 @@ const store = configureStore({
       .concat(SalesAccountApi.middleware)
       .concat(SalesAccountTypeApi.middleware)
       .concat(CompanyTypeApi.middleware)
-      .concat(BrandCategoryTypeApi.middleware).concat(PageBaseURL.middleware)
+      .concat(BrandCategoryTypeApi.middleware)
+      .concat(PageBaseURL.middleware)
       .concat(SaleBookingApi.middleware)
       .concat(BrandApi.middleware)
+      .concat(DocumentTypeApi.middleware)
+      .concat(PointOfContactApi.middleware)
       .concat(AccountDocumentApi.middleware),
 });
-    setupListeners(store.dispatch);
-
+setupListeners(store.dispatch);
 
 export default store;

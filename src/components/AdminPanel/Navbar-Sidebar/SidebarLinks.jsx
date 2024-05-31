@@ -1739,13 +1739,13 @@ const SidebarLinks = () => {
             data-parent="#accordionSidebar"
           >
             <div className="internal collapse-inner">
-              {contextData &&
+              {/* {contextData &&
                 contextData[0] &&
                 contextData[0].view_value === 1 && (
                   <NavLink className="collapse-item" to="/admin/pms-master">
                     <i className="bi bi-dot"></i>Master
                   </NavLink>
-                )}
+                )} */}
              
               {contextData &&
                 contextData[0] &&

@@ -339,8 +339,8 @@ import CreateSalesAccount from "./Sales/Account/CreateSalesAccount";
 import SalesAccountOverview from "./Sales/Account/SalesAccountOverview";
 import PaymentDoneTransactionList from "./Finance/PaymentDoneTransactionList";
 import PageStats from "./PageMS/PageStats";
-import DocumentMaster from "./Sales/Account/DocumentMaster";
-import DocumentOverview from "./Sales/Account/DocumentOverview";
+import CreateDocumentType from "./Sales/Account/CreateDocumentType";
+import DocumentTypeOverview from "./Sales/Account/DocumentTypeOverview";
 
 const Admin = () => {
   const [contextData, setData] = useState([]);
@@ -414,8 +414,8 @@ const Admin = () => {
                       (contextData &&
                         contextData[38] &&
                         contextData[38].view_value === 1)) && (
-                        <Route path="/user" element={<UserMaster />} />
-                      )}
+                      <Route path="/user" element={<UserMaster />} />
+                    )}
 
                     {/* User Profile Routing Here  */}
                     <Route path="/user-timeline" element={<Timeline />} />
@@ -1565,11 +1565,11 @@ const Admin = () => {
 
                   <Route
                     path="/sales-document-type-master"
-                    element={<DocumentMaster />}
+                    element={<CreateDocumentType />}
                   />
                   <Route
                     path="/sales-document-type-overview"
-                    element={<DocumentOverview />}
+                    element={<DocumentTypeOverview />}
                   />
 
                   {/* Sales Harshal end */}

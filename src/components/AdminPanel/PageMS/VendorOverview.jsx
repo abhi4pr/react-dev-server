@@ -7,7 +7,7 @@ import { Link } from "react-router-dom";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import RouteIcon from "@mui/icons-material/Route";
 import PriceChangeIcon from "@mui/icons-material/PriceChange";
-import { Box, Grid, Skeleton, Stack } from "@mui/material";
+import { Box, Grid, Skeleton, Stack, Typography } from "@mui/material";
 // import ContentCopyOutlinedIcon from "@mui/icons-material/ContentCopyOutlined";
 // import CopyAllOutlinedIcon from "@mui/icons-material/CopyAllOutlined";
 import { useGlobalContext } from "../../../Context/Context";
@@ -87,7 +87,7 @@ const VendorOverview = () => {
       dispatch(setShowBankDetailsModal());
       dispatch(setRowData(row));
     };
-  }
+  };
 
   const handleClickVendorName = (params) => {
     return () => {
@@ -111,8 +111,8 @@ const VendorOverview = () => {
       renderCell: (params) => {
         return (
           <div
-            // onClick={handleClickVendorName(params)}
-            // className="link-primary cursor-pointer text-truncate"
+          // onClick={handleClickVendorName(params)}
+          // className="link-primary cursor-pointer text-truncate"
           >
             {params.row.vendor_name}
           </div>
@@ -448,18 +448,22 @@ const VendorOverview = () => {
   return (
     <>
       <VendorWhatsappLinkModla />
-      <Stack direction={"row"} justifyContent={"flex-end"}>
-        <Link to={`/admin/pms-vendor-master`} className="me-3 btn btn-primary btn-sm">
-        
-            Add Vendor <i className="fa fa-plus"/>
-        </Link>
-        <Link
-          to={`/admin/pms-page-overview`}
-          className="btn btn-primary btn-sm"
-        >
-          Page <KeyboardArrowRightIcon />
-        </Link>
-        {/* <Link to={`/admin/pms-vendor-page-price-overview`}>
+      <Stack>
+        <Typography>Vendor : {vendorTypes.length} </Typography>
+        <Stack direction={"row"} justifyContent={"flex-end"}>
+          <Link
+            to={`/admin/pms-vendor-master`}
+            className="me-3 btn btn-primary btn-sm"
+          >
+            Add Vendor <i className="fa fa-plus" />
+          </Link>
+          <Link
+            to={`/admin/pms-page-overview`}
+            className="btn btn-primary btn-sm"
+          >
+            Page <KeyboardArrowRightIcon />
+          </Link>
+          {/* <Link to={`/admin/pms-vendor-page-price-overview`}>
           <button
             title="Add"
             className="btn btn-outline-primary"
@@ -468,7 +472,7 @@ const VendorOverview = () => {
             Vendor Page Price Overview
           </button>
         </Link> */}
-        {/* <Stack direction="row" spacing={1}>
+          {/* <Stack direction="row" spacing={1}>
           <button
             title="Add"
             className="btn btn-outline-primary ml-3"
@@ -495,14 +499,14 @@ const VendorOverview = () => {
               >
                 Copy Page Name & Links
               </Button> */}
-        {/* </Stack> */}
+          {/* </Stack> */}
+        </Stack>
       </Stack>
       <div className="card">
         <div className="data_tbl table-responsive">
-          <div className="card">
-            <div className="card-body">
-              <h1 className="card-title">Vendor </h1>
-              {/* <div className="card-text">
+          {/* <div className="card"> */}
+          {/* <div className="card-body"> */}
+          {/* <div className="card-text">
                 <div className="row">
                   <div className="col-md-2">
                     <Link
@@ -560,8 +564,8 @@ const VendorOverview = () => {
                   </div>{" "}
                 </div>
               </div> */}
-            </div>
-            {/* <div className="mx-3 mb-2">
+          {/* </div> */}
+          {/* <div className="mx-3 mb-2">
               {[
                 ...new Set(
                   filterData.map((item) => {
@@ -587,14 +591,14 @@ const VendorOverview = () => {
                 );
               })}
             </div> */}
-            <div className="mx-3 mb-2">
+          {/* <div className="mx-3 mb-2">
               <h4>
                 <span className="text-primary">
-                  Total Vendor:{vendorTypes.length}
+                   Vendor:{vendorTypes.length}
                 </span>
               </h4>
-            </div>
-          </div>
+            </div> */}
+          {/* </div> */}
 
           {loading ? (
             <Box mt={2} ml={2} mb={3} sx={{ width: "95%" }}>
@@ -651,7 +655,7 @@ const VendorOverview = () => {
       </div>
       <VendorBankDetailModal />
       <VendorPageModal />
-     <VendorWhatsappLinkModla />
+      <VendorWhatsappLinkModla />
     </>
   );
 };

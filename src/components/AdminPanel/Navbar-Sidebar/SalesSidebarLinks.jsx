@@ -102,14 +102,6 @@ const SalesSidebarLinks = () => {
             <i className="bi bi-dot" />
             Services
           </NavLink>
-          <NavLink className="collapse-item" to="/admin/sales-document-type-master">
-            <i className="bi bi-dot" />
-            Document Master
-          </NavLink>
-          <NavLink className="collapse-item" to="/admin/sales-document-type-overview">
-            <i className="bi bi-dot" />
-            Document Overview
-          </NavLink>
         </div>
       </div>
     </li>
