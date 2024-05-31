@@ -82,7 +82,6 @@ const PendingApprovalUpdate = () => {
   };
 
   const handleStatusChange = async (row, selectedStatus) => {
-    console.log(row, "Row Data >>>");
     setStatus(selectedStatus);
 
     const formData = new FormData();
@@ -116,9 +115,11 @@ const PendingApprovalUpdate = () => {
   function getData() {
     setLoading(true);
     axios.post(baseUrl + "add_php_finance_data_in_node").then((res) => {
-      const custData = res.data.data;
-      setData(res.data.data);
-      setFilterData(res.data.data);
+      const custData = res.data.data.filter(
+        (status) => status.payment_approval_status === "0"
+      );
+      setData(custData);
+      setFilterData(custData);
       setLoading(false);
       const uniqueCustomers = new Set(custData.map((item) => item.cust_name));
       setUniqueCustomerCount(uniqueCustomers.size);
@@ -142,7 +143,7 @@ const PendingApprovalUpdate = () => {
       setInvoiceCount(withInvoiceImage.length);
       setNonInvoiceCount(withoutInvoiceImage.length);
 
-      const dateFilterData = filterDataBasedOnSelection(res.data.data);
+      const dateFilterData = filterDataBasedOnSelection(custData);
       setFilterData(dateFilterData);
     });
   }
@@ -165,7 +166,7 @@ const PendingApprovalUpdate = () => {
     });
     setFilterData(result);
   }, [search]);
-  console.log(filterData, "fdddd>>>");
+
   // Filters Logic :-
   const handleAllFilters = () => {
     const filterData = datas.filter((item) => {
@@ -304,13 +305,6 @@ const PendingApprovalUpdate = () => {
     setSameCustomerDialog(false);
   };
 
-  // const calculateRequestedAmountTotal = () => {
-  //   let totalAmount = 0;
-  //   uniqueCustomerData.forEach((customer) => {
-  //     totalAmount += parseFloat(customer.payment_amount);
-  //   });
-  //   return totalAmount;
-  // };
   // Call the function to get the total sum of requested amount
   const requestedAmountTotal = filterData.reduce(
     (total, item) => total + parseFloat(item.payment_amount_show),
@@ -849,10 +843,8 @@ const PendingApprovalUpdate = () => {
       ),
     },
   ];
-  console.log(filterData, "FD------------------");
   // monthwise / datewise filter
   const filterDataBasedOnSelection = (apiData) => {
-    console.log(apiData, "date>>");
     const now = moment();
     switch (dateFilter) {
       case "last7Days":
@@ -909,17 +901,17 @@ const PendingApprovalUpdate = () => {
             "[]"
           )
         );
-      case "nextMonth":
-        const startOfNextMonth = now.clone().add(1, "months").startOf("month");
-        const endOfNextMonth = now.clone().add(1, "months").endOf("month");
-        return apiData.filter((item) =>
-          moment(item.creation_date).isBetween(
-            startOfNextMonth,
-            endOfNextMonth,
-            "day",
-            "[]"
-          )
-        );
+      // case "nextMonth":
+      //   const startOfNextMonth = now.clone().add(1, "months").startOf("month");
+      //   const endOfNextMonth = now.clone().add(1, "months").endOf("month");
+      //   return apiData.filter((item) =>
+      //     moment(item.request_date).isBetween(
+      //       startOfNextMonth,
+      //       endOfNextMonth,
+      //       "day",
+      //       "[]"
+      //     )
+      //   );
       case "currentQuarter":
         const quarterStart = moment().startOf("quarter");
         const quarterEnd = moment().endOf("quarter");
@@ -931,8 +923,12 @@ const PendingApprovalUpdate = () => {
             "[]"
           )
         );
+      case "today":
+        return apiData.filter((item) =>
+          moment(item.creation_date).isSame(now, "day")
+        );
       default:
-        return apiData; // No filter applied
+        return apiData;
     }
   };
 
@@ -973,6 +969,7 @@ const PendingApprovalUpdate = () => {
                     onChange={(e) => setDateFilter(e.target.value)}
                   >
                     <option value="">All</option>
+                    <option value="today">Today</option>
                     <option value="last7Days">Last 7 Days</option>
                     <option value="last30Days">Last 30 Days</option>
                     <option value="thisWeek">This Week</option>

@@ -970,34 +970,31 @@ export default function Discard() {
   const handleRowSelectionModelChange = async (rowIds) => {
     setRowSelectionModel(rowIds);
   };
+
+  // csv download----
   const handleDownloadInvoices = async () => {
     const zip = new JSZip();
 
-    // Generate PDFs and add them to the zip
-    await Promise.all(
-      rowSelectionModel.map(async (rowId) => {
-        const rowData = filterData[rowId]; // Access the row data using rowId
-        console.log(rowData, "RD-------------");
-        if (rowData) {
-          const pdf = new jsPDF();
+    // Generate CSVs and add them to the zip
+    rowSelectionModel.forEach((rowId) => {
+      const rowData = filterData.find((row) => row.request_id === rowId); // Adjusted to find the correct row data
+      if (rowData) {
+        // Prepare CSV content
+        let csvContent = ""; // Initialize CSV content
 
-          const keys = Object.keys(rowData);
-          const values = Object.values(rowData);
+        // Generate headers row
+        const headers = Object.keys(rowData);
+        csvContent += headers.join(",") + "\n";
 
-          // Convert data to table format
-          const tableData = keys.map((key, index) => [key, values[index]]);
+        // Generate CSV content for the row
+        const values = Object.values(rowData);
+        const rowContent = values.map((value) => `"${value}"`).join(",");
+        csvContent += `${rowContent}\n`;
 
-          // Add table to PDF
-          pdf.autoTable({
-            startY: 10,
-            head: [["Key", "Value"]],
-            body: tableData,
-          });
-
-          zip.file(`invoice_${rowId}.pdf`, pdf.output());
-        }
-      })
-    );
+        // Add CSV to the zip
+        zip.file(`invoice_${rowId}.csv`, csvContent);
+      }
+    });
 
     // Generate the zip file
     const zipBlob = await zip.generateAsync({ type: "blob" });
@@ -1005,35 +1002,6 @@ export default function Discard() {
     // Save the zip file
     saveAs(zipBlob, "invoices.zip");
   };
-  // csv download----
-  // const handleDownloadInvoices = async () => {
-  //   // Prepare CSV content
-  //   let csvContent = ""; // Initialize CSV content
-
-  //   // Generate headers row
-  //   const headers = Object.keys(filterData[rowSelectionModel[0]]);
-  //   csvContent += headers.join(",") + "\n";
-
-  //   // Generate CSV content for each row
-  //   rowSelectionModel.forEach((rowId) => {
-  //     const rowData = filterData[rowId]; // Access the row data using rowId
-  //     console.log(rowData, "RD-------------");
-  //     if (rowData) {
-  //       const values = Object.values(rowData);
-
-  //       // Construct CSV row
-  //       const rowContent = values.map((value) => `"${value}"`).join(",");
-  //       csvContent += `${rowContent}\n`;
-  //     }
-  //   });
-
-  //   // Create Blob containing the CSV data
-  //   const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8" });
-
-  //   // Trigger download
-  //   saveAs(blob, "invoices.csv");
-  // };
-
   function CustomColumnMenu(props) {
     return (
       <GridColumnMenu
@@ -1044,6 +1012,7 @@ export default function Discard() {
       />
     );
   }
+
   return (
     <div>
       <FormContainer
@@ -1324,7 +1293,7 @@ export default function Discard() {
                 pageSize={5}
                 rowsPerPageOptions={[5]}
                 disableSelectionOnClick
-                // checkboxSelection
+                checkboxSelection
                 autoHeight
                 slots={{ toolbar: GridToolbar }}
                 slotProps={{
@@ -1332,12 +1301,12 @@ export default function Discard() {
                     showQuickFilter: true,
                   },
                 }}
-                getRowId={(row) => filterData.indexOf(row)}
-                // onRowSelectionModelChange={(rowIds) => {
-                //   handleRowSelectionModelChange(rowIds);
-                //   console.log(rowIds, "IDS");
-                // }}
-                // rowSelectionModel={rowSelectionModel}
+                getRowId={(row) => row?.request_id}
+                onRowSelectionModelChange={(rowIds) => {
+                  handleRowSelectionModelChange(rowIds);
+                  console.log(rowIds, "IDS");
+                }}
+                rowSelectionModel={rowSelectionModel}
               />
               {/* <TableData
                 setColumnsData={setColumnsData}

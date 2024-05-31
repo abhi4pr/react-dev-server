@@ -4,7 +4,7 @@ import axios from "axios";
 import jwtDecode from "jwt-decode";
 import { baseUrl } from "../../../utils/config";
 
-const DynamicTable = ({tableName,tableFields,tableApi,tableActions}) => {
+const DynamicTable = ({ tableName, tableFields, tableApi, tableActions }) => {
   const [search, setSearch] = useState("");
   const [datas, setData] = useState([]);
   const [filterData, setFilterData] = useState([]);
@@ -43,15 +43,17 @@ const DynamicTable = ({tableName,tableFields,tableApi,tableActions}) => {
       setSavedFilters(savedFiltersData);
 
       if (responseData && responseData.data && responseData.data.length > 0) {
-        const initialColumns = responseData.data[0].column_order_Obj || tableFields;
+        const initialColumns = responseData.data[0].column_order_Obj || [
+          tableFields,
+        ];
         setColumns(initialColumns);
       } else {
-        const defaultColumns = tableFields;
+        const defaultColumns = [tableFields];
         setColumns(defaultColumns);
       }
     } catch (error) {
       console.error("Error fetching dynamic table data:", error);
-      const defaultColumns = tableFields;
+      const defaultColumns = [tableFields];
       setColumns(defaultColumns);
     }
   };
@@ -75,7 +77,7 @@ const DynamicTable = ({tableName,tableFields,tableApi,tableActions}) => {
     newColumns.splice(draggedIndex, 1);
     newColumns.splice(targetIndex, 0, draggedColumn);
 
-    axios.put(`${baseUrl}` + 'edit_dynamic_table_data', {
+    axios.put(`${baseUrl}` + "edit_dynamic_table_data", {
       user_id: userID,
       table_name: "object table",
       column_order_Obj: newColumns,
@@ -99,7 +101,7 @@ const DynamicTable = ({tableName,tableFields,tableApi,tableActions}) => {
     }
 
     axios
-      .put(`${baseUrl}` + 'edit_dynamic_table_data', {
+      .put(`${baseUrl}` + "edit_dynamic_table_data", {
         user_id: userID,
         table_name: "object table",
         column_order_Obj: newColumns,
@@ -207,8 +209,9 @@ const DynamicTable = ({tableName,tableFields,tableApi,tableActions}) => {
   useEffect(() => {
     const result = datas.filter((d) => {
       const lowercasedSearch = search.toLowerCase();
-      return Object.values(d).some(value => 
-        value && value.toString().toLowerCase().includes(lowercasedSearch)
+      return Object.values(d).some(
+        (value) =>
+          value && value.toString().toLowerCase().includes(lowercasedSearch)
       );
     });
     setFilterData(result);
@@ -235,7 +238,7 @@ const DynamicTable = ({tableName,tableFields,tableApi,tableActions}) => {
       filter_array: updatedSavedFilters,
     });
   };
-  
+
   const saveFilter = () => {
     const newSavedFilters = [...savedFilters, { filters }];
     setSavedFilters(newSavedFilters);
@@ -264,14 +267,14 @@ const DynamicTable = ({tableName,tableFields,tableApi,tableActions}) => {
   const Dropdown = ({ children, btnName }) => {
     const [isOpen, setIsOpen] = useState(false);
     const ref = useRef();
-  
+
     useEffect(() => {
       const handleClickOutside = (event) => {
         if (ref.current && !ref.current.contains(event.target)) {
           setIsOpen(false);
         }
       };
-  
+
       document.addEventListener("mousedown", handleClickOutside);
       return () => {
         document.removeEventListener("mousedown", handleClickOutside);
@@ -287,7 +290,7 @@ const DynamicTable = ({tableName,tableFields,tableApi,tableActions}) => {
     );
   };
 
-  return(
+  return (
     <div>
       <div className="card">
         <div className="card-body">
@@ -533,17 +536,18 @@ const DynamicTable = ({tableName,tableFields,tableApi,tableActions}) => {
                       </div>
                     </th>
                   ))}
-                  {tableActions && tableActions.map((action, actionIndex) => (
-                    <th key={actionIndex}>
-                      <div className="MuiDataGrid-columnHeaderTitleContainer MuiDataGrid-columnHeader MuiDataGrid-columnHeader--sortable MuiDataGrid-columnHeader--sorted MuiDataGrid-withBorderColor">
-                        <div className="MuiDataGrid-columnHeaderTitleContainerContent">
-                          <div className="MuiDataGrid-columnHeaderTitle css-t89xny-MuiDataGrid-columnHeaderTitle head-font ">
-                            {action.header}
+                  {tableActions &&
+                    tableActions.map((action, actionIndex) => (
+                      <th key={actionIndex}>
+                        <div className="MuiDataGrid-columnHeaderTitleContainer MuiDataGrid-columnHeader MuiDataGrid-columnHeader--sortable MuiDataGrid-columnHeader--sorted MuiDataGrid-withBorderColor">
+                          <div className="MuiDataGrid-columnHeaderTitleContainerContent">
+                            <div className="MuiDataGrid-columnHeaderTitle css-t89xny-MuiDataGrid-columnHeaderTitle head-font ">
+                              {action.header}
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    </th>
-                  ))}
+                      </th>
+                    ))}
                 </tr>
               </thead>
               <tbody>
@@ -554,21 +558,22 @@ const DynamicTable = ({tableName,tableFields,tableApi,tableActions}) => {
                         <div className="dt-row-col">{row[column]}</div>
                       </td>
                     ))}
-                    {tableActions && tableActions.map((action, actionIndex) => (
-                      <td key={actionIndex}>
-                        <div className="dt-row-col">
-                          {typeof action.action === "string" ? (
-                            <Link to={action.action(row)}>
-                              <button title={action.label} className="icon-1">
-                                <i className={action.icon}></i>
-                              </button>
-                            </Link>
-                          ) : (
-                            action.action(row, getData)
-                          )}
-                        </div>
-                      </td>
-                    ))}
+                    {tableActions &&
+                      tableActions.map((action, actionIndex) => (
+                        <td key={actionIndex}>
+                          <div className="dt-row-col">
+                            {typeof action.action === "string" ? (
+                              <Link to={action.action(row)}>
+                                <button title={action.label} className="icon-1">
+                                  <i className={action.icon}></i>
+                                </button>
+                              </Link>
+                            ) : (
+                              action.action(row, getData)
+                            )}
+                          </div>
+                        </td>
+                      ))}
                   </tr>
                 ))}
               </tbody>
@@ -645,7 +650,7 @@ const DynamicTable = ({tableName,tableFields,tableApi,tableActions}) => {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
 export default DynamicTable;

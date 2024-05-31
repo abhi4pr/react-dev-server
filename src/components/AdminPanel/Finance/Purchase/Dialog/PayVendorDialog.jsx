@@ -69,6 +69,7 @@ function PayVendorDialog(props) {
   const [payMentProof, setPayMentProof] = useState("");
   const [openDialog, setOpenDialog] = useState(false);
   const [GSTHoldAmount, setGSTHoldAmount] = useState(0);
+  const [preview, setPreview] = useState("");
   const [paymentDate, setPaymentDate] = useState(
     dayjs(new Date()).add(5, "hours").add(30, "minutes").$d.toGMTString()
   );
@@ -82,7 +83,7 @@ function PayVendorDialog(props) {
       setPaymentModeData(res?.data);
     });
   }, []);
-  
+
   // useEffect(() => {
   //   const initialAdjustmentAmt = netAmount - Math.floor(paymentAmout);
   //   const formattedAdjustmentAmt = initialAdjustmentAmt.toFixed(1);
