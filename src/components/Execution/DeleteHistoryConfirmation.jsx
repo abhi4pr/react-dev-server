@@ -31,13 +31,12 @@ export default function DeleteHistoryConfirmation(props) {
   const handleDeleteConfirmation = () => {
     axios
       .delete(
-        `${baseUrl}` + `delete_exe_ip_count_history/${rowData._id}`
+        `${baseUrl}` + `v1/page_states/${rowData._id}`
       )
       .then((res) => {
-        if (res.data.isDeleted) {
-          handleCloseDeleteHistoryConFirmation();
-          apiCall();
-        }
+        handleCloseDeleteHistoryConFirmation();
+        apiCall();
+      
       });
   };
   return (

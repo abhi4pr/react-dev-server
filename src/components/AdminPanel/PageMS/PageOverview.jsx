@@ -478,7 +478,7 @@ const PageOverview = () => {
   };
 
   const handleHistoryRowClick = (row) => {
-    navigate(`/admin/exe-history/${row.pageMast_id}`, {
+    navigate(`/admin/exe-history/${row._id}`, {
       state: row.pageMast_id,
     });
   };
@@ -872,11 +872,11 @@ const PageOverview = () => {
             type="button"
             className="btn cmnbtn btn_sm btn-outline-primary"
             onClick={() => handleHistoryRowClick(params.row)}
-            disabled={
-              params?.row?.latestEntry?.stats_update_flag
-                ? !params?.row?.latestEntry.stats_update_flag
-                : true
-            }
+            // disabled={
+            //   params?.row?.latestEntry?.stats_update_flag
+            //     ? !params?.row?.latestEntry.stats_update_flag
+            //     : true
+            // }
           >
             See History
           </button>

@@ -11,7 +11,16 @@ import {
   Autocomplete,
   Box,
   Button,
+  FormControl,
+  FormControlLabel,
+  FormLabel,
+  Grid,
   IconButton,
+  InputLabel,
+  MenuItem,
+  Radio,
+  RadioGroup,
+  Stack,
   TextField,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
@@ -36,15 +45,24 @@ import VendorTypeInfoModal from "./VendorTypeInfoModal";
 import AddCircleTwoToneIcon from "@mui/icons-material/AddCircleTwoTone";
 import RemoveCircleTwoToneIcon from "@mui/icons-material/RemoveCircleTwoTone";
 import { useParams } from "react-router";
-import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
-
+import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
+import { Controller, useForm } from "react-hook-form";
 
 const VendorMaster = () => {
+  const {
+    register,
+    formState: { errors },
+    handleSubmit: handleFormSubmit,
+    control,
+    watch,
+  } = useForm({
+    mode: "onChange",
+  });
   const {
     data: countryCodeData,
     error: countryCodeError,
     isLoading: countryCodeLoading,
-  }= useGetCountryCodeQuery();
+  } = useGetCountryCodeQuery();
 
   const countries = countryCodeData?.data;
   const { _id } = useParams();
@@ -185,14 +203,14 @@ const VendorMaster = () => {
   };
 
   const handleAccountNoChange = (e, i) => {
-    if(e.target.value.length > 20) return;
+    if (e.target.value.length > 20) return;
     const updatedRows = [...bankRows];
     updatedRows[i].account_number = e.target.value;
     setBankRows(updatedRows);
   };
 
   const handleIFSCChange = (e, i) => {
-    if(e.target.value.length > 11) return;
+    if (e.target.value.length > 11) return;
     const updatedRows = [...bankRows];
     updatedRows[i].ifcs = e.target.value;
     setBankRows(updatedRows);
@@ -272,10 +290,12 @@ const VendorMaster = () => {
         setBankRows(data);
       });
 
-      axios.get(baseUrl + `v1/vendor_group_link_vendor_id/${_id}`).then((res) => {
-        const data = res.data?.data ;
-        setWhatsappLink(data);
-      });
+      axios
+        .get(baseUrl + `v1/vendor_group_link_vendor_id/${_id}`)
+        .then((res) => {
+          const data = res.data?.data;
+          setWhatsappLink(data);
+        });
     }
   }, [_id]);
   const addLink = () => {
@@ -339,7 +359,7 @@ const VendorMaster = () => {
   };
 
   const handlePanChange = (e) => {
-    if(e.target.value.length > 13) return;
+    if (e.target.value.length > 13) return;
     const inputValue = e.target.value.toUpperCase();
     // Validate PAN format
     // const panRegex = /[A-Z]{5}[0-9]{4}[A-Z]{1}/;
@@ -414,19 +434,20 @@ const VendorMaster = () => {
         toastAlert("Submitted");
       });
     } else {
-      axios.put(baseUrl + `v1/vendor/${_id}`, formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      }).then(() => {
-        toastAlert("Updated");
-        setIsFormSubmitted(true);
-
-      }).catch((err) => {
-        console.log(err);
-        toastError(err.message);
-      });
-
+      axios
+        .put(baseUrl + `v1/vendor/${_id}`, formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        })
+        .then(() => {
+          toastAlert("Updated");
+          setIsFormSubmitted(true);
+        })
+        .catch((err) => {
+          console.log(err);
+          toastError(err.message);
+        });
     }
   };
 
@@ -451,7 +472,6 @@ const VendorMaster = () => {
         mainTitle={_id ? "Edit Vendor Master" : "Add Vendor Master"}
         title={_id ? "Edit Vendor Master" : "Add Vendor Master"}
         handleSubmit={handleSubmit}
-        
       >
         <FieldContainer
           label="Vendor Name "
@@ -905,7 +925,10 @@ const VendorMaster = () => {
           value={compPin}
           required={false}
           maxLength={6}
-          onChange={(e) =>{if(isNaN(e.target.value))return; setCompPin(e.target.value)}}
+          onChange={(e) => {
+            if (isNaN(e.target.value)) return;
+            setCompPin(e.target.value);
+          }}
         />
 
         <FieldContainer
@@ -1065,6 +1088,646 @@ const VendorMaster = () => {
       </FormContainer>
       <AddVendorModal />
       {isVendorModalOpen && <VendorTypeInfoModal />}
+
+      <FormControl component={"form"} onSubmit={handleSubmit}>
+        <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
+          <Grid item xs={6}>
+            <TextField
+              label="Vendor Name"
+              variant="outlined"
+              {...register("vendor_name", {
+                required: "Vendor Name is required",
+                maxLength: {
+                  value: 50,
+                  message: "Vendor Name should not exceed 50 characters",
+                },
+                minLength: {
+                  value: 3,
+                  message: "Vendor Name should have atleast 3 characters",
+                },
+              })}
+              error={errors.vendor_name ? true : false}
+              helperText={errors.vendor_name ? errors.vendor_name.message : ""}
+            />
+          </Grid>
+          <Grid item xs={6}>
+            <Controller
+              name="vendor_category"
+              control={control}
+              defaultValue=""
+              rules={{ required: "Vendor Category is required" }}
+              render={({ field: { onChange, value } }) => (
+                <Autocomplete
+                  options={["Theme Page", "influencer"]}
+                  getOptionLabel={(option) => option}
+                  value={value}
+                  onChange={(_, data) => onChange(data)}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      label="Vendor Category"
+                      required
+                      error={!!errors.vendor_category}
+                      helperText={
+                        errors.vendor_category
+                          ? errors.vendor_category.message
+                          : ""
+                      }
+                    />
+                  )}
+                />
+              )}
+            />
+          </Grid>
+          <Grid item xs={6}>
+            <Autocomplete
+              id="country-select-demo"
+              label="Country Code"
+              sx={{ width: 300 }}
+              options={countries}
+              required={true}
+              value={countries?.find((option) => option.phone == countryCode)}
+              // onChange={(e, val) => {
+              //   setCountryCode(val ? val.phone : null);
+              // }}
+              {...register("country_code", {
+                required: "Country Code is required",
+              })}
+              autoHighlight
+              getOptionLabel={(option) => option.phone}
+              renderOption={(props, option) => (
+                <Box
+                  component="li"
+                  sx={{ "& > img": { mr: 2, flexShrink: 0 } }}
+                  {...props}
+                >
+                  <img
+                    loading="lazy"
+                    style={{
+                      width: 20,
+                      height: 20,
+                      borderRadius: 1,
+                      objectFit: "cover",
+                      marginRight: 1,
+                    }}
+                    srcSet={`https://flagcdn.com/w40/${option.code.toLowerCase()}.png 2x`}
+                    src={`https://flagcdn.com/w20/${option.code.toLowerCase()}.png`}
+                    alt=""
+                  />
+                  {option?.country_name} ({option?.code}) +{option?.phone}
+                </Box>
+              )}
+              helperText={
+                errors.country_code ? errors.country_code.message : ""
+              }
+              error={errors.country_code ? true : false}
+              renderInput={(params) => (
+                <TextField
+                  // value={countries?.find((option) => option.phone == countryCode)}
+                  {...params}
+                  // label="Choose a country"
+                  inputProps={{
+                    ...params.inputProps,
+                    autoComplete: "new-password", // disable autocomplete and autofill
+                  }}
+                />
+              )}
+            />
+          </Grid>
+          <Grid item xs={6}>
+            <TextField
+              label="Mobile"
+              variant="outlined"
+              {...register("mobile", {
+                required: "Mobile is required",
+                maxLength: {
+                  value: 10,
+                  message: "Mobile should not exceed 10 characters",
+                },
+                minLength: {
+                  value: 10,
+                  message: "Mobile should have atleast 10 characters",
+                },
+              })}
+              error={errors.mobile ? true : false}
+              helperText={errors.mobile ? errors.mobile.message : ""}
+            />
+          </Grid>
+          <Grid item xs={6}>
+            <TextField
+              label="Alternate Mobile"
+              variant="outlined"
+              {...register("alternate_mobile", {
+                maxLength: {
+                  value: 10,
+                  message: "Alternate Mobile should not exceed 10 characters",
+                },
+                minLength: {
+                  value: 10,
+                  message: "Alternate Mobile should have atleast 10 characters",
+                },
+              })}
+              error={errors.alternate_mobile ? true : false}
+              helperText={
+                errors.alternate_mobile ? errors.alternate_mobile.message : ""
+              }
+            />
+          </Grid>
+          <Grid item xs={6}>
+            <TextField
+              label="Email"
+              variant="outlined"
+              {...register("email", {
+                required: "Email is required",
+                pattern: {
+                  value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                  message: "Please enter a valid email",
+                },
+              })}
+              error={errors.email ? true : false}
+              helperText={errors.email ? errors.email.message : ""}
+            />
+          </Grid>
+          <Grid item xs={6}>
+            <TextField
+              label="Personal Address"
+              variant="outlined"
+              {...register("personal_address")}
+              error={errors.personal_address ? true : false}
+              helperText={
+                errors.personal_address ? errors.personal_address.message : ""
+              }
+            />
+          </Grid>
+          <Grid item xs={6}>
+            <Controller
+              name="typeId"
+              control={control}
+              defaultValue=""
+              render={({ field: { onChange, value } }) => (
+                <Autocomplete
+                  options={!typeLoading ? typeData.data : []}
+                  getOptionLabel={(option) => option.type_name}
+                  getOptionSelected={(option, value) => option._id === value}
+                  value={
+                    !typeLoading
+                      ? typeData.data.find((role) => role._id === value)
+                      : null
+                  }
+                  onChange={(_, data) => onChange(data?._id)}
+                  renderInput={(params) => (
+                    <TextField label="Vendor Type" {...params} required />
+                  )}
+                />
+              )}
+            />
+          </Grid>
+          <Grid item xs={6}>
+            <Controller
+              name="platformId"
+              control={control}
+              defaultValue=""
+              render={({ field: { onChange, value } }) => (
+                <Autocomplete
+                  options={platformData?.data}
+                  getOptionLabel={(option) => option.platform_name}
+                  getOptionSelected={(option, value) => option._id === value}
+                  value={platformData?.data.find((role) => role._id === value)}
+                  onChange={(_, data) => onChange(data?._id)}
+                  renderInput={(params) => (
+                    <TextField label="Platform" {...params} required />
+                  )}
+                />
+              )}
+            />
+          </Grid>
+          <Grid item xs={6}>
+            <Controller
+              name="payId"
+              control={control}
+              defaultValue=""
+              render={({ field: { onChange, value } }) => (
+                <Autocomplete
+                  options={payData}
+                  getOptionLabel={(option) => option.payMethod_name}
+                  getOptionSelected={(option, value) => option._id === value}
+                  value={payData.find((role) => role._id === value)}
+                  onChange={(_, data) => onChange(data?._id)}
+                  renderInput={(params) => (
+                    <TextField label="Payment Method" {...params} required />
+                  )}
+                />
+              )}
+            />
+          </Grid>
+          <Grid item xs={6}>
+            <TextField
+              label="Bank Name"
+              variant="outlined"
+              {...register("bank_name", {
+                maxLength: {
+                  value: 50,
+                  message: "Bank Name should not exceed 50 characters",
+                },
+              })}
+              error={errors.bank_name ? true : false}
+              helperText={errors.bank_name ? errors.bank_name.message : ""}
+            />
+          </Grid>
+          <Grid item xs={6}>
+            <Autocomplete
+              options={["Savings", "Current"].map((option) => ({
+                label: option,
+                value: option,
+              }))}
+              required={true}
+              {...register("account_type", {
+                required: "Account Type is required",
+              })}
+              renderInput={(params) => (
+                <TextField {...params} label="Account Type" required />
+              )}
+              error={errors.account_type ? true : false}
+              helperText={
+                errors.account_type ? errors.account_type.message : ""
+              }
+            />
+          </Grid>
+          <Grid item xs={6}>
+            <TextField
+              label="Account Number"
+              variant="outlined"
+              {...register("account_no", {
+                maxLength: {
+                  value: 20,
+                  message: "Account Number should not exceed 20 characters",
+                },
+              })}
+              error={errors.account_no ? true : false}
+              helperText={errors.account_no ? errors.account_no.message : ""}
+            />
+          </Grid>
+          <Grid item xs={6}>
+            <TextField
+              label="IFSC"
+              variant="outlined"
+              {...register("ifsc", {
+                maxLength: {
+                  value: 11,
+                  message: "IFSC should not exceed 11 characters",
+                },
+              })}
+              error={errors.ifsc ? true : false}
+              helperText={errors.ifsc ? errors.ifsc.message : ""}
+            />
+          </Grid>
+          <Grid item xs={6}>
+            <TextField
+              label="UPI ID"
+              variant="outlined"
+              {...register("upi_id", {
+                maxLength: {
+                  value: 50,
+                  message: "UPI ID should not exceed 50 characters",
+                },
+              })}
+              error={errors.upi_id ? true : false}
+              helperText={errors.upi_id ? errors.upi_id.message : ""}
+            />
+          </Grid>
+          <Grid item xs={6}>
+            <TextField
+              label="Registered Mobile Number"
+              variant="outlined"
+              {...register("registered_number", {
+                maxLength: {
+                  value: 10,
+                  message:
+                    "Registered Mobile Number should not exceed 10 characters",
+                },
+              })}
+              error={errors.registered_number ? true : false}
+              helperText={
+                errors.registered_number ? errors.registered_number.message : ""
+              }
+            />
+          </Grid>
+
+          <Grid item xs={6}>
+            <Controller
+              name="cycleId"
+              control={control}
+              defaultValue=""
+              render={({ field: { onChange, value } }) => (
+                <Autocomplete
+                  options={cycleData}
+                  getOptionLabel={(option) => option.cycle_name}
+                  getOptionSelected={(option, value) => option._id === value}
+                  value={cycleData.find((role) => role._id === value)}
+                  onChange={(_, data) => onChange(data?._id)}
+                  renderInput={(params) => (
+                    <TextField label="Pay Cycle" {...params} required />
+                  )}
+                />
+              )}
+            />
+          </Grid>
+          <Grid item xs={6}>
+            <TextField
+              label="PAN"
+              variant="outlined"
+              {...register("pan", {
+                maxLength: {
+                  value: 13,
+                  message: "PAN should not exceed 13 characters",
+                },
+              })}
+              error={errors.pan ? true : false}
+              helperText={errors.pan ? errors.pan.message : ""}
+            />
+          </Grid>
+          <Grid item xs={6}>
+            <TextField
+              label="PAN Image"
+              variant="outlined"
+              {...register("pan_image")}
+              error={errors.pan_image ? true : false}
+              helperText={errors.pan_image ? errors.pan_image.message : ""}
+            />
+          </Grid>
+          <Grid item xs={6}>
+            <Controller
+              name="gst"
+              control={control}
+              defaultValue=""
+              render={({
+                field: { onChange, value },
+                fieldState: { error },
+              }) => (
+                <Autocomplete
+                  options={["Yes", "No"]}
+                  getOptionLabel={(option) => option}
+                  value={value}
+                  onChange={(_, data) => onChange(data)}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      label="GST Applicable"
+                      error={!!error}
+                      helperText={error ? error.message : ""}
+                    />
+                  )}
+                />
+              )}
+            />
+          </Grid>
+          {watch("gst") == "Yes" && (
+            <>
+              <Grid item xs={6}>
+                <TextField
+                  label="GST"
+                  variant="outlined"
+                  {...register("gst", {
+                    maxLength: {
+                      value: 15,
+                      message: "GST should not exceed 15 characters",
+                    },
+                  })}
+                  error={errors.gst ? true : false}
+                  helperText={errors.gst ? errors.gst.message : ""}
+                />
+              </Grid>
+              <Grid item xs={6}>
+                <input
+                  accept="image/*"
+                  style={{ display: "none" }}
+                  id="gst-image-upload"
+                  type="file"
+                  {...register("gst_image")}
+                />
+                <label htmlFor="gst-image-upload">
+                  <Button variant="contained" component="span">
+                    Upload GST Image
+                  </Button>
+                </label>
+                {errors.gst_image && <p>{errors.gst_image.message}</p>}
+              </Grid>
+            </>
+          )}
+
+          <Grid item xs={6}>
+            <TextField
+              label="Company Name"
+              variant="outlined"
+              {...register("company_name", {
+                maxLength: {
+                  value: 50,
+                  message: "Company Name should not exceed 50 characters",
+                },
+              })}
+              error={errors.company_name ? true : false}
+              helperText={
+                errors.company_name ? errors.company_name.message : ""
+              }
+            />
+          </Grid>
+          <Grid item xs={6}>
+            <TextField
+              label="Company Address"
+              variant="outlined"
+              {...register("company_address")}
+              error={errors.company_address ? true : false}
+              helperText={
+                errors.company_address ? errors.company_address.message : ""
+              }
+            />
+          </Grid>
+
+          <Grid item xs={6}>
+            <TextField
+              label="Company City"
+              variant="outlined"
+              {...register("company_city")}
+              error={errors.company_city ? true : false}
+              helperText={
+                errors.company_city ? errors.company_city.message : ""
+              }
+            />
+          </Grid>
+          <Grid item xs={6}>
+            <TextField
+              label="Company Pincode"
+              variant="outlined"
+              {...register("company_pincode", {
+                maxLength: {
+                  value: 6,
+                  message: "Company Pincode should not exceed 6 characters",
+                },
+              })}
+              error={errors.company_pincode ? true : false}
+              helperText={
+                errors.company_pincode ? errors.company_pincode.message : ""
+              }
+            />
+          </Grid>
+          <Grid item xs={6}>
+            <TextField
+              label="Company State"
+              variant="outlined"
+              {...register("company_state")}
+              error={errors.company_state ? true : false}
+              helperText={
+                errors.company_state ? errors.company_state.message : ""
+              }
+            />
+          </Grid>
+          <Grid item xs={6}>
+            <TextField
+              label="Threshold Limit"
+              variant="outlined"
+              {...register("threshold_limit")}
+              error={errors.threshold_limit ? true : false}
+              helperText={
+                errors.threshold_limit ? errors.threshold_limit.message : ""
+              }
+            />
+          </Grid>
+          <Grid item xs={6}>
+            <TextField
+              label="Home Address"
+              variant="outlined"
+              {...register("home_address")}
+              error={errors.home_address ? true : false}
+              helperText={
+                errors.home_address ? errors.home_address.message : ""
+              }
+            />
+          </Grid>
+          <Grid item xs={6}>
+            <TextField
+              label="Home City"
+              variant="outlined"
+              {...register("home_city")}
+              error={errors.home_city ? true : false}
+              helperText={errors.home_city ? errors.home_city.message : ""}
+            />
+          </Grid>
+          <Grid item xs={6}>
+            <TextField
+              label="Home State"
+              variant="outlined"
+              {...register("home_state")}
+              error={errors.home_state ? true : false}
+              helperText={errors.home_state ? errors.home_state.message : ""}
+            />
+          </Grid>
+
+          {whatsappLink?.map((link, index) => (
+            <Stack direction={'row'} spacing={2} key={index}>
+              <FormControl fullWidth>
+                <Controller
+                  name={`whatsappLink[${index}].link`}
+                  control={control}
+                  defaultValue={link.link}
+                  render={({ field }) => (
+                    <TextField
+                      {...field}
+                      label={`Whatsapp Link ${index + 1}`}
+                      required={false}
+                    />
+                  )}
+                />
+              </FormControl>
+
+              <FormControl fullWidth>
+                <Controller
+                  name={`whatsappLink[${index}].remark`}
+                  control={control}
+                  defaultValue={link.remark}
+                  render={({ field }) => (
+                    <TextField
+                      {...field}
+                      label={`Group Purpose`}
+                      required={false}
+                    />
+                  )}
+                />
+              </FormControl>
+
+              <Grid item xs={6}>
+                <Controller
+                  name={`whatsappLink[${index}].type`}
+                  control={control}
+                  defaultValue={link.type}
+                  render={({ field }) => (
+                    <Autocomplete
+                      options={whatsappLinkType?.data}
+                      getOptionLabel={(option) => option.link_type}
+                      getOptionSelected={(option, value) =>
+                        option._id === value
+                      }
+                      value={whatsappLinkType?.data.find(
+                        (role) => role._id === link.type
+                      )}
+                      onChange={(_, data) => field.onChange(data?._id)}
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          label="Type"
+                          required
+                          error={!!errors.whatsappLink?.[index]?.type}
+                          helperText={
+                            errors.whatsappLink?.[index]?.type?.message
+                          }
+                        />
+                      )}
+                    />
+                  )}
+                />
+              </Grid>
+
+              {index === 0 && (
+                <div>
+                  <IconButton
+                    onClick={handleAddWhatsappGroupLinkTypeClick}
+                    color="primary"
+                  >
+                    <AddIcon />
+                  </IconButton>
+                  <IconButton
+                    onClick={handleWhatsappGroupLinkTypeInfoClick}
+                    color="primary"
+                  >
+                    <RemoveRedEyeIcon />
+                  </IconButton>
+                </div>
+              )}
+
+              {index > 0 && (
+                <IconButton
+                  size="small"
+                  onClick={() => removeLink(index)}
+                  color="secondary"
+                >
+                  <CloseIcon />
+                </IconButton>
+              )}
+            </Stack>
+          ))}
+          <Button onClick={addLink}>ADD Link</Button>
+
+          <Grid item xs={6}>
+            <Button
+              type="submit"
+              variant="contained"
+              color="primary"
+              sx={{ marginTop: 2 }}
+            >
+              Submit
+            </Button>
+          </Grid>
+        </Grid>
+      </FormControl>
     </>
   );
 };
