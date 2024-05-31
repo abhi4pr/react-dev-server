@@ -815,7 +815,7 @@ const SidebarLinks = () => {
           </div>
         </li>
       )}
-      {isOpration && (
+      {/* {isOpration && (
         <li className="nav-item">
           <a
             className="nav-btn nav-link collapsed"
@@ -827,7 +827,7 @@ const SidebarLinks = () => {
             <i className="ph">
               <Laptop weight="duotone" />
             </i>
-            {/* <span>Operation Old</span> */}
+
             <span>Inventory</span>
           </a>
           <div
@@ -857,7 +857,7 @@ const SidebarLinks = () => {
                     <div className="internal collapse-inner">
                       {/* <NavLink className="collapse-item" to="/admin/exeinventory">
                           Dashboard
-                        </NavLink> */}
+                        </NavLink> 
                       <NavLink className="collapse-item" to="/admin/cityMsater">
                         <i className="bi bi-dot"></i> City Mast
                       </NavLink>{" "}
@@ -890,7 +890,7 @@ const SidebarLinks = () => {
                         className="collapse-item"
                       >
                         Dashboard
-                      </NavLink> */}
+                      </NavLink> 
                       <NavLink
                         className="collapse-item"
                         to="/admin/exeexecution/all"
@@ -1119,10 +1119,10 @@ const SidebarLinks = () => {
                   </div>
                 </div>
               </li>
-            )} */}
+            )} 
           </div>
         </li>
-      )}
+      )} */}
       {/* {isLeadManagementVisible && (
         <li className="nav-item">
           <NavLink
@@ -1730,7 +1730,7 @@ const SidebarLinks = () => {
             <i className="ph">
               <Files weight="duotone" />
             </i>
-            <span>Page Management</span>
+            <span>Inventory</span>
           </Link>
           <div
             id="collapseTwom8"
@@ -1739,23 +1739,14 @@ const SidebarLinks = () => {
             data-parent="#accordionSidebar"
           >
             <div className="internal collapse-inner">
-              {contextData &&
+              {/* {contextData &&
                 contextData[0] &&
                 contextData[0].view_value === 1 && (
                   <NavLink className="collapse-item" to="/admin/pms-master">
                     <i className="bi bi-dot"></i>Master
                   </NavLink>
-                )}
-              {contextData &&
-                contextData[0] &&
-                contextData[0].view_value === 1 && (
-                  <NavLink
-                    className="collapse-item"
-                    to="/admin/pms-page-overview"
-                  >
-                    <i className="bi bi-dot"></i>Page
-                  </NavLink>
-                )}
+                )} */}
+             
               {contextData &&
                 contextData[0] &&
                 contextData[0].view_value === 1 && (
@@ -1764,6 +1755,16 @@ const SidebarLinks = () => {
                     to="/admin/pms-vendor-overview"
                   >
                     <i className="bi bi-dot"></i>Vendor
+                  </NavLink>
+                )}
+                 {contextData &&
+                contextData[0] &&
+                contextData[0].view_value === 1 && (
+                  <NavLink
+                    className="collapse-item"
+                    to="/admin/pms-page-overview"
+                  >
+                    <i className="bi bi-dot"></i>Page
                   </NavLink>
                 )}
               {/* {contextData &&

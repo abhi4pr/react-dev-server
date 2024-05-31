@@ -46,17 +46,26 @@ import { Dropdown } from "react-bootstrap";
 import ReactApexChart from "react-apexcharts";
 import avatarOne from "../../../assets/img/product/Avtrar1.png";
 import {
+  useGetAllCitiesQuery,
   useGetAllPageCategoryQuery,
   useGetAllPageListQuery,
   useGetAllPriceListQuery,
   useGetMultiplePagePriceQuery,
+  useGetPageStateQuery,
   useGetpagePriceTypeQuery,
 } from "../../Store/PageBaseURL";
 import AddIcon from "@mui/icons-material/Add";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
+import { setStatsUpdate } from "../../Store/PageMaster";
 
 const PageOverview = () => {
   // const { toastAlert } = useGlobalContext();
+  const {
+    data: pageList,
+    refetch: refetchPageList,
+    isLoading: isPageListLoading,
+  } = useGetAllPageListQuery();
+  const { data: pageStates } = useGetPageStateQuery();
   const [vendorTypes, setVendorTypes] = useState([]);
   const [pieChart, setPieChart] = useState({
     series: [40, 60],
@@ -355,11 +364,11 @@ const PageOverview = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const { isLoading: isNotAssignedVendorLoading, data: notAssignedVenodrData } =
-    useGetnotAssignedVendorsQuery();
-  function handleNotAssignedVendorClick() {
-    dispatch(setShowVendorNotAssignedModal());
-  }
+  // const { isLoading: isNotAssignedVendorLoading, data: notAssignedVenodrData } =
+  //   useGetnotAssignedVendorsQuery();
+  // function handleNotAssignedVendorClick() {
+  //   dispatch(setShowVendorNotAssignedModal());
+  // }
 
   // const handlePageChange = ()=>{
   //   // if()
@@ -394,17 +403,44 @@ const PageOverview = () => {
   const showPageHealthColumn = useSelector(
     (state) => state.PageOverview.showPageHelathColumn
   );
+
+  const { data: cities } = useGetAllCitiesQuery();
+  function pageHealthToggleCheck() {
+    if (showPageHealthColumn) {
+      const data = filterData?.map((item) => {
+        // debugger;
+        const matchingState = pageStates?.find(
+          (state) => state?.page_master_id === item?._id
+        );
+        return {
+          ...item,
+          pageId: matchingState?._id,
+          ...matchingState,
+          _id: item._id,
+        };
+      });
+
+      setFilterData(data);
+    }
+  }
+
   useEffect(() => {
-    //   if (userID && contextData == false) {
-    //     axios
-    //       .get(`${baseUrl}` + `get_single_user_auth_detail/${userID}`)
-    //       .then((res) => {
-    //         if (res.data[33].view_value == 1) {
-    //           setContextData(true);
-    //         }
-    //       });
-    //   }
-    //   setTimeout(() => {}, 500);
+    pageHealthToggleCheck();
+  }, [showPageHealthColumn]);
+  useEffect(() => {
+    if (showPageHealthColumn) {
+      dispatch(setShowPageHealthColumn(false));
+    }
+    if (userID && !contextData) {
+      axios
+        .get(`${baseUrl}get_single_user_auth_detail/${userID}`)
+        .then((res) => {
+          if (res.data[33].view_value === 1) {
+            setContextData(true);
+          }
+        });
+    }
+
     getData();
   }, []);
 
@@ -421,20 +457,24 @@ const PageOverview = () => {
       dispatch(openTagCategoriesModal());
     };
   };
-
+  const handleSetState = () => {
+    dispatch(addRow(false));
+    dispatch(setStatsUpdate(false));
+  };
   const handleUpdateRowClick = async (row) => {
-    await axios
-      .get(`${baseUrl}` + `get_exe_history/${row.pageMast_id}`)
-      .then((res) => {
-        let data = res.data.data.filter((e) => {
-          return e.isDeleted !== true;
-        });
-        data = data[0];
+    // await axios
+    //   .get(`${baseUrl}` + `get_exe_history/${row.pageMast_id}`)
+    //   .then((res) => {
+    //     let data = res.data.data.filter((e) => {
+    //       return e.isDeleted !== true;
+    //     });
+    //     data = data[0];
 
-        navigate(`/admin/exe-update/${data._id}`, {
-          state: row.pageMast_id,
-        });
-      });
+    //     navigate(`/admin/exe-update/${data._id}`, {
+    //       state: row.pageMast_id,
+    //     });
+    //   });
+    dispatch(setStatsUpdate(true));
   };
 
   const handleHistoryRowClick = (row) => {
@@ -458,7 +498,6 @@ const PageOverview = () => {
     });
   };
 
-  const { data: pageList, refetch: refetchPageList } = useGetAllPageListQuery();
   useEffect(() => {
     if (pageList) {
       setVendorTypes(pageList.data);
@@ -596,7 +635,7 @@ const PageOverview = () => {
         let data = platformData?.filter((item) => {
           return params.row.platform_active_on.includes(item._id);
         });
-        return data.map((item) => item.platform_name).join(", ");
+        return data?.map((item) => item.platform_name).join(", ");
       },
     },
     {
@@ -786,24 +825,40 @@ const PageOverview = () => {
       renderCell: (params) => {
         const totalPercentage = params.row.totalPercentage;
         return (
-          totalPercentage == 100 ||
-          (totalPercentage == 0.0 && (
-            <button
+          // totalPercentage == 100 ||
+          // (totalPercentage == 0.0 && (
+          <>
+            {/* <button
               type="button"
               className="btn cmnbtn btn_sm btn-outline-primary"
               data-toggle="modal"
               data-target="#myModal1"
-              disabled={
-                totalPercentage == 0 || totalPercentage == 100 ? false : true
-              }
+              // disabled={
+              //   totalPercentage == 0 || totalPercentage == 100 ? false : true
+              // }
               onClick={() => {
                 dispatch(addRow(params.row));
                 navigate(`/admin/stats`);
               }}
             >
               Set Stats
-            </button>
-          ))
+            </button> */}
+            <Link
+              to={{
+                pathname: `/admin/pageStats/${params.row._id}`,
+              }}
+            >
+              <button
+                type="button"
+                className="btn cmnbtn btn_sm btn-outline-primary"
+                onClick={handleSetState()}
+              >
+                Page Stats
+              </button>
+            </Link>
+          </>
+          // )
+          // )
         );
       },
     },
@@ -834,18 +889,22 @@ const PageOverview = () => {
       headerName: "Stats Update",
       renderCell: (params) => {
         return (
-          <button
-            type="button"
-            className="btn cmnbtn btn_sm btn-outline-primary"
-            onClick={() => handleUpdateRowClick(params.row)}
-            disabled={
-              params?.row?.latestEntry?.stats_update_flag
-                ? !params?.row?.latestEntry.stats_update_flag
-                : true
-            }
-          >
-            Update
-          </button>
+          params.row?.pageId && (
+            <Link
+              to={{
+                pathname: `/admin/pageStats/${params.row.pageId}`,
+                state: { update: true },
+              }}
+            >
+              <button
+                type="button"
+                className="btn cmnbtn btn_sm btn-outline-primary"
+                onClick={handleUpdateRowClick}
+              >
+                Update
+              </button>
+            </Link>
+          )
         );
       },
     },
@@ -875,7 +934,7 @@ const PageOverview = () => {
       width: 150,
       headerName: "Age 13-17 %",
       renderCell: (params) => {
-        let data = params.row?.exehistorymodelsData?.Age_13_17_percent;
+        let data = params.row?.Age_13_17_percent;
         return +data ? data + "%" : "NA";
       },
     },
@@ -884,7 +943,7 @@ const PageOverview = () => {
       width: 150,
       headerName: "Age 18-24 %",
       renderCell: (params) => {
-        let data = params.row?.exehistorymodelsData?.Age_18_24_percent;
+        let data = params.row?.Age_18_24_percent;
         return +data ? data + "%" : "NA";
       },
     },
@@ -893,7 +952,7 @@ const PageOverview = () => {
       width: 150,
       headerName: "Age 25-34 %",
       renderCell: (params) => {
-        let data = params.row?.exehistorymodelsData?.Age_25_34_percent;
+        let data = params.row?.Age_25_34_percent;
         return +data ? data + "%" : "NA";
       },
     },
@@ -902,7 +961,7 @@ const PageOverview = () => {
       width: 150,
       headerName: "Age 35-44 %",
       renderCell: (params) => {
-        let data = params.row?.exehistorymodelsData?.Age_35_44_percent;
+        let data = params.row?.Age_35_44_percent;
         return +data ? data + "%" : "NA";
       },
     },
@@ -911,7 +970,7 @@ const PageOverview = () => {
       width: 150,
       headerName: "Age 45-54 %",
       renderCell: (params) => {
-        let data = params.row?.exehistorymodelsData?.Age_45_54_percent;
+        let data = params.row?.Age_45_54_percent;
         return +data ? data + "%" : "NA";
       },
     },
@@ -920,7 +979,7 @@ const PageOverview = () => {
       width: 150,
       headerName: "Age 55-64 %",
       renderCell: (params) => {
-        let data = params.row?.exehistorymodelsData?.Age_55_64_percent;
+        let data = params.row?.Age_55_64_percent;
         return +data ? data + "%" : "NA";
       },
     },
@@ -929,7 +988,7 @@ const PageOverview = () => {
       width: 150,
       headerName: "Age 65+ %",
       renderCell: (params) => {
-        let data = params.row?.exehistorymodelsData?.Age_65_plus_percent;
+        let data = params.row?.Age_65_plus_percent;
         return +data ? data + "%" : "NA";
       },
     },
@@ -938,7 +997,7 @@ const PageOverview = () => {
       width: 150,
       headerName: "Age Upload",
       renderCell: (params) => {
-        let url = params.row?.exehistorymodelsData?.Age_upload;
+        let url = params.row?.Age_upload;
         return url ? (
           <img src={url} style={{ width: "50px", height: "50px" }} />
         ) : (
@@ -951,7 +1010,7 @@ const PageOverview = () => {
       width: 150,
       headerName: "City 1",
       renderCell: (params) => {
-        let data = params.row?.exehistorymodelsData?.city1_name;
+        let data = params.row?.city1_name;
         return data ? data : "NA";
       },
     },
@@ -960,7 +1019,7 @@ const PageOverview = () => {
       width: 150,
       headerName: "City 2",
       renderCell: (params) => {
-        let data = params.row?.exehistorymodelsData?.city2_name;
+        let data = params.row?.city2_name;
         return data ? data : "NA";
       },
     },
@@ -969,7 +1028,7 @@ const PageOverview = () => {
       width: 150,
       headerName: "City 3",
       renderCell: (params) => {
-        let data = params.row?.exehistorymodelsData?.city3_name;
+        let data = params.row?.city3_name;
         return data ? data : "NA";
       },
     },
@@ -978,7 +1037,7 @@ const PageOverview = () => {
       width: 150,
       headerName: "City 4",
       renderCell: (params) => {
-        let data = params.row?.exehistorymodelsData?.city4_name;
+        let data = params.row?.city4_name;
         return data ? data : "NA";
       },
     },
@@ -987,7 +1046,7 @@ const PageOverview = () => {
       width: 150,
       headerName: "City 5",
       renderCell: (params) => {
-        let data = params.row?.exehistorymodelsData?.city5_name;
+        let data = params.row?.city5_name;
         return data ? data : "NA";
       },
     },
@@ -996,7 +1055,7 @@ const PageOverview = () => {
       width: 150,
       headerName: "City Image",
       renderCell: (params) => {
-        let data = params.row?.exehistorymodelsData?.city_image_upload;
+        let data = params.row?.city_image_upload;
         return data ? (
           <img src={data} style={{ width: "50px", height: "50px" }} />
         ) : (
@@ -1009,7 +1068,7 @@ const PageOverview = () => {
       width: 150,
       headerName: "Country 1",
       renderCell: (params) => {
-        let data = params.row?.exehistorymodelsData?.country1_name;
+        let data = params.row?.country1_name;
         return data ? data : "NA";
       },
     },
@@ -1018,7 +1077,7 @@ const PageOverview = () => {
       width: 150,
       headerName: "Country 2",
       renderCell: (params) => {
-        let data = params.row?.exehistorymodelsData?.country2_name;
+        let data = params.row?.country2_name;
         return data ? data : "NA";
       },
     },
@@ -1027,7 +1086,7 @@ const PageOverview = () => {
       width: 150,
       headerName: "Country 3",
       renderCell: (params) => {
-        let data = params.row?.exehistorymodelsData?.country3_name;
+        let data = params.row?.country3_name;
         return data ? data : "NA";
       },
     },
@@ -1036,7 +1095,7 @@ const PageOverview = () => {
       width: 150,
       headerName: "Country 4",
       renderCell: (params) => {
-        let data = params.row?.exehistorymodelsData?.country4_name;
+        let data = params.row?.country4_name;
         return data ? data : "NA";
       },
     },
@@ -1045,7 +1104,7 @@ const PageOverview = () => {
       width: 150,
       headerName: "Country 5",
       renderCell: (params) => {
-        let data = params.row?.exehistorymodelsData?.country5_name;
+        let data = params.row?.country5_name;
         return data ? data : "NA";
       },
     },
@@ -1054,7 +1113,7 @@ const PageOverview = () => {
       width: 150,
       headerName: "Country Image",
       renderCell: (params) => {
-        let data = params.row?.exehistorymodelsData?.country_image_upload;
+        let data = params.row?.country_image_upload;
         return data ? (
           <img src={data} style={{ width: "50px", height: "50px" }} />
         ) : (
@@ -1067,7 +1126,7 @@ const PageOverview = () => {
       width: 150,
       headerName: "Creation Date",
       renderCell: (params) => {
-        let data = params.row?.exehistorymodelsData?.creation_date;
+        let data = params.row?.creation_date;
         return data ? <DateFormattingComponent date={data} /> : "NA";
       },
     },
@@ -1076,7 +1135,7 @@ const PageOverview = () => {
       width: 150,
       headerName: "End Date",
       renderCell: (params) => {
-        let data = params.row?.exehistorymodelsData?.end_date;
+        let data = params.row?.end_date;
         return data ? <DateFormattingComponent date={data} /> : "NA";
       },
     },
@@ -1085,7 +1144,7 @@ const PageOverview = () => {
       width: 150,
       headerName: "Engagement",
       renderCell: (params) => {
-        let data = params.row?.exehistorymodelsData?.engagement;
+        let data = params.row?.engagement;
         return data ? data : "NA";
       },
     },
@@ -1094,7 +1153,7 @@ const PageOverview = () => {
       width: 150,
       headerName: "Engagement Image",
       renderCell: (params) => {
-        let data = params.row?.exehistorymodelsData?.engagement_upload_image;
+        let data = params.row?.engagement_upload_image;
         return data ? (
           <img src={data} style={{ width: "50px", height: "50px" }} />
         ) : (
@@ -1107,7 +1166,7 @@ const PageOverview = () => {
       width: 150,
       header: "Female",
       renderCell: (params) => {
-        let data = params.row?.exehistorymodelsData?.female_percent;
+        let data = params.row?.female_percent;
         return data ? data + "%" : "NA";
       },
     },
@@ -1116,7 +1175,7 @@ const PageOverview = () => {
       width: 150,
       headerName: "Impression",
       renderCell: (params) => {
-        let data = params.row?.exehistorymodelsData?.impression;
+        let data = params.row?.impression;
         return data ? data : "NA";
       },
     },
@@ -1125,7 +1184,7 @@ const PageOverview = () => {
       width: 150,
       headerName: "Impression Image",
       renderCell: (params) => {
-        let data = params.row?.exehistorymodelsData?.impression_upload_image;
+        let data = params.row?.impression_upload_image;
         return data ? (
           <img src={data} style={{ width: "50px", height: "50px" }} />
         ) : (
@@ -1138,7 +1197,7 @@ const PageOverview = () => {
       width: 150,
       header: "Male",
       renderCell: (params) => {
-        let data = params.row?.exehistorymodelsData?.male_percent;
+        let data = params.row?.male_percent;
         return data ? data + "%" : "NA";
       },
     },
@@ -1147,7 +1206,7 @@ const PageOverview = () => {
       width: 150,
       headerName: "City 1 %",
       renderCell: (params) => {
-        let data = params.row?.exehistorymodelsData?.percentage_city1_name;
+        let data = params.row?.percentage_city1_name;
         return data ? data + "%" : "NA";
       },
     },
@@ -1156,7 +1215,7 @@ const PageOverview = () => {
       width: 150,
       headerName: "City 2 %",
       renderCell: (params) => {
-        let data = params.row?.exehistorymodelsData?.percentage_city2_name;
+        let data = params.row?.percentage_city2_name;
         return data ? data + "%" : "NA";
       },
     },
@@ -1165,7 +1224,7 @@ const PageOverview = () => {
       width: 150,
       headerName: "City 3 %",
       renderCell: (params) => {
-        let data = params.row?.exehistorymodelsData?.percentage_city3_name;
+        let data = params.row?.percentage_city3_name;
         return data ? data + "%" : "NA";
       },
     },
@@ -1174,7 +1233,7 @@ const PageOverview = () => {
       width: 150,
       headerName: "City 4 %",
       renderCell: (params) => {
-        let data = params.row?.exehistorymodelsData?.percentage_city4_name;
+        let data = params.row?.percentage_city4_name;
         return data ? data + "%" : "NA";
       },
     },
@@ -1183,7 +1242,7 @@ const PageOverview = () => {
       width: 150,
       headerName: "City 5 %",
       renderCell: (params) => {
-        let data = params.row?.exehistorymodelsData?.percentage_city5_name;
+        let data = params.row?.percentage_city5_name;
         return data ? data + "%" : "NA";
       },
     },
@@ -1192,7 +1251,7 @@ const PageOverview = () => {
       width: 150,
       headerName: "Country 1 %",
       renderCell: (params) => {
-        let data = params.row?.exehistorymodelsData?.percentage_country1_name;
+        let data = params.row?.percentage_country1_name;
         return data ? data + "%" : "NA";
       },
     },
@@ -1201,7 +1260,7 @@ const PageOverview = () => {
       width: 150,
       headerName: "Country 2 %",
       renderCell: (params) => {
-        let data = params.row?.exehistorymodelsData?.percentage_country2_name;
+        let data = params.row?.percentage_country2_name;
         return data ? data + "%" : "NA";
       },
     },
@@ -1210,7 +1269,7 @@ const PageOverview = () => {
       width: 150,
       headerName: "Country 3 %",
       renderCell: (params) => {
-        let data = params.row?.exehistorymodelsData?.percentage_country3_name;
+        let data = params.row?.percentage_country3_name;
         return data ? data + "%" : "NA";
       },
     },
@@ -1219,7 +1278,7 @@ const PageOverview = () => {
       width: 150,
       headerName: "Country 4 %",
       renderCell: (params) => {
-        let data = params.row?.exehistorymodelsData?.percentage_country4_name;
+        let data = params.row?.percentage_country4_name;
         return data ? data + "%" : "NA";
       },
     },
@@ -1228,7 +1287,7 @@ const PageOverview = () => {
       width: 150,
       headerName: "Country 5 %",
       renderCell: (params) => {
-        let data = params.row?.exehistorymodelsData?.percentage_country5_name;
+        let data = params.row?.percentage_country5_name;
         return data ? data + "%" : "NA";
       },
     },
@@ -1237,7 +1296,7 @@ const PageOverview = () => {
       width: 150,
       headerName: "Profile Visit",
       renderCell: (params) => {
-        let data = params.row?.exehistorymodelsData?.profile_visit;
+        let data = params.row?.profile_visit;
         return data ? data : "NA";
       },
     },
@@ -1246,7 +1305,7 @@ const PageOverview = () => {
       width: 150,
       headerName: "Quater",
       renderCell: (params) => {
-        let data = params.row?.exehistorymodelsData?.quater;
+        let data = params.row?.quater;
         return data ? data : "NA";
       },
     },
@@ -1255,7 +1314,7 @@ const PageOverview = () => {
       width: 150,
       headerName: "Reach",
       renderCell: (params) => {
-        let data = params.row?.exehistorymodelsData?.reach;
+        let data = params.row?.reach;
         return data ? data : "NA";
       },
     },
@@ -1264,7 +1323,7 @@ const PageOverview = () => {
       width: 150,
       headerName: "Reach Image",
       renderCell: (params) => {
-        let data = params.row?.exehistorymodelsData?.reach_upload_image;
+        let data = params.row?.reach_upload_image;
         return data ? (
           <img src={data} style={{ width: "50px", height: "50px" }} />
         ) : (
@@ -1277,7 +1336,7 @@ const PageOverview = () => {
       width: 150,
       headerName: "Start Date",
       renderCell: (params) => {
-        let data = params.row?.exehistorymodelsData?.story_click;
+        let data = params.row?.story_click;
         return data ? <DateFormattingComponent date={data} /> : "NA";
       },
     },
@@ -1286,7 +1345,7 @@ const PageOverview = () => {
       width: 150,
       headerName: "Stats For",
       renderCell: (params) => {
-        let data = params.row?.exehistorymodelsData?.stats_for;
+        let data = params.row?.stats_for;
         return data ? data : "NA";
       },
     },
@@ -1295,7 +1354,7 @@ const PageOverview = () => {
       width: 150,
       headerName: "Story View",
       renderCell: (params) => {
-        let data = params.row?.exehistorymodelsData?.story_view;
+        let data = params.row?.story_view;
         return data ? data : "NA";
       },
     },
@@ -1304,7 +1363,7 @@ const PageOverview = () => {
       width: 150,
       headerName: "Story View Image",
       renderCell: (params) => {
-        let data = params.row?.exehistorymodelsData?.story_view_upload_image;
+        let data = params.row?.story_view_upload_image;
         return data ? (
           <img src={data} style={{ width: "50px", height: "50px" }} />
         ) : (
@@ -2194,12 +2253,13 @@ const PageOverview = () => {
           color="primary"
         />
         <Typography variant="h6">Page Health</Typography>
+        <Typography variant="h6">: {filterData.length}</Typography>
       </Stack>
       <div className="card">
         <div className="data_tbl table-responsive">
           <div className="card">
             <div className="card-body">
-              <h5 className="card-title">Page</h5>
+              {/* <h5 className="card-title">Page</h5> */}
               <div className="card-text">
                 {/* <div className="row">
                   <div className="col-md-2">
@@ -2249,9 +2309,8 @@ const PageOverview = () => {
                   </div>
                 </div> */}
 
-                <Stack direction={"row"} spacing={2} flexWrap={"wrap"}>
-                  <div className="mt-2">
-                    <h4>Platform</h4>
+                <Stack spacing={1}>
+                  <Stack direction={"row"}>
                     <Autocomplete
                       id="platform-autocomplete"
                       options={platformData}
@@ -2261,7 +2320,7 @@ const PageOverview = () => {
                         ).length;
                         return `${option.platform_name} (${count})`;
                       }}
-                      style={{ width: 300 }}
+                      style={{ width: 270 }}
                       renderInput={(params) => (
                         <TextField
                           {...params}
@@ -2276,10 +2335,7 @@ const PageOverview = () => {
                         setFilterData(result);
                       }}
                     />
-                  </div>
-                  {/* <div> */}
-                  <div className="mt-2">
-                    <h4>Ownership Type</h4>
+
                     <Autocomplete
                       id="ownership-type-autocomplete"
                       options={[
@@ -2295,7 +2351,7 @@ const PageOverview = () => {
                         ).length;
                         return `${option} (${count})`;
                       }}
-                      style={{ width: 300 }}
+                      style={{ width: 270 }}
                       renderInput={(params) => (
                         <TextField
                           {...params}
@@ -2310,10 +2366,7 @@ const PageOverview = () => {
                         setFilterData(result);
                       }}
                     />
-                  </div>
 
-                  <div className="mt-2">
-                    <h4>Page Status</h4>
                     <Autocomplete
                       id="page-status-autocomplete"
                       options={[
@@ -2329,7 +2382,7 @@ const PageOverview = () => {
                         ).length;
                         return `${option} (${count})`;
                       }}
-                      style={{ width: 300 }}
+                      style={{ width: 270 }}
                       renderInput={(params) => (
                         <TextField
                           {...params}
@@ -2344,9 +2397,7 @@ const PageOverview = () => {
                         setFilterData(result);
                       }}
                     />
-                  </div>
-                  <div className="mt-2">
-                    <h4>Page Name Type</h4>
+
                     <Autocomplete
                       id="pagename-type-autocomplete"
                       options={[
@@ -2362,7 +2413,7 @@ const PageOverview = () => {
                         ).length;
                         return `${option} (${count})`;
                       }}
-                      style={{ width: 300 }}
+                      style={{ width: 270 }}
                       renderInput={(params) => (
                         <TextField
                           {...params}
@@ -2377,9 +2428,8 @@ const PageOverview = () => {
                         setFilterData(result);
                       }}
                     />
-                  </div>
-                  <div className="mt-2">
-                    <h4>Closed By</h4>
+                  </Stack>
+                  <Stack direction={"row"}>
                     <Autocomplete
                       id="closedby-autocomplete"
                       options={[
@@ -2396,7 +2446,7 @@ const PageOverview = () => {
                         ).length;
                         return `${users?.user_name} (${count})`;
                       }}
-                      style={{ width: 300 }}
+                      style={{ width: 270 }}
                       renderInput={(params) => (
                         <TextField
                           {...params}
@@ -2411,9 +2461,7 @@ const PageOverview = () => {
                         setFilterData(result);
                       }}
                     />
-                  </div>
-                  <div className="mt-2">
-                    <h4>Category</h4>
+
                     <Autocomplete
                       id="category-autocomplete"
                       options={[
@@ -2430,7 +2478,7 @@ const PageOverview = () => {
                         ).length;
                         return `${category?.page_category} (${count})`;
                       }}
-                      style={{ width: 300 }}
+                      style={{ width: 270 }}
                       renderInput={(params) => (
                         <TextField
                           {...params}
@@ -2445,9 +2493,7 @@ const PageOverview = () => {
                         setFilterData(result);
                       }}
                     />
-                  </div>
-                  <div className="mt-2">
-                    <h4>Ownership</h4>
+
                     <Autocomplete
                       id="ownership-autocomplete"
                       options={[
@@ -2463,7 +2509,7 @@ const PageOverview = () => {
                         ).length;
                         return `${option} (${count})`;
                       }}
-                      style={{ width: 300 }}
+                      style={{ width: 270 }}
                       renderInput={(params) => (
                         <TextField
                           {...params}
@@ -2478,11 +2524,11 @@ const PageOverview = () => {
                         setFilterData(result);
                       }}
                     />
-                  </div>
+                  </Stack>
                   {/* <br />
                   <hr /> */}
                   {/* {!isNotAssignedVendorLoading && (
-                    <div className="mt-2">
+                    
                       <button
                         onClick={handleNotAssignedVendorClick}
                         className="btn btn-primary btn-sm me-5 mt-2"
@@ -2494,13 +2540,13 @@ const PageOverview = () => {
                   )} */}
                   {/* </div> */}
                 </Stack>
-                <div className=" mb-2 mt-2">
-              <h4>
-                <span className="text-primary">
-                  Total Page:{filterData.length}
-                </span>
-              </h4>
-            </div>
+                {/* <div className=" mb-2 mt-2">
+                  <h4>
+                    <span className="text-primary">
+                      Total Page:
+                    </span>
+                  </h4>
+                </div> */}
               </div>
             </div>
           </div>

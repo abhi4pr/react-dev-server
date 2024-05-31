@@ -1,5 +1,6 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { baseUrl } from "../../utils/config";
+import { get } from "jquery";
 
 export const PageBaseURL = createApi({
   baseQuery: fetchBaseQuery({ baseUrl }),
@@ -88,6 +89,36 @@ export const PageBaseURL = createApi({
       query: () => `v1/pagePriceType`,
       transformResponse: (response) => response.data,
     }),
+
+    // page States
+    addPageState: builder.mutation({
+      query: (data) => ({
+        url: `v1/page_states`,
+        method: "POST",
+        body: data,
+      }),
+    }),
+    getPageState: builder.query({
+      query: () => `v1/page_states`,
+      transformResponse: (response) => response.data,
+    }),
+    getPageStateById: builder.query({
+      query: (data) => `v1/page_states/${data}`,
+      transformResponse: (response) => response.data,
+    }),
+    updatePageState: builder.mutation({
+      query: (data) => ({
+        url: `v1/page_states/${data.id}`,
+        method: "PUT",
+        body: data.formData,
+      }),
+    }),
+
+    //cities
+    getAllCities: builder.query({
+      query: () => `get_all_cities`,
+      transformResponse: (response) => response.data,
+    }),
   }),
 });
 
@@ -105,4 +136,9 @@ export const {
   useGetAllPageListQuery,
   useGetMultiplePagePriceQuery,
   useGetpagePriceTypeQuery,
+  useAddPageStateMutation,
+  useGetPageStateQuery,
+  useGetPageStateByIdQuery,
+  useUpdatePageStateMutation,
+  useGetAllCitiesQuery,
 } = PageBaseURL;
