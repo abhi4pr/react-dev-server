@@ -9,10 +9,7 @@ const LetterTabPdf1WithPF = ({ UserDetails }) => {
   const specialAllowance =
     salary - basicSalary - HRA - AdvanceBonus - monthlyEncashment;
   const EmployeePF = parseFloat(
-    (basicSalary < 15000
-      ? (basicSalary + specialAllowance) * 0.12
-      : basicSalary * 0.12
-    ).toFixed(0)
+    (basicSalary < 14000 ? basicSalary * 0.12 : 1800).toFixed(0)
   );
   const TotalEarnings =
     basicSalary + HRA + AdvanceBonus + monthlyEncashment + specialAllowance;
