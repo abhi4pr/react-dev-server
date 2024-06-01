@@ -828,6 +828,7 @@ const LetterTab = ({ allUserData, gettingData }) => {
                           </p>
                           <p className="bold">
                             Reports to: {allUserData?.Report_L1N}
+                            {console.log(allUserData, "all user")}
                           </p>
                           <p className="bold">
                             Joining Date:{" "}

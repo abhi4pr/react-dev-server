@@ -106,25 +106,41 @@ export default function RegisterCampaigns() {
     }
 
     setShowAlert(false);
-    const blob = createExcel();
-    const form = new FormData();
-    form.append("brand_id", brandName);
-    form.append("brnad_dt", selectedDate);
-    form.append("commitment", JSON.stringify(fields));
-    form.append("excel_file", blob);
-    form.append("exeCmpId", campaign?.value);
-    form.append("detailing", campaignDetailing);
-    form.append("status", 0);
-    form.append("stage", 0);
-    form.append("captions", caption);
-    form.append("hashtags", hashtag);
-    form.append("agency", selectedAgency);
-    form.append("industry", selectedIndustry);
-    form.append("goal", selectedGoal);
-    form.append("campaignClosedBy", campaignClosedBy);
+    // const blob = createExcel();
+    const payload = {
+      pre_brand_id: brandName,
+      brnad_dt: selectedDate,
+      commitments: JSON.stringify(fields),
+      // excel_file: createExcel(),
+      pre_campaign_id: campaign?.value,
+      details: campaignDetailing,
+      // status: 0,
+      // stage: 0,
+      captions: caption,
+      hash_tag: hashtag,
+      pre_agency_id: selectedAgency,
+      pre_industry_id: selectedIndustry,
+      pre_goal_id: selectedGoal,
+      campaign_closed_by: campaignClosedBy,
+    };
+    // const form = new FormData();
+    // form.append("pre_brand_id", brandName);
+    // form.append("brnad_dt", selectedDate);
+    // form.append("commitment", JSON.stringify(fields));
+    // form.append("excel_file", blob);
+    // form.append("pre_campaign_id", campaign?.value);
+    // form.append("detailing", campaignDetailing);
+    // form.append("status", 0);
+    // form.append("stage", 0);
+    // form.append("captions", caption);
+    // form.append("hashtags", hashtag);
+    // form.append("pre_agency_id", selectedAgency);
+    // form.append("pre_industry_id", selectedIndustry);
+    // form.append("pre_goal_id", selectedGoal);
+    // form.append("campaignClosedBy", campaignClosedBy);
     setLoading(true);
     axios
-      .post(baseUrl + "register_campaign", form)
+      .post(baseUrl + "opcampaign", payload)
       .then(() => {
         setBrandName([]);
         setSelectedDate(null);
@@ -178,8 +194,9 @@ export default function RegisterCampaigns() {
   const [campaignList, setCampignList] = useState([]);
   const handleChange = (event) => {
     setBrandName(
-      showBrandName.filter((e) => event.target.value.toLowerCase() == e.brand_name.toLowerCase())[0]
-        ?.brand_id
+      showBrandName.filter(
+        (e) => event.target.value.toLowerCase() == e.brand_name.toLowerCase()
+      )[0]?._id
     );
   };
   const handleChangeBrand = (event) => {
@@ -266,15 +283,37 @@ export default function RegisterCampaigns() {
   const handleHashtagChange = (event) => {
     setHashtag(event.target.value);
   };
-  const handleAgencyChange = (event, newValue) => {
-    setSelectedAgency(newValue);
+  const handleAgencyChange = (event) => {
+    setSelectedAgency(
+      agencyList.filter(
+        (e) => event.target.value.toLowerCase() == e.name.toLowerCase()
+      )[0]?._id
+    );
   };
-  const handleGoalChange = (event, newValue) => {
-    setSelectedGoal(newValue);
+  const handleGoalChange = (event) => {
+    setSelectedGoal(
+      goal.filter(
+        (e) => event.target.value.toLowerCase() == e.name.toLowerCase()
+      )[0]?._id
+    );
   };
-  const handleIndusrtyChange = (event, newValue) => {
-    setSelectedIndustry(newValue);
+
+  const handleIndusrtyChange = (event) => {
+    setSelectedIndustry(
+      industry.filter(
+        (e) => event.target.value.toLowerCase() == e.name.toLowerCase()
+      )[0]?._id
+    );
   };
+
+  const handleCampaignClose = (event) => {
+    setCampaignClosedBy(
+      salesUsers.filter(
+        (e) => event.target.value.toLowerCase() == e.user_name.toLowerCase()
+      )[0]?.user_id
+    );
+  };
+  console.log(campaignClosedBy, "campclose");
 
   const addCampaignData = () => {
     setMaster("Campaign");
@@ -318,8 +357,8 @@ export default function RegisterCampaigns() {
   };
   useEffect(() => {
     categoryData();
-    fetchSalesUsers()
-    getAllData()
+    fetchSalesUsers();
+    getAllData();
   }, []);
 
   const subCategoryDataOnEdit = () => {
@@ -385,7 +424,7 @@ export default function RegisterCampaigns() {
         setCampaignModalPayload({ exeCmpName: "", exeRemark: "" });
         setIsModalOpenForCampaign(false);
         getAllData();
-      } catch (error) { }
+      } catch (error) {}
     }
   };
 
@@ -402,41 +441,53 @@ export default function RegisterCampaigns() {
     <div>
       <div className="action_heading">
         <div className="action_title">
-          <FormContainer
-            mainTitle="Register Campaign"
-            link="true"
-          />
+          <FormContainer mainTitle="Register Campaign" link="true" />
         </div>
         {/* <h2 className="form-heading">Register Campaign</h2> */}
-        <div className="action_btns" >
+        <div className="action_btns">
           <Link to="/admin/brandmaster" style={{ marginRight: "5px" }}>
-            <button type="button" className="btn cmnbtn btn-outline-primary btn_sm">
+            <button
+              type="button"
+              className="btn cmnbtn btn-outline-primary btn_sm"
+            >
               Brand Master
             </button>
           </Link>
           <Link to="/admin/overview/agency" style={{ marginRight: "5px" }}>
-            <button type="button" className="btn cmnbtn btn-outline-primary btn_sm">
+            <button
+              type="button"
+              className="btn cmnbtn btn-outline-primary btn_sm"
+            >
               Agency Master
             </button>
           </Link>
           <Link to="/admin/overview/industry" style={{ marginRight: "5px" }}>
-            <button type="button" className="btn cmnbtn btn-outline-primary btn_sm">
+            <button
+              type="button"
+              className="btn cmnbtn btn-outline-primary btn_sm"
+            >
               Industry Master
             </button>
           </Link>
           <Link to="/admin/overview/goal" style={{ marginRight: "5px" }}>
-            <button type="button" className="btn cmnbtn btn-outline-primary btn_sm">
+            <button
+              type="button"
+              className="btn cmnbtn btn-outline-primary btn_sm"
+            >
               Goal Master
             </button>
           </Link>
           <Link to="/admin/contentcreater" style={{ marginRight: "5px" }}>
-            <button type="button" className="btn cmnbtn btn-outline-primary btn_sm">
+            <button
+              type="button"
+              className="btn cmnbtn btn-outline-primary btn_sm"
+            >
               Commitment Master
             </button>
           </Link>
         </div>
       </div>
-      < >
+      <>
         {showAlert && (
           <div className="alert alert-danger mt-3" role="alert">
             Please fill in all the required fields.
@@ -450,10 +501,12 @@ export default function RegisterCampaigns() {
               <div className="form-group col-4">
                 <Autocomplete
                   disablePortal
-                  options={showBrandName.map((option) => formatString(option.brand_name))}
+                  options={showBrandName.map((option) =>
+                    formatString(option.brand_name)
+                  )}
                   require={true}
                   value={
-                    showBrandName.filter((e) => brandName == e.brand_id)[0]
+                    showBrandName.filter((e) => brandName == e._id)[0]
                       ?.brand_name
                   }
                   renderInput={(params) => (
@@ -477,7 +530,7 @@ export default function RegisterCampaigns() {
                   id="combo-box-demo"
                   options={campignData.map((option) => ({
                     label: formatString(option.exeCmpName),
-                    value: option.exeCmpId,
+                    value: option._id,
                   }))}
                   require={true}
                   value={campaign?.label}
@@ -513,13 +566,16 @@ export default function RegisterCampaigns() {
                     industry?.length > 0 &&
                     industry.map((option) => option.name)
                   }
-                  value={selectedIndustry}
-                  onChange={handleIndusrtyChange}
+                  // value={selectedIndustry}
+                  value={
+                    industry.filter((e) => selectedIndustry == e._id)[0]?.name
+                  }
+                  // onChange={handleIndusrtyChange}
+                  onSelect={handleIndusrtyChange}
                   renderInput={(params) => (
                     <TextField {...params} label="Industry" />
                   )}
                 />
-
               </div>
               <div className="form-group col-4">
                 <Autocomplete
@@ -529,8 +585,11 @@ export default function RegisterCampaigns() {
                     agencyList?.length > 0 &&
                     agencyList?.map((option) => option?.name)
                   }
-                  value={selectedAgency}
-                  onChange={handleAgencyChange}
+                  // value={selectedAgency}
+                  value={
+                    agencyList.filter((e) => selectedAgency == e._id)[0]?.name
+                  }
+                  onSelect={handleAgencyChange}
                   renderInput={(params) => (
                     <TextField {...params} label="Agency" />
                   )}
@@ -543,13 +602,16 @@ export default function RegisterCampaigns() {
                   options={
                     goal?.length > 0 && goal?.map((option) => option?.name)
                   }
-                  value={selectedGoal}
-                  onChange={handleGoalChange}
-                  renderInput={(params) => <TextField {...params} label="Goal" />}
+                  // value={selectedGoal}
+                  value={goal.filter((e) => selectedGoal == e._id)[0]?.name}
+                  // onChange={handleGoalChange}
+                  onSelect={handleGoalChange}
+                  renderInput={(params) => (
+                    <TextField {...params} label="Goal" />
+                  )}
                 />
               </div>
               <div className="form-group col-4">
-
                 <TextField
                   label="Hashtag"
                   value={hashtag}
@@ -566,10 +628,15 @@ export default function RegisterCampaigns() {
                     salesUsers?.length > 0 &&
                     salesUsers?.map((user) => formatString(user.user_name))
                   }
-                  value={campaignClosedBy}
-                  onChange={(event, newValue) => {
-                    setCampaignClosedBy(newValue);
-                  }}
+                  // value={campaignClosedBy}
+                  value={
+                    salesUsers.filter((e) => campaignClosedBy == e._id)[0]
+                      ?.user_name
+                  }
+                  // onChange={(event, newValue) => {
+                  //   setCampaignClosedBy(newValue);
+                  // }}
+                  onSelect={handleCampaignClose}
                   renderInput={(params) => (
                     <TextField {...params} label="Campaign Closed By *" />
                   )}
@@ -644,9 +711,11 @@ export default function RegisterCampaigns() {
                       fullWidth
                       onChange={(event) => handleTextChange(event, index)}
                     />
-                    {fields.length > 1 && <Button onClick={(e) => handleRemoveField(e, index)}>
-                      <i className="fas fa-close"></i>
-                    </Button>}
+                    {fields.length > 1 && (
+                      <Button onClick={(e) => handleRemoveField(e, index)}>
+                        <i className="fas fa-close"></i>
+                      </Button>
+                    )}
                   </div>
                 ))}
               </FormControl>
@@ -659,16 +728,16 @@ export default function RegisterCampaigns() {
             {commitmentOptions.filter(
               (e) => !fields.map((e) => e.selectValue).includes(e)
             ).length > 0 && (
-                <Button
-                  variant="outlined"
-                  sx={{ mt: 2 }}
-                  color="secondary"
-                  className="btn btn-primary cmnbtn btn_sm"
-                  onClick={handleAddField}
-                >
-                  Add Row
-                </Button>
-              )}
+              <Button
+                variant="outlined"
+                sx={{ mt: 2 }}
+                color="secondary"
+                className="btn btn-primary cmnbtn btn_sm"
+                onClick={handleAddField}
+              >
+                Add Row
+              </Button>
+            )}
           </div>
         </div>
         <br />

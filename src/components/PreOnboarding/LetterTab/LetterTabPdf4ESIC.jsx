@@ -2,26 +2,47 @@ import React from "react";
 
 const LetterTabPdf4ESIC = ({ UserDetails }) => {
   const salary = UserDetails?.ctc;
+
   const basicSalary = salary * 0.6;
-  const HRA = basicSalary * 0.3;
-  const AdvanceBonus = basicSalary * 0.2;
-  const monthlyEncashment = parseFloat(((basicSalary / 26) * 3).toFixed(0));
+
+  const basicsal = (basicSalary < 12000 ? salary * 0.8 : basicSalary).toFixed(
+    0
+  );
+
+  const HRA = basicsal * 0.3;
+
+  const AdvanceBonus = (basicsal * 0.2).toFixed(0);
+
+  const addbasicAdvance = Number(basicsal) + Number(AdvanceBonus);
+
+  const monthlyEncashment = ((basicsal / 26) * 3).toFixed(0);
+
+  const monthEncash =
+    basicsal < 12000 ? salary - addbasicAdvance : monthlyEncashment;
+
   const specialAllowance =
-    salary - basicSalary - HRA - AdvanceBonus - monthlyEncashment;
+    salary - basicsal - HRA - AdvanceBonus - monthlyEncashment;
+
   const EmployeePF = parseFloat(
-    (basicSalary < 15000
-      ? (basicSalary + specialAllowance) * 0.12
-      : basicSalary * 0.12
-    ).toFixed(0)
+    (basicsal < 14000 ? basicsal * 0.12 : 1800).toFixed(0)
   );
   const EmployeESIC = parseFloat(((salary * 0.75) / 100).toFixed(0));
+
   const EmployeerESIC = parseFloat(((salary * 3.25) / 100).toFixed(0));
 
   const TotalEarnings =
-    basicSalary + HRA + AdvanceBonus + monthlyEncashment + specialAllowance;
+    basicsal < 12000
+      ? Number(basicsal) + Number(AdvanceBonus) + Number(monthEncash)
+      : Number(basicsal) +
+        Number(HRA) +
+        Number(AdvanceBonus) +
+        Number(monthEncash) +
+        Number(specialAllowance);
 
   const TotalCTC =
-    salary >= 21000 ? salary + EmployeePF : salary + EmployeePF + EmployeerESIC;
+    salary >= 21000
+      ? Number(salary) + Number(EmployeePF)
+      : Number(salary) + Number(EmployeePF) + Number(EmployeerESIC);
   return (
     <>
       <div className="ol-table">
@@ -37,14 +58,16 @@ const LetterTabPdf4ESIC = ({ UserDetails }) => {
           <tbody>
             <tr>
               <td>Basic Salary</td>
-              <td>INR {basicSalary}</td>
-              <td>INR {basicSalary * 12}</td>
+              <td>INR {basicsal}</td>
+              <td>INR {basicsal * 12}</td>
             </tr>
-            <tr>
-              <td>HRA</td>
-              <td>INR {HRA}</td>
-              <td>INR {HRA * 12}</td>
-            </tr>
+            {basicSalary > 12000 && (
+              <tr>
+                <td>HRA</td>
+                <td>INR {HRA}</td>
+                <td>INR {HRA * 12}</td>
+              </tr>
+            )}
             <tr>
               <td>Advance Bonus</td>
               <td>INR {AdvanceBonus}</td>
@@ -52,14 +75,16 @@ const LetterTabPdf4ESIC = ({ UserDetails }) => {
             </tr>
             <tr>
               <td>Monthly Leave Encashment</td>
-              <td>INR {monthlyEncashment}</td>
-              <td>INR {monthlyEncashment * 12}</td>
+              <td>INR {monthEncash}</td>
+              <td>INR {monthEncash * 12}</td>
             </tr>
-            <tr>
-              <td>Special Allowance</td>
-              <td>INR {specialAllowance}</td>
-              <td>INR {specialAllowance * 12}</td>
-            </tr>
+            {basicSalary > 12000 && (
+              <tr>
+                <td>Special Allowance</td>
+                <td>INR {specialAllowance}</td>
+                <td>INR {specialAllowance * 12}</td>
+              </tr>
+            )}
             <tr>
               <td>Total Earning</td>
               <td>INR {TotalEarnings}</td>
@@ -74,18 +99,18 @@ const LetterTabPdf4ESIC = ({ UserDetails }) => {
             </tr>
           </thead>
           <tbody>
-            {salary < 21000 && (
-              <tr>
-                <td>ESIC</td>
-                <td>INR {EmployeESIC}</td>
-                <td>INR {EmployeESIC * 12}</td>
-              </tr>
-            )}
             <tr>
               <td>PF Employee</td>
               <td>INR {EmployeePF}</td>
               <td>INR {EmployeePF * 12}</td>
             </tr>
+            {salary < 21000 && (
+              <tr>
+                <td>ESIC Employee</td>
+                <td>INR {EmployeESIC}</td>
+                <td>INR {EmployeESIC * 12}</td>
+              </tr>
+            )}
             <tr>
               <td>Net Pay Before Tax</td>
               <td>
@@ -110,6 +135,11 @@ const LetterTabPdf4ESIC = ({ UserDetails }) => {
             </tr>
           </thead>
           <tbody>
+            <tr>
+              <td>PF Employer</td>
+              <td>INR {EmployeePF}</td>
+              <td>INR {EmployeePF * 12}</td>
+            </tr>
             {salary < 21000 && (
               <tr>
                 <td>ESIC Employer</td>
@@ -117,11 +147,6 @@ const LetterTabPdf4ESIC = ({ UserDetails }) => {
                 <td>INR {EmployeerESIC * 12}</td>
               </tr>
             )}
-            <tr>
-              <td>PF Employer</td>
-              <td>INR {EmployeePF}</td>
-              <td>INR {EmployeePF * 12}</td>
-            </tr>
             <tr>
               <td>Total CTC</td>
               <td>INR {TotalCTC}</td>
