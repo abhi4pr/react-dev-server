@@ -972,7 +972,7 @@ const AdminPreOnboarding = () => {
         {/* {jobType == "WFO" && ( */}
         <div className="col-3">
           <FieldContainer
-            label="Annual CTC"
+            label="Gross Salary"
             astric
             type="number"
             fieldGrid={3}
