@@ -64,6 +64,7 @@ import BrandCaseStudy from "./components/AdminPanel/RegisterCampaign/CaseStudies
 import CaseStudyDashboard from "./components/AdminPanel/RegisterCampaign/CaseStudies/CaseStudyDashboard";
 import CaseStudyplateform from "./components/AdminPanel/RegisterCampaign/CaseStudies/CaseStudyplateform";
 import CaseStudyView from "./components/AdminPanel/RegisterCampaign/CaseStudies/CaseStudyView";
+import AccountInfo from "./components/AdminPanel/Sales/Account/AccountInfoComponent/AccountInfo";
 
 function App() {
   const [isOnline, setIsOnline] = useState(navigator.onLine);
@@ -206,6 +207,11 @@ function App() {
 
 
           {/* Execution history */}
+          {/* sales Account Info Page route */}
+          <Route
+            path="/sales-account-info/:id"
+            element={<AccountInfo />}
+          />
         </Routes>
       </BrowserRouter>
     </>

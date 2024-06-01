@@ -15,6 +15,10 @@ const SaleBookingApi = createApi({
       query: (id) => `sales/get_single_sales_booking/${id}`,
       keepUnusedDataFor: 60 * 60,
     }),
+    getIndividualSaleBooking: builder.query({
+      query: (id) => `sales/sales_booking/${id}`,
+      keepUnusedDataFor: 60 * 60,
+    }),
 
     addSaleBooking: builder.mutation({
       query: (newSaleBooking) => ({
@@ -89,6 +93,7 @@ const SaleBookingApi = createApi({
 export const {
   useGetAllSaleBookingQuery,
   useGetSingleSaleBookingQuery,
+  useGetIndividualSaleBookingQuery,
   useAddSaleBookingMutation,
   useEditSaleBookingMutation,
   useDeleteSaleBookingMutation,

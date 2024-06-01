@@ -174,6 +174,7 @@ const CreateSalesAccount = () => {
       setDescription(description);
 
       async function getBilling() {
+        console.log("here");
         const response = await axios.get(
           `${baseUrl}/accounts/get_single_account_billing/${singleAccountData.account_id}?_id=false`,
           {

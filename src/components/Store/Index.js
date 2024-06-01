@@ -15,6 +15,7 @@ import BrandApi from "./API/Sales/BrandApi";
 import DocumentTypeApi from "./API/Sales/DocumentTypeApi";
 import PointOfContactApi from "./API/Sales/PointOfContactApi";
 import AccountDocumentApi from "./API/Sales/AccountDocumentApi";
+import DocumentTypeOverviewApi from "./API/Sales/DocumentTypeOverview";
 
 const store = configureStore({
   reducer: {
@@ -33,6 +34,7 @@ const store = configureStore({
     [DocumentTypeApi.reducerPath]: DocumentTypeApi.reducer,
     [PointOfContactApi.reducerPath]: PointOfContactApi.reducer,
     [AccountDocumentApi.reducerPath]: AccountDocumentApi.reducer,
+    [DocumentTypeOverviewApi.reducerPath]: DocumentTypeOverviewApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware()
@@ -46,7 +48,8 @@ const store = configureStore({
       .concat(BrandApi.middleware)
       .concat(DocumentTypeApi.middleware)
       .concat(PointOfContactApi.middleware)
-      .concat(AccountDocumentApi.middleware),
+      .concat(AccountDocumentApi.middleware)
+      .concat(DocumentTypeOverviewApi.middleware),
 });
 setupListeners(store.dispatch);
 
