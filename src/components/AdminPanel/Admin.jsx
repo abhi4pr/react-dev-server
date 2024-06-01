@@ -342,6 +342,7 @@ import PageStats from "./PageMS/PageStats";
 import CreateDocumentType from "./Sales/Account/CreateDocumentType";
 import DocumentTypeOverview from "./Sales/Account/DocumentTypeOverview";
 
+
 const Admin = () => {
   const [contextData, setData] = useState([]);
 
@@ -1571,6 +1572,7 @@ const Admin = () => {
                     path="/sales-document-type-overview"
                     element={<DocumentTypeOverview />}
                   />
+
 
                   {/* Sales Harshal end */}
                   <Route

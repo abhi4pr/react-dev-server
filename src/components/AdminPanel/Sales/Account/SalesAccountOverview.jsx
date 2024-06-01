@@ -51,29 +51,29 @@ const SalesAccountOverview = () => {
   if (allAccountError) {
     toastError(
       allAccountError.data?.message ||
-        allAccountError.error ||
-        "An error occurred"
+      allAccountError.error ||
+      "An error occurred"
     );
   }
   if (allAccountTypesError) {
     toastError(
       allAccountTypesError.data?.message ||
-        allAccountTypesError.error ||
-        "An error occurred"
+      allAccountTypesError.error ||
+      "An error occurred"
     );
   }
   if (allCompanyTypeError) {
     toastError(
       allCompanyTypeError.data?.message ||
-        allCompanyTypeError.error ||
-        "An error occurred"
+      allCompanyTypeError.error ||
+      "An error occurred"
     );
   }
   if (allBrandCatTypeError) {
     toastError(
       allBrandCatTypeError.data?.message ||
-        allBrandCatTypeError.error ||
-        "An error occurred"
+      allBrandCatTypeError.error ||
+      "An error occurred"
     );
   }
   const ViewSalesAccountColumns = [
@@ -88,7 +88,10 @@ const SalesAccountOverview = () => {
     {
       key: "account_name",
       name: "Account Name",
-      renderRowCell: (row) => row.account_name,
+      renderRowCell: (row) => (<Link to={`/sales-account-info/${row._id}`}>
+        {row.account_name}
+      </Link>
+      ),
       width: 100,
       sortable: true,
     },

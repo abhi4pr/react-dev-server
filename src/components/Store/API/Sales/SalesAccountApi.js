@@ -15,6 +15,10 @@ const SalesAccountApi = createApi({
       query: (id) => `accounts/get_single_account/${id}`,
       transformResponse: (response, args) => response.data,
     }),
+    getSingleAccountSalesBooking: builder.query({
+      query: (id) => `/accounts/get_single_account_billing/${id}`,
+      transformResponse: (response, args) => response.data,
+    }),
 
     addAccount: builder.mutation({
       query: (newAccount) => ({
@@ -86,6 +90,7 @@ const SalesAccountApi = createApi({
 export const {
   useGetAllAccountQuery,
   useGetSingleAccountQuery,
+  useGetSingleAccountSalesBookingQuery,
   useAddAccountMutation,
   useEditAccountMutation,
   useDeleteAccountMutation,
