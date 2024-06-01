@@ -6,23 +6,26 @@ const SaleBookingApi = createApi({
   baseQuery: authBaseQuery,
   endpoints: (builder) => ({
     getAllSaleBooking: builder.query({
-      query: () => "sales/get_all_sales_booking",
+      query: () => "sales/sales_booking",
       transformResponse: (response) => response.data,
       keepUnusedDataFor: 60 * 60 * 24,
     }),
 
-    getSingleSaleBooking: builder.query({
-      query: (id) => `sales/get_single_sales_booking/${id}`,
+    getAllDeletedSaleBooking: builder.query({
+      query: (id) => `sales/get_all_new_deleted_data`,
       keepUnusedDataFor: 60 * 60,
     }),
     getIndividualSaleBooking: builder.query({
       query: (id) => `sales/sales_booking/${id}`,
       keepUnusedDataFor: 60 * 60,
     }),
-
+    getSalesBookingPaymentDetail: builder.query({
+      query: (id) => `sales/get_all_list_sales_booking/${id}`, //padd _id of account
+      keepUnusedDataFor: 60 * 60,
+    }),
     addSaleBooking: builder.mutation({
       query: (newSaleBooking) => ({
-        url: "sales/add_sales_booking",
+        url: "sales/sales_booking",
         method: "POST",
         body: newSaleBooking,
       }),
@@ -47,7 +50,7 @@ const SaleBookingApi = createApi({
 
     editSaleBooking: builder.mutation({
       query: ({ id, ...updatedSaleBooking }) => ({
-        url: `sales/edit_sales_booking/${id}`,
+        url: `sales/sales_booking/${id}`,
         method: "PUT",
         body: updatedSaleBooking,
       }),
@@ -77,7 +80,7 @@ const SaleBookingApi = createApi({
 
     deleteSaleBooking: builder.mutation({
       query: (id) => ({
-        url: `sales/delete_sales_booking/${id}`,
+        url: `sales/sales_booking/${id}`,
         method: "DELETE",
       }),
     }),
@@ -92,7 +95,8 @@ const SaleBookingApi = createApi({
 
 export const {
   useGetAllSaleBookingQuery,
-  useGetSingleSaleBookingQuery,
+  useGetAllDeletedSaleBookingQuery,
+  useGetSalesBookingPaymentDetailQuery,
   useGetIndividualSaleBookingQuery,
   useAddSaleBookingMutation,
   useEditSaleBookingMutation,

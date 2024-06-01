@@ -397,6 +397,7 @@ th .table-header {
     position: sticky;
     top: 60%;
     left: 47%;
+    width: max-content;
 
 
 }
