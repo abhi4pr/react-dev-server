@@ -11,7 +11,16 @@ import {
   Autocomplete,
   Box,
   Button,
+  FormControl,
+  FormControlLabel,
+  FormLabel,
+  Grid,
   IconButton,
+  InputLabel,
+  MenuItem,
+  Radio,
+  RadioGroup,
+  Stack,
   TextField,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
@@ -36,15 +45,10 @@ import VendorTypeInfoModal from "./VendorTypeInfoModal";
 import AddCircleTwoToneIcon from "@mui/icons-material/AddCircleTwoTone";
 import RemoveCircleTwoToneIcon from "@mui/icons-material/RemoveCircleTwoTone";
 import { useParams } from "react-router";
-import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
-
+import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
 
 const VendorMaster = () => {
-  const {
-    data: countryCodeData,
-    error: countryCodeError,
-    isLoading: countryCodeLoading,
-  }= useGetCountryCodeQuery();
+  const { data: countryCodeData } = useGetCountryCodeQuery();
 
   const countries = countryCodeData?.data;
   const { _id } = useParams();
@@ -54,6 +58,7 @@ const VendorMaster = () => {
   );
 
   const { toastAlert, toastError } = useGlobalContext();
+  const [isFormSubmitting, setIsFormSubmitting] = useState(false);
   const [vendorName, setVendorName] = useState("");
   const [countryCode, setCountryCode] = useState(null);
   const [isFormSubmitted, setIsFormSubmitted] = useState(false);
@@ -92,37 +97,36 @@ const VendorMaster = () => {
       registered_number: "",
     },
   ]);
+  const [validator, setValidator] = useState({
+    vendorName: false,
+    countryCode: false,
+    mobile: false,
+    email: false,
+    typeId: false,
+    platformId: false,
+    payId: false,
+    cycleId: false,
+    gst: false,
+    // type: false,
+  });
 
-  const {
-    isLoading: typeLoading,
-    error: typeError,
-    data: typeData,
-  } = useGetAllVendorTypeQuery();
+  const [mandatoryFieldsEmpty, setMandatoryFieldsEmpty] = useState({
+    mobile: false,
+    altMobile: false,
+  });
 
-  const {
-    isLoading: platformLoading,
-    error: platformError,
-    data: platformData,
-  } = useGetPmsPlatformQuery();
+  const [isContactTouched1, setisContactTouched1] = useState(false);
 
-  const {
-    isLoading: payLoading,
-    error: payError,
-    data,
-  } = useGetPmsPaymentMethodQuery();
+  const { isLoading: typeLoading, data: typeData } = useGetAllVendorTypeQuery();
+
+  const { data: platformData } = useGetPmsPlatformQuery();
+
+  const { data } = useGetPmsPaymentMethodQuery();
   const payData = data?.data;
 
-  const {
-    isLoading: cycleLoading,
-    error: cycleError,
-    data: cycleQueryData,
-  } = useGetPmsPayCycleQuery();
+  const { data: cycleQueryData } = useGetPmsPayCycleQuery();
 
-  const {
-    isLoading,
-    error,
-    data: whatsappLinkType,
-  } = useGetVendorWhatsappLinkTypeQuery();
+  const { data: whatsappLinkType } = useGetVendorWhatsappLinkTypeQuery();
 
   const cycleData = cycleQueryData?.data;
 
@@ -185,14 +189,14 @@ const VendorMaster = () => {
   };
 
   const handleAccountNoChange = (e, i) => {
-    if(e.target.value.length > 20) return;
+    if (e.target.value.length > 20) return;
     const updatedRows = [...bankRows];
     updatedRows[i].account_number = e.target.value;
     setBankRows(updatedRows);
   };
 
   const handleIFSCChange = (e, i) => {
-    if(e.target.value.length > 11) return;
+    if (e.target.value.length > 11) return;
     const updatedRows = [...bankRows];
     updatedRows[i].ifcs = e.target.value;
     setBankRows(updatedRows);
@@ -214,6 +218,9 @@ const VendorMaster = () => {
   };
 
   const handleLinkChange = (index, newValue) => {
+    // if (newValue) {
+    //   setValidator((prev) => ({ ...prev, whatsappLink: false }));
+    // }
     let link = [...whatsappLink];
     link[index].link = newValue;
     setWhatsappLink(link);
@@ -272,10 +279,12 @@ const VendorMaster = () => {
         setBankRows(data);
       });
 
-      axios.get(baseUrl + `v1/vendor_group_link_vendor_id/${_id}`).then((res) => {
-        const data = res.data?.data ;
-        setWhatsappLink(data);
-      });
+      axios
+        .get(baseUrl + `v1/vendor_group_link_vendor_id/${_id}`)
+        .then((res) => {
+          const data = res.data?.data;
+          setWhatsappLink(data);
+        });
     }
   }, [_id]);
   const addLink = () => {
@@ -318,19 +327,78 @@ const VendorMaster = () => {
   const token = sessionStorage.getItem("token");
   const decodedToken = jwtDecode(token);
   const userID = decodedToken.id;
+  const [mobileValid, setMobileValid] = useState(false);
+  // const handleMobileNumSet = (e, setState) => {
+  //   const re = /^[0-9\b]+$/;
+  //   if (
+  //     e.target.value === "" ||
+  //     (re.test(e.target.value) && e.target.value.length <= 10)
+  //   ) {
+  //     setState(e.target.value);
+  //   }
+  // };
 
-  const handleMobileNumSet = (e, setState) => {
-    const re = /^[0-9\b]+$/;
-    if (
-      e.target.value === "" ||
-      (re.test(e.target.value) && e.target.value.length <= 10)
-    ) {
-      setState(e.target.value);
+  const handleMobileNumSet = (e) => {
+    const newContact = e.target.value;
+
+    if (newContact) {
+      setValidator((prev) => ({ ...prev, mobile: false }));
+    }
+
+    if (newContact.length <= 10) {
+      if (
+        newContact === "" ||
+        (newContact.length === 1 && parseInt(newContact) < 6)
+      ) {
+        setMobile("");
+        setMobileValid(false);
+        setMandatoryFieldsEmpty({
+          ...mandatoryFieldsEmpty,
+          mobile: true,
+        });
+      } else {
+        setMobile(newContact);
+        setMobileValid(
+          /^(\+91[ \-\s]?)?[0]?(91)?[6789]\d{9}$/.test(newContact)
+        );
+        setMandatoryFieldsEmpty({
+          ...mandatoryFieldsEmpty,
+          mobile: false,
+        });
+      }
+    }
+    setisContactTouched1(true);
+    if (newContact.length < 10) {
+      setMobileValid(false);
+    }
+  };
+  const handleAlternateMobileNumSet = (e, setState) => {
+    const newContact = e.target.value;
+    if (newContact.length <= 10) {
+      if (
+        newContact === "" ||
+        (newContact.length === 1 && parseInt(newContact) < 6)
+      ) {
+        setState("");
+        setMandatoryFieldsEmpty({
+          ...mandatoryFieldsEmpty,
+          altMobile: true,
+        });
+      } else {
+        setState(newContact);
+        setMandatoryFieldsEmpty({
+          ...mandatoryFieldsEmpty,
+          altMobile: false,
+        });
+      }
     }
   };
 
   const handleEmailSet = (e, setState) => {
     const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (e.target.value) {
+      setValidator((prev) => ({ ...prev, email: false }));
+    }
     setState(e.target.value);
     if (re.test(e.target.value) || e.target.value === "") {
       return setEmailIsInvalid(false);
@@ -339,7 +407,7 @@ const VendorMaster = () => {
   };
 
   const handlePanChange = (e) => {
-    if(e.target.value.length > 13) return;
+    if (e.target.value.length > 13) return;
     const inputValue = e.target.value.toUpperCase();
     // Validate PAN format
     // const panRegex = /[A-Z]{5}[0-9]{4}[A-Z]{1}/;
@@ -354,29 +422,90 @@ const VendorMaster = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    if (!vendorName) {
-      toastError("Please enter vendor name");
+    // console.log("validator",vendorName)
+    if (!vendorName || vendorName == "" || vendorName == null) {
+      console.log("vendorName", vendorName);
+      setValidator((prev) => ({ ...prev, vendorName: true }));
+    }
+    if (!countryCode) {
+      setValidator((prev) => ({ ...prev, countryCode: true }));
+    }
+    if (!mobile) {
+      setValidator((prev) => ({ ...prev, mobile: true }));
+    }
+    if (!email) {
+      setValidator((prev) => ({ ...prev, email: true }));
+    }
+
+    if (!typeId) {
+      setValidator((prev) => ({ ...prev, typeId: true }));
+    }
+    if (!platformId) {
+      setValidator((prev) => ({ ...prev, platformId: true }));
+    }
+    if (!payId) {
+      setValidator((prev) => ({ ...prev, payId: true }));
+    }
+    if (!cycleId) {
+      setValidator((prev) => ({ ...prev, cycleId: true }));
+    }
+
+    if (emailIsInvalid) {
+      toastError("Please enter a valid email");
       return;
-    } else if (!countryCode) {
-      toastError("Please enter country code");
-      return;
-    } else if (!mobile) {
-      toastError("Please enter mobile number");
-      return;
-    } else if (!email) {
-      toastError("Please enter email");
-      return;
-    } else if (!typeId) {
-      toastError("Please select vendor type");
-      return;
-    } else if (!platformId) {
-      toastError("Please select platform");
-      return;
-    } else if (!payId) {
-      toastError("Please select payment method");
-      return;
-    } else if (!cycleId) {
-      toastError("Please select pay cycle");
+    }
+    if (gstApplicable === "Yes" && !gst) {
+      setValidator((prev) => ({ ...prev, gst: true }));
+    }
+    // if (whatsappLink.length > 0) {
+    //   whatsappLink.map((link, i) => {
+    //     if (!link.link) {
+    //       setValidator((prev) => ({ ...prev, whatsappLink: true }));
+    //     }
+    //     if (link.type == "") {
+    //       setValidator((prev) => ({ ...prev, type: true }));
+    //     }
+    //   });
+    // }
+    // if (!vendorName) {
+    //   toastError("Please enter vendor name");
+    //   return;
+    // } else if (!countryCode) {
+    //   toastError("Please enter country code");
+    //   return;
+    // } else if (!mobile) {
+    //   toastError("Please enter mobile number");
+    //   return;
+    // } else if (!email) {
+    //   toastError("Please enter email");
+    //   return;
+    // } else if (!typeId) {
+    //   toastError("Please select vendor type");
+    //   return;
+    // } else if (!platformId) {
+    //   toastError("Please select platform");
+    //   return;
+    // } else if (!payId) {
+    //   toastError("Please select payment method");
+    //   return;
+    // } else if (!cycleId) {
+    //   toastError("Please select pay cycle");
+    //   return;
+    // }
+    if (
+      !vendorName ||
+      !countryCode ||
+      !mobile ||
+      !email ||
+      !typeId ||
+      !platformId ||
+      !payId ||
+      !cycleId ||
+      (gstApplicable === "Yes" && !gst) ||
+      (whatsappLink.length > 0 && !whatsappLink[0].link) ||
+      (whatsappLink.length > 0 && !whatsappLink[0].type)
+    ) {
+      toastError("Please fill all the mandatory fields");
       return;
     }
     const formData = new FormData();
@@ -409,24 +538,36 @@ const VendorMaster = () => {
     formData.append("vendorLinks", JSON.stringify(whatsappLink));
 
     if (!_id) {
-      axios.post(baseUrl + "v1/vendor", formData).then(() => {
-        setIsFormSubmitted(true);
-        toastAlert("Submitted");
-      });
+      setIsFormSubmitting(true);
+      axios
+        .post(baseUrl + "v1/vendor", formData)
+        .then(() => {
+          setIsFormSubmitted(true);
+          toastAlert("Submitted");
+          isFormSubmitting(false);
+        })
+        .catch((err) => {
+          toastError(err.message);
+          setIsFormSubmitting(false);
+        });
     } else {
-      axios.put(baseUrl + `v1/vendor/${_id}`, formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      }).then(() => {
-        toastAlert("Updated");
-        setIsFormSubmitted(true);
-
-      }).catch((err) => {
-        console.log(err);
-        toastError(err.message);
-      });
-
+      setIsFormSubmitting(true);
+      axios
+        .put(baseUrl + `v1/vendor/${_id}`, formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        })
+        .then(() => {
+          toastAlert("Updated");
+          setIsFormSubmitted(true);
+          setIsFormSubmitting(false);
+        })
+        .catch((err) => {
+          console.log(err);
+          toastError(err.message);
+          setIsFormSubmitting(false);
+        });
     }
   };
 
@@ -450,17 +591,29 @@ const VendorMaster = () => {
       <FormContainer
         mainTitle={_id ? "Edit Vendor Master" : "Add Vendor Master"}
         title={_id ? "Edit Vendor Master" : "Add Vendor Master"}
-        handleSubmit={handleSubmit}
-        
+        // handleSubmit={handleSubmit}
+        submitButton={false}
       >
-        <FieldContainer
-          label="Vendor Name "
-          value={vendorName}
-          astric={true}
-          required={true}
-          onChange={(e) => setVendorName(e.target.value)}
-        />
-
+        <div className="col-6">
+          <FieldContainer
+            label="Vendor Name "
+            fieldGrid={12}
+            value={vendorName}
+            astric={true}
+            required={true}
+            onChange={(e) => {
+              setVendorName(e.target.value);
+              if (e.target.value) {
+                setValidator((prev) => ({ ...prev, vendorName: false }));
+              }
+            }}
+          />
+          {validator.vendorName && (
+            <span style={{ color: "red", fontSize: "12px" }}>
+              Please enter vendor name
+            </span>
+          )}
+        </div>
         <div className="form-group col-6">
           <label className="form-label">
             Vendor Category <sup style={{ color: "red" }}>*</sup>
@@ -479,6 +632,11 @@ const VendorMaster = () => {
               setVendorCategory(e.value);
             }}
           ></Select>
+          {validator.vendorCategory && (
+            <span style={{ color: "red", fontSize: "12px" }}>
+              Please select vendor category
+            </span>
+          )}
         </div>
 
         {/* <FieldContainer
@@ -500,6 +658,9 @@ const VendorMaster = () => {
             value={countries?.find((option) => option.phone == countryCode)}
             onChange={(e, val) => {
               setCountryCode(val ? val.phone : null);
+              if (val ? val.phone : null) {
+                setValidator((prev) => ({ ...prev, countryCode: false }));
+              }
             }}
             autoHighlight
             getOptionLabel={(option) => option.phone}
@@ -537,37 +698,86 @@ const VendorMaster = () => {
               />
             )}
           />
+          {validator.countryCode && (
+            <span style={{ color: "red", fontSize: "12px" }}>
+              Please select country code
+            </span>
+          )}
         </div>
-
-        <FieldContainer
-          label="Mobile"
-          value={mobile}
-          astric
-          required={true}
-          onChange={(e) => handleMobileNumSet(e, setMobile)}
-        />
-
-        <FieldContainer
-          label="Alternate Mobile"
-          value={altMobile}
-          required={false}
-          onChange={(e) => handleMobileNumSet(e, setAltMobile)}
-        />
-
-        <FieldContainer
-          label="Email"
-          astric
-          value={email}
-          required={true}
-          type="email"
-          onChange={(e) => handleEmailSet(e, setEmail)}
-        />
-        {emailIsInvalid && (
-          <span style={{ color: "red", fontSize: "12px" }}>
-            Please enter a valid email
-          </span>
-        )}
-
+        <div className="col-6">
+          <FieldContainer
+            label="Mobile"
+            fieldGrid={12}
+            value={mobile}
+            astric
+            type="number"
+            required={true}
+            onChange={(e) => {
+              handleMobileNumSet(e);
+              // handleMobileValidate();
+            }}
+          />
+          {validator.mobile && (
+            <span style={{ color: "red", fontSize: "12px" }}>
+              Please enter mobile number
+            </span>
+          )}
+          {/* {mobileValid && (
+            <span style={{ color: "red", fontSize: "12px" }}>
+              Please enter valid mobile number
+            </span>
+          )} */}
+          {/* {
+            <span style={{ color: "red", fontSize: "12px" }}>
+              {mandatoryFieldsEmpty.mobile && "Please enter mobile number"}
+            </span>
+          } */}
+          {
+            <span style={{ color: "red", fontSize: "12px" }}>
+              {!validator.mobile &&
+                isContactTouched1 &&
+                !mobileValid &&
+                "Please enter valid mobile number"}
+            </span>
+          }
+        </div>
+        <div className="col-6">
+          <FieldContainer
+            label="Alternate Mobile"
+            fieldGrid={12}
+            value={altMobile}
+            required={false}
+            type="number"
+            onChange={(e) => handleAlternateMobileNumSet(e, setAltMobile)}
+          />
+          {
+            <span style={{ color: "red", fontSize: "12px" }}>
+              {mandatoryFieldsEmpty.altMobile &&
+                "Please enter alternate mobile"}
+            </span>
+          }
+        </div>
+        <div className="col-6">
+          <FieldContainer
+            label="Email"
+            fieldGrid={12}
+            astric
+            value={email}
+            required={true}
+            type="email"
+            onChange={(e) => handleEmailSet(e, setEmail)}
+          />
+          {emailIsInvalid && (
+            <span style={{ color: "red", fontSize: "12px" }}>
+              Please enter a valid email
+            </span>
+          )}
+          {validator.email && (
+            <span style={{ color: "red", fontSize: "12px" }}>
+              Please enter email
+            </span>
+          )}
+        </div>
         <FieldContainer
           label="Personal Address"
           value={perAddress}
@@ -598,6 +808,9 @@ const VendorMaster = () => {
             }}
             onChange={(e) => {
               setTypeId(e.value);
+              if (e.value) {
+                setValidator((prev) => ({ ...prev, typeId: false }));
+              }
             }}
           />
           <IconButton
@@ -616,6 +829,11 @@ const VendorMaster = () => {
           >
             <RemoveRedEyeIcon />
           </IconButton>
+          {validator.typeId && (
+            <span style={{ color: "red", fontSize: "12px" }}>
+              Please select vendor type
+            </span>
+          )}
         </div>
 
         <div className="form-group col-6">
@@ -636,6 +854,9 @@ const VendorMaster = () => {
             }}
             onChange={(e) => {
               setPlatformId(e.value);
+              if (e.value) {
+                setValidator((prev) => ({ ...prev, platformId: false }));
+              }
             }}
           ></Select>
 
@@ -655,6 +876,11 @@ const VendorMaster = () => {
           >
             <RemoveRedEyeIcon />
           </IconButton>
+          {validator.platformId && (
+            <span style={{ color: "red", fontSize: "12px" }}>
+              Please select platform
+            </span>
+          )}
         </div>
 
         <div className="form-group col-6">
@@ -675,6 +901,9 @@ const VendorMaster = () => {
             }}
             onChange={(e) => {
               setPayId(e.value);
+              if (e.value) {
+                setValidator((prev) => ({ ...prev, payId: false }));
+              }
             }}
           ></Select>
 
@@ -694,6 +923,11 @@ const VendorMaster = () => {
           >
             <RemoveRedEyeIcon />
           </IconButton>
+          {validator.payId && (
+            <span style={{ color: "red", fontSize: "12px" }}>
+              Please select payment method
+            </span>
+          )}
         </div>
 
         {bankRows.map((row, i) => (
@@ -803,6 +1037,9 @@ const VendorMaster = () => {
             }}
             onChange={(e) => {
               setCycleId(e.value);
+              if (e.value) {
+                setValidator((prev) => ({ ...prev, cycleId: false }));
+              }
             }}
           ></Select>
           <IconButton
@@ -821,6 +1058,11 @@ const VendorMaster = () => {
           >
             <RemoveRedEyeIcon />
           </IconButton>
+          {validator.cycleId && (
+            <span style={{ color: "red", fontSize: "12px" }}>
+              Please select pay cycle
+            </span>
+          )}
         </div>
 
         <FieldContainer
@@ -857,6 +1099,11 @@ const VendorMaster = () => {
               setGstApplicable(e.value);
             }}
           ></Select>
+          {validator.gstApplicable && (
+            <span style={{ color: "red", fontSize: "12px" }}>
+              Please select GST Applicable
+            </span>
+          )}
         </div>
 
         {gstApplicable == "Yes" && (
@@ -869,6 +1116,11 @@ const VendorMaster = () => {
               required={gstApplicable == "Yes" ? true : false}
               onChange={(e) => setGst(e.target.value.toUpperCase())}
             />
+            {gstApplicable === "Yes" && validator.gst && (
+              <span style={{ color: "red", fontSize: "12px" }}>
+                Please enter GST
+              </span>
+            )}
             <FieldContainer
               type="file"
               label="GST Image"
@@ -905,7 +1157,10 @@ const VendorMaster = () => {
           value={compPin}
           required={false}
           maxLength={6}
-          onChange={(e) =>{if(isNaN(e.target.value))return; setCompPin(e.target.value)}}
+          onChange={(e) => {
+            if (isNaN(e.target.value)) return;
+            setCompPin(e.target.value);
+          }}
         />
 
         <FieldContainer
@@ -975,13 +1230,22 @@ const VendorMaster = () => {
 
         {whatsappLink?.map((link, index) => (
           <>
-            <FieldContainer
-              key={index}
-              label={`Whatsapp Link ${index + 1}`}
-              value={link.link}
-              required={false}
-              onChange={(e) => handleLinkChange(index, e.target.value)}
-            />
+            <div className="col-6">
+              <FieldContainer
+                key={index}
+                fieldGrid={12}
+                label={`Whatsapp Link ${index + 1}`}
+                value={link.link}
+                astric
+                required={true}
+                onChange={(e) => handleLinkChange(index, e.target.value)}
+              />
+              {/* {
+                <span style={{ color: "red", fontSize: "12px" }}>
+                  {validator.whatsappLink && "Please enter whatsapp link"}
+                </span>
+              } */}
+            </div>
             <FieldContainer
               key={index.remark}
               label={`Group Purpose`}
@@ -1019,6 +1283,9 @@ const VendorMaster = () => {
                   let updatedLinks = [...whatsappLink];
                   updatedLinks[index].type = e.value;
                   setWhatsappLink(updatedLinks);
+                  // if (e.value) {
+                  //   setValidator((prev) => ({ ...prev, type: false }));
+                  // }
                 }}
               />
               {index == 0 && (
@@ -1040,6 +1307,9 @@ const VendorMaster = () => {
                   >
                     <RemoveRedEyeIcon />
                   </IconButton>
+                  {/* <span style={{ color: "red", fontSize: "12px" }}>
+                    {validator.type && "Please select type"}
+                  </span> */}
                 </>
               )}
             </div>
@@ -1062,6 +1332,17 @@ const VendorMaster = () => {
           </>
         ))}
         <Button onClick={addLink}>ADD Link</Button>
+        <Stack direction="row" spacing={2}>
+          <Button
+            onClick={handleSubmit}
+            variant="contained"
+            color="primary"
+            style={{ marginTop: "20px" }}
+            disabled={isFormSubmitting}
+          >
+            {isFormSubmitting ? "Submitting..." : _id ? "Update" : "Submit"}
+          </Button>
+        </Stack>
       </FormContainer>
       <AddVendorModal />
       {isVendorModalOpen && <VendorTypeInfoModal />}

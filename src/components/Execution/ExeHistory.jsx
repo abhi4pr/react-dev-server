@@ -12,7 +12,7 @@ import OndemandVideoTwoToneIcon from "@mui/icons-material/OndemandVideoTwoTone";
 import { baseUrl } from "../../utils/config";
 
 export default function ExeHistory() {
-  const id = useParams();
+  const { id } = useParams();
   const [buttonAccess, setButtonAccess] = useState(false);
   const [data, setData] = useState([]);
   const [rowData, setRowData] = useState([]);
@@ -28,14 +28,12 @@ export default function ExeHistory() {
   };
 
   const apiCall = () => {
-    axios
-      .get(`${baseUrl}` + `get_exe_history/${id.id}`)
-      .then((res) => {
-        const data = res.data.data.filter((e) => {
-          return e.isDeleted !== true;
-        });
-        setData(data);
-      });
+    axios.get(`${baseUrl}` + `v1/states_history/${id}`).then((res) => {
+      const data = res.data.data;
+      console.log(data, "data");
+      if (!data) return;
+      setData([data]);
+    });
   };
 
   useEffect(() => {
@@ -50,6 +48,58 @@ export default function ExeHistory() {
     handleClickOpenDeleteHistoryConFirmation();
   };
 
+  // "reach": 2342,
+  //       "impression": 23432,
+  //       "engagement": 23432,
+  //       "story_view": 234,
+  //       "story_view_date": "2002-04-23T00:00:00.000Z",
+  //       "stats_for": "daily",
+  //       "start_date": "2024-05-30T00:00:00.000Z",
+  //       "end_date": "2024-05-30T00:00:00.000Z",
+  //       "reach_image": "",
+  //       "impression_image": "",
+  //       "engagement_image": "",
+  //       "story_view_image": "",
+  //       "city1_name": "Raipur ",
+  //       "city2_name": "Bhopal",
+  //       "city3_name": "Bhopal",
+  //       "city4_name": "Indore sfs",
+  //       "city5_name": "Korba r",
+  //       "percentage_city1_name": 2343,
+  //       "percentage_city2_name": 324,
+  //       "percentage_city3_name": 234,
+  //       "percentage_city4_name": 234,
+  //       "percentage_city5_name": 234,
+  //       "city_image": "",
+  //       "male_percent": 23412312,
+  //       "female_percent": 23412313,
+  //       "Age_13_17_percent": 234,
+  //       "Age_upload": "",
+  //       "Age_18_24_percent": 234,
+  //       "Age_25_34_percent": 423,
+  //       "Age_35_44_percent": 234,
+  //       "Age_45_54_percent": 234,
+  //       "Age_55_64_percent": 234,
+  //       "Age_65_plus_percent": 34,
+  //       "profile_visit": 32432,
+  //       "country1_name": "American Samoa",
+  //       "country2_name": "Albania",
+  //       "country3_name": "Albania",
+  //       "country4_name": "American Samoa",
+  //       "country5_name": "Albania",
+  //       "percentage_country1_name": 243,
+  //       "percentage_country2_name": 342,
+  //       "percentage_country3_name": 342,
+  //       "percentage_country4_name": 234,
+  //       "percentage_country5_name": 234,
+  //       "country_image": "",
+  //       "created_by": 712,
+  //       "last_updated_by": 0,
+  //       "status": 0,
+  //       "createdAt": "2024-05-30T13:56:46.370Z",
+  //       "updatedAt": "2024-05-30T14:11:04.159Z",
+  //       "__v": 0
+
   const columns = [
     {
       field: "S.No",
@@ -60,12 +110,12 @@ export default function ExeHistory() {
       },
     },
     {
-      field: "creation_date",
+      field: "createdAt",
       headerName: "Creation Date",
       readerCell: (params) => {
         return (
           <div>
-            {params.row?.creation_date ? (
+            {params.row?.createdAt ? (
               <>
                 {new Date(params.row.creation_date).toISOString().substr(8, 2)}/
                 {new Date(params.row.creation_date).toISOString().substr(5, 2)}/
@@ -78,27 +128,27 @@ export default function ExeHistory() {
         );
       },
     },
-    {
-      field: "executive_name",
-      headerName: "Executive Name",
-      width: 200,
-      renderCell: (params) => {
-        return (
-          <div>
-            {params.row?.user_id ? (
-              <>
-                {
-                  allUsers.filter((e) => e.user_id == params.row.user_id)[0]
-                    ?.user_name
-                }
-              </>
-            ) : (
-              ""
-            )}
-          </div>
-        );
-      },
-    },
+    // {
+    //   field: "executive_name",
+    //   headerName: "Executive Name",
+    //   width: 200,
+    //   renderCell: (params) => {
+    //     return (
+    //       <div>
+    //         {params.row?.user_id ? (
+    //           <>
+    //             {
+    //               allUsers.filter((e) => e.user_id == params.row.user_id)[0]
+    //                 ?.user_name
+    //             }
+    //           </>
+    //         ) : (
+    //           ""
+    //         )}
+    //       </div>
+    //     );
+    //   },
+    // },
     {
       field: "reach",
       headerName: "Reach",
@@ -108,8 +158,8 @@ export default function ExeHistory() {
           <div>
             {params.row?.reach ? (
               <>
-                {params.row.reach} {params.row.percentage_reach}&nbsp;
-                {params.row.reach_upload_image_url && (
+                {params.row.reach} &nbsp;
+                {params.row.reach_image && (
                   <a
                     key="reach"
                     href={params.row.reach_upload_image_url}
@@ -476,31 +526,22 @@ export default function ExeHistory() {
       headerName: "End Date",
       width: 150,
       renderCell: (params) => {
+        const data = params.row.end_date;
+        if (isNaN(Date.parse(data))) {
+          console.error("Invalid date:", data);
+          return null;
+        }
         return (
           <div>
-            {params.row.end_date ? (
+            {data ? (
               <>
-                {new Date(params.row.end_date).toISOString().substr(8, 2)}/
-                {new Date(params.row.end_date).toISOString().substr(5, 2)}/
-                {new Date(params.row.end_date).toISOString().substr(2, 2)}
+                {new Date(data).toISOString().substr(8, 2)}/
+                {new Date(data).toISOString().substr(5, 2)}/
+                {new Date(data).toISOString().substr(2, 2)}
               </>
             ) : (
               ""
             )}
-          </div>
-        );
-      },
-    },
-    {
-      field: "creation_date",
-      headerName: "Creation Date",
-      width: 150,
-      renderCell: (params) => {
-        return (
-          <div>
-            {new Date(params.row.creation_date).toISOString().substr(8, 2)}/
-            {new Date(params.row.creation_date).toISOString().substr(5, 2)}/
-            {new Date(params.row.creation_date).toISOString().substr(2, 2)}
           </div>
         );
       },
@@ -525,23 +566,20 @@ export default function ExeHistory() {
 
   return (
     <div>
-
-
       <FormContainer
         mainTitle="Stats History"
         link="/ip-master"
         buttonAccess={buttonAccess}
       />
       <div className="card body-padding fx-head nt-head">
-
-        <DataGrid
+       {data[0]?._id? <DataGrid
           rows={data}
           columns={columns}
           pageSize={10}
           rowsPerPageOptions={[10]}
           checkboxSelection
           getRowId={(row) => row._id}
-        />
+        />: <h3 className="text-center">No Data Found</h3>}
       </div>
 
       <DeleteHistoryConfirmation
@@ -552,6 +590,6 @@ export default function ExeHistory() {
         rowData={rowData}
         apiCall={apiCall}
       />
-    </div >
+    </div>
   );
 }

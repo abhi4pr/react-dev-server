@@ -8,7 +8,7 @@ import jwtDecode from "jwt-decode";
 import { Navigate } from "react-router";
 import Select from "react-select";
 import "./Tagcss.css";
-import { IconButton } from "@mui/material";
+import { IconButton, Stack } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import InfoIcon from "@mui/icons-material/Info";
 import { useDispatch, useSelector } from "react-redux";
@@ -39,7 +39,9 @@ const PageMaster = () => {
   const vendorInfoModalOpen = useSelector(
     (state) => state.vendorMaster.showVendorInfoModal
   );
-const pageInfoModlaOpen = useSelector((state) => state.pageMaster.showInfoModal);
+  const pageInfoModlaOpen = useSelector(
+    (state) => state.pageMaster.showInfoModal
+  );
   const { toastAlert, toastError } = useGlobalContext();
   const [pageName, setPageName] = useState("");
   const [link, setLink] = useState("");
@@ -67,6 +69,28 @@ const pageInfoModlaOpen = useSelector((state) => state.pageMaster.showInfoModal)
     value: "Per Thousand",
     label: "Per Thousand",
   });
+  const [validateFields, setValidateFields] = useState({
+    pageName: false,
+    link: false,
+    platformId: false,
+    categoryId: false,
+    pageLevel: false,
+    pageStatus: false,
+    closeBy: false,
+    pageType: false,
+    content: false,
+    ownerType: false,
+    vendorId: false,
+    followCount: false,
+    profileId: false,
+    platformActive: false,
+    rate: false,
+    description: false,
+    rateType: false,
+    variableType: false,
+    tag: false,
+  });
+
   const handleVariableTypeChange = (selectedOption) => {
     setVariableType(selectedOption);
   };
@@ -174,56 +198,139 @@ const pageInfoModlaOpen = useSelector((state) => state.pageMaster.showInfoModal)
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
     if (pageName === "") {
-      toastError("Please Fill Page Name");
-      return;
-    } else if (link === "") {
-      toastError("Please Fill Link");
-      return;
-    } else if (platformId === "") {
-      toastError("Please Fill Platform ID");
-      return;
-    } else if (categoryId === "") {
-      toastError("Please Fill Category");
-      return;
-    } else if (pageLevel === "") {
-      toastError("Please Fill Page Level");
-      return;
-    } else if (pageStatus === "") {
-      toastError("Please Fill Page Status");
-      return;
-    } else if (closeBy === "") {
-      toastError("Please Fill Close By");
-      return;
-    } else if (pageType === "") {
-      toastError("Please Fill Page Name Type");
-      return;
-    } else if (content === "") {
-      toastError("Please Fill Content Creation");
-      return;
-    } else if (ownerType === "") {
-      toastError("Please Fill Ownership Type");
-      return;
-    } else if (vendorId === "") {
-      toastError("Please Fill Vendor");
-      return;
-    } else if (followCount === "") {
-      toastError("Please Fill Followers Count");
-      return;
-    } else if (profileId === "") {
-      toastError("Please Fill Profile Type");
-      return;
-    } else if (platformActive === "") {
-      toastError("Please Fill Platform Active On");
-      return;
-    } else if (rate === "") {
-      toastError("Please Fill Engagement Rate");
-      return;
+      setValidateFields((prev) => ({ ...prev, pageName: true }));
     }
+    if (link === "") {
+      setValidateFields((prev) => ({ ...prev, link: true }));
+    }
+    if (platformId === "") {
+      setValidateFields((prev) => ({ ...prev, platformId: true }));
+    }
+    if (categoryId === "") {
+      setValidateFields((prev) => ({ ...prev, categoryId: true }));
+    }
+    if (pageLevel === "") {
+      setValidateFields((prev) => ({ ...prev, pageLevel: true }));
+    }
+    if (pageStatus === "") {
+      setValidateFields((prev) => ({ ...prev, pageStatus: true }));
+    }
+    if (closeBy === "") {
+      setValidateFields((prev) => ({ ...prev, closeBy: true }));
+    }
+    if (pageType === "") {
+      setValidateFields((prev) => ({ ...prev, pageType: true }));
+    }
+    if (content === "") {
+      setValidateFields((prev) => ({ ...prev, content: true }));
+    }
+    if (ownerType === "") {
+      setValidateFields((prev) => ({ ...prev, ownerType: true }));
+    }
+    if (vendorId === "") {
+      setValidateFields((prev) => ({ ...prev, vendorId: true }));
+    }
+    if (followCount === "") {
+      setValidateFields((prev) => ({ ...prev, followCount: true }));
+    }
+    if (profileId === "") {
+      setValidateFields((prev) => ({ ...prev, profileId: true }));
+    }
+    console.log(platformActive);
+    if (platformActive?.length == 0 || platformActive == null) {
+      setValidateFields((prev) => ({ ...prev, platformActive: true }));
+    }
+    if (rate === "") {
+      setValidateFields((prev) => ({ ...prev, rate: true }));
+    }
+    if (description === "") {
+      setValidateFields((prev) => ({ ...prev, description: true }));
+    }
+    if (rateType === "") {
+      setValidateFields((prev) => ({ ...prev, rateType: true }));
+    }
+    if (tag.length == 0) {
+      setValidateFields((prev) => ({ ...prev, tag: true }));
+    }
+
+   if(
+      pageName === "" ||
+      link === "" ||
+      platformId === "" ||
+      categoryId === "" ||
+      pageLevel === "" ||
+      pageStatus === "" ||
+      closeBy === "" ||
+      pageType === "" ||
+      content === "" ||
+      ownerType === "" ||
+      vendorId === "" ||
+      followCount === "" ||
+      profileId === "" ||
+      platformActive?.length == 0 ||
+      rate === "" ||
+      rateType === "" ||
+      tag.length == 0||
+      rateType.value == "Variable" && variableType === "" ||
+      rowCount.some((e) => e.page_price_type_id == "" || e.price == "")
+    ) {
+      return toastError("Please Fill All Required Fields");
+    }
+  
+    // return toastAlert("Submitted");
+
+    // if (pageName === "") {
+    //   toastError("Please Fill Page Name");
+    //   return;
+    // } else if (link === "") {
+    //   toastError("Please Fill Link");
+    //   return;
+    // } else if (platformId === "") {
+    //   toastError("Please Fill Platform ID");
+    //   return;
+    // } else if (categoryId === "") {
+    //   toastError("Please Fill Category");
+    //   return;
+    // } else if (pageLevel === "") {
+    //   toastError("Please Fill Page Level");
+    //   return;
+    // } else if (pageStatus === "") {
+    //   toastError("Please Fill Page Status");
+    //   return;
+    // } else if (closeBy === "") {
+    //   toastError("Please Fill Close By");
+    //   return;
+    // } else if (pageType === "") {
+    //   toastError("Please Fill Page Name Type");
+    //   return;
+    // } else if (content === "") {
+    //   toastError("Please Fill Content Creation");
+    //   return;
+    // } else if (ownerType === "") {
+    //   toastError("Please Fill Ownership Type");
+    //   return;
+    // } else if (vendorId === "") {
+    //   toastError("Please Fill Vendor");
+    //   return;
+    // } else if (followCount === "") {
+    //   toastError("Please Fill Followers Count");
+    //   return;
+    // } else if (profileId === "") {
+    //   toastError("Please Fill Profile Type");
+    //   return;
+    // } else if (platformActive === "") {
+    //   toastError("Please Fill Platform Active On");
+    //   return;
+    // } else if (rate === "") {
+    //   toastError("Please Fill Engagement Rate");
+    //   return;
+    // }
 
     const payload = {
       page_name: pageName,
-      link: link,
+      page_link: link,
       platform_id: platformId,
       page_category_id: categoryId,
       tags_page_category: tag.map((e) => e.value),
@@ -294,7 +401,8 @@ const pageInfoModlaOpen = useSelector((state) => state.pageMaster.showInfoModal)
       <FormContainer
         mainTitle="Page Master"
         title="Page Master"
-        handleSubmit={handleSubmit}
+        // handleSubmit={handleSubmit}
+        submitButton={false}
       >
         <div className="form-group col-6">
           <label className="form-label">
@@ -314,6 +422,9 @@ const pageInfoModlaOpen = useSelector((state) => state.pageMaster.showInfoModal)
             }}
             onChange={(e) => {
               setPlatformId(e.value);
+              if (e.value) {
+                setValidateFields((prev) => ({ ...prev, platformId: false }));
+              }
             }}
           />
           <IconButton
@@ -332,6 +443,9 @@ const pageInfoModlaOpen = useSelector((state) => state.pageMaster.showInfoModal)
           >
             <InfoIcon />
           </IconButton>
+          {validateFields.platformId && (
+            <small style={{ color: "red" }}>Please select Platform</small>
+          )}
         </div>
         <div className="form-group col-6">
           <label className="form-label">
@@ -351,6 +465,9 @@ const pageInfoModlaOpen = useSelector((state) => state.pageMaster.showInfoModal)
             }}
             onChange={(e) => {
               setProfileId(e.value);
+              if (e.value) {
+                setValidateFields((prev) => ({ ...prev, profileId: false }));
+              }
             }}
           />
           <IconButton
@@ -369,6 +486,9 @@ const pageInfoModlaOpen = useSelector((state) => state.pageMaster.showInfoModal)
           >
             <InfoIcon />
           </IconButton>
+          {validateFields.profileId && (
+            <small style={{ color: "red" }}>Please select Profile Type</small>
+          )}
         </div>
         <div className="form-group col-6">
           <label className="form-label">
@@ -381,8 +501,16 @@ const pageInfoModlaOpen = useSelector((state) => state.pageMaster.showInfoModal)
             className="basic-multi-select"
             classNamePrefix="select"
             value={PageStatus.find((option) => option.value == pageStatus)}
-            onChange={(selectedOption) => setPageStatus(selectedOption.value)}
+            onChange={(selectedOption) => {
+              setPageStatus(selectedOption.value);
+              if (selectedOption.value) {
+                setValidateFields((prev) => ({ ...prev, pageStatus: false }));
+              }
+            }}
           />
+          {validateFields.pageStatus && (
+            <small style={{ color: "red" }}>Please select Profile Status</small>
+          )}
         </div>
         <div className="form-group col-6">
           <label className="form-label">
@@ -402,6 +530,9 @@ const pageInfoModlaOpen = useSelector((state) => state.pageMaster.showInfoModal)
             }}
             onChange={(e) => {
               setCategoryId(e.value);
+              if (e.value) {
+                setValidateFields((prev) => ({ ...prev, categoryId: false }));
+              }
             }}
           />
           <IconButton
@@ -420,6 +551,9 @@ const pageInfoModlaOpen = useSelector((state) => state.pageMaster.showInfoModal)
           >
             <InfoIcon />
           </IconButton>
+          {validateFields.categoryId && (
+            <small style={{ color: "red" }}>Please select Category</small>
+          )}
         </div>
         <div className="form-group col-6">
           <label className="form-label">
@@ -433,31 +567,72 @@ const pageInfoModlaOpen = useSelector((state) => state.pageMaster.showInfoModal)
             }))}
             required={true}
             value={tag}
-            onChange={(e) => setTag(e)}
+            onChange={(e) => {
+              setTag(e);
+              if (e) {
+                setValidateFields((prev) => ({ ...prev, tag: false }));
+              }
+            }}
           ></Select>
+          {validateFields.tag && (
+            <small style={{ color: "red" }}>Please select Tags</small>
+          )}
         </div>
-        <FieldContainer
-          label="Page Name"
-          astric={true}
-          value={pageName}
-          required={true}
-          onChange={(e) => setPageName(e.target.value)}
-        />
-        <FieldContainer
-          label="Link"
-          astric={true}
-          value={link}
-          required={true}
-          onChange={(e) => setLink(e.target.value)}
-        />
-        <FieldContainer
-          label="Followers Count"
-          astric={true}
-          type="number"
-          value={followCount}
-          required={true}
-          onChange={(e) => setFollowCount(e.target.value)}
-        />
+        <div className="col-6">
+          <FieldContainer
+            label="Page Name"
+            fieldGrid={12}
+            astric={true}
+            value={pageName}
+            required={true}
+            onChange={(e) => {
+              setPageName(e.target.value);
+              if (e.target.value) {
+                setValidateFields((prev) => ({ ...prev, pageName: false }));
+              }
+            }}
+          />
+          {validateFields.pageName && (
+            <small style={{ color: "red" }}>Please Fill Page Name</small>
+          )}
+        </div>
+        <div className="col-6">
+          <FieldContainer
+            fieldGrid={12}
+            label="Link"
+            astric={true}
+            value={link}
+            required={true}
+            onChange={(e) => {
+              setLink(e.target.value);
+              if (e.target.value) {
+                setValidateFields((prev) => ({ ...prev, link: false }));
+              }
+            }}
+          />
+          {validateFields.link && (
+            <small style={{ color: "red" }}>Please Fill Link</small>
+          )}
+        </div>
+        <div className="col-6">
+          <FieldContainer
+            label="Followers Count"
+            fieldGrid={12}
+            astric={true}
+            type="number"
+            value={followCount}
+            required={true}
+            onChange={(e) => {
+              setFollowCount(e.target.value);
+              if (e.target.value) {
+                setValidateFields((prev) => ({ ...prev, followCount: false }));
+              }
+            }}
+          />
+          {validateFields.followCount && (
+            <small style={{ color: "red" }}>Please Fill Followers Count</small>
+          )}
+        </div>
         <div className="form-group col-6">
           <label className="form-label">
             Preference level <sup style={{ color: "red" }}>*</sup>
@@ -469,16 +644,37 @@ const pageInfoModlaOpen = useSelector((state) => state.pageMaster.showInfoModal)
             className="basic-multi-select"
             classNamePrefix="select"
             value={PageLevels.find((option) => option.value === pageLevel)}
-            onChange={(selectedOption) => setPageLevel(selectedOption.value)}
+            onChange={(selectedOption) => {
+              setPageLevel(selectedOption.value);
+              if (selectedOption.value) {
+                setValidateFields((prev) => ({ ...prev, pageLevel: false }));
+              }
+            }}
           />
+          {validateFields.pageLevel && (
+            <small style={{ color: "red" }}>
+              Please select Preference Level
+            </small>
+          )}
         </div>
-        <FieldContainer
-          label="Ownership type"
-          astric={true}
-          value={ownerType}
-          required={true}
-          onChange={(e) => setOwnerType(e.target.value)}
-        />
+        <div className="col-6">
+          <FieldContainer
+            label="Ownership type"
+            astric={true}
+            fieldGrid={12}
+            value={ownerType}
+            required={true}
+            onChange={(e) => {
+              setOwnerType(e.target.value);
+              if (e.target.value) {
+                setValidateFields((prev) => ({ ...prev, ownerType: false }));
+              }
+            }}
+          />
+          {validateFields.ownerType && (
+            <small style={{ color: "red" }}>Please Fill Ownership Type</small>
+          )}
+        </div>
         <div className="form-group col-6">
           <label className="form-label">
             Close by <sup style={{ color: "red" }}>*</sup>
@@ -497,8 +693,14 @@ const pageInfoModlaOpen = useSelector((state) => state.pageMaster.showInfoModal)
             }}
             onChange={(e) => {
               setCloseBy(e.value);
+              if (e.value) {
+                setValidateFields((prev) => ({ ...prev, closeBy: false }));
+              }
             }}
           ></Select>
+          {validateFields.closeBy && (
+            <small style={{ color: "red" }}>Please select Close By</small>
+          )}
         </div>
         <div className="form-group col-6">
           <label className="form-label">
@@ -511,8 +713,18 @@ const pageInfoModlaOpen = useSelector((state) => state.pageMaster.showInfoModal)
             className="basic-multi-select"
             classNamePrefix="select"
             value={Contents.find((option) => option.value == content)}
-            onChange={(selectedOption) => setContent(selectedOption.value)}
+            onChange={(selectedOption) => {
+              setContent(selectedOption.value);
+              if (selectedOption.value) {
+                setValidateFields((prev) => ({ ...prev, content: false }));
+              }
+            }}
           />
+          {validateFields.content && (
+            <small style={{ color: "red" }}>
+              Please select Content Creation
+            </small>
+          )}
         </div>
         <div className="form-group col-6">
           <label className="form-label">
@@ -528,8 +740,20 @@ const pageInfoModlaOpen = useSelector((state) => state.pageMaster.showInfoModal)
             value={platformActive}
             onChange={(e) => {
               setPlatformActive(e);
+              console.log(e);
+              if (e) {
+                setValidateFields((prev) => ({
+                  ...prev,
+                  platformActive: false,
+                }));
+              }
             }}
           ></Select>
+          {validateFields.platformActive && (
+            <small style={{ color: "red" }}>
+              Please select Platform Active On
+            </small>
+          )}
         </div>
         <div className="form-group col-6">
           <label className="form-label">
@@ -542,8 +766,20 @@ const pageInfoModlaOpen = useSelector((state) => state.pageMaster.showInfoModal)
             className="basic-multi-select"
             classNamePrefix="select"
             value={PageTypes.find((option) => option.value == pageType)}
-            onChange={(selectedOption) => setPageType(selectedOption.value)}
+            onChange={(selectedOption) => {
+              setPageType(selectedOption.value);
+              if (selectedOption.value) {
+                setValidateFields((prev) => ({ ...prev, pageType: false }));
+              }
+            }}
           />
+          {
+            validateFields.pageType && (
+              <small style={{ color: "red" }}>
+                Please select Page Name Type
+              </small>
+            ) // Page Name Type
+          }
         </div>
         <div className="form-group col-6">
           <label className="form-label">
@@ -563,17 +799,34 @@ const pageInfoModlaOpen = useSelector((state) => state.pageMaster.showInfoModal)
             }}
             onChange={(e) => {
               setVendorId(e.value);
+              if (e.value) {
+                setValidateFields((prev) => ({ ...prev, vendorId: false }));
+              }
             }}
           ></Select>
+          {validateFields.vendorId && (
+            <small style={{ color: "red" }}>Please select Vendor</small>
+          )}
         </div>
-        <FieldContainer
-          label="Engagement Rate"
-          astric={true}
-          type="number"
-          value={rate}
-          required={true}
-          onChange={(e) => setRate(e.target.value)}
-        />
+        <div className="form-group col-6">
+          <FieldContainer
+            label="Engagement Rate"
+            astric={true}
+            type="number"
+            fieldGrid={12}
+            value={rate}
+            required={true}
+            onChange={(e) => {
+              setRate(e.target.value);
+              if (e.target.value) {
+                setValidateFields((prev) => ({ ...prev, rate: false }));
+              }
+            }}
+          />
+          {validateFields.rate && (
+            <small style={{ color: "red" }}>Please Fill Engagement Rate</small>
+          )}
+        </div>
         <FieldContainer
           label="Description"
           value={description}
@@ -598,8 +851,16 @@ const pageInfoModlaOpen = useSelector((state) => state.pageMaster.showInfoModal)
             }}
             onChange={(e) => {
               setPlatformId(e.value);
+              if (e.value) {
+                setValidateFields((prev) => ({ ...prev, platformId: false }));
+              }
             }}
           ></Select>
+          {
+            validateFields.platformId && (
+              <small style={{ color: "red" }}>Please select Platform</small>
+            ) // Platform ID
+          }
         </div>{" "}
         <div className="form-group col-6 row">
           <label className="form-label">
@@ -710,6 +971,15 @@ const pageInfoModlaOpen = useSelector((state) => state.pageMaster.showInfoModal)
             </button>
           </div>
         </div>
+        <Stack direction='row' spacing={2}>
+          <button
+            className="btn btn-primary btn-lg"
+            type="submit"
+            onClick={handleSubmit}
+          >
+            Submit
+          </button>
+        </Stack>
       </FormContainer>
       <PageAddMasterModal />
       <PageInfoModal />
