@@ -7,6 +7,7 @@ const PointOfContactApi = createApi({
   endpoints: (builder) => ({
     getSinglePOC: builder.query({
       query: (id) => `accounts/get_account_poc/${id}`,
+      transformResponse: (response) => response.data,
       keepUnusedDataFor: 3600,
     }),
 

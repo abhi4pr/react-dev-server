@@ -88,7 +88,7 @@ const IncentivePayment = () => {
         ),
         paid_amount: balanceReleaseAmount,
       })
-      .then((res) => {});
+      .then((res) => { });
 
     const formData = new FormData();
     formData.append("loggedin_user_id", 36);
@@ -125,7 +125,7 @@ const IncentivePayment = () => {
   function getData() {
     axios
       .post(baseUrl + "add_php_payment_incentive_data_in_node")
-      .then(() => {});
+      .then(() => { });
     const formData = new FormData();
     formData.append("loggedin_user_id", 36);
     axios
@@ -349,12 +349,12 @@ const IncentivePayment = () => {
       renderCell: (params) =>
         params.row.sales_executive_name !== "Total"
           ? new Date(params.row.request_creation_date).toLocaleDateString(
-              "en-IN"
-            ) +
-            " " +
-            new Date(params.row.request_creation_datee).toLocaleTimeString(
-              "en-IN"
-            )
+            "en-IN"
+          ) +
+          " " +
+          new Date(params.row.request_creation_datee).toLocaleTimeString(
+            "en-IN"
+          )
           : null,
     },
     {
@@ -478,12 +478,12 @@ const IncentivePayment = () => {
       renderCell: (params) =>
         params.row.sales_executive_name !== "Total"
           ? new Date(params.row.request_creation_date).toLocaleDateString(
-              "en-IN"
-            ) +
-            " " +
-            new Date(params.row.request_creation_datee).toLocaleTimeString(
-              "en-IN"
-            )
+            "en-IN"
+          ) +
+          " " +
+          new Date(params.row.request_creation_datee).toLocaleTimeString(
+            "en-IN"
+          )
           : null,
     },
     {
@@ -615,12 +615,12 @@ const IncentivePayment = () => {
       renderCell: (params) =>
         params.row.sales_executive_name !== "Total"
           ? new Date(params.row.request_creation_date).toLocaleDateString(
-              "en-IN"
-            ) +
-            " " +
-            new Date(params.row.request_creation_date).toLocaleTimeString(
-              "en-IN"
-            )
+            "en-IN"
+          ) +
+          " " +
+          new Date(params.row.request_creation_date).toLocaleTimeString(
+            "en-IN"
+          )
           : null,
     },
     {
@@ -774,7 +774,7 @@ const IncentivePayment = () => {
 
   useEffect(() => {
     balanceReleaseAmount * 1 + selectedData.released_amount * 1 ==
-    selectedData.request_amount
+      selectedData.request_amount
       ? setPaymentType("Full Payment")
       : setPaymentType("Partial Payment");
     setPartialPaymentReason("");
