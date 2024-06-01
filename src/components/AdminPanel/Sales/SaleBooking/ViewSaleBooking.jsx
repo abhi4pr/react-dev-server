@@ -2,8 +2,9 @@ import React, { useEffect, useState } from "react";
 import FormContainer from "../../FormContainer";
 import DateISOtoNormal from "../../../../utils/DateISOtoNormal";
 import { Link } from "react-router-dom";
-import { useGetAllSaleBookingQuery } from "../../../Store/API/Sales/SaleBookingApi";
+import { useGetAllSaleBookingQuery, useGetSalesBookingPaymentDetailQuery } from "../../../Store/API/Sales/SaleBookingApi";
 import View from "../Account/View/View";
+import { useGetAllAccountQuery } from "../../../Store/API/Sales/SalesAccountApi";
 
 const ViewSaleBooking = () => {
   const {
@@ -11,7 +12,17 @@ const ViewSaleBooking = () => {
     error: allSalebBookingError,
     isLoading: allSaleBookingLoading,
   } = useGetAllSaleBookingQuery();
-
+  const {
+    data: allAccount,
+    error: allAccountError,
+    isLoading: allAccountLoading
+  } = useGetAllAccountQuery()
+  const {
+    data: allSalesBookingPaymentDetail,
+    error: allSalesBookingPaymentDetailError,
+    isLoading: allSalesBookingPaymentDetailLoading
+  } = useGetSalesBookingPaymentDetailQuery();
+  console.log(allSalesBookingPaymentDetail);
   const columns = [
     {
       key: "Serial_no",
@@ -22,7 +33,10 @@ const ViewSaleBooking = () => {
     },
     {
       key: "customer_name",
-      name: "Customer name",
+      name: "Account name",
+      renderRowCell: (row) => (
+        allAccount?.find((account) => account.account_id === row.account_id)?.account_name
+      ),
       showCol: true,
       width: 100,
     },
@@ -47,11 +61,7 @@ const ViewSaleBooking = () => {
       showCol: true,
       width: 100,
     },
-    {
-      name: "Paid Amount",
-      showCol: true,
-      width: 100,
-    },
+
     {
       key: "base_amount",
       name: "Base Amount",
@@ -66,11 +76,7 @@ const ViewSaleBooking = () => {
       showCol: true,
       width: 100,
     },
-    {
-      name: "Refund Amount",
-      showCol: true,
-      width: 100,
-    },
+
     {
       key: "service_taken_amount",
       name: "Service Taken Amount",
@@ -78,11 +84,7 @@ const ViewSaleBooking = () => {
       showCol: true,
       width: 100,
     },
-    {
-      name: "Service Balance Amount",
-      showCol: true,
-      width: 100,
-    },
+
     {
       key: "incentive_status",
       name: "Incentive",
@@ -91,33 +93,7 @@ const ViewSaleBooking = () => {
       showCol: true,
       width: 100,
     },
-    {
-      name: "Execution Running Status",
-      showCol: true,
-      width: 100,
-    },
-    {
-      name: "Invoice Download",
-      showCol: true,
-      width: 100,
-    },
-    {
-      key: "booking_status_name",
-      name: "Open Status",
-      showCol: true,
-      width: 100,
-    },
-    {
-      key: "",
-      name: "Approve or Reject Reason",
-      showCol: true,
-      width: 100,
-    },
-    {
-      name: "Refund Reasons",
-      showCol: true,
-      width: 100,
-    },
+
     {
       key: "createdAt",
       name: "Booking Date Created",
@@ -162,7 +138,7 @@ const ViewSaleBooking = () => {
       <View
         columns={columns}
         data={allSaleBooking}
-        isLoading={allSaleBookingLoading}
+        isLoading={allSaleBookingLoading || allAccountLoading || allSalesBookingPaymentDetailLoading}
         title={"Sale Booking"}
         // rowSelectable={true}
         pagination={[5, 10, 15]}

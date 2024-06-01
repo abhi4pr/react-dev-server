@@ -13,10 +13,12 @@ const DynamicSelect = ({ data, value, onChange, cols, label, astric }) => {
           value: `${option}`,
           label: `${option}`,
         }))}
-        value={{
-          value: value,
-          label: `${value}`,
-        }}
+
+        value={
+          value === ""
+            ? { value: "", label: "Select" }
+            : { value: value, label: `${value}` }
+        }
         onChange={onChange}
         required={true}
       />
