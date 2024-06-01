@@ -101,7 +101,11 @@ const VendorOverview = () => {
       field: "sno",
       headerName: "S.NO",
       width: 80,
-      renderCell: (params) => <div>{filterData.indexOf(params.row) + 1}</div>,
+
+      valueGetter: (params) => {
+       
+        return filterData?.findIndex(item => item._id === params.id) + 1;
+      },
     },
     {
       field: "vendor_name",

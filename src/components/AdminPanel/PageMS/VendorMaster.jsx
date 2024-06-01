@@ -107,7 +107,7 @@ const VendorMaster = () => {
     payId: false,
     cycleId: false,
     gst: false,
-    type: false,
+    // type: false,
   });
 
   const [mandatoryFieldsEmpty, setMandatoryFieldsEmpty] = useState({
@@ -218,9 +218,9 @@ const VendorMaster = () => {
   };
 
   const handleLinkChange = (index, newValue) => {
-    if (newValue) {
-      setValidator((prev) => ({ ...prev, whatsappLink: false }));
-    }
+    // if (newValue) {
+    //   setValidator((prev) => ({ ...prev, whatsappLink: false }));
+    // }
     let link = [...whatsappLink];
     link[index].link = newValue;
     setWhatsappLink(link);
@@ -457,16 +457,16 @@ const VendorMaster = () => {
     if (gstApplicable === "Yes" && !gst) {
       setValidator((prev) => ({ ...prev, gst: true }));
     }
-    if (whatsappLink.length > 0) {
-      whatsappLink.map((link, i) => {
-        if (!link.link) {
-          setValidator((prev) => ({ ...prev, whatsappLink: true }));
-        }
-        if (link.type == "") {
-          setValidator((prev) => ({ ...prev, type: true }));
-        }
-      });
-    }
+    // if (whatsappLink.length > 0) {
+    //   whatsappLink.map((link, i) => {
+    //     if (!link.link) {
+    //       setValidator((prev) => ({ ...prev, whatsappLink: true }));
+    //     }
+    //     if (link.type == "") {
+    //       setValidator((prev) => ({ ...prev, type: true }));
+    //     }
+    //   });
+    // }
     // if (!vendorName) {
     //   toastError("Please enter vendor name");
     //   return;
@@ -1240,11 +1240,11 @@ const VendorMaster = () => {
                 required={true}
                 onChange={(e) => handleLinkChange(index, e.target.value)}
               />
-              {
+              {/* {
                 <span style={{ color: "red", fontSize: "12px" }}>
                   {validator.whatsappLink && "Please enter whatsapp link"}
                 </span>
-              }
+              } */}
             </div>
             <FieldContainer
               key={index.remark}
@@ -1283,9 +1283,9 @@ const VendorMaster = () => {
                   let updatedLinks = [...whatsappLink];
                   updatedLinks[index].type = e.value;
                   setWhatsappLink(updatedLinks);
-                  if (e.value) {
-                    setValidator((prev) => ({ ...prev, type: false }));
-                  }
+                  // if (e.value) {
+                  //   setValidator((prev) => ({ ...prev, type: false }));
+                  // }
                 }}
               />
               {index == 0 && (
@@ -1307,9 +1307,9 @@ const VendorMaster = () => {
                   >
                     <RemoveRedEyeIcon />
                   </IconButton>
-                  <span style={{ color: "red", fontSize: "12px" }}>
+                  {/* <span style={{ color: "red", fontSize: "12px" }}>
                     {validator.type && "Please select type"}
-                  </span>
+                  </span> */}
                 </>
               )}
             </div>

@@ -12,6 +12,7 @@ import { DataGrid } from "@mui/x-data-grid";
 import {
   useGetAllVendorTypeQuery,
   useGetVendorWhatsappLinkQuery,
+  useGetVendorWhatsappLinkTypeQuery,
 } from "../../Store/reduxBaseURL";
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
@@ -28,7 +29,7 @@ export default function VendorWhatsappLinkModla() {
   const { data } = useGetVendorWhatsappLinkQuery(row._id);
   const links = data?.data;
 
-  const { data: linkType } = useGetAllVendorTypeQuery();
+  const { data: linkType } = useGetVendorWhatsappLinkTypeQuery();
 
   const dispatch = useDispatch();
   const showWhatsappModal = useSelector(
@@ -79,8 +80,8 @@ export default function VendorWhatsappLinkModla() {
                 width: 150,
                 renderCell: (params) => {
                   return linkType?.data.find(
-                    (type) => type?._id === params.row.type
-                  )?.name;
+                    (type) => type?._id === params?.row?.type
+                  )?.link_type;
                 },
               },
               // { field: 'remark', headerName: 'Remark', width: 150 },
