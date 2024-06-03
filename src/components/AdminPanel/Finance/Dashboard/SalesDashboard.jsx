@@ -97,10 +97,12 @@ export default function SalesDashboard() {
         });
     });
 
-    axios.post(baseUrl + "add_php_finance_data_in_node").then(() => {});
-    axios.get(baseUrl + "get_all_php_finance_data_pending").then((res) => {
-      setFilterPendingForApprovalData(res.data.data);
-      setPendingForApprovalData(res.data.data);
+    axios.post(baseUrl + "add_php_finance_data_in_node").then((res) => {
+      const pendingApproval = res.data.data.filter(
+        (status) => status.payment_approval_status === "0"
+      );
+      setFilterPendingForApprovalData(pendingApproval);
+      setPendingForApprovalData(pendingApproval);
     });
 
     axios.post(baseUrl + "add_php_payment_refund_data_in_node").then(() => {});
@@ -118,11 +120,11 @@ export default function SalesDashboard() {
         });
     });
 
-    axios.post(baseUrl + "add_php_finance_data_in_node").then(() => {});
-    axios.get(baseUrl + "get_all_php_finance_data_pending").then((res) => {
-      setFilterPendingForApprovalData(res.data.data);
-      setPendingForApprovalData(res.data.data);
-    });
+    // axios.post(baseUrl + "add_php_finance_data_in_node").then(() => {});
+    // axios.get(baseUrl + "get_all_php_finance_data_pending").then((res) => {
+    //   setFilterPendingForApprovalData(res.data.data);
+    //   setPendingForApprovalData(res.data.data);
+    // });
 
     axios.post(baseUrl + "add_php_payment_refund_data_in_node").then(() => {});
     setTimeout(() => {
@@ -724,7 +726,7 @@ export default function SalesDashboard() {
                   <div className="card-body cardGrdnt blueGrdnt financeCardSmall">
                     <h2>Payment Mode</h2>
                     <h3>
-                      <span>&#8377; </span>
+                      {/* <span>&#8377; </span> */}
                       {paymentModeData?.length}
                     </h3>
                   </div>
@@ -828,7 +830,7 @@ export default function SalesDashboard() {
                     data: [
                       {
                         label: " Pending Approval of Sales Payment",
-                        value: pendingForApprovalData.length,
+                        value: pendingForApprovalData?.length,
                       },
                       {
                         label: " Total Invoice Pending",
@@ -903,7 +905,7 @@ export default function SalesDashboard() {
                 </div>
                 <div className="pack sb">
                   <h6>TDS Verification Closed</h6>
-                  <h6> {salesBookingCloseData.length}</h6>
+                  <h6> {salesBookingCloseData?.length}</h6>
                 </div>
               </div>
             </div>

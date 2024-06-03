@@ -168,14 +168,17 @@ const PurchaseDashboard = () => {
 
   const handlePaymentDone = async () => {
     //PAYMENT DONE API :-
-    await axios.get(baseUrl + "phpvendorpaymentrequest").then((res) => {
-      const pmtDone = res.data.modifiedData;
+    axios.get(baseUrl + "phpvendorpaymentrequest").then((res) => {
+      const x = res.data.modifiedData;
+
       axios
         .get(
-          "https://purchase.creativefuel.io/webservices/RestController.php?view=getpaymentrequest"
+          "https://purchase.creativefuel.io/webservices/RestController.php?view=getpaymentrequestpaid"
         )
         .then((res) => {
-          let y = pmtDone.filter((item) => {
+          // setPhpDta(res.data.body);
+
+          let y = x.filter((item) => {
             if (item.status == 1) {
               return item;
             }
@@ -548,9 +551,9 @@ const PurchaseDashboard = () => {
                   <div className="scroll-con">
                     <div className="scroller">
                       <h1>0</h1>
-                      {paymentDoneData?.map((item, index) => (
-                        <h1>{index + 1}</h1>
-                      ))}
+                      {/* {paymentDoneData?.map((item, index) => ( */}
+                      <h1>{paymentDoneData?.length}</h1>
+                      {/* ))} */}
                     </div>
                   </div>
                 </div>
