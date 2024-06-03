@@ -472,7 +472,7 @@ const CreateSalesAccount = () => {
       <FormContainer mainTitle="Accounts Master" link={true} />
       <div className="card">
         <div className="card-header">
-          <h5 className="card-title">Create</h5>
+          <h5 className="card-title">Account Detail</h5>
         </div>
         <div className="card-body row">
           <FieldContainer
@@ -562,6 +562,18 @@ const CreateSalesAccount = () => {
             </button>
           </div>
 
+
+
+
+
+
+        </div>
+      </div>
+      <div className="card">
+        <div className="card-header">
+          <h3 className="card-title">Details</h3>
+        </div>
+        <div className="card-body row">
           <CustomSelect
             label="Account Owner Name"
             dataArray={accOwnerNameData}
@@ -612,6 +624,36 @@ const CreateSalesAccount = () => {
             onChange={(e) => setOfficesCount(e.target.value)}
             placeholder="Enter number of offices"
           />
+          <div className="col-4">
+            <FieldContainer
+              label="Pin Code"
+              type="number"
+              fieldGrid={4}
+              value={pinCode}
+              onChange={(e) => setPinCode(e.target.value)}
+              placeholder="Enter pin code"
+            />
+            {!isValidPinCode(pinCode) && (
+              <div className="form-error">Please Enter Valid Pin Code</div>
+            )}
+          </div>
+
+          <FieldContainer
+            label="Description"
+            astric
+            fieldGrid={4}
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            placeholder="Enter description"
+            required
+          />
+        </div>
+      </div>
+      <div className="card">
+        <div className="card-header">
+          <h3 className="card-title">Connected Address</h3>
+        </div>
+        <div className="card-body row">
           <FieldContainer
             label="Connected Office"
             fieldGrid={4}
@@ -647,14 +689,24 @@ const CreateSalesAccount = () => {
             onChange={(e) => setConnectedBillingCountry(e.target.value)}
             placeholder="Enter connected billing country"
           />
-          <label>
+
+        </div>
+      </div>
+      <div className="card">
+        <div className="card-header sb">
+
+          <h3 className="card-title">Head Address</h3>
+          <label className="card-title">
             <input
               type="checkbox"
+              className="form-check-input"
               checked={fillHeadFields}
               onChange={handleCheckboxChange}
             />
-            Same as Connected Office
+            <p className="mt-1 ml-2"> Same as Connected Office</p>
           </label>
+        </div>
+        <div className="card-body row">
           <FieldContainer
             label="Head Office"
             fieldGrid={4}
@@ -689,29 +741,6 @@ const CreateSalesAccount = () => {
             value={headBillingCountry}
             onChange={(e) => setHeadBillingCountry(e.target.value)}
             placeholder="Enter head billing country"
-          />
-          <div className="col-4">
-            <FieldContainer
-              label="Pin Code"
-              type="number"
-              fieldGrid={4}
-              value={pinCode}
-              onChange={(e) => setPinCode(e.target.value)}
-              placeholder="Enter pin code"
-            />
-            {!isValidPinCode(pinCode) && (
-              <div className="form-error">Please Enter Valid Pin Code</div>
-            )}
-          </div>
-
-          <FieldContainer
-            label="Description"
-            astric
-            fieldGrid={4}
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            placeholder="Enter description"
-            required
           />
         </div>
       </div>

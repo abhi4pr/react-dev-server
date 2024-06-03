@@ -4054,7 +4054,7 @@ input[type="button"].btn-block {
   display: flex;
   justify-content: center;
   align-items: center;
-  border: none;
+  border: 1px solid var(--border);
   cursor: pointer;
   min-width: 40px;
   width: 40px;
@@ -16811,6 +16811,15 @@ div:where(.swal2-container) {
       width: 100%;
       height: 100%;
 
+      .salesdetails {
+        .details {
+          justify-content: flex-start !important;
+          width: max-content !important;
+          gap: 10px;
+        }
+      }
+
+
       .salesdetails,
       .pocdetails,
       .DocDetails,
@@ -16842,6 +16851,8 @@ div:where(.swal2-container) {
               width: max-content;
               display: flex;
               gap: 10px;
+              justify-content: space-between;
+              width: 100%;
 
               .DocImage {
                 width: 100% !important;

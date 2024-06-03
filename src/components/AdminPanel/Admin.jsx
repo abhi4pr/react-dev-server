@@ -415,8 +415,8 @@ const Admin = () => {
                       (contextData &&
                         contextData[38] &&
                         contextData[38].view_value === 1)) && (
-                      <Route path="/user" element={<UserMaster />} />
-                    )}
+                        <Route path="/user" element={<UserMaster />} />
+                      )}
 
                     {/* User Profile Routing Here  */}
                     <Route path="/user-timeline" element={<Timeline />} />
@@ -1468,6 +1468,10 @@ const Admin = () => {
                   {/* Sales Module Routing here start-------------------  */}
 
                   <Route path="/sales-dashboard" element={<SalesDashboard />} />
+                  <Route
+                    path="/create-sales-services/:id/:method"
+                    element={<SalesServicesCreate />}
+                  />
                   <Route
                     path="/create-sales-services"
                     element={<SalesServicesCreate />}
