@@ -25,17 +25,32 @@ const RegisteredCampaigns = () => {
   const [search, setSearch] = useState("");
   const [open, setOpen] = useState(false);
   const [commitmentModalData, setCommitmentModalData] = useState([{}]);
+  const [commitment, setCommitment] = useState([]);
+  // const [filterCampaign, setFilterCampaign] = useState([]);
 
   const getRegisterCampaign = async () => {
     const res = await axios.get(`${baseUrl}opcampaign`);
     setAllCampaign(res.data);
   };
+  const getCommitment = async () => {
+    const CommitmentData = await axios.get(`${baseUrl}get_all_commitments`)
+    setCommitment(CommitmentData.data.data)
+  };
+  // const getFilterCampaign = async () => {
+  //   const filterCampaign = await axios.get(`${baseUrl}get_filter_campaign`, {
+  //     "rangeType": ""
+  //   })
+  //   setFilterCampaign(filterCampaign.data.data)
+  // };
+
+
   useEffect(() => {
     getRegisterCampaign();
+    getCommitment()
+    // getFilterCampaign()
   }, []);
 
   const handleOpen = (params) => {
-    console.log(params.row.commitments);
     setCommitmentModalData(params.row.commitments);
     setOpen(true);
   };
@@ -194,19 +209,27 @@ const RegisteredCampaigns = () => {
   ];
   const commitColumns = [
     {
+      field: "S.NO",
+      headerName: "S.NO",
+      width: 120,
+      renderCell: (params) => {
+        const rowIndex = commitmentModalData?.indexOf(params.row);
+        return <div>{rowIndex + 1}</div>;
+      },
+    },
+    {
       field: "selectValue",
       headerName: "Commits",
-      width: 200,
+      width: 250,
       renderCell: (params) => {
-        return commits.filter((e) => {
-          return e.cmtId == params.row.selectValue;
-        })[0]?.cmtName;
+        const commit = commitment.filter((e) => e.cmtId === params.row.selectValue)[0];
+        return formatString(commit?.cmtName || "N/A");
       },
     },
     {
       field: "textValue",
       headerName: "Value",
-      width: 150,
+      width: 250,
     },
   ];
   // search filter
@@ -280,14 +303,13 @@ const RegisteredCampaigns = () => {
             component="h2"
             sx={{ padding: "2px" }}
           >
-            Commits
+            Commitment
           </Typography>
           <div id="modal-modal-description" className=" mt-4">
             <div className="card">
               <DataGrid
                 rows={commitmentModalData}
                 columns={commitColumns}
-                pageSize={10}
                 getRowId={(row) => row?._id}
               />
             </div>

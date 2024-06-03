@@ -44,11 +44,10 @@ export default function RegisterCampaign() {
   const [campaignDetailing, setCampaignDetailing] = useState("");
   const [showBrandName, setShowBrandName] = useState([]);
   const [xlxsData, setXlxsData] = useState([]);
-  const [fields, setFields] = useState([{ selectValue: "", textValue: "" }]);
+  const [fields, setFields] = useState([{ selectValue: 0, textValue: 0 }]);
   const [showAlert, setShowAlert] = useState(false);
   const [campignData, setCampignData] = useState([{}]);
   const [campaign, setCampaign] = useState();
-  const [campaignAmount, setCampaignAmount] = useState("");
   const [industry, setIndustry] = useState([]);
   const [selectedIndustry, setSelectedIndustry] = useState("");
   const [goal, setGoal] = useState([]);
@@ -58,19 +57,14 @@ export default function RegisterCampaign() {
   const [selectedAgency, setSelectedAgency] = useState("");
   const [agencyList, setAgencyList] = useState([]);
   const [master, setMaster] = useState(null);
-  const [masterPayload, setMasterPayload] = useState({});
   const [campaignClosedBy, setCampaignClosedBy] = useState("");
   const [categoryOptions, setCategoryOptions] = useState([]);
   const [subcategoryOptions, setSubCategoryOptions] = useState([]);
   const [selectedPages, setSelectedPages] = useState([]);
   const [SubCategoryString, setSubCategoryString] = useState();
-  //const [service, setService] = useState([]);
-  const [selectedService, setSelectedService] = useState("");
-  const [isModelOpen, setIsModelOpen] = useState(false);
   const [brandName, setBrandName] = useState("");
   const [userName, setUserName] = useState([]);
   const [errBrandName, setErrBrandName] = useState();
-  const [editData, setEditData] = useState([]);
   const [isModalOpenForCampaign, setIsModalOpenForCampaign] = useState(false);
   const [campaignModalPayload, setCampaignModalPayload] = useState({
     exeCmpName: "",
@@ -82,12 +76,7 @@ export default function RegisterCampaign() {
     brand_name: "",
     category_id: "",
     sub_category_id: "",
-    // major_category: "",
   });
-
-  const togglePageDetails = () => {
-    setShowPageDetails(!showPageDetails);
-  };
 
   const navigate = useNavigate();
   const createExcel = () => {
@@ -114,13 +103,6 @@ export default function RegisterCampaign() {
     if (!selectedDate) {
       hasError = true;
     }
-
-    // const hasEmptyCommitment = fields.some(
-    //   (field) => !field.selectValue || !field.textValue
-    // );
-    // if (hasEmptyCommitment) {
-    //   hasError = true;
-    // }
 
     if (!campaignClosedBy) {
       hasError = true;
@@ -149,8 +131,6 @@ export default function RegisterCampaign() {
     form.append("industry", selectedIndustry);
     form.append("goal", selectedGoal);
     form.append("campaignClosedBy", campaignClosedBy);
-
-    //form.append("service", selectedService);
     setLoading(true);
     axios
       .post(baseUrl + "register_campaign", form)
@@ -180,7 +160,7 @@ export default function RegisterCampaign() {
   ];
 
   const handleAddField = () => {
-    const newField = { selectValue: "", textValue: "" };
+    const newField = { selectValue: 0, textValue: 0 };
     setFields([...fields, newField]);
   };
   const handleRemoveField = (e, i) => {
@@ -205,7 +185,6 @@ export default function RegisterCampaign() {
     }
   };
 
-  const [brandList, setBrandList] = useState([]);
   const [campaignList, setCampignList] = useState([]);
   const handleChange = (event) => {
     setBrandName(
@@ -237,9 +216,6 @@ export default function RegisterCampaign() {
     getAllData();
   }, []);
 
-  const handleDateChange = (date) => {
-    setSelectedDate(date);
-  };
 
   const getAllData = () => {
     axios
@@ -315,9 +291,7 @@ export default function RegisterCampaign() {
     setSelectedIndustry(newValue);
   };
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [campaignName, setCampaignName] = useState("");
-  const [remark, setRemark] = useState("");
-
+  
   const addCampaignData = () => {
     setMaster("Campaign");
     setIsModalOpenForCampaign(true);
@@ -326,20 +300,6 @@ export default function RegisterCampaign() {
   const addBrandData = () => {
     setMaster("Brand");
     setIsModalOpen(true);
-  };
-
-  // const payload = {
-  //   // other data
-  //   campaignClosedBy: campaignClosedBy,
-  //   // more data
-  // };
-
-  const toggleBrandModal = () => {
-    setIsBrandModalOpen(!isBrandModalOpen);
-  };
-
-  const toggleCategoryModal = () => {
-    setIsCategoryModalOpen(!isCategoryModalOpen);
   };
 
   const fetchSalesUsers = () => {
