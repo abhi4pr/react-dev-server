@@ -14,28 +14,13 @@ const CampaignDetails = ({ cid, getCampaign }) => {
 
   const getData = async () => {
     try {
-      const res = await axios.get(`${baseUrl}` + `register_campaign/${cid}`);
-      setCampaignData(res.data.data);
+      const res = await axios.get(`${baseUrl}` + `opcampaign/${cid}`);
+      setCampaignData(res.data[0]);
     } catch (error) {
       console.log(error);
     }
   };
-
-  const getBrandInfo = async () => {
-    const brand = await axios.get(`${baseUrl}` + `get_brands`);
-    const myBrand = brand.data.data.find(
-      (brand) => brand.brand_id == campaignData.brand_id
-    );
-    setBrandData(myBrand);
-  };
-
-  const getCampaignName = async () => {
-    const camp = await axios.get(`${baseUrl}` + `exe_campaign`);
-    const mycamp = camp.data.data.find(
-      (camp) => camp.exeCmpId == campaignData.exeCmpId
-    );
-    setCmpName(mycamp);
-  };
+  
   useEffect(() => {
     getData();
   }, [cid]);
@@ -69,8 +54,6 @@ const CampaignDetails = ({ cid, getCampaign }) => {
       campaignData.commitment.forEach((element) => {
         commInfo.push(element.selectValue);
       });
-      getBrandInfo();
-      getCampaignName();
       getCommitments();
     }
   }, [campaignData]);
@@ -88,9 +71,7 @@ const CampaignDetails = ({ cid, getCampaign }) => {
               }}
               fullWidth
               value={
-                brandData.brand_name &&
-                brandData.brand_name.charAt(0).toUpperCase() +
-                  brandData.brand_name.slice(1)
+                campaignData?.brand_data?.brand_name
               }
             />
           </Grid>
@@ -103,9 +84,7 @@ const CampaignDetails = ({ cid, getCampaign }) => {
               label="Campaign"
               InputLabelProps={{ shrink: true }}
               value={
-                cmpName?.exeCmpName &&
-                cmpName?.exeCmpName.charAt(0).toUpperCase() +
-                  cmpName?.exeCmpName.slice(1)
+                campaignData?.campaign_data?.exeCmpName
               }
             />
           </Grid>
@@ -118,14 +97,12 @@ const CampaignDetails = ({ cid, getCampaign }) => {
               label="Campaign Details"
               InputLabelProps={{ shrink: true }}
               value={
-                campaignData.detailing &&
-                campaignData.detailing.charAt(0).toUpperCase() +
-                  campaignData.detailing.slice(1)
+                campaignData?.details
               }
             />
           </Grid>
-          {commitData.length > 0 &&
-            commitData.map((comm, index) => {
+          {campaignData?.commitments > 0 &&
+            campaignData?.commitments?.map((comm, index) => {
               return (
                 <>
                   <Grid sx={{ m: 2 }}>
@@ -134,21 +111,11 @@ const CampaignDetails = ({ cid, getCampaign }) => {
                         readOnly: true,
                       }}
                       fullWidth
-                      label={comm.cmtName}
+                      label={campaignData?.commitments?.selectValue}
                       value={campaignData?.commitment[index]?.textValue}
                     />
                   </Grid>
-                  {/* <Grid item xs={12} sm={6} sx={{ mb: 2 }}>
-               
-                <TextField
-                  InputProps={{
-                    readOnly: true,
-                  }}
-                  fullWidth
-                  label="value"
-                  value={campaignData?.commitment[index]?.textValue}
-                />
-              </Grid> */}
+                  
                 </>
               );
             })}
