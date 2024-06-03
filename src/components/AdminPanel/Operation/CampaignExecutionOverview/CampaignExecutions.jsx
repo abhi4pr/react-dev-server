@@ -8,7 +8,7 @@ import FormContainer from "../../FormContainer";
 import CampaignExecutionSummary from "./CampaignExecutionSummary";
 import ScreenRotationAltRoundedIcon from "@mui/icons-material/ScreenRotationAltRounded";
 import { useGlobalContext } from "../../../../Context/Context";
-import { useLocation } from 'react-router-dom';
+import { useLocation } from "react-router-dom";
 
 const style = {
   position: "absolute",
@@ -25,7 +25,8 @@ const style = {
 const CampaignExecutions = () => {
   const location = useLocation();
   const executionExcel = location.state?.executionExcel;
-  console.log(executionExcel,"new data");
+  const [selectedRows, setSelectedRows] = useState([]);
+  console.log(executionExcel, selectedRows);
   const { toastAlert, toastError } = useGlobalContext();
   const [shortcode, setShortcode] = useState([]);
   const [pageDetails, setPageDetails] = useState([]);
@@ -45,7 +46,6 @@ const CampaignExecutions = () => {
   const [phaseId, setPhaseId] = useState();
   const [allPages, setAllPages] = useState([]);
   const [newPage, setNewPage] = useState("");
-
   const [storyLink, setStoryLink] = useState("");
   const [storyViews, setStoryViews] = useState("");
   const [updateClicked, setUpdateClicked] = useState(false);
@@ -130,7 +130,7 @@ const CampaignExecutions = () => {
 
   useEffect(() => {
     const fetchPageDetails = async (index) => {
-      if ((shortcode || updateClicked && updateParams)) {
+      if (shortcode || (updateClicked && updateParams)) {
         const regex = /\/(reel|p)\/([A-Za-z0-9-_]+)/;
         const match = shortcode?.match(regex);
         try {
@@ -151,7 +151,7 @@ const CampaignExecutions = () => {
             payload,
             config
           );
-          console.log(response, "response")
+          console.log(response, "response");
           if (response.data.success == true) {
             const res = await axios.put(
               `${baseUrl}assignment/post/details/update`,
@@ -169,9 +169,8 @@ const CampaignExecutions = () => {
                 story_views: storyViews,
                 last_link_hit_date: new Date(),
               }
-
             );
-            toastAlert('Add Details successful!')
+            toastAlert("Add Details successful!");
             handleAllCampaign();
             setAssId("");
             setPageDetails((prevPageDetails) => {
@@ -485,13 +484,19 @@ const CampaignExecutions = () => {
       phase_id: replaceData?.phase_id,
       p_id: replaceData?.p_id,
       new_pId: newPage,
-      _id: selectedCampaign
-    })
+      _id: selectedCampaign,
+    });
     console.log(res.data);
-    closeModal3()
+    closeModal3();
   };
-  
 
+  const handleSelectedPages = () => {
+    console.log("new ");
+  };
+
+  const handleSelectionChange = (selectedIds) => {
+    setSelectedRows(selectedIds);
+  };
   return (
     <>
       <FormContainer link={true} mainTitle={"Execution Campaign"} />
@@ -537,6 +542,17 @@ const CampaignExecutions = () => {
             </>
           )}
         </div>
+        {selectedCampaign && (
+          <div style={{ display: "flex", justifyContent: "flex-end" }}>
+            <button
+              type="button"
+              className="btn btn-outline-info rounded-pill mr-4"
+              onClick={handleSelectedPages}
+            >
+              Selected Update Pages
+            </button>
+          </div>
+        )}
 
         <div className="card-body">
           <div className="tab">
@@ -565,6 +581,8 @@ const CampaignExecutions = () => {
             getRowId={(row) => row.p_id}
             pagination
             checkboxSelection
+            onRowSelectionModelChange={(row) => handleSelectionChange(row)}
+
           />
         </div>
       </div>
