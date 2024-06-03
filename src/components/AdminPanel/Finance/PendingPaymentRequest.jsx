@@ -1488,6 +1488,13 @@ export default function PendingPaymentRequest() {
             >
               Discard
             </button>
+            <button className="btn cmnbtn btn_sm btn-success">
+              <Link
+                to={`/admin/finance-pruchasemanagement-paymentdone-transactionlist/${params.row.request_id}`}
+              >
+                Transaction List
+              </Link>
+            </button>
           </div>
         );
       },
@@ -2636,45 +2643,45 @@ export default function PendingPaymentRequest() {
           </div>
           <div className="card-body thm_table fx-head">
             {activeAccordionIndex === 0 && (
-              <DataGrid
-                rows={filterData}
-                columns={columns}
-                pageSize={5}
-                rowsPerPageOptions={[5]}
-                getRowClassName={getValidationCSSForRemainder}
-                slots={{ toolbar: GridToolbar }}
-                disableSelectionOnClick
-                checkboxSelection
-                slotProps={{
-                  toolbar: {
-                    showQuickFilter: true,
-                  },
-                }}
-                getRowId={(row) => row?.request_id}
-                onRowSelectionModelChange={(rowIds) => {
-                  handleRowSelectionModelChange(rowIds);
-                  console.log(rowIds, "IDS");
-                }}
-                rowSelectionModel={rowSelectionModel}
-              />
-              // <TableData
-              //   tableName="Pending Payment Request Table"
-              //   tableFields={[
-              //     "invc_no",
-              //     "page_name",
-              //     "payment_cycle",
-              //     "gst",
-              //     "remark_audit",
-              //     "priority",
-              //   ]}
-              //   getData={callApi}
-              //   setData={setData}
-              //   setFilterData={setFilterData}
-              //   datas={data}
-              //   filterData={filterData}
-              //   tableActions={tableActions}
-              //   // tableApi="phpvendorpaymentrequest"
+              // <DataGrid
+              //   rows={filterData}
+              //   columns={columns}
+              //   pageSize={5}
+              //   rowsPerPageOptions={[5]}
+              //   getRowClassName={getValidationCSSForRemainder}
+              //   slots={{ toolbar: GridToolbar }}
+              //   disableSelectionOnClick
+              //   checkboxSelection
+              //   slotProps={{
+              //     toolbar: {
+              //       showQuickFilter: true,
+              //     },
+              //   }}
+              //   getRowId={(row) => row?.request_id}
+              //   onRowSelectionModelChange={(rowIds) => {
+              //     handleRowSelectionModelChange(rowIds);
+              //     console.log(rowIds, "IDS");
+              //   }}
+              //   rowSelectionModel={rowSelectionModel}
               // />
+              <TableData
+                tableName="Pending Payment Request Table"
+                tableFields={[
+                  "invc_no",
+                  "page_name",
+                  "payment_cycle",
+                  "gst",
+                  "remark_audit",
+                  "priority",
+                ]}
+                getData={callApi}
+                setData={setData}
+                setFilterData={setFilterData}
+                datas={data}
+                filterData={filterData}
+                tableActions={tableActions}
+                tableApi="phpvendorpaymentrequest"
+              />
               //   <DynamicTable
               //   tableName="Overview Table"
               //   tableFields={[
