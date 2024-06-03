@@ -32,7 +32,7 @@ const PointOfContact = ({ pocs, setPocs }) => {
       {pocs?.map((poc, index) => (
         <div className="card">
           <div className="card-header">
-            <h4>Point of Contact ({index + 1})</h4>
+            <h4>Point of Contact {index + 1}</h4>
             <button
               className="btn cmnbtn btn-danger"
               onClick={() => handleDeletePoc(index)}

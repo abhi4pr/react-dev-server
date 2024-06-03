@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import { baseUrl } from "../../../../utils/config";
 import { useGlobalContext } from "../../../../Context/Context";
@@ -10,8 +10,11 @@ import { useAPIGlobalContext } from "../../APIContext/APIContext";
 import { useNavigate, useParams } from "react-router-dom";
 import CustomSelect from "../../../ReusableComponents/CustomSelect";
 import { useGetAllBrandQuery } from "../../../Store/API/Sales/BrandApi";
-import ExcelToInputFields from "../../../ReusableComponents/ExcelToInputFields";
+// import ExcelToInputFields from "../../../ReusableComponents/ExcelToInputFields";
 import { useGetAllAccountQuery } from "../../../Store/API/Sales/SalesAccountApi";
+import CreateRecordServices from "../Account/CreateRecordServices";
+import { useGetAllSaleServiceQuery } from "../../../Store/API/Sales/SalesServiceApi";
+import RecordServices from "../Account/CreateRecordServices";
 
 const todayDate = new Date().toISOString().split("T")[0];
 
@@ -34,11 +37,12 @@ const CreateSaleBooking = () => {
     isLoading: allAccountLoading,
   } = useGetAllAccountQuery();
 
+  const { data: serviceTypes } = useGetAllSaleServiceQuery();
+
   const token = getDecodedToken();
   const loginUserId = token.id;
   const { toastAlert, toastError } = useGlobalContext();
   const [campaignName, setCampaignName] = useState("");
-  const [customerData, setCustomerData] = useState([]);
   const [selectedAccount, setSelectedAccount] = useState(null);
   const [selectedCustomer, setSelectedCustomer] = useState("");
   const [selectedCustomerPart, setSelectedCustomerPart] = useState("");
@@ -63,6 +67,7 @@ const CreateSaleBooking = () => {
   // const [executiveSelfCredit, setExecutiveSelfCredit] = useState(false);
   // const [excelFile, setExcelFile] = useState(null);
   const [incentiveCheck, setIncentiveCheck] = useState(false);
+  const [recServices, setRecServices] = useState([]);
 
   const paymentStatusList = [
     {
@@ -81,14 +86,10 @@ const CreateSaleBooking = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // const customerListRes = await axios.get(
-        //   `${baseUrl}get_all_customer_name_data`
-        // );
         const creditAppList = await axios.get(
           `${baseUrl}sales/getlist_reason_credit_approval`
         );
         setCreditApprovalList(creditAppList.data.data);
-        // setCustomerData(customerListRes.data.customerMastList);
       } catch (error) {
         toastError(error);
       }
@@ -107,7 +108,6 @@ const CreateSaleBooking = () => {
         const res = response.data.data;
 
         setSelectedCustomer(res.customer_id);
-        // setSelectedCustomerPart(res.CustomerMast_data._id);
       } catch (error) {
         console.error(error);
       }
@@ -257,167 +257,193 @@ const CreateSaleBooking = () => {
     }
   }, [selectedReasonDays]);
 
+  const handleAddRecServices = () => {
+    setRecServices([
+      ...recServices,
+      {
+        sale_booking_id: "",
+        sales_service_master_id: "",
+        amount: "",
+        no_of_hours: "",
+        goal: "",
+        day: "",
+        quantity: "",
+        brand_name: "",
+        hashtag: "",
+        individual_amount: "",
+        start_date: "",
+        end_date: "",
+        per_month_amount: "",
+        no_of_creators: "",
+        deliverables_info: "",
+        remarks: "",
+        excel_upload: null,
+        excel_upload_url: "",
+      },
+    ]);
+  };
   return (
     <div>
-      <FormContainer
-        mainTitle="Sale Booking"
-        title="Creation"
-        handleSubmit={handleSubmit}
-      >
-        <FieldContainer
-          fieldGrid={4}
-          astric
-          label="Campaign Name"
-          placeholder="Campaign Name"
-          value={campaignName}
-          onChange={(e) => setCampaignName(e.target.value)}
-        />
-        <CustomSelect
-          fieldGrid={4}
-          label="Accounts"
-          dataArray={allAccounts}
-          optionId="account_id"
-          optionLabel="account_name"
-          selectedId={selectedAccount}
-          setSelectedId={setSelectedAccount}
-          required
-        />
-        <CustomSelect
-          fieldGrid={4}
-          label="Brand"
-          dataArray={allBrands}
-          optionId="instaBrandId"
-          optionLabel="instaBrandName"
-          selectedId={selectedBrand}
-          setSelectedId={setSelectedBrand}
-          required
-        />
-        <div className="card">
-          {selectedCustomerData && (
-            <>
-              {/* Customer Type: {selectedCustomerData?.Customer_type_data} */}
-              Account Name: {selectedCustomerData?.customer_name}
-              {/* Company Name: {selectedCustomerData?.company_name} */}
-              GST No.: {selectedCustomerData?.company_gst_no}
-              Primary Contact: {selectedCustomerData?.primary_contact_no}
-              AlterNate Number: {selectedCustomerData?.alternative_no}
-              City: {selectedCustomerData?.connect_billing_city}
-              State: {selectedCustomerData?.connect_billing_state}
-              Country: {selectedCustomerData?.connect_billing_country}
-              Website: {selectedCustomerData?.website}
-            </>
-          )}
+      <FormContainer mainTitle="Sale Booking" link={true} />
+      <div className="card">
+        <div className="card-header">
+          <h5 className="card-title">Create</h5>
         </div>
-
-        <FieldContainer
-          label="Sale Booking Date"
-          fieldGrid={3}
-          astric={true}
-          type="date"
-          value={bookingDate}
-          max={todayDate}
-          onChange={(e) => setBookingDate(e.target.value)}
-        />
-
-        <FieldContainer
-          label="Base Amount"
-          fieldGrid={4}
-          placeholder="Enter amount here"
-          astric={true}
-          type="number"
-          value={baseAmount}
-          onChange={(e) => setBaseAmount(e.target.value)}
-        />
-
-        <div className="form-group">
-          <input
-            type="checkbox"
-            id="addGst"
-            checked={addGst}
-            onChange={handleGstChange}
+        <div className="card-body row">
+          <FieldContainer
+            fieldGrid={4}
+            astric
+            label="Campaign Name"
+            placeholder="Campaign Name"
+            value={campaignName}
+            onChange={(e) => setCampaignName(e.target.value)}
           />
-          <label htmlFor="addGst">+18% GST</label>
-        </div>
-
-        <FieldContainer
-          label="GST Amount"
-          fieldGrid={4}
-          type="number"
-          value={gstAmount}
-          disabled={true}
-        />
-        <FieldContainer
-          label="Net / Campaign Amount"
-          fieldGrid={4}
-          type="number"
-          value={netAmount}
-          disabled={true}
-        />
-        <FieldContainer
-          label="Description"
-          placeholder="Description"
-          fieldGrid={4}
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-        />
-        <div className="form-group col-4 mt-3">
-          <label className="form-label">
-            Payment Status <sup style={{ color: "red" }}>*</sup>
-          </label>
-          <Select
-            options={paymentStatusList}
-            value={selectedPaymentStatus}
-            onChange={handlePaymentStatusSelect}
+          <CustomSelect
+            fieldGrid={4}
+            label="Accounts"
+            dataArray={allAccounts}
+            optionId="account_id"
+            optionLabel="account_name"
+            selectedId={selectedAccount}
+            setSelectedId={setSelectedAccount}
             required
           />
-        </div>
-
-        {selectedPaymentStatus?.value === "sent_for_credit_approval" && (
-          <>
-            <div className="form-group col-3">
-              <label className="form-label">
-                Reason Credit Approval<sup style={{ color: "red" }}>*</sup>
-              </label>
-              <Select
-                options={creditApprovalList.map((option) => ({
-                  days: option.day_count,
-                  value: option._id,
-                  label: option.reason,
-                  reasonType: option.reason_type,
-                }))}
-                value={{
-                  value: selectedCreditApp,
-                  label:
-                    creditApprovalList.find(
-                      (item) => item?._id == selectedCreditApp
-                    )?.reason || "",
-                }}
-                onChange={handleReasonCreditApp}
-                required
-              />
-            </div>
-            {selectedReasonType === "own_reason" && (
-              <FieldContainer
-                label="Reason Credit Approval"
-                fieldGrid={4}
-                value={reasonCreditApproval}
-                onChange={(e) => setReasonCreditApproval(e.target.value)}
-              />
-            )}
-          </>
-        )}
-        <div className="col-4 mt-3  ">
-          <FieldContainer
-            label="Balance Payment Date"
-            type="date"
-            fieldGrid={12}
-            value={balancePayDate}
-            onChange={(e) => setBalancePayDate(e.target.value)}
+          <CustomSelect
+            fieldGrid={4}
+            label="Brand"
+            dataArray={allBrands}
+            optionId="instaBrandId"
+            optionLabel="instaBrandName"
+            selectedId={selectedBrand}
+            setSelectedId={setSelectedBrand}
+            required
           />
-        </div>
-        {/* {selectedPaymentStatus.label == "Use Credit Limit" && ( */}
-        <div className="form-group mt-4">
-          {/* <input
+          <div className="card">
+            {selectedCustomerData && (
+              <>
+                {/* Customer Type: {selectedCustomerData?.Customer_type_data} */}
+                Account Name: {selectedCustomerData?.customer_name}
+                {/* Company Name: {selectedCustomerData?.company_name} */}
+                GST No.: {selectedCustomerData?.company_gst_no}
+                Primary Contact: {selectedCustomerData?.primary_contact_no}
+                AlterNate Number: {selectedCustomerData?.alternative_no}
+                City: {selectedCustomerData?.connect_billing_city}
+                State: {selectedCustomerData?.connect_billing_state}
+                Country: {selectedCustomerData?.connect_billing_country}
+                Website: {selectedCustomerData?.website}
+              </>
+            )}
+          </div>
+
+          <FieldContainer
+            label="Sale Booking Date"
+            fieldGrid={3}
+            astric={true}
+            type="date"
+            value={bookingDate}
+            max={todayDate}
+            onChange={(e) => setBookingDate(e.target.value)}
+          />
+
+          <FieldContainer
+            label="Base Amount"
+            fieldGrid={4}
+            placeholder="Enter amount here"
+            astric={true}
+            type="number"
+            value={baseAmount}
+            onChange={(e) => setBaseAmount(e.target.value)}
+          />
+
+          <div className="form-group">
+            <input
+              type="checkbox"
+              id="addGst"
+              checked={addGst}
+              onChange={handleGstChange}
+            />
+            <label htmlFor="addGst">+18% GST</label>
+          </div>
+
+          <FieldContainer
+            label="GST Amount"
+            fieldGrid={4}
+            type="number"
+            value={gstAmount}
+            disabled={true}
+          />
+          <FieldContainer
+            label="Net / Campaign Amount"
+            fieldGrid={4}
+            type="number"
+            value={netAmount}
+            disabled={true}
+          />
+          <FieldContainer
+            label="Description"
+            placeholder="Description"
+            fieldGrid={4}
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+          />
+          <div className="form-group col-4 mt-3">
+            <label className="form-label">
+              Payment Status <sup style={{ color: "red" }}>*</sup>
+            </label>
+            <Select
+              options={paymentStatusList}
+              value={selectedPaymentStatus}
+              onChange={handlePaymentStatusSelect}
+              required
+            />
+          </div>
+
+          {selectedPaymentStatus?.value === "sent_for_credit_approval" && (
+            <>
+              <div className="form-group col-3">
+                <label className="form-label">
+                  Reason Credit Approval<sup style={{ color: "red" }}>*</sup>
+                </label>
+                <Select
+                  options={creditApprovalList.map((option) => ({
+                    days: option.day_count,
+                    value: option._id,
+                    label: option.reason,
+                    reasonType: option.reason_type,
+                  }))}
+                  value={{
+                    value: selectedCreditApp,
+                    label:
+                      creditApprovalList.find(
+                        (item) => item?._id == selectedCreditApp
+                      )?.reason || "",
+                  }}
+                  onChange={handleReasonCreditApp}
+                  required
+                />
+              </div>
+              {selectedReasonType === "own_reason" && (
+                <FieldContainer
+                  label="Reason Credit Approval"
+                  fieldGrid={4}
+                  value={reasonCreditApproval}
+                  onChange={(e) => setReasonCreditApproval(e.target.value)}
+                />
+              )}
+            </>
+          )}
+          <div className="col-4 mt-3  ">
+            <FieldContainer
+              label="Balance Payment Date"
+              type="date"
+              fieldGrid={12}
+              value={balancePayDate}
+              onChange={(e) => setBalancePayDate(e.target.value)}
+            />
+          </div>
+          {/* {selectedPaymentStatus.label == "Use Credit Limit" && ( */}
+          <div className="form-group mt-4">
+            {/* <input
             type="checkbox"
             value={executiveSelfCredit}
             onChange={(e) => setExecutiveSelfCredit(e.target.checked)}
@@ -427,14 +453,15 @@ const CreateSaleBooking = () => {
             }
             checked={executiveSelfCredit}
           /> */}
-          <label>
-            Sales Executive Credit Limit - {userCreditLimit} Total Used Sales
-            Executive Credit Limit - 10000 Total Available Credit Limit - 20000
-          </label>
-        </div>
-        {/* )} */}
+            <label>
+              Sales Executive Credit Limit - {userCreditLimit} Total Used Sales
+              Executive Credit Limit - 10000 Total Available Credit Limit -
+              20000
+            </label>
+          </div>
+          {/* )} */}
 
-        {/* <FieldContainer
+          {/* <FieldContainer
           type="file"
           name="Image"
           fieldGrid={4}
@@ -442,17 +469,35 @@ const CreateSaleBooking = () => {
           onChange={(e) => setExcelFile(e.target.files[0])}
           required={false}
         /> */}
-        <div className="form-group col-12 mt-2">
-          <input
-            type="checkbox"
-            value={incentiveCheck}
-            onChange={(e) => setIncentiveCheck(e.target.checked)}
-          />
-          <label className="mr-2"> No Incentive</label>
+          <div className="form-group col-12 mt-2">
+            <input
+              type="checkbox"
+              value={incentiveCheck}
+              onChange={(e) => setIncentiveCheck(e.target.checked)}
+            />
+            <label className="mr-2"> No Incentive</label>
+          </div>
         </div>
-      </FormContainer>
+      </div>
 
-      <ExcelToInputFields />
+      <CreateRecordServices
+        records={recServices}
+        setRecServices={setRecServices}
+        serviceTypes={serviceTypes}
+      />
+
+      {/* <ExcelToInputFields /> */}
+      <div className="flex-row sb mb-3">
+        <button className="btn cmnbtn btn-primary" onClick={handleSubmit}>
+          Submit
+        </button>
+        <button
+          className="btn cmnbtn btn-secondary"
+          onClick={handleAddRecServices}
+        >
+          Add Record Service
+        </button>
+      </div>
     </div>
   );
 };
