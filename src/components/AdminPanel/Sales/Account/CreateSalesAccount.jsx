@@ -114,11 +114,9 @@ const CreateSalesAccount = () => {
   const [updateSalesAccount, { isLoading: editAccountLoading }] =
     useEditAccountMutation();
 
-  console.log(accountId);
-
   //get Documents with account_id
   const { data: singleAccountDocuments, isLoading: DocumentsLoading } =
-    useGetDocumentByIdQuery();
+    useGetDocumentByIdQuery(accountId, { skip: !accountId });
 
   //get POC with account_id
   const { data: singlePoc, isLoading: pocLoading } = useGetSinglePOCQuery(
@@ -132,8 +130,6 @@ const CreateSalesAccount = () => {
   const [updatePocs, { isLoading: editPocLoading }] = useEditPOCMutation();
 
   //update Document
-
-  console.log(accountId);
   const [updateDocs, { isLoading: editDocumentLoading }] =
     useEditDocumentMutation(accountId, {
       skip: !accountId,
@@ -312,8 +308,16 @@ const CreateSalesAccount = () => {
         await createSalesAccount(payloads).unwrap();
       } else {
         await updateSalesAccount({ ...payloads, id: id }).unwrap();
-        await updateDocs({ ...documents, id: accountId }).unwrap();
-        await updatePocs({ ...pocs, id: accountId }).unwrap();
+        await updateDocs({
+          account_documents: documents,
+          updated_by: loginUserId,
+          id: accountId,
+        }).unwrap();
+        await updatePocs({
+          account_poc: pocs,
+          updated_by: loginUserId,
+          id: accountId,
+        }).unwrap();
       }
 
       setAccountName("");

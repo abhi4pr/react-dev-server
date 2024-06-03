@@ -2,25 +2,23 @@ import React, { useEffect, useState } from "react";
 import { useGetSingleDocumentOverviewQuery } from "../../../../Store/API/Sales/DocumentOverview";
 import { useGetAllDocumentTypeQuery } from "../../../../Store/API/Sales/DocumentTypeApi";
 
-const DocumentTypDetails = ({ SingleAccount, SingleAccountLoading }) => {
-  const [documentId, setDocumentId] = useState(null);
+const DocumentTypDetails = ({ SingleAccount }) => {
   const {
     data: DocumentTypeData,
     isLoading: DocumentTypeLoading,
     error: DocumentTypeError,
-  } = useGetSingleDocumentOverviewQuery(documentId);
+  } = useGetSingleDocumentOverviewQuery(
+    `${SingleAccount?.account_id}?_id=false`,
+    {
+      skip: !SingleAccount?.account_id,
+    }
+  );
 
   const {
     data: AllDocumentTypeData,
     isLoading: AllDocumentTypeLoading,
     error: AllDocumentTypeError,
   } = useGetAllDocumentTypeQuery();
-
-  useEffect(() => {
-    if (!SingleAccountLoading) {
-      setDocumentId(SingleAccount?.account_id + "?_id=false");
-    }
-  }, [SingleAccount]);
 
   return (
     <div className="DocDetails">
