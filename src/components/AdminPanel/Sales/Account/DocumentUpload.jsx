@@ -22,11 +22,13 @@ const DocumentUpload = ({ documents, setDocuments, documentTypes }) => {
   };
 
   const getAvailableDocumentTypes = (currentIndex) => {
-    const selectedTypes = documents.map((doc) => doc.type).filter(Boolean);
+    const selectedTypes = documents
+      .map((doc) => doc.document_master_id)
+      .filter(Boolean);
     return documentTypes.filter(
       (type) =>
         !selectedTypes.includes(type._id) ||
-        documents[currentIndex].type === type._id
+        documents[currentIndex].document_master_id === type._id
     );
   };
 
@@ -61,23 +63,25 @@ const DocumentUpload = ({ documents, setDocuments, documentTypes }) => {
                 dataArray={getAvailableDocumentTypes(index)}
                 optionId="_id"
                 optionLabel="document_name"
-                selectedId={document.type}
+                selectedId={document.document_master_id}
                 setSelectedId={(value) =>
-                  handleDocumentChange(index, "type", value)
+                  handleDocumentChange(index, "document_master_id", value)
                 }
                 required
               />
 
               <FieldContainer
-                label={`${getSelectedTypeLabel(document.type)} Number`}
+                label={`${getSelectedTypeLabel(
+                  document.document_master_id
+                )} Number`}
                 placeholder={`Enter ${getSelectedTypeLabel(
-                  document.type
+                  document.document_master_id
                 )} number here`}
                 type="text"
                 fieldGrid={6}
-                value={document.selectedType || ""}
+                value={document.document_no || ""}
                 onChange={(e) =>
-                  handleDocumentChange(index, "selectedType", e.target.value)
+                  handleDocumentChange(index, "document_no", e.target.value)
                 }
                 required
               />

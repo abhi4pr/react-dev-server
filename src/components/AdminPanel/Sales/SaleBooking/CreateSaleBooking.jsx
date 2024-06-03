@@ -482,14 +482,14 @@ const CreateSaleBooking = () => {
 
       <CreateRecordServices
         records={recServices}
-        setRecServices={setRecServices}
+        setRecords={setRecServices}
         serviceTypes={serviceTypes}
       />
 
       {/* <ExcelToInputFields /> */}
       <div className="flex-row sb mb-3">
         <button className="btn cmnbtn btn-primary" onClick={handleSubmit}>
-          Submit
+          Draft
         </button>
         <button
           className="btn cmnbtn btn-secondary"

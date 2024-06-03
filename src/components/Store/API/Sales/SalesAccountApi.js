@@ -16,7 +16,7 @@ const SalesAccountApi = createApi({
       transformResponse: (response, args) => response.data,
     }),
     getSingleAccountSalesBooking: builder.query({
-      query: (id) => `/accounts/get_single_account_billing/${id}`,
+      query: (id) => `accounts/get_single_account_billing/${id}`,
       transformResponse: (response, args) => response.data,
     }),
 

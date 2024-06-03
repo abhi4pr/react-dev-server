@@ -53,6 +53,7 @@ const RecordServices = ({ records, setRecords, serviceTypes }) => {
 
               <FieldContainer
                 label="Sale Booking ID"
+                placeholder="Enter Booking ID"
                 type="number"
                 fieldGrid={6}
                 value={record.sale_booking_id || ""}
@@ -64,6 +65,7 @@ const RecordServices = ({ records, setRecords, serviceTypes }) => {
 
               <FieldContainer
                 label="Sales Service Master ID"
+                placeholder="Enter Sales Service Master ID"
                 type="text"
                 fieldGrid={6}
                 value={record.sales_service_master_id || ""}
@@ -79,6 +81,7 @@ const RecordServices = ({ records, setRecords, serviceTypes }) => {
 
               <FieldContainer
                 label="Amount"
+                placeholder="Enter Amount"
                 type="number"
                 fieldGrid={6}
                 value={record.amount || ""}
@@ -90,6 +93,7 @@ const RecordServices = ({ records, setRecords, serviceTypes }) => {
 
               <FieldContainer
                 label="Number of Hours"
+                placeholder="Enter Number of Hours"
                 type="number"
                 fieldGrid={6}
                 value={record.no_of_hours || ""}
@@ -101,6 +105,7 @@ const RecordServices = ({ records, setRecords, serviceTypes }) => {
 
               <FieldContainer
                 label="Goal"
+                placeholder="Enter Goal"
                 type="text"
                 fieldGrid={6}
                 value={record.goal || ""}
@@ -112,6 +117,7 @@ const RecordServices = ({ records, setRecords, serviceTypes }) => {
 
               <FieldContainer
                 label="Day"
+                placeholder="Enter Day"
                 type="number"
                 fieldGrid={6}
                 value={record.day || ""}
@@ -123,6 +129,7 @@ const RecordServices = ({ records, setRecords, serviceTypes }) => {
 
               <FieldContainer
                 label="Quantity"
+                placeholder="Enter Quantity"
                 type="number"
                 fieldGrid={6}
                 value={record.quantity || ""}
@@ -134,6 +141,7 @@ const RecordServices = ({ records, setRecords, serviceTypes }) => {
 
               <FieldContainer
                 label="Brand Name"
+                placeholder="Enter Brand Name"
                 type="text"
                 fieldGrid={6}
                 value={record.brand_name || ""}
@@ -145,6 +153,7 @@ const RecordServices = ({ records, setRecords, serviceTypes }) => {
 
               <FieldContainer
                 label="Hashtag"
+                placeholder="Enter Hashtag"
                 type="text"
                 fieldGrid={6}
                 value={record.hashtag || ""}
@@ -156,6 +165,7 @@ const RecordServices = ({ records, setRecords, serviceTypes }) => {
 
               <FieldContainer
                 label="Individual Amount"
+                placeholder="Enter Individual Amount"
                 type="number"
                 fieldGrid={6}
                 value={record.individual_amount || ""}
@@ -167,6 +177,7 @@ const RecordServices = ({ records, setRecords, serviceTypes }) => {
 
               <FieldContainer
                 label="Start Date"
+                placeholder="EnterStart Date"
                 type="date"
                 fieldGrid={6}
                 value={record.start_date ? record.start_date.split("T")[0] : ""}
@@ -178,6 +189,7 @@ const RecordServices = ({ records, setRecords, serviceTypes }) => {
 
               <FieldContainer
                 label="End Date"
+                placeholder="Enter End Date"
                 type="date"
                 fieldGrid={6}
                 value={record.end_date ? record.end_date.split("T")[0] : ""}
@@ -189,6 +201,7 @@ const RecordServices = ({ records, setRecords, serviceTypes }) => {
 
               <FieldContainer
                 label="Per Month Amount"
+                placeholder="Enter Per Month Amount"
                 type="number"
                 fieldGrid={6}
                 value={record.per_month_amount || ""}
@@ -200,6 +213,7 @@ const RecordServices = ({ records, setRecords, serviceTypes }) => {
 
               <FieldContainer
                 label="Number of Creators"
+                placeholder="Enter Number of Creators"
                 type="number"
                 fieldGrid={6}
                 value={record.no_of_creators || ""}
@@ -211,6 +225,7 @@ const RecordServices = ({ records, setRecords, serviceTypes }) => {
 
               <FieldContainer
                 label="Deliverables Info"
+                placeholder="Enter Deliverables Info"
                 type="text"
                 fieldGrid={6}
                 value={record.deliverables_info || ""}
@@ -222,6 +237,7 @@ const RecordServices = ({ records, setRecords, serviceTypes }) => {
 
               <FieldContainer
                 label="Remarks"
+                placeholder="Enter Remarks"
                 type="text"
                 fieldGrid={6}
                 value={record.remarks || ""}
@@ -233,6 +249,7 @@ const RecordServices = ({ records, setRecords, serviceTypes }) => {
 
               <FieldContainer
                 label="Excel Upload"
+                placeholder="Enter Excel Upload"
                 type="file"
                 fieldGrid={6}
                 onChange={(e) =>
