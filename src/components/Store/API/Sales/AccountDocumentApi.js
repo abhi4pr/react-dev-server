@@ -7,6 +7,7 @@ const AccountDocumentApi = createApi({
   endpoints: (builder) => ({
     getDocumentById: builder.query({
       query: (id) => `accounts/get_document_overview/${id}`,
+      transformResponse: (response) => response.data,
     }),
 
     editDocument: builder.mutation({

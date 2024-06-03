@@ -34,15 +34,15 @@ import {
   useGetSinglePOCQuery,
 } from "../../../Store/API/Sales/PointOfContactApi";
 import { useGetAllDocumentTypeQuery } from "../../../Store/API/Sales/DocumentTypeApi";
+import Loader from "../../Finance/Loader/Loader";
 
 const CreateSalesAccount = () => {
+  const { id } = useParams();
   const { toastAlert, toastError } = useGlobalContext();
   const normalToken = sessionStorage.getItem("token");
   const navigate = useNavigate();
   const token = getDecodedToken();
   const loginUserId = token.id;
-
-  const { id } = useParams();
 
   const {
     data: allAccountTypes,
@@ -61,6 +61,7 @@ const CreateSalesAccount = () => {
     error: allBrandCatTypeError,
     isLoading: allBrandCatTypeLoading,
   } = useGetAllBrandCategoryTypeQuery();
+
   const {
     data: allDocType,
     error: allDocTypeError,
@@ -76,18 +77,10 @@ const CreateSalesAccount = () => {
     },
   ] = useAddAccountMutation();
 
-  const { data: singleAccountData } = useGetSingleAccountQuery(id, {
-    skip: !id,
-  });
-
-  const [
-    updateSalesAccount,
-    {
-      isLoading: isUpdateSalesLoading,
-      isSuccess: isUpdateSalesSuccess,
-      isError: isUpdateSalesError,
-    },
-  ] = useEditAccountMutation();
+  const { data: singleAccountData, isLoading: accountDataLoading } =
+    useGetSingleAccountQuery(id, {
+      skip: !id,
+    });
 
   const [accountName, setAccountName] = useState("");
   const [selectedAccountType, setSelectedAccountType] = useState(null);
@@ -116,31 +109,35 @@ const CreateSalesAccount = () => {
 
   const [pocs, setPocs] = useState([]);
   const [documents, setDocuments] = useState([]);
-  const [accountId, setAccountId] = useState(null);
+  const [accountId, setAccountId] = useState();
 
-  const { data: singleAccountDocuments } = useGetDocumentByIdQuery(accountId, {
-    skip: !accountId,
-  });
+  const [updateSalesAccount, { isLoading: editAccountLoading }] =
+    useEditAccountMutation();
 
-  const [
-    updatePocs,
-    { isLoading: isPocUpdating, isSuccess: isPocUpdated, isError: isPocError },
-  ] = useEditPOCMutation();
+  console.log(accountId);
 
-  const [
-    updateDocs,
+  //get Documents with account_id
+  const { data: singleAccountDocuments, isLoading: DocumentsLoading } =
+    useGetDocumentByIdQuery();
+
+  //get POC with account_id
+  const { data: singlePoc, isLoading: pocLoading } = useGetSinglePOCQuery(
+    accountId,
     {
-      isLoading: isDocumentUpdating,
-      isSuccess: isDocumentUpdated,
-      isError: isDocumentError,
-    },
-  ] = useEditDocumentMutation();
+      skip: !accountId,
+    }
+  );
 
-  const documentTypes = [
-    { id: 1, type: "Passport" },
-    { id: 2, type: "Driver's License" },
-    { id: 3, type: "Utility Bill" },
-  ];
+  //update POC
+  const [updatePocs, { isLoading: editPocLoading }] = useEditPOCMutation();
+
+  //update Document
+
+  console.log(accountId);
+  const [updateDocs, { isLoading: editDocumentLoading }] =
+    useEditDocumentMutation(accountId, {
+      skip: !accountId,
+    });
 
   useEffect(() => {
     async function getData() {
@@ -174,7 +171,6 @@ const CreateSalesAccount = () => {
       setDescription(description);
 
       async function getBilling() {
-        console.log("here");
         const response = await axios.get(
           `${baseUrl}/accounts/get_single_account_billing/${singleAccountData.account_id}?_id=false`,
           {
@@ -217,6 +213,11 @@ const CreateSalesAccount = () => {
     }
   }, [id, singleAccountData]);
 
+  useEffect(() => {
+    setPocs(singlePoc);
+    setDocuments(singleAccountDocuments);
+  }, [accountId, singlePoc, singleAccountDocuments]);
+
   const handleAddPoc = () => {
     setPocs([
       ...pocs,
@@ -237,7 +238,8 @@ const CreateSalesAccount = () => {
       ...documents,
       {
         file: null,
-        type: "",
+        document_master_id: "",
+        document_no: "",
       },
     ]);
   };
@@ -309,9 +311,9 @@ const CreateSalesAccount = () => {
       if (id == 0) {
         await createSalesAccount(payloads).unwrap();
       } else {
-        await updateSalesAccount(payloads).unwrap();
-        await updateDocs(documents).unwrap();
-        await updatePocs(pocs).unwrap();
+        await updateSalesAccount({ ...payloads, id: id }).unwrap();
+        await updateDocs({ ...documents, id: accountId }).unwrap();
+        await updatePocs({ ...pocs, id: accountId }).unwrap();
       }
 
       setAccountName("");
@@ -415,7 +417,20 @@ const CreateSalesAccount = () => {
         return null;
     }
   };
-
+  if (
+    allAccountTypesLoading ||
+    allCompanyTypeLoading ||
+    allBrandCatTypeLoading ||
+    allDocTypeLoading ||
+    isCreateSalesLoading ||
+    accountDataLoading ||
+    editAccountLoading ||
+    DocumentsLoading ||
+    pocLoading ||
+    editPocLoading ||
+    editDocumentLoading
+  )
+    return <Loader />;
   return (
     <div>
       <Modal
@@ -700,7 +715,7 @@ const CreateSalesAccount = () => {
       <DocumentUpload
         documents={documents}
         setDocuments={setDocuments}
-        documentTypes={documentTypes}
+        documentTypes={allDocType}
       />
       <div className="flex-row sb mb-3">
         <button
