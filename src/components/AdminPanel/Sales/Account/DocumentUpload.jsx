@@ -36,13 +36,13 @@ const DocumentUpload = ({ documents, setDocuments, documentTypes }) => {
     <>
       {documents?.map((document, index) => (
         <div className="card" key={index}>
-          <div className="card-header">
+          <div className="card-header sb">
             <h4>Document ({index + 1})</h4>
             <button
-              className="btn cmnbtn btn-danger"
+              className="icon-1"
               onClick={() => handleDeleteDocument(index)}
             >
-              Delete
+              <i className="bi bi-trash"></i>
             </button>
           </div>
           <div className="card-body">

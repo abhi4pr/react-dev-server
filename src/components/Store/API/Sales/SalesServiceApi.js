@@ -6,20 +6,20 @@ const SaleServiceApi = createApi({
   baseQuery: authBaseQuery,
   endpoints: (builder) => ({
     getSingleSaleService: builder.query({
-      query: (id) => `/sales/get_sale_service_master/${id}`,
+      query: (id) => `/sales/service_master/${id}`,
       transformResponse: (response) => response.data,
       keepUnusedDataFor: 60 * 60 * 24,
     }),
 
     getAllSaleService: builder.query({
-      query: () => "/sales/getlist_sale_service_master",
+      query: () => "/sales/service_master",
       transformResponse: (response) => response.data,
       keepUnusedDataFor: 60 * 60 * 24,
     }),
 
     addSaleService: builder.mutation({
       query: (saleServiceData) => ({
-        url: "/sales/add_sale_service_master",
+        url: "/sales/service_master",
         method: "POST",
         body: saleServiceData,
       }),
@@ -44,7 +44,7 @@ const SaleServiceApi = createApi({
 
     editSaleService: builder.mutation({
       query: ({ id, ...updatedSaleService }) => ({
-        url: `/sales/update_sale_service_master/${id}`,
+        url: `/sales/service_master/${id}`,
         method: "PUT",
         body: updatedSaleService,
       }),
@@ -77,7 +77,7 @@ const SaleServiceApi = createApi({
 
     deleteSaleService: builder.mutation({
       query: (id) => ({
-        url: `/sales/delete_sale_service_master/${id}`,
+        url: `/sales/service_master/${id}`,
         method: "DELETE",
       }),
       onQueryStarted: async (id, { dispatch, queryFulfilled }) => {
