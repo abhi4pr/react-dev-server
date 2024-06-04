@@ -777,8 +777,10 @@ const PageOverview = () => {
       headerName: "Price Type",
       width: 200,
       renderCell: (params) => {
+        console.log(allPriceTypeList, "allPriceTypeList", params.row.page_price_type_id, "params.row.price_type_id");
+
         let name = allPriceTypeList?.find(
-          (item) => item.price_type_id == params.row.price_type_id
+          (item) => item._id == params.row.page_price_type_id
         )?.name;
         return <div>{name}</div>;
       },

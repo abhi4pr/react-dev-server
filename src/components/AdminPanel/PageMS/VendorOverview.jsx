@@ -25,27 +25,29 @@ import VendorWhatsappLinkModla from "./VendorWhatsappLinkModla";
 import OpenWithIcon from "@mui/icons-material/OpenWith";
 import VendorPageModal from "./VendorPageModal";
 import {
+  useGetAllVendorQuery,
   useGetAllVendorTypeQuery,
   useGetPmsPayCycleQuery,
   useGetPmsPaymentMethodQuery,
   useGetPmsPlatformQuery,
 } from "../../Store/reduxBaseURL";
 import VendorBankDetailModal from "./VendorBankDetailModal";
+import { fi } from "date-fns/locale";
+import { filter } from "jszip";
 
 const VendorOverview = () => {
   const { toastAlert } = useGlobalContext();
-  const [vendorTypes, setVendorTypes] = useState([]);
+  // const [vendorTypes, setVendorTypes] = useState([]);
   const [search, setSearch] = useState("");
-  const [filterData, setFilterData] = useState([]);
+  // const [filterData, setFilterData] = useState([]);
   const [data, setData] = useState([]);
-  const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
   const { data: vendor } = useGetAllVendorTypeQuery();
   const typeData = vendor?.data;
 
-  const showWhatsappModal = useSelector(
-    (state) => state.PageOverview.showWhatsappModal
-  );
+  // const showWhatsappModal = useSelector(
+  //   (state) => state.PageOverview.showWhatsappModal
+  // );
   const { data: platform } = useGetPmsPlatformQuery();
   const platformData = platform?.data;
 
@@ -54,24 +56,34 @@ const VendorOverview = () => {
 
   const { data: pay } = useGetPmsPaymentMethodQuery();
   const payData = pay?.data;
+  const {
+    data: vendorData,
+    isLoading: loading,
+    refetch: refetchVendor,
+  } = useGetAllVendorQuery();
+  let vendorTypes = vendorData?.data;
+  let filterData = vendorData?.data;
+  // !loading && setVendorTypes(vendorData.data);
+  // !loading && setFilterData(vendorData.data);
+  // console.log(vendorData.data);
+
   const getData = () => {
-    setLoading(true);
-    axios.get(baseUrl + "v1/vendor").then((res) => {
-      setVendorTypes(res.data.data);
-      setFilterData(res.data.data);
-      setLoading(false);
-    });
+    refetchVendor();
   };
 
-  useEffect(() => {
-    getData();
-  }, []);
+  // useEffect(() => {
+  //   if (!loading) {
+  //     // setVendorTypes(vendorData.data);
+  //     // setFilterData(vendorData.data);
+  //   }
+  // }, [vendorData]);
 
   useEffect(() => {
     const result = vendorTypes?.filter((d) => {
       return d.vendor_name.toLowerCase().match(search.toLowerCase());
     });
-    setFilterData(result);
+    // setFilterData(result);
+    filterData = result;
     setData(result);
   }, [search]);
 
@@ -89,12 +101,12 @@ const VendorOverview = () => {
     };
   };
 
-  const handleClickVendorName = (params) => {
-    return () => {
-      dispatch(setVendorRowData(params.row));
-      dispatch(setShowPageModal());
-    };
-  };
+  // const handleClickVendorName = (params) => {
+  //   return () => {
+  //     dispatch(setVendorRowData(params.row));
+  //     dispatch(setShowPageModal());
+  //   };
+  // };
 
   const dataGridcolumns = [
     {
@@ -346,107 +358,107 @@ const VendorOverview = () => {
       ),
     },
   ];
-  const copySelectedRows = (type) => {
-    let data = [];
-    let selectedRows = [];
+  // const copySelectedRows = (type) => {
+  //   let data = [];
+  //   let selectedRows = [];
 
-    if (type === 1) {
-      selectedRows = Array.from(
-        document.getElementsByClassName("MuiDataGrid-row")
-      ).filter((row) => row.classList.contains("Mui-selected"));
-    }
+  //   if (type === 1) {
+  //     selectedRows = Array.from(
+  //       document.getElementsByClassName("MuiDataGrid-row")
+  //     ).filter((row) => row.classList.contains("Mui-selected"));
+  //   }
 
-    data = selectedRows.map((row) => {
-      let rowData = {};
-      for (let j = 1; j < row.children.length - 1; j++) {
-        if (dataGridcolumns[j].field) {
-          rowData[dataGridcolumns[j].field] = row.children[j + 1].innerText;
-        }
-      }
-      return rowData;
-    });
+  //   data = selectedRows.map((row) => {
+  //     let rowData = {};
+  //     for (let j = 1; j < row.children.length - 1; j++) {
+  //       if (dataGridcolumns[j].field) {
+  //         rowData[dataGridcolumns[j].field] = row.children[j + 1].innerText;
+  //       }
+  //     }
+  //     return rowData;
+  //   });
 
-    let copyData = data.map((item) => {
-      return (
-        `Vendor Name: ${item.vendorMast_name}\n` +
-        `Mobile: ${item.mobile}\n` +
-        `Alternate Mobile: ${item.alternate_mobile}\n` +
-        `Email: ${item.email}\n` +
-        `Home City: ${item.home_city}\n` +
-        `GST No: ${item.gst_no}\n` +
-        `Threshold Limit: ${item.threshold_limit}\n` +
-        `Country Code: ${item.country_code}\n` +
-        `Company Pincode: ${item.company_pincode}\n` +
-        `Company Address: ${item.company_address}\n` +
-        `Company City: ${item.company_city}\n` +
-        `Company Name: ${item.company_name}\n` +
-        `Company State: ${item.company_state}\n` +
-        `Home Address: ${item.home_address}\n` +
-        `Home State: ${item.home_state}\n` +
-        `Pan No: ${item.pan_no}\n` +
-        `Personal Address: ${item.personal_address}\n` +
-        `Vendor Type: ${
-          typeData?.find((type) => type._id == item.type_id)?.type_name
-        }\n` +
-        `Platform: ${item.platform_id}\n` +
-        `Payment Method: ${
-          payData?.find((pay) => pay._id == item.payMethod_id)?.payMethod_name
-        }\n` +
-        `Cycle: ${
-          cycleData?.find((cycle) => cycle._id == item.cycle_id)?.cycle_name
-        }\n`
-      );
-    });
+  //   let copyData = data.map((item) => {
+  //     return (
+  //       `Vendor Name: ${item.vendorMast_name}\n` +
+  //       `Mobile: ${item.mobile}\n` +
+  //       `Alternate Mobile: ${item.alternate_mobile}\n` +
+  //       `Email: ${item.email}\n` +
+  //       `Home City: ${item.home_city}\n` +
+  //       `GST No: ${item.gst_no}\n` +
+  //       `Threshold Limit: ${item.threshold_limit}\n` +
+  //       `Country Code: ${item.country_code}\n` +
+  //       `Company Pincode: ${item.company_pincode}\n` +
+  //       `Company Address: ${item.company_address}\n` +
+  //       `Company City: ${item.company_city}\n` +
+  //       `Company Name: ${item.company_name}\n` +
+  //       `Company State: ${item.company_state}\n` +
+  //       `Home Address: ${item.home_address}\n` +
+  //       `Home State: ${item.home_state}\n` +
+  //       `Pan No: ${item.pan_no}\n` +
+  //       `Personal Address: ${item.personal_address}\n` +
+  //       `Vendor Type: ${
+  //         typeData?.find((type) => type._id == item.type_id)?.type_name
+  //       }\n` +
+  //       `Platform: ${item.platform_id}\n` +
+  //       `Payment Method: ${
+  //         payData?.find((pay) => pay._id == item.payMethod_id)?.payMethod_name
+  //       }\n` +
+  //       `Cycle: ${
+  //         cycleData?.find((cycle) => cycle._id == item.cycle_id)?.cycle_name
+  //       }\n`
+  //     );
+  //   });
 
-    converttoclipboard(copyData.join("\n"));
-    toastAlert("Copied Selected Pages");
-  };
+  //   converttoclipboard(copyData.join("\n"));
+  //   toastAlert("Copied Selected Pages");
+  // };
 
-  const converttoclipboard = (copydata) => {
-    const textarea = document.createElement("textarea");
-    textarea.value = copydata;
-    document.body.appendChild(textarea);
-    textarea.select();
-    document.execCommand("copy");
-    document.body.removeChild(textarea);
-  };
+  // const converttoclipboard = (copydata) => {
+  //   const textarea = document.createElement("textarea");
+  //   textarea.value = copydata;
+  //   document.body.appendChild(textarea);
+  //   textarea.select();
+  //   document.execCommand("copy");
+  //   document.body.removeChild(textarea);
+  // };
 
-  const copyAllRows = () => {
-    let data = filterData.map((item) => {
-      let formattedData =
-        `Vendor Name: ${item.vendorMast_name}\n` +
-        `Mobile: ${item.mobile}\n` +
-        `Alternate Mobile: ${item.alternate_mobile}\n` +
-        `Email: ${item.email}\n` +
-        `Home City: ${item.home_city}\n` +
-        `GST No: ${item.gst_no}\n` +
-        `Threshold Limit: ${item.threshold_limit}\n` +
-        `Country Code: ${item.country_code}\n` +
-        `Company Pincode: ${item.company_pincode}\n` +
-        `Company Address: ${item.company_address}\n` +
-        `Company City: ${item.company_city}\n` +
-        `Company Name: ${item.company_name}\n` +
-        `Company State: ${item.company_state}\n` +
-        `Home Address: ${item.home_address}\n` +
-        `Home State: ${item.home_state}\n` +
-        `Pan No: ${item.pan_no}\n` +
-        `Personal Address: ${item.personal_address}\n` +
-        `Vendor Type: ${
-          typeData?.find((type) => type._id == item.type_id)?.type_name
-        }\n` +
-        `Platform: ${item.platform_id}\n` +
-        `Payment Method: ${
-          payData?.find((pay) => pay._id == item.payMethod_id)?.payMethod_name
-        }\n` +
-        `Cycle: ${
-          cycleData?.find((cycle) => cycle._id == item.cycle_id)?.cycle_name
-        }\n`;
-      return formattedData;
-    });
+  // const copyAllRows = () => {
+  //   let data = filterData.map((item) => {
+  //     let formattedData =
+  //       `Vendor Name: ${item.vendorMast_name}\n` +
+  //       `Mobile: ${item.mobile}\n` +
+  //       `Alternate Mobile: ${item.alternate_mobile}\n` +
+  //       `Email: ${item.email}\n` +
+  //       `Home City: ${item.home_city}\n` +
+  //       `GST No: ${item.gst_no}\n` +
+  //       `Threshold Limit: ${item.threshold_limit}\n` +
+  //       `Country Code: ${item.country_code}\n` +
+  //       `Company Pincode: ${item.company_pincode}\n` +
+  //       `Company Address: ${item.company_address}\n` +
+  //       `Company City: ${item.company_city}\n` +
+  //       `Company Name: ${item.company_name}\n` +
+  //       `Company State: ${item.company_state}\n` +
+  //       `Home Address: ${item.home_address}\n` +
+  //       `Home State: ${item.home_state}\n` +
+  //       `Pan No: ${item.pan_no}\n` +
+  //       `Personal Address: ${item.personal_address}\n` +
+  //       `Vendor Type: ${
+  //         typeData?.find((type) => type._id == item.type_id)?.type_name
+  //       }\n` +
+  //       `Platform: ${item.platform_id}\n` +
+  //       `Payment Method: ${
+  //         payData?.find((pay) => pay._id == item.payMethod_id)?.payMethod_name
+  //       }\n` +
+  //       `Cycle: ${
+  //         cycleData?.find((cycle) => cycle._id == item.cycle_id)?.cycle_name
+  //       }\n`;
+  //     return formattedData;
+  //   });
 
-    converttoclipboard(data.join("\n"));
-    toastAlert("Copied All Pages");
-  };
+  //   converttoclipboard(data.join("\n"));
+  //   toastAlert("Copied All Pages");
+  // };
 
   return (
     <>

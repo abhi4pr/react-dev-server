@@ -36,7 +36,11 @@ export default function PageStats() {
     watch,
     setValue,
     control,
-  } = useForm();
+  } = useForm(
+    {
+      mode: "onChange",
+    }
+  );
   let isStatsFor = watch("statsFor");
   switch (isStatsFor) {
     case "daily":
@@ -65,7 +69,7 @@ export default function PageStats() {
   const [updatePageState] = useUpdatePageStateMutation();
 
   useEffect(() => {
-    if ( pageStateData) {
+    if (pageStateData) {
       setValue("reach", pageStateData?.reach);
       setValue("impressions", pageStateData?.impression);
       setValue("engagement", pageStateData?.engagement);
@@ -116,71 +120,144 @@ export default function PageStats() {
       setValue("ageGroup7", pageStateData?.Age_65_plus_percent);
     }
   }, [pageStateData]);
+
+  const appendIfDefined = (formData, key, value) => {
+    if (value !== undefined && value !== null) {
+      formData.append(key, value);
+    }
+  };
   const handleSubmitForm = (data) => {
     const formData = new FormData();
-    formData.append("page_master_id", id);
-    formData.append("reach", data.reach);
-    formData.append("impression", data.impressions);
-    formData.append("engagement", data.engagement);
-    formData.append("story_view", data.storyView);
-    formData.append("story_view_date", data.storyViewDate);
-    formData.append("profile_visit", data.profileVisit);
+    // formData.append("page_master_id", id);
+    // formData.append("reach", data?.reach??0);
+    // formData.append("impression", data?.impressions??0);
+    // formData.append("engagement", data?.engagement??0);
+    // formData.append("story_view", data?.storyView??0);
+    // formData.append("story_view_date", data?.storyViewDate??null);
+    // formData.append("profile_visit", data?.profileVisit??0);
 
-    formData.append("city1_name", data.city1);
-    formData.append("percentage_city1_name", data.city1Percentage);
-    formData.append("city2_name", data.city2);
-    formData.append("percentage_city2_name", data.city2Percentage);
-    formData.append("city3_name", data.city3);
-    formData.append("percentage_city3_name", data.city3Percentage);
-    formData.append("city4_name", data.city4);
-    formData.append("percentage_city4_name", data.city4Percentage);
-    formData.append("city5_name", data.city5);
-    formData.append("percentage_city5_name", data.city5Percentage);
+    // formData.append("city1_name", data?.city1?? null);
+    // formData.append("percentage_city1_name", data?.city1Percentage??0);
+    // formData.append("city2_name", data?.city2??null);
+    // formData.append("percentage_city2_name", data?.city2Percentage??0);
+    // formData.append("city3_name", data?.city3??null);
+    // formData.append("percentage_city3_name", data?.city3Percentage??0);
+    // formData.append("city4_name", data?.city4??null);
+    // formData.append("percentage_city4_name", data?.city4Percentage??0);
+    // formData.append("city5_name", data?.city5??null);
+    // formData.append("percentage_city5_name", data?.city5Percentage??0);
 
-    formData.append("country1_name", data.country1);
-    formData.append("percentage_country1_name", data.country1Percentage);
-    formData.append("country2_name", data.country2);
-    formData.append("percentage_country2_name", data.country2Percentage);
-    formData.append("country3_name", data.country3);
-    formData.append("percentage_country3_name", data.country3Percentage);
-    formData.append("country4_name", data.country4);
-    formData.append("percentage_country4_name", data.country4Percentage);
-    formData.append("country5_name", data.country5);
-    formData.append("percentage_country5_name", data.country5Percentage);
+    // formData.append("country1_name", data?.country1??null);
+    // formData.append("percentage_country1_name", data?.country1Percentage??0);
+    // formData.append("country2_name", data?.country2??null);
+    // formData.append("percentage_country2_name", data?.country2Percentage??0);
+    // formData.append("country3_name", data?.country3??null);
+    // formData.append("percentage_country3_name", data?.country3Percentage??0);
+    // formData.append("country4_name", data?.country4??null);
+    // formData.append("percentage_country4_name", data?.country4Percentage??0);
+    // formData.append("country5_name", data?.country5??null);
+    // formData.append("percentage_country5_name", data?.country5Percentage??0);
 
-    formData.append("stats_for", data.statsFor);
-    formData.append("start_date", data.startDate);
-    formData.append("end_date", data.endDate);
+    // formData.append("stats_for", data?.statsFor??null);
+    // formData.append("start_date", data?.startDate??null);
+    // formData.append("end_date", data?.endDate??null);
 
-    formData.append("male_percent", data.menPercentage);
-    formData.append("female_percent", data.womenPercentage);
+    // formData.append("male_percent", data?.menPercentage??0);
+    // formData.append("female_percent", data?.womenPercentage??0);
 
-    formData.append("Age_13_17_percent", data.ageGroup1);
-    formData.append("Age_18_24_percent", data.ageGroup2);
-    formData.append("Age_25_34_percent", data.ageGroup3);
-    formData.append("Age_35_44_percent", data.ageGroup4);
-    formData.append("Age_45_54_percent", data.ageGroup5);
-    formData.append("Age_55_64_percent", data.ageGroup6);
-    formData.append("Age_65_plus_percent", data.ageGroup7);
+    // formData.append("Age_13_17_percent", data?.ageGroup1??0);
+    // formData.append("Age_18_24_percent", data?.ageGroup2??0);
+    // formData.append("Age_25_34_percent", data?.ageGroup3??0);
+    // formData.append("Age_35_44_percent", data?.ageGroup4??0);
+    // formData.append("Age_45_54_percent", data?.ageGroup5??0);
+    // formData.append("Age_55_64_percent", data?.ageGroup6??0);
+    // formData.append("Age_65_plus_percent", data?.ageGroup7??0);
 
-    formData.append("created_by", userID);
+    // formData.append("created_by", userID);
 
-    // "reach_image": "download (10).jpg",
-    // "impression_image": "download (1).jpg",
-    // "engagement_image": "download (6).jpg",
-    // "story_view_image": "download (16).jpg",
-    // city_image
-    // Age_upload
-    // country_image
+    // formData.append("reach_image", data?.reachImage[0]??null);
+    // formData.append("impression_image", data?.impressionsImage[0]??null);
+    // formData.append("engagement_image", data?.engagementImage[0]??null);
+    // formData.append("story_view_image", data?.storyViewImage[0]??null);
+    // formData.append("city_image", data?.cityImage[0]??null);
+    // formData.append("Age_upload", data?.ageGroupImage[0]??null);
+    // formData.append("country_image", data?.countryImage[0]??null);
+    appendIfDefined(formData, "page_master_id", id);
+    appendIfDefined(formData, "reach", data?.reach);
+    appendIfDefined(formData, "impression", data?.impressions);
+    appendIfDefined(formData, "engagement", data?.engagement);
+    appendIfDefined(formData, "story_view", data?.storyView);
+    appendIfDefined(formData, "story_view_date", data?.storyViewDate);
+    appendIfDefined(formData, "profile_visit", data?.profileVisit);
+    appendIfDefined(formData, "city1_name", data?.city1);
+    appendIfDefined(formData, "percentage_city1_name", data?.city1Percentage);
+    appendIfDefined(formData, "city2_name", data?.city2);
+    appendIfDefined(formData, "percentage_city2_name", data?.city2Percentage);
+    appendIfDefined(formData, "city3_name", data?.city3);
+    appendIfDefined(formData, "percentage_city3_name", data?.city3Percentage);
+    appendIfDefined(formData, "city4_name", data?.city4);
+    appendIfDefined(formData, "percentage_city4_name", data?.city4Percentage);
+    appendIfDefined(formData, "city5_name", data?.city5);
+    appendIfDefined(formData, "percentage_city5_name", data?.city5Percentage);
+    appendIfDefined(formData, "country1_name", data?.country1);
+    appendIfDefined(
+      formData,
+      "percentage_country1_name",
+      data?.country1Percentage
+    );
+    appendIfDefined(formData, "country2_name", data?.country2);
+    appendIfDefined(
+      formData,
+      "percentage_country2_name",
+      data?.country2Percentage
+    );
+    appendIfDefined(formData, "country3_name", data?.country3);
+    appendIfDefined(
+      formData,
+      "percentage_country3_name",
+      data?.country3Percentage
+    );
+    appendIfDefined(formData, "country4_name", data?.country4);
+    appendIfDefined(
+      formData,
+      "percentage_country4_name",
+      data?.country4Percentage
+    );
+    appendIfDefined(formData, "country5_name", data?.country5);
+    appendIfDefined(
+      formData,
+      "percentage_country5_name",
+      data?.country5Percentage
+    );
+    appendIfDefined(formData, "stats_for", data?.statsFor);
+    appendIfDefined(formData, "start_date", data?.startDate);
+    appendIfDefined(formData, "end_date", data?.endDate);
 
-    formData.append("reach_image", data.reachImage[0]);
-    formData.append("impression_image", data.impressionsImage[0]);
-    formData.append("engagement_image", data.engagementImage[0]);
-    formData.append("story_view_image", data.storyViewImage[0]);
-    formData.append("city_image", data.cityImage[0]);
-    formData.append("Age_upload", data.ageGroupImage[0]);
-    formData.append("country_image", data.countryImage[0]);
-    if (!pageStateData) {
+    appendIfDefined(formData, "male_percent", data?.menPercentage);
+    appendIfDefined(formData, "female_percent", data?.womenPercentage);
+
+    appendIfDefined(formData, "Age_13_17_percent", data?.ageGroup1);
+    appendIfDefined(formData, "Age_18_24_percent", data?.ageGroup2);
+    appendIfDefined(formData, "Age_25_34_percent", data?.ageGroup3);
+    appendIfDefined(formData, "Age_35_44_percent", data?.ageGroup4);
+    appendIfDefined(formData, "Age_45_54_percent", data?.ageGroup5);
+    appendIfDefined(formData, "Age_55_64_percent", data?.ageGroup6);
+    appendIfDefined(formData, "Age_65_plus_percent", data?.ageGroup7);
+    appendIfDefined(formData, "created_by", userID);
+    appendIfDefined(formData, "reach_image", data?.reachImage[0]);
+    appendIfDefined(formData, "impression_image", data?.impressionsImage[0]);
+    appendIfDefined(formData, "engagement_image", data?.engagementImage[0]);
+    appendIfDefined(formData, "story_view_image", data?.storyViewImage[0]);
+    appendIfDefined(formData, "city_image", data?.cityImage[0]);
+    appendIfDefined(formData, "Age_upload", data?.ageGroupImage[0]);
+    appendIfDefined(formData, "country_image", data?.countryImage[0]);
+
+    // formData.append('created_by', userID);
+    // appendIfDefined(formData, "story_view_date", data?.storyViewDate);
+    // appendIfDefined(formData,"
+    console.log(pageStateData, "pageStateData");
+    if (!pageStateData?._id) {
+      console.log("add");
       addPageState(formData)
         .unwrap()
         .then((res) => {
@@ -1844,10 +1921,32 @@ export default function PageStats() {
                       <input
                         type="text"
                         className="form-control"
-                        {...register("menPercentage")}
+                        {...register("menPercentage", {
+                          validate: (value) => {
+                            if (parseInt(value)) {
+                              return true;
+                            } else {
+                              return "Please Enter Valid Percentage";
+                            }
+                          },
+                          min:{
+                            value: 0,
+                            message: "Please Enter Valid Percentage",
+                          },
+                          }
+                        )}
                       />
                       <span className="input-group-text">%</span>
                     </div>
+                    {
+                      <div className="h-2">
+                        {errors.menPercentage && (
+                          <span role="alert" className="text-danger">
+                            {errors.menPercentage.message}
+                          </span>
+                        )}
+                      </div>
+                    }
                   </div>
                 </div>
                 <div className="col-md-4 col-sm-12">
