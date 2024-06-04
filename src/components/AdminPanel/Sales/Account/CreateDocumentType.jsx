@@ -3,8 +3,12 @@ import FormContainer from "../../FormContainer";
 import FieldContainer from "../../FieldContainer";
 import { ApiContextData } from "../../APIContext/APIContext";
 import { useAddDocumentTypeMutation } from "../../../Store/API/Sales/DocumentTypeApi";
+import { useGlobalContext } from "../../../../Context/Context";
+import { useNavigate } from "react-router-dom";
 
 const CreateDocumentType = () => {
+  const { toastAlert, toastError } = useGlobalContext();
+  const navigate = useNavigate();
   const [DocumentName, setDocumentName] = useState("");
   const [DocumentDescription, setDocumentDescription] = useState("");
   const [addDocumentType, { data, error, isLoading }] =
@@ -21,8 +25,10 @@ const CreateDocumentType = () => {
       await addDocumentType(payload).unwrap();
       setDocumentName("");
       setDocumentDescription("");
+      toastAlert("Document Added Sucessfully");
+      navigate(-1);
     } catch (error) {
-      console.log(error);
+      toastError(error);
     }
   };
 

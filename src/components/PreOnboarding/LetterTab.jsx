@@ -1385,6 +1385,7 @@ const LetterTab = ({ allUserData, gettingData }) => {
           </div>
         </div>
       </div>
+      <div className="pdfPreviewWrapper"></div>
     </>
   );
 };

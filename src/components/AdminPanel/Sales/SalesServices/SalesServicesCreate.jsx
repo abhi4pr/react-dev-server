@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Navigate, useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import FormContainer from "../../FormContainer";
 import FieldContainer from "../../FieldContainer";
 import { baseUrl } from "../../../../utils/config";
@@ -7,26 +7,30 @@ import DynamicSelect from "../DynamicSelectManualy";
 import axios from "axios";
 import { useGlobalContext } from "../../../../Context/Context";
 import { useAPIGlobalContext } from "../../APIContext/APIContext";
+import { useAddSaleServiceMutation, useEditSaleServiceMutation, useGetSingleSaleServiceQuery } from "../../../../components/Store/API/Sales/SalesServiceApi"
 
 const SalesServicesCreate = () => {
+  const { id, method } = useParams();
+  console.log(id, method);
+  const navigate = useNavigate();
   const { toastAlert, toastError } = useGlobalContext();
   const [isFormSubmitted, setIsFormSubmitted] = useState(false);
   const { userID } = useAPIGlobalContext();
   const [servicename, setServiceName] = useState("");
   const [postType, setPostType] = useState("");
-  const [excelUpload, setExcelUpload] = useState("");
+  const [excelUpload, setExcelUpload] = useState(false);
+  const [brandName, setBrandName] = useState(false);
   const [amount, setAmount] = useState("");
-  const [numberHours, setNumberHours] = useState("");
-  const [goal, setGoal] = useState("");
-  const [day, setDay] = useState("");
-  const [quantity, setQuantity] = useState("");
-  const [brandName, setBrandName] = useState("");
-  const [hashTag, setHashTag] = useState("");
-  const [individual, setIndividual] = useState("");
-  const [numberOfCreators, setNumberOfCreators] = useState("");
-  const [startEndDate, setStartEndDate] = useState("");
-  const [perMonthAmount, setPerMonthAmount] = useState("");
-  const [deliverables, setDeliverables] = useState("");
+  const [numberHours, setNumberHours] = useState(false);
+  const [goal, setGoal] = useState(false);
+  const [day, setDay] = useState(false);
+  const [quantity, setQuantity] = useState(false);
+  const [hashTag, setHashTag] = useState(false);
+  const [individual, setIndividual] = useState(false);
+  const [numberOfCreators, setNumberOfCreators] = useState(false);
+  const [startEndDate, setStartEndDate] = useState(false);
+  const [perMonthAmount, setPerMonthAmount] = useState(false);
+  const [deliverables, setDeliverables] = useState(false);
   const [remark, setRemark] = useState("");
 
   const PostTypeData = [
@@ -38,19 +42,21 @@ const SalesServicesCreate = () => {
     "Note",
     "No",
   ];
-  const ExcelUploadData = ["Yes", "No"];
-  const AmountData = ["Calculated", "Input"];
-  const NumberHoursData = ["Yes", "No"];
-  const GoalData = ["Yes", "No"];
-  const DayData = ["Yes", "No"];
-  const QuantityData = ["Yes", "No"];
-  const BrandNameData = ["Yes", "No"];
-  const HashtagData = ["Yes", "No"];
-  const IndividualAmountData = ["Yes", "No"];
-  const NumberOfCreatorData = ["Yes", "No"];
-  const StartEndDateData = ["Yes", "No"];
-  const PerMonthAmountData = ["Yes", "No"];
-  const DeliverablesInfoData = ["Yes", "No"];
+
+  const AmountData = ["calculated", "input"];
+  const [
+    createSaleService, {
+      isLoading: isCreating,
+      error: createError
+    }
+  ] = useAddSaleServiceMutation()
+  const {
+    data: singleSaleService,
+    isLoading: isSingleSaleServiceLoading,
+    error: singleSaleServiceError
+  } = useGetSingleSaleServiceQuery(id)
+
+  const [updatesalesservice, { isLoading: isUpdating, error: updateError }] = useEditSaleServiceMutation()
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -88,52 +94,83 @@ const SalesServicesCreate = () => {
       return toastError("Deliverables info is Required");
     }
     try {
-      const response = await axios.post(
-        baseUrl + `sales/add_sale_service_master`,
-        {
-          service_name: servicename,
-          post_type: postType,
-          is_excel_upload: excelUpload,
-          amount_status: amount,
-          no_of_hours_status: numberHours,
-          goal_status: goal,
-          day_status: day,
-          quantity_status: quantity,
-          brand_name_status: brandName,
-          hashtag: hashTag,
-          indiviual_amount_status: individual,
-          no_of_creators: numberOfCreators,
-          start_end_date_status: startEndDate,
-          per_month_amount_status: perMonthAmount,
-          deliverables_info: deliverables,
-          remarks: remark,
-          created_by: userID,
-        }
-      );
+      const payload = {
+        service_name: servicename,
+        amount_status: amount,
+        no_of_hours_status: numberHours,
+        is_excel_upload: excelUpload,
+        goal_status: goal,
+        day_status: day,
+        post_type: postType,
+        quantity_status: quantity,
+        brand_name_status: brandName,
+        hashtag: hashTag,
+        indiviual_amount_status: individual,
+        no_of_creators: numberOfCreators,
+        start_end_date_status: startEndDate,
+        per_month_amount_status: perMonthAmount,
+        deliverables_info: deliverables,
+        remarks: remark,
+      }
 
-      toastAlert("Submited Succesfully");
-      setServiceName("");
+      if (method === "put") {
+        await updatesalesservice({ ...payload, updated_by: userID, id: id }).unwrap();
+      } else {
+        await createSaleService({ ...payload, created_by: userID }).unwrap();
+      }
+
+      // Reset all the states to their initial values
+      setAmount("");
       setIsFormSubmitted(true);
+      toastAlert("Submited Succesfully");
     } catch (error) {
       console.error(error);
     }
   };
-  if (isFormSubmitted) {
-    return <Navigate to="/admin/sales-services-overview" />;
-  }
+  useEffect(() => {
+    if (isFormSubmitted)
+      navigate("/admin/sales-services-overview");
+  }, [isFormSubmitted])
+  useEffect(() => {
+
+    if (method === "put" || method === "post") {
+      setServiceName(singleSaleService?.service_name);
+      setAmount(singleSaleService?.amount_status)
+      setPostType(singleSaleService?.post_type)
+      setExcelUpload(singleSaleService?.is_excel_upload)
+      setNumberHours(singleSaleService?.no_of_hours_status)
+      setGoal(singleSaleService?.goal_status)
+      setDay(singleSaleService?.day_status)
+      setQuantity(singleSaleService?.quantity_status)
+      setHashTag(singleSaleService?.hashtag)
+      setBrandName(singleSaleService?.brand_name_status)
+      setIndividual(singleSaleService?.indiviual_amount_status)
+      setNumberOfCreators(singleSaleService?.no_of_creators)
+      setStartEndDate(singleSaleService?.start_end_date_status)
+      setPerMonthAmount(singleSaleService?.per_month_amount_status)
+      setDeliverables(singleSaleService?.deliverables_info)
+      setRemark(singleSaleService?.remarks)
+    }
+
+  }, [isSingleSaleServiceLoading])
+
   return (
-    <>
+    <div className="servicepage">
+
       <FormContainer
         mainTitle="Services"
         title="Services Creation"
         handleSubmit={handleSubmit}
       >
+
         <FieldContainer
           label="Service Name"
           astric={true}
           fieldGrid={4}
           value={servicename}
+          placeholder={"Enter Service Name"}
           required={false}
+
           onChange={(e) => setServiceName(e.target.value)}
         />
         <DynamicSelect
@@ -145,14 +182,6 @@ const SalesServicesCreate = () => {
           onChange={(e) => setPostType(e.value)}
         />
         <DynamicSelect
-          label="Excel Upload"
-          astric={true}
-          data={ExcelUploadData}
-          value={excelUpload}
-          cols={4}
-          onChange={(e) => setExcelUpload(e.value)}
-        />
-        <DynamicSelect
           label="Amount"
           astric={true}
           data={AmountData}
@@ -160,94 +189,176 @@ const SalesServicesCreate = () => {
           cols={4}
           onChange={(e) => setAmount(e.value)}
         />
-        <DynamicSelect
-          label="Number Hours"
-          astric={true}
-          data={NumberHoursData}
-          value={numberHours}
-          cols={4}
-          onChange={(e) => setNumberHours(e.value)}
-        />
-        <DynamicSelect
-          label="Goal"
-          astric={true}
-          data={GoalData}
-          value={goal}
-          cols={4}
-          onChange={(e) => setGoal(e.value)}
-        />
-        <DynamicSelect
-          label="Day"
-          astric={true}
-          data={DayData}
-          value={day}
-          cols={4}
-          onChange={(e) => setDay(e.value)}
-        />
-        <DynamicSelect
-          label="Quantity"
-          astric={true}
-          data={QuantityData}
-          value={quantity}
-          cols={4}
-          onChange={(e) => setQuantity(e.value)}
-        />
-        <DynamicSelect
-          label="Brand Name"
-          astric={true}
-          data={BrandNameData}
-          value={brandName}
-          cols={4}
-          onChange={(e) => setBrandName(e.value)}
-        />
-        <DynamicSelect
-          label="HasTag"
-          astric={true}
-          data={HashtagData}
-          value={hashTag}
-          cols={4}
-          onChange={(e) => setHashTag(e.value)}
-        />
-        <DynamicSelect
-          label="Individual Amount"
-          astric={true}
-          data={IndividualAmountData}
-          value={individual}
-          cols={4}
-          onChange={(e) => setIndividual(e.value)}
-        />
-        <DynamicSelect
-          label="Number Of Creators"
-          astric={true}
-          data={NumberOfCreatorData}
-          value={numberOfCreators}
-          cols={4}
-          onChange={(e) => setNumberOfCreators(e.value)}
-        />
-        <DynamicSelect
-          label="Start End Date"
-          astric={true}
-          data={StartEndDateData}
-          value={startEndDate}
-          cols={4}
-          onChange={(e) => setStartEndDate(e.value)}
-        />
-        <DynamicSelect
-          label="Per Month Amount"
-          astric={true}
-          data={PerMonthAmountData}
-          value={perMonthAmount}
-          cols={4}
-          onChange={(e) => setPerMonthAmount(e.value)}
-        />
-        <DynamicSelect
-          label="Deliverables Info "
-          astric={true}
-          data={DeliverablesInfoData}
-          value={deliverables}
-          cols={4}
-          onChange={(e) => setDeliverables(e.value)}
-        />
+        <div className="form-group col-2">
+          <label className="switch">
+            <input
+              type="checkbox"
+              checked={excelUpload}
+              onChange={(e) => setExcelUpload(!excelUpload)}
+            />
+            <span className="slider round"></span>
+          </label>
+          <label className="form-label">
+            Excel Upload
+          </label>
+        </div>
+
+
+
+        <div className="form-group col-2">
+          <label className="switch">
+            <input
+              type="checkbox"
+              checked={numberHours}
+              onChange={(e) => setNumberHours(!numberHours)}
+            />
+            <span className="slider round"></span>
+          </label>
+          <label className="form-label">
+            Number Hours
+          </label>
+        </div>
+
+        <div className="form-group col-2">
+          <label className="switch">
+            <input
+              type="checkbox"
+              checked={goal}
+              onChange={(e) => setGoal(!goal)}
+            />
+            <span className="slider round"></span>
+          </label>
+          <label className="form-label">
+            Goal
+          </label>
+        </div>
+
+        <div className="form-group col-2">
+          <label className="switch">
+            <input
+              type="checkbox"
+              checked={day}
+              onChange={(e) => setDay(!day)}
+            />
+            <span className="slider round"></span>
+          </label>
+          <label className="form-label">
+            Day
+          </label>
+        </div>
+
+        <div className="form-group col-2">
+          <label className="switch">
+            <input
+              type="checkbox"
+              checked={quantity}
+              onChange={(e) => setQuantity(!quantity)}
+            />
+            <span className="slider round"></span>
+          </label>
+          <label className="form-label">
+            Quantity
+          </label>
+        </div>
+
+        <div className="form-group col-2">
+          <label className="switch">
+            <input
+              type="checkbox"
+              checked={brandName}
+              onChange={(e) => setBrandName(!brandName)}
+            />
+            <span className="slider round"></span>
+          </label>
+          <label className="form-label">
+            Brand Name
+          </label>
+        </div>
+
+        <div className="form-group col-2">
+          <label className="switch">
+            <input
+              type="checkbox"
+              checked={hashTag}
+              onChange={(e) => setHashTag(!hashTag)}
+            />
+            <span className="slider round"></span>
+          </label>
+          <label className="form-label">
+            HasTag
+          </label>
+        </div>
+
+        <div className="form-group col-2">
+          <label className="switch">
+            <input
+              type="checkbox"
+              checked={individual}
+              onChange={(e) => setIndividual(!individual)}
+            />
+            <span className="slider round"></span>
+          </label>
+          <label className="form-label">
+            Individual Amount
+          </label>
+        </div>
+
+        <div className="form-group col-2">
+          <label className="switch">
+            <input
+              type="checkbox"
+              checked={numberOfCreators}
+              onChange={(e) => setNumberOfCreators(!numberOfCreators)}
+            />
+            <span className="slider round"></span>
+          </label>
+          <label className="form-label">
+            Number Of Creators
+          </label>
+        </div>
+
+        <div className="form-group col-2">
+          <label className="switch">
+            <input
+              type="checkbox"
+              checked={startEndDate}
+              onChange={(e) => setStartEndDate(!startEndDate)}
+            />
+            <span className="slider round"></span>
+          </label>
+          <label className="form-label">
+            Start End Date
+          </label>
+        </div>
+
+        <div className="form-group col-2">
+          <label className="switch">
+            <input
+              type="checkbox"
+              checked={perMonthAmount}
+              onChange={(e) => setPerMonthAmount(!perMonthAmount)}
+            />
+            <span className="slider round"></span>
+          </label>
+          <label className="form-label">
+            Per Month Amount
+          </label>
+        </div>
+
+        <div className="form-group col-2">
+          <label className="switch">
+            <input
+              type="checkbox"
+              checked={deliverables}
+              onChange={(e) => setDeliverables(!deliverables)}
+            />
+            <span className="slider round"></span>
+          </label>
+          <label className="form-label">
+            Deliverables Info
+          </label>
+        </div>
+
         <FieldContainer
           label="Remark"
           Tag="textarea"
@@ -257,7 +368,7 @@ const SalesServicesCreate = () => {
           onChange={(e) => setRemark(e.target.value)}
         />
       </FormContainer>
-    </>
+    </div>
   );
 };
 

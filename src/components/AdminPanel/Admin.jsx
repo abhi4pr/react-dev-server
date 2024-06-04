@@ -342,7 +342,6 @@ import PageStats from "./PageMS/PageStats";
 import CreateDocumentType from "./Sales/Account/CreateDocumentType";
 import DocumentTypeOverview from "./Sales/Account/DocumentTypeOverview";
 
-
 const Admin = () => {
   const [contextData, setData] = useState([]);
 
@@ -415,8 +414,8 @@ const Admin = () => {
                       (contextData &&
                         contextData[38] &&
                         contextData[38].view_value === 1)) && (
-                      <Route path="/user" element={<UserMaster />} />
-                    )}
+                        <Route path="/user" element={<UserMaster />} />
+                      )}
 
                     {/* User Profile Routing Here  */}
                     <Route path="/user-timeline" element={<Timeline />} />
@@ -1469,6 +1468,10 @@ const Admin = () => {
 
                   <Route path="/sales-dashboard" element={<SalesDashboard />} />
                   <Route
+                    path="/create-sales-services/:id/:method"
+                    element={<SalesServicesCreate />}
+                  />
+                  <Route
                     path="/create-sales-services"
                     element={<SalesServicesCreate />}
                   />
@@ -1572,7 +1575,6 @@ const Admin = () => {
                     path="/sales-document-type-overview"
                     element={<DocumentTypeOverview />}
                   />
-
 
                   {/* Sales Harshal end */}
                   <Route

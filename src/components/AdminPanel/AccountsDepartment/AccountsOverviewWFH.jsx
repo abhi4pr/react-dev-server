@@ -198,7 +198,7 @@ const AccountsOverviewWFH = () => {
   return (
     <div>
       <FormContainer
-        mainTitle="Acount Overview"
+        mainTitle="Account Overview"
         link="/admin/user"
         submitButton={false}
       />

@@ -766,23 +766,46 @@ export default function PaymentDone() {
       },
       width: 250,
     },
-    // {
-    //   field: "Action",
-    //   headerName: "Action",
-    //   width: 250,
-    //   renderCell: (params) => {
-    //     return (
-    //       <div>
-    //         <button
-    //           className="btn btn-sm btn-success"
-    //           onClick={() => handleOpenEditInvoice(params.row)}
-    //         >
-    //           Edit Invoice
-    //         </button>
-    //       </div>
-    //     );
-    //   },
-    // },
+    {
+      field: "evidence",
+      headerName: "Payment Screenshot",
+      renderCell: (params) => {
+        if (!params.row.evidence) {
+          return "No Image";
+        }
+        // Extract file extension and check if it's a PDF
+        const fileExtension = params.row.invc_img
+          .split(".")
+          .pop()
+          .toLowerCase();
+        const isPdf = fileExtension === "pdf";
+
+        const imgUrl = `https://purchase.creativefuel.io/${params.row.evidence}`;
+
+        return isPdf ? (
+          <img
+            onClick={() => {
+              setOpenImageDialog(true);
+              setViewImgSrc(imgUrl);
+            }}
+            src={pdf}
+            style={{ width: "40px", height: "40px" }}
+            title="PDF Preview"
+          />
+        ) : (
+          <img
+            onClick={() => {
+              setOpenImageDialog(true);
+              setViewImgSrc(imgUrl);
+            }}
+            src={imgUrl}
+            alt="Invoice"
+            style={{ width: "100px", height: "100px" }}
+          />
+        );
+      },
+      width: 130,
+    },
     {
       field: "request_date",
       headerName: "Requested Date",
@@ -791,6 +814,16 @@ export default function PaymentDone() {
         new Date(params.row.request_date).toLocaleDateString("en-IN") +
           " " +
           new Date(params.row.request_date).toLocaleTimeString("en-IN");
+      },
+    },
+    {
+      field: "payment_date",
+      headerName: "Payment Date",
+      width: 150,
+      renderCell: (params) => {
+        new Date(params.row.payment_date).toLocaleDateString("en-IN") +
+          " " +
+          new Date(params.row.payment_date).toLocaleTimeString("en-IN");
       },
     },
     {
@@ -1048,6 +1081,18 @@ export default function PaymentDone() {
       },
     },
     {
+      field: "paid_amount",
+      headerName: "Paid Amount",
+      width: 150,
+      renderCell: (params) => {
+        return params.row.paid_amount ? (
+          <p> &#8377; {params.row.paid_amount}</p>
+        ) : (
+          "NA"
+        );
+      },
+    },
+    {
       field: "gst_amount",
       headerName: "GST Amount",
       width: 150,
@@ -1078,6 +1123,18 @@ export default function PaymentDone() {
       renderCell: (params) => {
         return params.row.tds_deduction ? (
           <p>&#8377; {params.row.tds_deduction}</p>
+        ) : (
+          "NA"
+        );
+      },
+    },
+    {
+      field: "tds_percentage",
+      headerName: "TDS Percentage",
+      width: 150,
+      renderCell: (params) => {
+        return params.row.tds_percentage ? (
+          <p>{params.row.tds_percentage} %</p>
         ) : (
           "NA"
         );
@@ -1166,24 +1223,12 @@ export default function PaymentDone() {
       renderCell: (params) => (
         <Button variant="outline" className="btn cmnbtn btn-primary">
           <Link
-            to={`/admin/finance-pruchasemanagement-paymentdone-transactionlist/${params.row.request_id}/$`}
+            to={`/admin/finance-pruchasemanagement-paymentdone-transactionlist/${params.row.request_id}`}
           >
             Transaction List
             {/* ({totalCount}) */}
           </Link>
         </Button>
-        // <Link
-        //   to={`/admin/finance-transaction-list/${params.row.sale_booking_id}`}
-        //   className="link-primary"
-        // >
-        //   {params.row.total_paid_amount > 0 ? (
-        //     <button className="icon-1" title="Transaction History">
-        //       <i className="bi bi-file-earmark-text-fill"></i>
-        //     </button>
-        //   ) : (
-        //     ""
-        //   )}
-        // </Link>;
       ),
     },
   ];

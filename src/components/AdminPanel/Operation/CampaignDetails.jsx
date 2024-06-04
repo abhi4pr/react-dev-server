@@ -1,161 +1,97 @@
-import { Paper, TextField, Grid } from "@mui/material";
+import { TextField, Grid } from "@mui/material";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { baseUrl } from "../../../utils/config";
 
-let commInfo = [];
-
-const CampaignDetails = ({ cid, getCampaign }) => {
+const CampaignDetails = ({ cid }) => {
   const [campaignData, setCampaignData] = useState({});
-  const [brandData, setBrandData] = useState([]);
-  const [cmpName, setCmpName] = useState({});
   const [commitData, setCommitData] = useState([]);
-  const [commitmentCompleteData, setCommitmentCompleteData] = useState([]);
-
   const getData = async () => {
     try {
-      const res = await axios.get(`${baseUrl}` + `register_campaign/${cid}`);
-      setCampaignData(res.data.data);
+      const res = await axios.get(`${baseUrl}opcampaign/${cid}`);
+      setCampaignData(res.data[0]);
     } catch (error) {
       console.log(error);
     }
   };
 
-  const getBrandInfo = async () => {
-    const brand = await axios.get(`${baseUrl}` + `get_brands`);
-    const myBrand = brand.data.data.find(
-      (brand) => brand.brand_id == campaignData.brand_id
-    );
-    setBrandData(myBrand);
-  };
-
-  const getCampaignName = async () => {
-    const camp = await axios.get(`${baseUrl}` + `exe_campaign`);
-    const mycamp = camp.data.data.find(
-      (camp) => camp.exeCmpId == campaignData.exeCmpId
-    );
-    setCmpName(mycamp);
-  };
   useEffect(() => {
     getData();
   }, [cid]);
 
   const getCommitments = async () => {
-    const comm = await axios.get(baseUrl + "get_all_commitments");
-    const myComm = comm.data.data.filter((comm) =>
-      commInfo.includes(comm.cmtId)
-    );
-    setCommitData(myComm);
-    let data = [];
-    myComm.forEach((x, index) => {
-      data.push({
-        commitment: x.cmtName,
-        value: "0",
-        max: campaignData?.commitment[index]?.textValue,
-      });
-    });
-
-    setCommitmentCompleteData(data);
+    try {
+      const res = await axios.get(`${baseUrl}get_all_commitments`);
+      setCommitData(res.data.data);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   useEffect(() => {
-    if (commitmentCompleteData.length > 0 && getCampaign) {
-      getCampaign(commitmentCompleteData, cmpName?.exeCmpName, campaignData);
-    }
-  }, [commitmentCompleteData, cmpName]);
+    getCommitments();
+  }, []);
 
-  useEffect(() => {
-    if (campaignData.brand_id) {
-      campaignData.commitment.forEach((element) => {
-        commInfo.push(element.selectValue);
-      });
-      getBrandInfo();
-      getCampaignName();
-      getCommitments();
-    }
-  }, [campaignData]);
+  const getCommitName = (id) => {
+    const commit = commitData.find((commit) => commit.cmtId === id);
+    return commit ? capitalizeFirstLetter(commit.cmtName) : "N/A";
+  };
+  const capitalizeFirstLetter = (string) => {
+    return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
+  };
 
   return (
-    <>
-      <div className="card body-padding">
-        <Grid container spacing={2}>
-          <Grid item xs={12} sm={6} md={4}>
-            <TextField
-              label="Brand"
-              InputLabelProps={{ shrink: true }}
-              InputProps={{
-                readOnly: true,
-              }}
-              fullWidth
-              value={
-                brandData.brand_name &&
-                brandData.brand_name.charAt(0).toUpperCase() +
-                  brandData.brand_name.slice(1)
-              }
-            />
-          </Grid>
-          <Grid item xs={12} sm={6} md={4}>
-            <TextField
-              InputProps={{
-                readOnly: true,
-              }}
-              fullWidth
-              label="Campaign"
-              InputLabelProps={{ shrink: true }}
-              value={
-                cmpName?.exeCmpName &&
-                cmpName?.exeCmpName.charAt(0).toUpperCase() +
-                  cmpName?.exeCmpName.slice(1)
-              }
-            />
-          </Grid>
-          <Grid item xs={12} sm={6} md={4}>
-            <TextField
-              InputProps={{
-                readOnly: true,
-              }}
-              fullWidth
-              label="Campaign Details"
-              InputLabelProps={{ shrink: true }}
-              value={
-                campaignData.detailing &&
-                campaignData.detailing.charAt(0).toUpperCase() +
-                  campaignData.detailing.slice(1)
-              }
-            />
-          </Grid>
-          {commitData.length > 0 &&
-            commitData.map((comm, index) => {
-              return (
-                <>
-                  <Grid sx={{ m: 2 }}>
-                    <TextField
-                      InputProps={{
-                        readOnly: true,
-                      }}
-                      fullWidth
-                      label={comm.cmtName}
-                      value={campaignData?.commitment[index]?.textValue}
-                    />
-                  </Grid>
-                  {/* <Grid item xs={12} sm={6} sx={{ mb: 2 }}>
-               
-                <TextField
-                  InputProps={{
-                    readOnly: true,
-                  }}
-                  fullWidth
-                  label="value"
-                  value={campaignData?.commitment[index]?.textValue}
-                />
-              </Grid> */}
-                </>
-              );
-            })}
+    <div className="card body-padding">
+      <Grid container spacing={2}>
+        <Grid item xs={12} sm={6} md={4}>
+          <TextField
+            label="Brand"
+            InputLabelProps={{ shrink: true }}
+            InputProps={{
+              readOnly: true,
+            }}
+            fullWidth
+            value={capitalizeFirstLetter(campaignData?.brand_data?.brand_name || "")}
+          />
         </Grid>
-      </div>
-    </>
+        <Grid item xs={12} sm={6} md={4}>
+          <TextField
+            InputProps={{
+              readOnly: true,
+            }}
+            fullWidth
+            label="Campaign"
+            InputLabelProps={{ shrink: true }}
+            value={capitalizeFirstLetter(campaignData?.campaign_data?.exeCmpName || "")}
+          />
+        </Grid>
+        <Grid item xs={12} sm={6} md={4}>
+          <TextField
+            InputProps={{
+              readOnly: true,
+            }}
+            fullWidth
+            label="Campaign Details"
+            InputLabelProps={{ shrink: true }}
+            value={capitalizeFirstLetter(campaignData?.details || "")}
+          />
+        </Grid>
+        {campaignData?.commitments &&
+          campaignData.commitments.length > 0 &&
+          campaignData.commitments.map((comm, index) => (
+            <Grid item xs={12} sm={4} md={3} key={index}>
+              <TextField
+                InputProps={{
+                  readOnly: true,
+                }}
+                fullWidth
+                label={getCommitName(comm.selectValue)}
+                value={capitalizeFirstLetter(comm.textValue || "")}
+              />
+            </Grid>
+          ))}
+      </Grid>
+    </div>
   );
 };
-
 export default CampaignDetails;

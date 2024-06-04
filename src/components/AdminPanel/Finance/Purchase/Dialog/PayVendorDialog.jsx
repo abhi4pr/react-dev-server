@@ -147,6 +147,7 @@ function PayVendorDialog(props) {
     formData.append("tds_deduction", TDSValue);
     formData.append("gst_Hold_Bool", gstHold);
     formData.append("tds_Deduction_Bool", TDSDeduction);
+    formData.append("tds_percentage", TDSPercentage);
 
     axios
       .post(baseUrl + "phpvendorpaymentrequest", formData, {
@@ -174,6 +175,7 @@ function PayVendorDialog(props) {
         phpFormData.append("tds_deduction", TDSValue);
         phpFormData.append("gst_Hold_Bool", gstHold ? 1 : 0);
         phpFormData.append("tds_Deduction_Bool", TDSDeduction ? 1 : 0);
+        phpFormData.append("tds_percentage", TDSPercentage);
         axios
           .post(
             "https://purchase.creativefuel.io/webservices/RestController.php?view=updatePaymentrequestNew",

@@ -139,6 +139,46 @@ const PaymentDoneTransactionList = () => {
       },
       width: 250,
     },
+    {
+      field: "evidence",
+      headerName: "Payment Screenshot",
+      renderCell: (params) => {
+        if (!params.row.evidence) {
+          return "No Image";
+        }
+        // Extract file extension and check if it's a PDF
+        const fileExtension = params.row.invc_img
+          .split(".")
+          .pop()
+          .toLowerCase();
+        const isPdf = fileExtension === "pdf";
+
+        const imgUrl = `https://purchase.creativefuel.io/${params.row.evidence}`;
+
+        return isPdf ? (
+          <img
+            onClick={() => {
+              setOpenImageDialog(true);
+              setViewImgSrc(imgUrl);
+            }}
+            src={pdf}
+            style={{ width: "40px", height: "40px" }}
+            title="PDF Preview"
+          />
+        ) : (
+          <img
+            onClick={() => {
+              setOpenImageDialog(true);
+              setViewImgSrc(imgUrl);
+            }}
+            src={imgUrl}
+            alt="Invoice"
+            style={{ width: "100px", height: "100px" }}
+          />
+        );
+      },
+      width: 130,
+    },
     // {
     //   field: "Action",
     //   headerName: "Action",

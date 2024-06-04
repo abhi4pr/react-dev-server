@@ -290,12 +290,12 @@ function ExecutionPending() {
     const selected = data.find((ele) => ele.sale_booking_id == id);
   };
 
-const handleStartExecutions =(params)=>{
-   navigate('/admin/op-plan-creation/665574c2abca204b5b1422c1', {
-    state: { executionExcel: params?.row?.execution_excel }
-});
-console.log(params?.row?.execution_excel,"mmm");
-}
+  const handleStartExecutions = (params) => {
+    navigate('/admin/op-plan-creation/665574c2abca204b5b1422c1', {
+      state: { executionExcel: params?.row?.execution_excel }
+    });
+    // console.log(params?.row?.execution_excel,"mmm");
+  }
 
   const theme = createTheme({
     palette: {
@@ -358,28 +358,30 @@ console.log(params?.row?.execution_excel,"mmm");
           return (
             <>
               <Button
-              size="small"
-              color="success"
-              variant="outlined"
-              className="btn btn_sm cmnbtn"
-              fontSize="inherit"
-              sx={{mr:.5}}
+                size="small"
+                color="success"
+                variant="outlined"
+                className="btn btn_sm cmnbtn"
+                fontSize="inherit"
+                sx={{ mr: .5 }}
 
-            >
-              In Progress
-            </Button>
-            <Button
-              size="small"
-              color="success"
-              variant="outlined"
-              className="btn btn_sm cmnbtn"
-              fontSize="inherit"
-              onClick={()=>handleStartExecutions(params)}
-            >
-              Start Execution
-            </Button>
+              >
+                In Progress
+              </Button>
+              {params?.row?.execution_excel &&
+                <Button
+                  size="small"
+                  color="success"
+                  variant="outlined"
+                  className="btn btn_sm cmnbtn"
+                  fontSize="inherit"
+                  onClick={() => handleStartExecutions(params)}
+                >
+                  Start Execution
+                </Button>
+              }
             </>
-          
+
           );
         } else if (params.row.execution_status == "3") {
           return (

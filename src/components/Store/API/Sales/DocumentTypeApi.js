@@ -5,14 +5,14 @@ const DocumentTypeApi = createApi({
   reducerPath: "documentTypeApi",
   baseQuery: authBaseQuery,
   endpoints: (builder) => ({
-    getSingleDocumentType: builder.query({
-      query: (id) => `/accounts/get_document_master/${id}`,
+    getAllDocumentType: builder.query({
+      query: () => "/accounts/get_document_master_list",
       transformResponse: (response) => response.data,
       keepUnusedDataFor: 60 * 60 * 24,
     }),
 
-    getAllDocumentType: builder.query({
-      query: () => "/accounts/get_document_master_list",
+    getSingleDocumentType: builder.query({
+      query: (id) => `/accounts/get_document_master/${id}`,
       transformResponse: (response) => response.data,
       keepUnusedDataFor: 60 * 60 * 24,
     }),

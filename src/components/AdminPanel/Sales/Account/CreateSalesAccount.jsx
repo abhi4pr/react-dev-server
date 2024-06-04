@@ -34,15 +34,15 @@ import {
   useGetSinglePOCQuery,
 } from "../../../Store/API/Sales/PointOfContactApi";
 import { useGetAllDocumentTypeQuery } from "../../../Store/API/Sales/DocumentTypeApi";
+import Loader from "../../Finance/Loader/Loader";
 
 const CreateSalesAccount = () => {
+  const { id } = useParams();
   const { toastAlert, toastError } = useGlobalContext();
   const normalToken = sessionStorage.getItem("token");
   const navigate = useNavigate();
   const token = getDecodedToken();
   const loginUserId = token.id;
-
-  const { id } = useParams();
 
   const {
     data: allAccountTypes,
@@ -61,6 +61,7 @@ const CreateSalesAccount = () => {
     error: allBrandCatTypeError,
     isLoading: allBrandCatTypeLoading,
   } = useGetAllBrandCategoryTypeQuery();
+
   const {
     data: allDocType,
     error: allDocTypeError,
@@ -76,18 +77,10 @@ const CreateSalesAccount = () => {
     },
   ] = useAddAccountMutation();
 
-  const { data: singleAccountData } = useGetSingleAccountQuery(id, {
-    skip: !id,
-  });
-
-  const [
-    updateSalesAccount,
-    {
-      isLoading: isUpdateSalesLoading,
-      isSuccess: isUpdateSalesSuccess,
-      isError: isUpdateSalesError,
-    },
-  ] = useEditAccountMutation();
+  const { data: singleAccountData, isLoading: accountDataLoading } =
+    useGetSingleAccountQuery(id, {
+      skip: !id,
+    });
 
   const [accountName, setAccountName] = useState("");
   const [selectedAccountType, setSelectedAccountType] = useState(null);
@@ -116,31 +109,31 @@ const CreateSalesAccount = () => {
 
   const [pocs, setPocs] = useState([]);
   const [documents, setDocuments] = useState([]);
-  const [accountId, setAccountId] = useState(null);
+  const [accountId, setAccountId] = useState();
 
-  const { data: singleAccountDocuments } = useGetDocumentByIdQuery(accountId, {
-    skip: !accountId,
-  });
+  const [updateSalesAccount, { isLoading: editAccountLoading }] =
+    useEditAccountMutation();
 
-  const [
-    updatePocs,
-    { isLoading: isPocUpdating, isSuccess: isPocUpdated, isError: isPocError },
-  ] = useEditPOCMutation();
+  //get Documents with account_id
+  const { data: singleAccountDocuments, isLoading: DocumentsLoading } =
+    useGetDocumentByIdQuery(accountId, { skip: !accountId });
 
-  const [
-    updateDocs,
+  //get POC with account_id
+  const { data: singlePoc, isLoading: pocLoading } = useGetSinglePOCQuery(
+    accountId,
     {
-      isLoading: isDocumentUpdating,
-      isSuccess: isDocumentUpdated,
-      isError: isDocumentError,
-    },
-  ] = useEditDocumentMutation();
+      skip: !accountId,
+    }
+  );
 
-  const documentTypes = [
-    { id: 1, type: "Passport" },
-    { id: 2, type: "Driver's License" },
-    { id: 3, type: "Utility Bill" },
-  ];
+  //update POC
+  const [updatePocs, { isLoading: editPocLoading }] = useEditPOCMutation();
+
+  //update Document
+  const [updateDocs, { isLoading: editDocumentLoading }] =
+    useEditDocumentMutation(accountId, {
+      skip: !accountId,
+    });
 
   useEffect(() => {
     async function getData() {
@@ -174,7 +167,6 @@ const CreateSalesAccount = () => {
       setDescription(description);
 
       async function getBilling() {
-        console.log("here");
         const response = await axios.get(
           `${baseUrl}/accounts/get_single_account_billing/${singleAccountData.account_id}?_id=false`,
           {
@@ -217,6 +209,11 @@ const CreateSalesAccount = () => {
     }
   }, [id, singleAccountData]);
 
+  useEffect(() => {
+    setPocs(singlePoc);
+    setDocuments(singleAccountDocuments);
+  }, [accountId, singlePoc, singleAccountDocuments]);
+
   const handleAddPoc = () => {
     setPocs([
       ...pocs,
@@ -237,7 +234,8 @@ const CreateSalesAccount = () => {
       ...documents,
       {
         file: null,
-        type: "",
+        document_master_id: "",
+        document_no: "",
       },
     ]);
   };
@@ -309,9 +307,17 @@ const CreateSalesAccount = () => {
       if (id == 0) {
         await createSalesAccount(payloads).unwrap();
       } else {
-        await updateSalesAccount(payloads).unwrap();
-        await updateDocs(documents).unwrap();
-        await updatePocs(pocs).unwrap();
+        await updateSalesAccount({ ...payloads, id: id }).unwrap();
+        await updateDocs({
+          account_documents: documents,
+          updated_by: loginUserId,
+          id: accountId,
+        }).unwrap();
+        await updatePocs({
+          account_poc: pocs,
+          updated_by: loginUserId,
+          id: accountId,
+        }).unwrap();
       }
 
       setAccountName("");
@@ -415,7 +421,20 @@ const CreateSalesAccount = () => {
         return null;
     }
   };
-
+  if (
+    allAccountTypesLoading ||
+    allCompanyTypeLoading ||
+    allBrandCatTypeLoading ||
+    allDocTypeLoading ||
+    isCreateSalesLoading ||
+    accountDataLoading ||
+    editAccountLoading ||
+    DocumentsLoading ||
+    pocLoading ||
+    editPocLoading ||
+    editDocumentLoading
+  )
+    return <Loader />;
   return (
     <div>
       <Modal
@@ -453,7 +472,7 @@ const CreateSalesAccount = () => {
       <FormContainer mainTitle="Accounts Master" link={true} />
       <div className="card">
         <div className="card-header">
-          <h5 className="card-title">Create</h5>
+          <h5 className="card-title">Account Detail</h5>
         </div>
         <div className="card-body row">
           <FieldContainer
@@ -543,6 +562,18 @@ const CreateSalesAccount = () => {
             </button>
           </div>
 
+
+
+
+
+
+        </div>
+      </div>
+      <div className="card">
+        <div className="card-header">
+          <h3 className="card-title">Details</h3>
+        </div>
+        <div className="card-body row">
           <CustomSelect
             label="Account Owner Name"
             dataArray={accOwnerNameData}
@@ -593,6 +624,36 @@ const CreateSalesAccount = () => {
             onChange={(e) => setOfficesCount(e.target.value)}
             placeholder="Enter number of offices"
           />
+          <div className="col-4">
+            <FieldContainer
+              label="Pin Code"
+              type="number"
+              fieldGrid={4}
+              value={pinCode}
+              onChange={(e) => setPinCode(e.target.value)}
+              placeholder="Enter pin code"
+            />
+            {!isValidPinCode(pinCode) && (
+              <div className="form-error">Please Enter Valid Pin Code</div>
+            )}
+          </div>
+
+          <FieldContainer
+            label="Description"
+            astric
+            fieldGrid={4}
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            placeholder="Enter description"
+            required
+          />
+        </div>
+      </div>
+      <div className="card">
+        <div className="card-header">
+          <h3 className="card-title">Connected Address</h3>
+        </div>
+        <div className="card-body row">
           <FieldContainer
             label="Connected Office"
             fieldGrid={4}
@@ -628,14 +689,24 @@ const CreateSalesAccount = () => {
             onChange={(e) => setConnectedBillingCountry(e.target.value)}
             placeholder="Enter connected billing country"
           />
-          <label>
+
+        </div>
+      </div>
+      <div className="card">
+        <div className="card-header sb">
+
+          <h3 className="card-title">Head Address</h3>
+          <label className="card-title">
             <input
               type="checkbox"
+              className="form-check-input"
               checked={fillHeadFields}
               onChange={handleCheckboxChange}
             />
-            Same as Connected Office
+            <p className="mt-1 ml-2"> Same as Connected Office</p>
           </label>
+        </div>
+        <div className="card-body row">
           <FieldContainer
             label="Head Office"
             fieldGrid={4}
@@ -671,36 +742,13 @@ const CreateSalesAccount = () => {
             onChange={(e) => setHeadBillingCountry(e.target.value)}
             placeholder="Enter head billing country"
           />
-          <div className="col-4">
-            <FieldContainer
-              label="Pin Code"
-              type="number"
-              fieldGrid={4}
-              value={pinCode}
-              onChange={(e) => setPinCode(e.target.value)}
-              placeholder="Enter pin code"
-            />
-            {!isValidPinCode(pinCode) && (
-              <div className="form-error">Please Enter Valid Pin Code</div>
-            )}
-          </div>
-
-          <FieldContainer
-            label="Description"
-            astric
-            fieldGrid={4}
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            placeholder="Enter description"
-            required
-          />
         </div>
       </div>
       <PointOfContact pocs={pocs} setPocs={setPocs} />
       <DocumentUpload
         documents={documents}
         setDocuments={setDocuments}
-        documentTypes={documentTypes}
+        documentTypes={allDocType}
       />
       <div className="flex-row sb mb-3">
         <button

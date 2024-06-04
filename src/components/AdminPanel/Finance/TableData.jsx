@@ -47,14 +47,15 @@ const TableData = ({
         baseUrl +
           `get_dynamic_table_data?userId=${userID}&tableName=${tableName}`
       );
-      const responseData = response.data;
+      const responseData = response?.data;
+      console.log(responseData, "response data--------------");
 
-      const savedFiltersData = response.data.data[0]?.filter_array;
+      const savedFiltersData = response?.data?.data[0]?.filter_array;
       setSavedFilters(savedFiltersData);
 
       if (responseData && responseData.data && responseData.data.length > 0) {
         const initialColumns =
-          responseData.data[0].column_order_Obj || tableFields;
+          responseData?.data[0]?.column_order_Obj || tableFields;
         setColumns(initialColumns);
       } else {
         const defaultColumns = tableFields;
@@ -89,7 +90,7 @@ const TableData = ({
 
     axios.put(`${baseUrl}` + "edit_dynamic_table_data", {
       user_id: userID,
-      table_name: "object table",
+      table_name: tableName,
       column_order_Obj: newColumns,
     });
     setColumns(newColumns);
@@ -130,7 +131,7 @@ const TableData = ({
     axios
       .put(`${baseUrl}` + "edit_dynamic_table_data", {
         user_id: userID,
-        table_name: "object table",
+        table_name: tableName,
         column_order_Obj: newColumns,
       })
       .then(() => {

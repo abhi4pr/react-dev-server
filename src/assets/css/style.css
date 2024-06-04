@@ -48,6 +48,7 @@
   --dot-color-transition-1: lch(59.2% 85.33 318.2);
   --dot-color-transition-2: lch(95.29% 85.33 97.41);
   --delay: 0ms;
+
 }
 
 body[theme="dark"] {
@@ -4053,7 +4054,7 @@ input[type="button"].btn-block {
   display: flex;
   justify-content: center;
   align-items: center;
-  border: none;
+  border: 1px solid var(--border);
   cursor: pointer;
   min-width: 40px;
   width: 40px;
@@ -16810,6 +16811,15 @@ div:where(.swal2-container) {
       width: 100%;
       height: 100%;
 
+      .salesdetails {
+        .details {
+          justify-content: flex-start !important;
+          width: max-content !important;
+          gap: 10px;
+        }
+      }
+
+
       .salesdetails,
       .pocdetails,
       .DocDetails,
@@ -16841,6 +16851,8 @@ div:where(.swal2-container) {
               width: max-content;
               display: flex;
               gap: 10px;
+              justify-content: space-between;
+              width: 100%;
 
               .DocImage {
                 width: 100% !important;
@@ -16895,6 +16907,66 @@ div:where(.swal2-container) {
   }
 }
 
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 30px;
+  height: 15px;
+  margin-right: 10px;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 12px;
+  width: 12px;
+  left: 2px;
+  bottom: 1px;
+  background-color: white;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+input:checked+.slider {
+  background-color: #2196F3;
+}
+
+input:focus+.slider {
+  box-shadow: 0 0 1px #2196F3;
+}
+
+input:checked+.slider:before {
+  -webkit-transform: translateX(14px);
+  -ms-transform: translateX(14px);
+  transform: translateX(14px);
+}
+
+/* Rounded sliders */
+.slider.round {
+  border-radius: 34px;
+}
+
+.slider.round:before {
+  border-radius: 50%;
+}
 
 /* Anmol CSS Start */
 
@@ -17258,4 +17330,78 @@ hr:not([size]) {
   background-color: transparent;
   border: 1px solid var(--border);
   border-radius: var(--radiusM);
+}
+
+.input-group.inputAddGroup {
+  flex-wrap: nowrap;
+}
+
+.input-group.inputAddGroup .css-13cymwt-control,
+.input-group.inputAddGroup .css-t3ipsp-control {
+  border-top-right-radius: 0 !important;
+  border-bottom-right-radius: 0 !important;
+  border-right: none !important;
+}
+
+.input-group.inputAddGroup button.MuiIconButton-root {
+  color: var(--medium);
+}
+
+.input-group.inputAddGroup button.MuiIconButton-root svg {
+  width: 20px;
+  height: 20px;
+}
+
+.input-group.inputAddGroup button.MuiIconButton-root:nth-last-child(1) {
+  border-top-right-radius: var(--radiusM) !important;
+  border-bottom-right-radius: var(--radiusM) !important;
+}
+
+.removeBankRow,
+.addBankRow {
+  position: relative;
+  height: 40px;
+  text-align: center;
+}
+
+.removeBankRow::before,
+.addBankRow::before {
+  content: "";
+  position: absolute;
+  top: 19px;
+  left: 0;
+  right: 0;
+  width: 100%;
+  height: 1px;
+  border-bottom: 1px solid var(--border);
+}
+
+.removeBankRow .MuiButton-root,
+.addBankRow .MuiButton-root {
+  position: relative;
+  height: 40px;
+  padding: 0;
+  background: var(--body-sub-bg);
+  padding: 0px 12px 0px 0px;
+  text-transform: capitalize;
+}
+
+.removeBankRow .MuiButton-root:hover,
+.addBankRow .MuiButton-root:hover {
+  background: var(--body-sub-bg);
+}
+
+.pagePriceRow {
+  position: relative;
+}
+
+.pagePriceRow .btn-outline-danger {
+  margin: 26px auto 0 auto;
+}
+
+.pagePriceRow .btn-outline-primary.w-auto {
+  margin: 26px auto 0 auto;
+  position: absolute;
+  top: 0;
+  right: 24px;
 }

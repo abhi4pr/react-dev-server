@@ -5,51 +5,66 @@ import { Link } from "react-router-dom";
 import { baseUrl } from "../../../../utils/config";
 import FormContainer from "../../FormContainer";
 import DeleteButton from "../../DeleteButton";
+import { useGetAllSaleServiceQuery } from "../../../Store/API/Sales/SalesServiceApi";
+import CustomTable from "../../../CustomTable/CustomTable";
+import View from "../Account/View/View";
 
 const SalesServicesOverview = () => {
-  const [hobbiesData, setHobbiesData] = useState([]);
-  const [originalData, setOriginalData] = useState([]);
-  const [search, setSearch] = useState("");
+  // const [hobbiesData, setHobbiesData] = useState([]);
+  // const [originalData, setOriginalData] = useState([]);
+  // const [search, setSearch] = useState("");
   const [post, setPost] = useState("post");
-  const getData = async () => {
-    try {
-      const response = await axios.get(
-        baseUrl + "sales/getlist_sale_service_master"
-      );
-      const data = response.data.data;
-      console.log(data, "hello world");
-      setHobbiesData(data);
-      setOriginalData(data);
-    } catch (error) {
-      console.error(error);
-    }
-  };
+  const { data: allSalesService,
+    error: allSalesServiceError,
+    isLoading: allSalesServiceLoading
+  } = useGetAllSaleServiceQuery();
+  // useEffect(() => {
 
-  useEffect(() => {
-    getData();
-  }, []);
 
-  useEffect(() => {
-    const result = originalData.filter((d) => {
-      return d.service_name?.toLowerCase().includes(search.toLowerCase());
-    });
-    setHobbiesData(result);
-  }, [search]);
+  //   setOriginalData(allSalesService);
+
+  // }, [allSalesServiceLoading])
+
+  // const getData = async () => {
+  //   try {
+  //     const response = await axios.get(
+  //       baseUrl + "sales/getlist_sale_service_master"
+  //     );
+  //     const data = response.data.data;
+  //     console.log(data, "hello world");
+  //     setHobbiesData(data);
+  //     setOriginalData(data);
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
+  // };
+
+  // useEffect(() => {
+  //   getData();
+  // }, []);
+
+  // useEffect(() => {
+  //   const result = originalData.filter((d) => {
+  //     return d.service_name?.toLowerCase().includes(search.toLowerCase());
+  //   });
+  //   setHobbiesData(result);
+  // }, [search]);
 
   const columns = [
     {
       name: "S.no",
-      cell: (row, index) => <div>{index + 1}</div>,
-      width: "80px",
-      sortable: true,
+      renderRowCell: (row, index) => <div>{index + 1}</div>,
+      width: "80",
+
     },
     {
+      key: "service_name",
       name: "Service Name",
-      selector: (row) => row.service_name,
+
     },
     {
       name: "Action",
-      cell: (row) => (
+      renderRowCell: (row) => (
         <>
           <div class="btn-group">
             <button
@@ -62,18 +77,18 @@ const SalesServicesOverview = () => {
               <i class="fa-solid fa-ellipsis"></i>
             </button>
             <div className="dropdown-menu dropdown-menu-right">
-              <Link to={`/admin/update-sales-services/${row._id}/${"put"}`}>
+              <Link to={`/admin/create-sales-services/${row._id}/${"put"}`}>
                 <button className="dropdown-item ">Edit</button>
               </Link>
 
-              <Link to={`/admin/update-sales-services/${row._id}/${post}`}>
+              <Link to={`/admin/create-sales-services/${row._id}/${post}`}>
                 <button className="dropdown-item ">Clone</button>
               </Link>
             </div>
             <DeleteButton
               endpoint="sales/delete_sale_service_master"
               id={row._id}
-              getData={getData}
+              getData={allSalesService}
             />
           </div>
         </>
@@ -82,6 +97,7 @@ const SalesServicesOverview = () => {
   ];
   return (
     <>
+
       <div className="action_heading">
         <div className="action_title">
           <FormContainer
@@ -92,8 +108,8 @@ const SalesServicesOverview = () => {
           />
         </div>
       </div>
-      <div className="page_height">
-        <div className="card mb-4">
+      {/* <div className="page_height">
+        <div className="card">
           <div className="data_tbl table-responsive">
             <DataTable
               title="Services Overview"
@@ -116,7 +132,24 @@ const SalesServicesOverview = () => {
             />
           </div>
         </div>
-      </div>
+      </div> */}
+      {/* <View
+        columns={columns}
+        data={originalData}
+        isLoading={allSalesServiceLoading}
+        title="Services Overview"
+        pagination
+
+
+      /> */}
+      {/* <View /> */}
+      <View
+        columns={columns}
+        data={allSalesService}
+        isLoading={allSalesServiceLoading}
+        title="Services Overview"
+        pagination
+      />
     </>
   );
 };
