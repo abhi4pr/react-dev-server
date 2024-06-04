@@ -17331,3 +17331,77 @@ hr:not([size]) {
   border: 1px solid var(--border);
   border-radius: var(--radiusM);
 }
+
+.input-group.inputAddGroup {
+  flex-wrap: nowrap;
+}
+
+.input-group.inputAddGroup .css-13cymwt-control,
+.input-group.inputAddGroup .css-t3ipsp-control {
+  border-top-right-radius: 0 !important;
+  border-bottom-right-radius: 0 !important;
+  border-right: none !important;
+}
+
+.input-group.inputAddGroup button.MuiIconButton-root {
+  color: var(--medium);
+}
+
+.input-group.inputAddGroup button.MuiIconButton-root svg {
+  width: 20px;
+  height: 20px;
+}
+
+.input-group.inputAddGroup button.MuiIconButton-root:nth-last-child(1) {
+  border-top-right-radius: var(--radiusM) !important;
+  border-bottom-right-radius: var(--radiusM) !important;
+}
+
+.removeBankRow,
+.addBankRow {
+  position: relative;
+  height: 40px;
+  text-align: center;
+}
+
+.removeBankRow::before,
+.addBankRow::before {
+  content: "";
+  position: absolute;
+  top: 19px;
+  left: 0;
+  right: 0;
+  width: 100%;
+  height: 1px;
+  border-bottom: 1px solid var(--border);
+}
+
+.removeBankRow .MuiButton-root,
+.addBankRow .MuiButton-root {
+  position: relative;
+  height: 40px;
+  padding: 0;
+  background: var(--body-sub-bg);
+  padding: 0px 12px 0px 0px;
+  text-transform: capitalize;
+}
+
+.removeBankRow .MuiButton-root:hover,
+.addBankRow .MuiButton-root:hover {
+  background: var(--body-sub-bg);
+}
+
+.pagePriceRow {
+  position: relative;
+}
+
+.pagePriceRow .btn-outline-danger {
+  margin: 26px auto 0 auto;
+}
+
+.pagePriceRow .btn-outline-primary.w-auto {
+  margin: 26px auto 0 auto;
+  position: absolute;
+  top: 0;
+  right: 24px;
+}

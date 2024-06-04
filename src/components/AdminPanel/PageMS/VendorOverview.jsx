@@ -103,8 +103,7 @@ const VendorOverview = () => {
       width: 80,
 
       valueGetter: (params) => {
-       
-        return filterData?.findIndex(item => item._id === params.id) + 1;
+        return filterData?.findIndex((item) => item._id === params.id) + 1;
       },
     },
     {
@@ -452,158 +451,25 @@ const VendorOverview = () => {
   return (
     <>
       <VendorWhatsappLinkModla />
-      <Stack>
-        <Typography>Vendor : {vendorTypes.length} </Typography>
-        <Stack direction={"row"} justifyContent={"flex-end"}>
-          <Link
-            to={`/admin/pms-vendor-master`}
-            className="me-3 btn btn-primary btn-sm"
-          >
-            Add Vendor <i className="fa fa-plus" />
-          </Link>
-          <Link
-            to={`/admin/pms-page-overview`}
-            className="btn btn-primary btn-sm"
-          >
-            Page <KeyboardArrowRightIcon />
-          </Link>
-          {/* <Link to={`/admin/pms-vendor-page-price-overview`}>
-          <button
-            title="Add"
-            className="btn btn-outline-primary"
-            style={{ marginBottom: "10px" }}
-          >
-            Vendor Page Price Overview
-          </button>
-        </Link> */}
-          {/* <Stack direction="row" spacing={1}>
-          <button
-            title="Add"
-            className="btn btn-outline-primary ml-3"
-            style={{ marginBottom: "10px" }}
-            onClick={() => copySelectedRows(1)}
-          >
-            <ContentCopyOutlinedIcon />
-            Copy Selected Pages
-          </button>
-          <button
-            title="Add"
-            className="btn btn-outline-primary ml-3"
-            style={{ marginBottom: "10px" }}
-            onClick={copyAllRows}
-          >
-            <CopyAllOutlinedIcon />
-            Copy All Pages
-          </button> */}
-          {/* <Button
-                size="small"
-                variant="outlined"
-                startIcon={<ContentPasteIcon />}
-                onClick={() => copySelectedRows(0)}
-              >
-                Copy Page Name & Links
-              </Button> */}
-          {/* </Stack> */}
-        </Stack>
-      </Stack>
       <div className="card">
-        <div className="data_tbl table-responsive">
-          {/* <div className="card"> */}
-          {/* <div className="card-body"> */}
-          {/* <div className="card-text">
-                <div className="row">
-                  <div className="col-md-2">
-                    <Link
-                      to="/admin/pms-vendor-type"
-                      className="btn btn-primary btn-sm"
-                      id="pageName"
-                    >
-                      Vendor Type
-                    </Link>
-                  </div>{" "}
-                  <div className="col-md-2">
-                    <Link
-                      to="/admin/pms-pay-method"
-                      className="btn btn-primary btn-sm"
-                      id="pageName"
-                    >
-                      Payment Mehtod
-                    </Link>
-                  </div>
-                  <div className="col-md-2">
-                    <Link
-                      to="/admin/pms-pay-cycle"
-                      className="btn btn-primary btn-sm"
-                      id="pageName"
-                    >
-                      Payment Cycle
-                    </Link>
-                  </div>
-                  <div className="col-md-2">
-                    <Link
-                      to="/admin/pms-group-link-type"
-                      className="btn btn-primary btn-sm"
-                      id="pageName"
-                    >
-                      Group Link Type
-                    </Link>
-                  </div>
-                  <div className="col-md-2">
-                    <Link
-                      to="/admin/pms-vendor-group-link"
-                      className="btn btn-primary btn-sm"
-                      id="pageName"
-                    >
-                      Vendor Group Link
-                    </Link>
-                  </div>
-                  <div className="col-md-2">
-                    <Link
-                      to="/admin/pms-price-type"
-                      className="btn btn-primary btn-sm"
-                      id="pageName"
-                    >
-                      Price
-                    </Link>
-                  </div>{" "}
-                </div>
-              </div> */}
-          {/* </div> */}
-          {/* <div className="mx-3 mb-2">
-              {[
-                ...new Set(
-                  filterData.map((item) => {
-                    return item?.vendor_category;
-                  })
-                ),
-              ].map((item, index) => {
-                return (
-                  <button
-                    key={index}
-                    className="btn btn-primary btn-sm"
-                    onClick={() => setSearch(item)}
-                  >
-                    {item}{" "}
-                    <span className="badge bg-secondary">
-                      {
-                        filterData.filter((data) => {
-                          return data.vendor_category === item;
-                        }).length
-                      }
-                    </span>
-                  </button>
-                );
-              })}
-            </div> */}
-          {/* <div className="mx-3 mb-2">
-              <h4>
-                <span className="text-primary">
-                   Vendor:{vendorTypes.length}
-                </span>
-              </h4>
-            </div> */}
-          {/* </div> */}
-
+        <div className="card-header flexCenterBetween">
+          <h5 className="card-title">Vendor : {vendorTypes.length}</h5>
+          <div className="flexCenter colGap8">
+            <Link
+              to={`/admin/pms-vendor-master`}
+              className="btn cmnbtn btn_sm btn-outline-primary"
+            >
+              Add Vendor <i className="fa fa-plus" />
+            </Link>
+            <Link
+              to={`/admin/pms-page-overview`}
+              className="btn cmnbtn btn_sm btn-outline-primary"
+            >
+              Page <KeyboardArrowRightIcon />
+            </Link>
+          </div>
+        </div>
+        <div className="data_tbl thm_table table-responsive card-body p0">
           {loading ? (
             <Box mt={2} ml={2} mb={3} sx={{ width: "95%" }}>
               <Grid
@@ -652,7 +518,6 @@ const VendorOverview = () => {
                   showQuickFilter: true,
                 },
               }}
-              // checkboxSelection
             />
           )}
         </div>

@@ -338,10 +338,9 @@ import { FinanceContextComponent } from "../../Context/FinanceContext";
 import CreateSalesAccount from "./Sales/Account/CreateSalesAccount";
 import SalesAccountOverview from "./Sales/Account/SalesAccountOverview";
 import PaymentDoneTransactionList from "./Finance/PaymentDoneTransactionList";
-import PageStats from "./PageMS/PageStats";
+// import PageStats from "./PageMS/PageStats";
 import CreateDocumentType from "./Sales/Account/CreateDocumentType";
 import DocumentTypeOverview from "./Sales/Account/DocumentTypeOverview";
-
 
 const Admin = () => {
   const [contextData, setData] = useState([]);
@@ -498,7 +497,7 @@ const Admin = () => {
                   />
                   <Route path="/attendence-mast" element={<Attendence />} />
                   <Route path="/stats" element={<Stats />} />
-                  <Route path="/pageStats/:id" element={<PageStats />} />
+                  {/* <Route path="/pageStats/:id" element={<PageStats />} /> */}
                   {/* Salary */}
                   <Route path="/salaryWFH" element={<SalaryWFH />} />
 
@@ -1576,7 +1575,6 @@ const Admin = () => {
                     path="/sales-document-type-overview"
                     element={<DocumentTypeOverview />}
                   />
-
 
                   {/* Sales Harshal end */}
                   <Route
