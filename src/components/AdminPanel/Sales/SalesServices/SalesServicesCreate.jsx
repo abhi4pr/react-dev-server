@@ -7,7 +7,11 @@ import DynamicSelect from "../DynamicSelectManualy";
 import axios from "axios";
 import { useGlobalContext } from "../../../../Context/Context";
 import { useAPIGlobalContext } from "../../APIContext/APIContext";
-import { useAddSaleServiceMutation, useEditSaleServiceMutation, useGetSingleSaleServiceQuery } from "../../../../components/Store/API/Sales/SalesServiceApi"
+import {
+  useAddSaleServiceMutation,
+  useEditSaleServiceMutation,
+  useGetSingleSaleServiceQuery,
+} from "../../../../components/Store/API/Sales/SalesServiceApi";
 
 const SalesServicesCreate = () => {
   const { id, method } = useParams();
@@ -44,55 +48,19 @@ const SalesServicesCreate = () => {
   ];
 
   const AmountData = ["calculated", "input"];
-  const [
-    createSaleService, {
-      isLoading: isCreating,
-      error: createError
-    }
-  ] = useAddSaleServiceMutation()
+  const [createSaleService, { isLoading: isCreating, error: createError }] =
+    useAddSaleServiceMutation();
   const {
     data: singleSaleService,
     isLoading: isSingleSaleServiceLoading,
-    error: singleSaleServiceError
-  } = useGetSingleSaleServiceQuery(id)
+    error: singleSaleServiceError,
+  } = useGetSingleSaleServiceQuery(id);
 
-  const [updatesalesservice, { isLoading: isUpdating, error: updateError }] = useEditSaleServiceMutation()
+  const [updatesalesservice, { isLoading: isUpdating, error: updateError }] =
+    useEditSaleServiceMutation();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!servicename || servicename == "") {
-      return toastError("Service Name is Required");
-    } else if (!postType || postType == "") {
-      return toastError("Post Type is Required");
-    } else if (!excelUpload || excelUpload == "") {
-      return toastError("Excel Upload is Required");
-    } else if (!amount || amount == "") {
-      return toastError("Amount is Required");
-    } else if (!numberHours || numberHours == "") {
-      return toastError("Number Hours is Required");
-    } else if (!goal || goal == "") {
-      return toastError("Goal is Required");
-    } else if (!day || day == "") {
-      return toastError("Day is Required");
-    } else if (!quantity || quantity == "") {
-      return toastError("Quantity is Required");
-    } else if (!brandName || brandName == "") {
-      return toastError("Brand Name is Required");
-    } else if (!hashTag || hashTag == "") {
-      return toastError("hashTag is Required");
-    } else if (!individual || individual == "") {
-      return toastError("individual Status is Required");
-    } else if (!numberOfCreators || numberOfCreators == "") {
-      return toastError("Number Of Creators is Required");
-    } else if (!startEndDate || startEndDate == "") {
-      return toastError("Start End Date is Required");
-    } else if (!perMonthAmount || perMonthAmount == "") {
-      return toastError("Per Month Amount is Required");
-    } else if (!startEndDate || startEndDate == "") {
-      return toastError("Start End Date is Required");
-    } else if (!deliverables || deliverables == "") {
-      return toastError("Deliverables info is Required");
-    }
     try {
       const payload = {
         service_name: servicename,
@@ -111,10 +79,14 @@ const SalesServicesCreate = () => {
         per_month_amount_status: perMonthAmount,
         deliverables_info: deliverables,
         remarks: remark,
-      }
+      };
 
       if (method === "put") {
-        await updatesalesservice({ ...payload, updated_by: userID, id: id }).unwrap();
+        await updatesalesservice({
+          ...payload,
+          updated_by: userID,
+          id: id,
+        }).unwrap();
       } else {
         await createSaleService({ ...payload, created_by: userID }).unwrap();
       }
@@ -128,41 +100,36 @@ const SalesServicesCreate = () => {
     }
   };
   useEffect(() => {
-    if (isFormSubmitted)
-      navigate("/admin/sales-services-overview");
-  }, [isFormSubmitted])
+    if (isFormSubmitted) navigate("/admin/sales-services-overview");
+  }, [isFormSubmitted]);
   useEffect(() => {
-
     if (method === "put" || method === "post") {
       setServiceName(singleSaleService?.service_name);
-      setAmount(singleSaleService?.amount_status)
-      setPostType(singleSaleService?.post_type)
-      setExcelUpload(singleSaleService?.is_excel_upload)
-      setNumberHours(singleSaleService?.no_of_hours_status)
-      setGoal(singleSaleService?.goal_status)
-      setDay(singleSaleService?.day_status)
-      setQuantity(singleSaleService?.quantity_status)
-      setHashTag(singleSaleService?.hashtag)
-      setBrandName(singleSaleService?.brand_name_status)
-      setIndividual(singleSaleService?.indiviual_amount_status)
-      setNumberOfCreators(singleSaleService?.no_of_creators)
-      setStartEndDate(singleSaleService?.start_end_date_status)
-      setPerMonthAmount(singleSaleService?.per_month_amount_status)
-      setDeliverables(singleSaleService?.deliverables_info)
-      setRemark(singleSaleService?.remarks)
+      setAmount(singleSaleService?.amount_status);
+      setPostType(singleSaleService?.post_type);
+      setExcelUpload(singleSaleService?.is_excel_upload);
+      setNumberHours(singleSaleService?.no_of_hours_status);
+      setGoal(singleSaleService?.goal_status);
+      setDay(singleSaleService?.day_status);
+      setQuantity(singleSaleService?.quantity_status);
+      setHashTag(singleSaleService?.hashtag);
+      setBrandName(singleSaleService?.brand_name_status);
+      setIndividual(singleSaleService?.indiviual_amount_status);
+      setNumberOfCreators(singleSaleService?.no_of_creators);
+      setStartEndDate(singleSaleService?.start_end_date_status);
+      setPerMonthAmount(singleSaleService?.per_month_amount_status);
+      setDeliverables(singleSaleService?.deliverables_info);
+      setRemark(singleSaleService?.remarks);
     }
-
-  }, [isSingleSaleServiceLoading])
+  }, [isSingleSaleServiceLoading]);
 
   return (
     <div className="servicepage">
-
       <FormContainer
         mainTitle="Services"
         title="Services Creation"
         handleSubmit={handleSubmit}
       >
-
         <FieldContainer
           label="Service Name"
           astric={true}
@@ -170,7 +137,6 @@ const SalesServicesCreate = () => {
           value={servicename}
           placeholder={"Enter Service Name"}
           required={false}
-
           onChange={(e) => setServiceName(e.target.value)}
         />
         <DynamicSelect
@@ -179,6 +145,7 @@ const SalesServicesCreate = () => {
           data={PostTypeData}
           value={postType}
           cols={4}
+          required={false}
           onChange={(e) => setPostType(e.value)}
         />
         <DynamicSelect
@@ -187,6 +154,7 @@ const SalesServicesCreate = () => {
           data={AmountData}
           value={amount}
           cols={4}
+          required={false}
           onChange={(e) => setAmount(e.value)}
         />
         <div className="form-group col-2">
@@ -198,12 +166,8 @@ const SalesServicesCreate = () => {
             />
             <span className="slider round"></span>
           </label>
-          <label className="form-label">
-            Excel Upload
-          </label>
+          <label className="form-label">Excel Upload</label>
         </div>
-
-
 
         <div className="form-group col-2">
           <label className="switch">
@@ -214,9 +178,7 @@ const SalesServicesCreate = () => {
             />
             <span className="slider round"></span>
           </label>
-          <label className="form-label">
-            Number Hours
-          </label>
+          <label className="form-label">Number Hours</label>
         </div>
 
         <div className="form-group col-2">
@@ -228,9 +190,7 @@ const SalesServicesCreate = () => {
             />
             <span className="slider round"></span>
           </label>
-          <label className="form-label">
-            Goal
-          </label>
+          <label className="form-label">Goal</label>
         </div>
 
         <div className="form-group col-2">
@@ -242,9 +202,7 @@ const SalesServicesCreate = () => {
             />
             <span className="slider round"></span>
           </label>
-          <label className="form-label">
-            Day
-          </label>
+          <label className="form-label">Day</label>
         </div>
 
         <div className="form-group col-2">
@@ -256,9 +214,7 @@ const SalesServicesCreate = () => {
             />
             <span className="slider round"></span>
           </label>
-          <label className="form-label">
-            Quantity
-          </label>
+          <label className="form-label">Quantity</label>
         </div>
 
         <div className="form-group col-2">
@@ -270,9 +226,7 @@ const SalesServicesCreate = () => {
             />
             <span className="slider round"></span>
           </label>
-          <label className="form-label">
-            Brand Name
-          </label>
+          <label className="form-label">Brand Name</label>
         </div>
 
         <div className="form-group col-2">
@@ -284,9 +238,7 @@ const SalesServicesCreate = () => {
             />
             <span className="slider round"></span>
           </label>
-          <label className="form-label">
-            HasTag
-          </label>
+          <label className="form-label">HasTag</label>
         </div>
 
         <div className="form-group col-2">
@@ -298,9 +250,7 @@ const SalesServicesCreate = () => {
             />
             <span className="slider round"></span>
           </label>
-          <label className="form-label">
-            Individual Amount
-          </label>
+          <label className="form-label">Individual Amount</label>
         </div>
 
         <div className="form-group col-2">
@@ -312,9 +262,7 @@ const SalesServicesCreate = () => {
             />
             <span className="slider round"></span>
           </label>
-          <label className="form-label">
-            Number Of Creators
-          </label>
+          <label className="form-label">Number Of Creators</label>
         </div>
 
         <div className="form-group col-2">
@@ -326,9 +274,7 @@ const SalesServicesCreate = () => {
             />
             <span className="slider round"></span>
           </label>
-          <label className="form-label">
-            Start End Date
-          </label>
+          <label className="form-label">Start End Date</label>
         </div>
 
         <div className="form-group col-2">
@@ -340,9 +286,7 @@ const SalesServicesCreate = () => {
             />
             <span className="slider round"></span>
           </label>
-          <label className="form-label">
-            Per Month Amount
-          </label>
+          <label className="form-label">Per Month Amount</label>
         </div>
 
         <div className="form-group col-2">
@@ -354,9 +298,7 @@ const SalesServicesCreate = () => {
             />
             <span className="slider round"></span>
           </label>
-          <label className="form-label">
-            Deliverables Info
-          </label>
+          <label className="form-label">Deliverables Info</label>
         </div>
 
         <FieldContainer

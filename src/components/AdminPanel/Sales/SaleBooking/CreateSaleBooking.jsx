@@ -14,12 +14,13 @@ import { useGetAllBrandQuery } from "../../../Store/API/Sales/BrandApi";
 import { useGetAllAccountQuery } from "../../../Store/API/Sales/SalesAccountApi";
 import CreateRecordServices from "../Account/CreateRecordServices";
 import { useGetAllSaleServiceQuery } from "../../../Store/API/Sales/SalesServiceApi";
-import RecordServices from "../Account/CreateRecordServices";
 
 const todayDate = new Date().toISOString().split("T")[0];
 
 const CreateSaleBooking = () => {
   const { editId } = useParams();
+
+  console.log(editId);
   const navigate = useNavigate();
   const { loginUserData } = useAPIGlobalContext();
 
@@ -45,8 +46,6 @@ const CreateSaleBooking = () => {
   const [campaignName, setCampaignName] = useState("");
   const [selectedAccount, setSelectedAccount] = useState(null);
   const [selectedCustomer, setSelectedCustomer] = useState("");
-  const [selectedCustomerPart, setSelectedCustomerPart] = useState("");
-  const [selectedCustomerData, setSelectedCustomerData] = useState([]);
   const [selectedBrand, setSelectedBrand] = useState(null);
   const [bookingDate, setBookingDate] = useState(
     new Date().toISOString().split("T")[0]
@@ -98,34 +97,6 @@ const CreateSaleBooking = () => {
     fetchData();
   }, []);
 
-  useEffect(() => {
-    const fetchIdData = async () => {
-      try {
-        const response = await axios.get(
-          `${baseUrl}sales/get_single_sales_booking/${editId}`
-        );
-
-        const res = response.data.data;
-
-        setSelectedCustomer(res.customer_id);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-
-    if (editId !== 0) {
-      fetchIdData();
-    }
-  }, [editId]);
-
-  useEffect(() => {
-    if (selectedCustomerPart) {
-      axios
-        .get(`${baseUrl}get_customer_mast/${selectedCustomerPart}`)
-        .then((res) => setSelectedCustomerData(res.data.data[0]));
-    }
-  }, [selectedCustomerPart]);
-
   const handleGstChange = (e) => {
     setAddGst(e.target.checked);
     if (!e.target.checked) {
@@ -150,7 +121,7 @@ const CreateSaleBooking = () => {
     }
   }, [baseAmount, addGst]);
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e, draft) => {
     e.preventDefault();
     try {
       const formData = new FormData();
@@ -199,8 +170,10 @@ const CreateSaleBooking = () => {
         incentiveCheck ? "no-incentive" : "incentive"
       );
 
+      formData.append("is_draft_save", draft);
       formData.append("managed_by", loginUserId);
       formData.append("created_by", loginUserId);
+      formData.append("record_services", recServices);
       const response = await axios.post(
         `${baseUrl}sales/add_sales_booking`,
         formData,
@@ -235,10 +208,6 @@ const CreateSaleBooking = () => {
 
   const handlePaymentStatusSelect = (selectedOption) => {
     setSelectedPaymentStatus(selectedOption);
-  };
-
-  const handleCustomer = (e) => {
-    setSelectedCustomer(e.value), setSelectedCustomerPart(e.id);
   };
 
   const handleReasonCreditApp = (selectedOption) => {
@@ -318,12 +287,12 @@ const CreateSaleBooking = () => {
             setSelectedId={setSelectedBrand}
             required
           />
-          <div className="card">
-            {selectedCustomerData && (
+          {/* <div className="card">
+            {
               <>
-                {/* Customer Type: {selectedCustomerData?.Customer_type_data} */}
+                 Customer Type: {selectedCustomerData?.Customer_type_data} 
                 Account Name: {selectedCustomerData?.customer_name}
-                {/* Company Name: {selectedCustomerData?.company_name} */}
+                 Company Name: {selectedCustomerData?.com pany_name} 
                 GST No.: {selectedCustomerData?.company_gst_no}
                 Primary Contact: {selectedCustomerData?.primary_contact_no}
                 AlterNate Number: {selectedCustomerData?.alternative_no}
@@ -332,8 +301,8 @@ const CreateSaleBooking = () => {
                 Country: {selectedCustomerData?.connect_billing_country}
                 Website: {selectedCustomerData?.website}
               </>
-            )}
-          </div>
+            }
+          </div> */}
 
           <FieldContainer
             label="Sale Booking Date"
@@ -485,11 +454,13 @@ const CreateSaleBooking = () => {
         setRecords={setRecServices}
         serviceTypes={serviceTypes}
       />
-
       {/* <ExcelToInputFields /> */}
       <div className="flex-row sb mb-3">
-        <button className="btn cmnbtn btn-primary" onClick={handleSubmit}>
-          Draft
+        <button
+          className="btn cmnbtn btn-primary"
+          onClick={(e) => handleSubmit(e, !recServices.length > 0)}
+        >
+          {recServices.length > 0 ? "Submit" : "Save as Draft"}
         </button>
         <button
           className="btn cmnbtn btn-secondary"
