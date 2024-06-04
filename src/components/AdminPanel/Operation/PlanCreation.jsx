@@ -98,11 +98,11 @@ const TempPlanCreation = () => {
     const handleSubmit = async(e) => {
         e.preventDefault();
         const postResult = await axios.post(baseUrl + `opcampainplan`, {
-            excelUrl: 
+            excelUrl: ''
         });
     };
 
-    const columns = [executionExcel
+    const columns = [
         {
             field: 'checkbox', headerName: '', width: 40
         },
