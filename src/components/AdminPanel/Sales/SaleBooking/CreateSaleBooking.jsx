@@ -14,18 +14,22 @@ import { useGetAllBrandQuery } from "../../../Store/API/Sales/BrandApi";
 import { useGetAllAccountQuery } from "../../../Store/API/Sales/SalesAccountApi";
 import CreateRecordServices from "../Account/CreateRecordServices";
 import { useGetAllSaleServiceQuery } from "../../../Store/API/Sales/SalesServiceApi";
+import { useGstDetailsMutation } from "../../../Store/API/Sales/GetGstDetailApi";
+import { useGetSingleDocumentOverviewQuery } from "../../../Store/API/Sales/DocumentOverview";
+import { add, set } from "date-fns";
+import { useAddSaleBookingMutation, useGetIndividualSaleBookingQuery } from "../../../Store/API/Sales/SaleBookingApi";
+import { sl } from "date-fns/locale";
 
 const todayDate = new Date().toISOString().split("T")[0];
 
 const CreateSaleBooking = () => {
-  const { editId } = useParams();
+  const { editId, un_id } = useParams();
 
-  console.log(editId);
   const navigate = useNavigate();
   const { loginUserData } = useAPIGlobalContext();
 
   const userCreditLimit = loginUserData?.user_credit_limit;
-
+  const [addsaledata, { isLoading: addsaleLoading, error: addsaleError }] = useAddSaleBookingMutation();
   const {
     data: allBrands,
     error: allBrandsError,
@@ -38,8 +42,15 @@ const CreateSaleBooking = () => {
     isLoading: allAccountLoading,
   } = useGetAllAccountQuery();
 
+  const {
+    data: salesdata,
+    error: salesError,
+    isLoading: salesLoading
+  } = useGetIndividualSaleBookingQuery(`${un_id}`, { skip: !un_id })
+  // console.log(salesdata, "salesdata");
   const { data: serviceTypes } = useGetAllSaleServiceQuery();
 
+  const [getGst, { data: gstData, isLoading: gstLoading, error: gstError }] = useGstDetailsMutation();
   const token = getDecodedToken();
   const loginUserId = token.id;
   const { toastAlert, toastError } = useGlobalContext();
@@ -56,7 +67,7 @@ const CreateSaleBooking = () => {
   const [addGst, setAddGst] = useState(false);
   const [netAmount, setNetAmount] = useState(0);
   const [description, setDescription] = useState("");
-  const [selectedPaymentStatus, setSelectedPaymentStatus] = useState("");
+  const [selectedPaymentStatus, setSelectedPaymentStatus] = useState();
   const [creditApprovalList, setCreditApprovalList] = useState([]);
   const [selectedCreditApp, setSelectedCreditApp] = useState("");
   const [reasonCreditApproval, setReasonCreditApproval] = useState("");
@@ -67,6 +78,7 @@ const CreateSaleBooking = () => {
   // const [excelFile, setExcelFile] = useState(null);
   const [incentiveCheck, setIncentiveCheck] = useState(false);
   const [recServices, setRecServices] = useState([]);
+  const [gstAvailable, setGstAvailable] = useState();
 
   const paymentStatusList = [
     {
@@ -81,6 +93,11 @@ const CreateSaleBooking = () => {
       label: "Sent For Payment Approval",
     },
   ];
+  const {
+    data: singleDocumentOverviewData,
+    error: singleDocumentOverviewError,
+    isLoading: singleDocumentOverviewLoading,
+  } = useGetSingleDocumentOverviewQuery(`${selectedAccount}`, { skip: !selectedAccount });
 
   useEffect(() => {
     const fetchData = async () => {
@@ -107,7 +124,36 @@ const CreateSaleBooking = () => {
       setGstAmount(gstRound);
     }
   };
+  useEffect(() => {
+    if (editId) {
+      setCampaignName(salesdata?.campaign_name)
+      setSelectedAccount(salesdata?.account_id)
+      setSelectedBrand(allBrands?.find((item) => item._id == salesdata?.brand_id)?.instaBrandId)
+      setBookingDate(salesdata?.sale_booking_date?.split("T")[0])
+      setBaseAmount(salesdata?.base_amount)
+      setAddGst(salesdata?.gst_status)
+      setGstAmount(salesdata?.gst_amount)
+      setNetAmount(salesdata?.campaign_amount)
+      setDescription(salesdata?.description)
+      setSelectedPaymentStatus(paymentStatusList.find((item) => item.value == salesdata?.payment_credit_status))
+      setBalancePayDate(salesdata?.balance_payment_ondate?.split("T")[0])
+      setIncentiveCheck(salesdata?.incentive_status?.toLowerCase() == "no-incentive")
+      console.log(salesdata?.incentive_status?.toLowerCase() == "no-incentive");
+    }
+  }, [salesdata])
 
+  useEffect(() => {
+    if (singleDocumentOverviewData?.data?.length > 0 && !singleDocumentOverviewLoading) {
+      setGstAvailable(singleDocumentOverviewData?.data?.find((item) => item.document_name.toLowerCase() == "gst no.")?.document_no)
+    }
+  }, [selectedAccount, singleDocumentOverviewData, singleDocumentOverviewLoading]);
+  useEffect(() => {
+    if (gstAvailable !== undefined)
+      getGst({
+        "flag": 1,
+        "gstNo": gstAvailable
+      }).unwrap();
+  }, [gstAvailable]);
   useEffect(() => {
     if (addGst) {
       const gst = baseAmount * 0.18;
@@ -125,7 +171,7 @@ const CreateSaleBooking = () => {
     e.preventDefault();
     try {
       const formData = new FormData();
-      formData.append("customer_id", selectedCustomer);
+      formData.append("account_id", selectedAccount);
       formData.append("sale_booking_date", bookingDate);
       formData.append("base_amount", baseAmount);
       formData.append("gst_amount", gstAmount);
@@ -133,7 +179,7 @@ const CreateSaleBooking = () => {
       formData.append("net_amount", netAmount);
       formData.append("campaign_amount", netAmount);
       formData.append("description", description);
-
+      formData.append("campaign_name", campaignName);
       formData.append("payment_credit_status", selectedPaymentStatus?.value);
       formData.append(
         "credit_approval_status",
@@ -146,8 +192,8 @@ const CreateSaleBooking = () => {
         selectedPaymentStatus?.label === "Sent For Payment Approval"
           ? 0
           : selectedPaymentStatus?.value === "sent_for_credit_approval"
-          ? 2
-          : 3
+            ? 2
+            : 3
       );
 
       reasonCreditApproval &&
@@ -174,32 +220,9 @@ const CreateSaleBooking = () => {
       formData.append("managed_by", loginUserId);
       formData.append("created_by", loginUserId);
       formData.append("record_services", recServices);
-      const response = await axios.post(
-        `${baseUrl}sales/add_sales_booking`,
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
+      addsaledata(formData).unwrap();
 
-      setSelectedCustomer("");
-      setBookingDate(new Date().toISOString().split("T")[0]);
-      setBaseAmount(0);
-      setGstAmount(0);
-      setAddGst(false);
-      setNetAmount(0);
-      setDescription("");
-      setSelectedPaymentStatus("");
-      setSelectedCreditApp("");
-      setReasonCreditApproval("");
-      setBalancePayDate("");
-      // setExecutiveSelfCredit(false);
-      // setExcelFile(null);
-      setIncentiveCheck(false);
-
-      toastAlert(response.data.message);
+      toastAlert("Sale Booking Created Successfully");
       navigate("/admin/view-sales-booking");
     } catch (error) {
       toastError(error);
@@ -277,6 +300,34 @@ const CreateSaleBooking = () => {
             setSelectedId={setSelectedAccount}
             required
           />
+          {gstAvailable && <div className="col-4">
+
+
+
+            <div className="card gstinfo-card">
+              {gstLoading && <p>Loading...</p>}
+              {!gstLoading && <>
+                <p> Company Name: <span>{gstData?.data?.legal_business_name}</span></p>
+
+                <p>
+                  GST No.: <span>
+                    {gstData?.data?.gstin}
+                  </span>
+                </p>
+
+                <p>
+
+                  Address:
+                  <span>
+                    {gstData?.data?.principal_place_of_business}
+                  </span>
+                </p>
+
+
+              </>}
+            </div>
+          </div>
+          }
           <CustomSelect
             fieldGrid={4}
             label="Brand"
@@ -287,67 +338,65 @@ const CreateSaleBooking = () => {
             setSelectedId={setSelectedBrand}
             required
           />
-          {/* <div className="card">
-            {
-              <>
-                 Customer Type: {selectedCustomerData?.Customer_type_data} 
-                Account Name: {selectedCustomerData?.customer_name}
-                 Company Name: {selectedCustomerData?.com pany_name} 
-                GST No.: {selectedCustomerData?.company_gst_no}
-                Primary Contact: {selectedCustomerData?.primary_contact_no}
-                AlterNate Number: {selectedCustomerData?.alternative_no}
-                City: {selectedCustomerData?.connect_billing_city}
-                State: {selectedCustomerData?.connect_billing_state}
-                Country: {selectedCustomerData?.connect_billing_country}
-                Website: {selectedCustomerData?.website}
-              </>
-            }
-          </div> */}
+
 
           <FieldContainer
             label="Sale Booking Date"
-            fieldGrid={3}
+            fieldGrid={4}
             astric={true}
             type="date"
             value={bookingDate}
             max={todayDate}
             onChange={(e) => setBookingDate(e.target.value)}
           />
+          <div className="col-4">
 
-          <FieldContainer
-            label="Base Amount"
-            fieldGrid={4}
-            placeholder="Enter amount here"
-            astric={true}
-            type="number"
-            value={baseAmount}
-            onChange={(e) => setBaseAmount(e.target.value)}
-          />
-
-          <div className="form-group">
-            <input
-              type="checkbox"
-              id="addGst"
-              checked={addGst}
-              onChange={handleGstChange}
+            <FieldContainer
+              label="Base Amount"
+              fieldGrid={12}
+              placeholder="Enter amount here"
+              astric={true}
+              type="number"
+              value={baseAmount}
+              onChange={(e) => setBaseAmount(e.target.value)}
             />
-            <label htmlFor="addGst">+18% GST</label>
+
+            <div className="form-group ml-4 sb form-sub">
+              <input
+                className="form-check-input"
+                type="checkbox"
+                id="addGst"
+                checked={addGst}
+                onChange={handleGstChange}
+              />
+              <label className="mt-3  " htmlFor="addGst">+18% GST</label>
+              {addGst && <div className="flex-col gap-1 ">
+
+                <p>Gst Amount: Rs.{gstAmount}</p>
+                <p>Net / Campaign Amount: Rs.{netAmount}</p>
+              </div>}
+            </div>
           </div>
 
-          <FieldContainer
-            label="GST Amount"
-            fieldGrid={4}
-            type="number"
-            value={gstAmount}
-            disabled={true}
-          />
-          <FieldContainer
-            label="Net / Campaign Amount"
-            fieldGrid={4}
-            type="number"
-            value={netAmount}
-            disabled={true}
-          />
+          {/* {addGst &&
+            <>
+              <FieldContainer
+                label="GST Amount"
+                fieldGrid={4}
+                type="number"
+                value={gstAmount}
+                disabled={true}
+              />
+              <FieldContainer
+                label="Net / Campaign Amount"
+                fieldGrid={4}
+                type="number"
+                value={netAmount}
+                disabled={true}
+              />
+            </>
+
+          } */}
           <FieldContainer
             label="Description"
             placeholder="Description"
@@ -355,7 +404,7 @@ const CreateSaleBooking = () => {
             value={description}
             onChange={(e) => setDescription(e.target.value)}
           />
-          <div className="form-group col-4 mt-3">
+          <div className="form-group col-4">
             <label className="form-label">
               Payment Status <sup style={{ color: "red" }}>*</sup>
             </label>
@@ -369,7 +418,7 @@ const CreateSaleBooking = () => {
 
           {selectedPaymentStatus?.value === "sent_for_credit_approval" && (
             <>
-              <div className="form-group col-3">
+              <div className="form-group col-4">
                 <label className="form-label">
                   Reason Credit Approval<sup style={{ color: "red" }}>*</sup>
                 </label>
@@ -401,7 +450,7 @@ const CreateSaleBooking = () => {
               )}
             </>
           )}
-          <div className="col-4 mt-3  ">
+          <div className="col-4 ">
             <FieldContainer
               label="Balance Payment Date"
               type="date"
@@ -438,12 +487,15 @@ const CreateSaleBooking = () => {
           onChange={(e) => setExcelFile(e.target.files[0])}
           required={false}
         /> */}
-          <div className="form-group col-12 mt-2">
+          <div className="form-group col-12 mt-2 mr-2 pl-4">
             <input
+              className="form-check-input "
               type="checkbox"
-              value={incentiveCheck}
+
+              checked={incentiveCheck}
               onChange={(e) => setIncentiveCheck(e.target.checked)}
             />
+
             <label className="mr-2"> No Incentive</label>
           </div>
         </div>
@@ -469,7 +521,7 @@ const CreateSaleBooking = () => {
           Add Record Service
         </button>
       </div>
-    </div>
+    </div >
   );
 };
 

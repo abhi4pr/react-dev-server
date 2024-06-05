@@ -16968,6 +16968,39 @@ input:checked+.slider:before {
   border-radius: 50%;
 }
 
+.gstinfo-card {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 20px;
+  border-radius: 10px;
+  background: var(--body-bg);
+  box-shadow: var(--shadowOne);
+  width: 100% !important;
+
+  p {
+    color: var(--medium);
+    font-size: 12px;
+    font-weight: 500;
+
+    span {
+      font-weight: 400;
+      margin-left: 10px;
+    }
+  }
+
+}
+
+.form-sub {
+
+  label,
+  p {
+    color: var(--medium) !important;
+    font-size: 12px;
+    font-weight: 500;
+  }
+}
+
 /* Anmol CSS Start */
 
 hr:not([size]) {

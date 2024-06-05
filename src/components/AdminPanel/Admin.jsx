@@ -1500,7 +1500,11 @@ const Admin = () => {
                     element={<CreditApprovalReasonUpdate />}
                   />
                   <Route
-                    path="/create-sales-booking/:editId"
+                    path="/create-sales-booking/:editId/:un_id"
+                    element={<CreateSaleBooking />}
+                  />
+                  <Route
+                    path="/create-sales-booking"
                     element={<CreateSaleBooking />}
                   />
                   <Route

@@ -7,6 +7,7 @@ const DocumentOverviewApi = createApi({
   endpoints: (builder) => ({
     getSingleDocumentOverview: builder.query({
       query: (id) => `/accounts/get_document_overview/${id}`,
+      transformErrorResponse: (Response) => Response.data,
 
       keepUnusedDataFor: 60 * 60 * 24,
     }),

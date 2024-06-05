@@ -6,20 +6,20 @@ const DocumentTypeApi = createApi({
   baseQuery: authBaseQuery,
   endpoints: (builder) => ({
     getAllDocumentType: builder.query({
-      query: () => "/accounts/get_document_master_list",
+      query: () => "accounts/get_document_master_list",
       transformResponse: (response) => response.data,
       keepUnusedDataFor: 60 * 60 * 24,
     }),
 
     getSingleDocumentType: builder.query({
-      query: (id) => `/accounts/get_document_master/${id}`,
+      query: (id) => `accounts/get_document_overview/${id}`,
       transformResponse: (response) => response.data,
       keepUnusedDataFor: 60 * 60 * 24,
     }),
 
     addDocumentType: builder.mutation({
       query: (Documentsdata) => ({
-        url: "/accounts/add_document_master",
+        url: "accounts/add_document_master",
         method: "POST",
         body: Documentsdata,
       }),
@@ -44,7 +44,7 @@ const DocumentTypeApi = createApi({
 
     editDocumentType: builder.mutation({
       query: ({ id, ...updatedDocument }) => ({
-        url: `/accounts/update_document_master/${id}`,
+        url: `accounts/update_document_master/${id}`,
         method: "PUT",
         body: updatedDocument,
       }),
@@ -75,7 +75,7 @@ const DocumentTypeApi = createApi({
 
     deleteDocument: builder.mutation({
       query: (id) => ({
-        url: `/accounts/delete_document_master/${id}`,
+        url: `accounts/delete_document_master/${id}`,
         method: "DELETE",
       }),
       onQueryStarted: async (id, { dispatch, queryFulfilled }) => {
