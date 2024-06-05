@@ -13,10 +13,14 @@ const SaleBookingApi = createApi({
 
     getAllDeletedSaleBooking: builder.query({
       query: (id) => `sales/get_all_new_deleted_data`,
+      transformResponse: (response) => response.data,
+
       keepUnusedDataFor: 60 * 60,
     }),
     getIndividualSaleBooking: builder.query({
       query: (id) => `sales/sales_booking/${id}`,
+      transformResponse: (response) => response.data,
+
       keepUnusedDataFor: 60 * 60,
     }),
     getSalesBookingPaymentDetail: builder.query({

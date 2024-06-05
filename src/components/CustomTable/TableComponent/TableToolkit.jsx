@@ -4,7 +4,7 @@ import '../Table.css'
 import * as XLSX from "xlsx";
 const TableToolkit = ({ setSearchQuery, searchQuery, toggleColumnVisibility, setVisibleColumns, columnsheader, visibleColumns, selectedRowsData, setSelectedRowsData, selectedRowsIndex, data }) => {
     useEffect(() => {
-        const selectedRowData = selectedRowsIndex.map(index => data[index]);
+        const selectedRowData = selectedRowsIndex?.map(index => data[index]);
         setSelectedRowsData(selectedRowData);
     }, [selectedRowsIndex, data]);
 

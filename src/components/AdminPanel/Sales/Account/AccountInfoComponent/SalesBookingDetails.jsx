@@ -9,6 +9,7 @@ const SalesBookingDetails = () => {
     error: SalesError,
     isLoading: SalesLoading,
   } = useGetIndividualSaleBookingQuery(account.id);
+
   return (
     <div className="SalesBookingDetail">
       <h2 className="mb-4" style={{ color: "var(--medium)" }}>

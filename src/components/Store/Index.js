@@ -17,6 +17,7 @@ import PointOfContactApi from "./API/Sales/PointOfContactApi";
 import AccountDocumentApi from "./API/Sales/AccountDocumentApi";
 import SaleServiceApi from "./API/Sales/SalesServiceApi";
 import DocumentOverviewApi from "./API/Sales/DocumentOverview";
+import GetGstDetailApi from "./API/Sales/GetGstDetailApi";
 
 const store = configureStore({
   reducer: {
@@ -37,6 +38,7 @@ const store = configureStore({
     [AccountDocumentApi.reducerPath]: AccountDocumentApi.reducer,
     [SaleServiceApi.reducerPath]: SaleServiceApi.reducer,
     [DocumentOverviewApi.reducerPath]: DocumentOverviewApi.reducer,
+    [GetGstDetailApi.reducerPath]: GetGstDetailApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware()
@@ -52,7 +54,8 @@ const store = configureStore({
       .concat(PointOfContactApi.middleware)
       .concat(AccountDocumentApi.middleware)
       .concat(SaleServiceApi.middleware)
-      .concat(DocumentOverviewApi.middleware),
+      .concat(DocumentOverviewApi.middleware)
+      .concat(GetGstDetailApi.middleware),
 });
 setupListeners(store.dispatch);
 

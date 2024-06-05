@@ -32,6 +32,12 @@ const ViewSaleBooking = () => {
       showCol: true,
     },
     {
+      key: "campaign_name",
+      name: "Campaign Name",
+      showCol: true,
+      width: 100,
+    },
+    {
       key: "customer_name",
       name: "Account name",
       renderRowCell: (row) => (
@@ -107,11 +113,12 @@ const ViewSaleBooking = () => {
       width: 100,
       renderRowCell: (row) => (
         <>
-          <Link to={`/admin/create-sales-booking/${row.sale_booking_id}`}>
+          <Link to={`/admin/create-sales-booking/${row.sale_booking_id}/${row._id}`}>
             <div className="icon-1">
               <i class="bi bi-pencil"></i>
             </div>
           </Link>
+
         </>
       ),
       showCol: true,
@@ -128,7 +135,7 @@ const ViewSaleBooking = () => {
           <Link to={"/admin/sales-account-overview"}>
             <button className="btn cmnbtn btn-primary btn_sm">Accounts</button>
           </Link>
-          <Link to={"/admin/create-sales-booking/0"}>
+          <Link to={"/admin/create-sales-booking"}>
             <button className="btn cmnbtn btn-primary btn_sm">
               Create Sale Booking
             </button>

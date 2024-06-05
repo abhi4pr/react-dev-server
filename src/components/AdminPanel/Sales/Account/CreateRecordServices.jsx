@@ -2,12 +2,45 @@ import React, { useState, useEffect } from "react";
 import CustomSelect from "../../../ReusableComponents/CustomSelect";
 import FieldContainer from "../../FieldContainer";
 import { useGetSingleSaleServiceQuery } from "../../../Store/API/Sales/SalesServiceApi";
+import { set } from "date-fns";
 
 const RecordServices = ({ records, setRecords, serviceTypes }) => {
   const [selectedRecords, setSelectedRecords] = useState(records.map(() => ""));
-  const serviceFieldsData = selectedRecords.map(
-    (selectedRecord) => useGetSingleSaleServiceQuery(selectedRecord).data
-  );
+  const [recordId, setRecordId] = useState();
+  const [indexMain, setindexMain] = useState(0);
+  const [serviceFieldsData, setServiceFieldsData] = useState([]);
+  const [recordLen, setRecordLen] = useState(serviceFieldsData.length);
+  const [justDeleted, setJustDeleted] = useState(false);
+  const {
+    data: saleServiceData,
+    error: saleServiceError,
+    isLoading: saleServiceLoading,
+  } = useGetSingleSaleServiceQuery(recordId, { skip: !recordId });
+
+  // const serviceFieldsData = selectedRecords.map(
+  //   (selectedRecord) => useGetSingleSaleServiceQuery(selectedRecord).data
+  // );
+
+  useEffect(() => {
+    if (!saleServiceLoading) {
+      setRecordId(selectedRecords[indexMain - 1]);
+      if (!justDeleted) {
+        (serviceFieldsData.length < recordLen) ?
+          setindexMain(indexMain - 1)
+          : setindexMain(indexMain + 1);
+      } else {
+        setJustDeleted(false);
+      }
+    }
+    setRecordLen(serviceFieldsData.length);
+  }, [selectedRecords]);
+  useEffect(() => {
+    if (saleServiceData && !saleServiceLoading) {
+      setServiceFieldsData(prevServiceFieldsData => [...prevServiceFieldsData, saleServiceData]);
+
+    }
+  }, [saleServiceData])
+
 
   const handleRecordChange = (index, key, value) => {
     const updatedRecords = records?.map((record, recordIndex) =>
@@ -29,6 +62,11 @@ const RecordServices = ({ records, setRecords, serviceTypes }) => {
     const updatedSelectedRecords = [...selectedRecords];
     updatedSelectedRecords.splice(index, 1);
     setSelectedRecords(updatedSelectedRecords);
+    const updatedServiceFieldsData = [...serviceFieldsData];
+    updatedServiceFieldsData.splice(index, 1);
+    setServiceFieldsData(updatedServiceFieldsData);
+    setindexMain(indexMain - 1);
+    setJustDeleted(true);
   };
 
   const getAvailableServiceTypes = (currentIndex) => {
