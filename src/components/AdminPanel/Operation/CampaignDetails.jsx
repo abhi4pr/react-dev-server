@@ -6,6 +6,7 @@ import { baseUrl } from "../../../utils/config";
 const CampaignDetails = ({ cid }) => {
   const [campaignData, setCampaignData] = useState({});
   const [commitData, setCommitData] = useState([]);
+
   const getData = async () => {
     try {
       const res = await axios.get(`${baseUrl}opcampaign/${cid}`);
@@ -42,6 +43,7 @@ const CampaignDetails = ({ cid }) => {
 
   return (
     <div className="card body-padding">
+      <h5> Campaign Details</h5>
       <Grid container spacing={2}>
         <Grid item xs={12} sm={6} md={4}>
           <TextField
