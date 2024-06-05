@@ -1,303 +1,236 @@
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import FormContainer from "../FormContainer";
+import axios from "axios";
+import { DataGrid, GridExpandMoreIcon } from "@mui/x-data-grid";
 import CampaignDetails from "./CampaignDetails";
 import { Link, Navigate, useParams } from "react-router-dom";
-import { useState } from "react";
-import axios from "axios";
-import { useEffect } from "react";
-import { DataGrid, GridExpandMoreIcon } from "@mui/x-data-grid";
-import PageDetalingNew from "./PageDetailingNew";
-
-import {
-  Paper,
-  TextField,
-  Button,
-  Autocomplete,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  Box,
-  Typography,
-  AccordionDetails,
-} from "@mui/material";
-import Accordion from "@mui/material/Accordion";
-import AccordionSummary from "@mui/material/AccordionSummary";
-import Accordioan from "./Accordioan";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import PageOverview from "./PageOverview";
-import PageDetailingNew from "./PageDetailingNew";
 import { baseUrl } from "../../../utils/config";
 import { useGlobalContext } from "../../../Context/Context";
-import FormContainer from "../FormContainer";
 
 const PhaseCreation = () => {
+  const naviagte = useNavigate();
   const param = useParams();
   const id = param.id;
+
   const { toastAlert, toastError } = useGlobalContext();
-  const naviagte = useNavigate();
-  const [allPageData, setAllPageData] = useState([]);
-  const [phaseData, setPhaseData] = useState("");
-  const [phaseDataError, setPhaseDataError] = useState("");
-  const [phaseDcripation, setPhaseDcripation] = useState("");
+  const [phaseDiscription, setPhaseDiscription] = useState("");
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
-  const [campaignName, setCampaignName] = useState([]);
-  const [modalSearchPageStatus, setModalSearchPageStatus] = useState(false);
-  const [cmpName, setCmpName] = useState("");
-  const [allPhaseData, setAllPhaseData] = useState([]);
-  const [showPageDetails, setShowPageDetails] = useState(false);
-  const [expanded, setExpanded] = useState(false);
-  const [assignAll, setAssignAll] = useState(false);
-  const [stopCreate, setStopCreate] = useState(false);
-  const [campaignData, setCampaignData] = useState({});
+  const [selectedRows, setSelectedRows] = useState([])
+  const [phaseName, setPhaseName] = useState('')
+  const [campaignDetails, setCampaignDetails] = useState({})
+  const [planData, setPlanData] = useState([])
+  const [payloadData, setPayloadData] = useState({})
+
+  const getCampaignDetails = async() =>{
+    try{
+      const forPayload = await axios.get(baseUrl+`opcampaign/${id}`)
+      setPayloadData(forPayload.data.data)
+
+      const Fdata = await axios.get(baseUrl+`opcampaignplan/${id}`)
+      setCampaignDetails(Fdata.data.data)
+
+      const campaignPIds = Fdata.data.data.map((campaign) => campaign.p_id);
+
+      const inventoryDataResponse = await axios.get(
+        `https://purchase.creativefuel.io/webservices/RestController.php?view=inventoryDataList`
+      );
+
+      const filteredInventoryData = inventoryDataResponse.data.body.filter(
+        (item) => campaignPIds.includes(item.p_id)
+      );
+
+      const newData = filteredInventoryData.map((item) => ({
+        p_id: item.p_id,
+        page_name: item.page_name,
+        cat_name: item.cat_name,
+        follower_count: item.follower_count,
+        page_link: item.page_link,
+      }));
+
+      setPlanData(newData);
+    }catch(error){
+      console.log(error)
+    }
+  }
 
   useEffect(() => {
-    getPhaseData();
+    // getPageData();
+    getCampaignDetails()
   }, []);
 
-  const getPhaseData = async () => {
-    const data = await axios.get(`${baseUrl}` + `campaignphase/${id}`);
-    const pageD = await axios.get(`${baseUrl}` + `campaignplan/${id}`);
-    setAllPhaseData(data?.data?.result);
-    setAllPageData(pageD?.data?.data);
-  };
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try{
+      const selectedPages = planData.filter((row)=>
+        selectedRows.includes(row.p_id)
+      );
+      const pages = selectedPages.map((page)=>({
+        p_id: page.p_id,
+        postPerPage: page.posts_per_page || 1,
+        storyPerPage: page.story_per_page || 1
+      }))
 
-  const getCampaignName = (detail, cmp, cmpData) => {
-    setCmpName(cmp);
-    if (assignAll) {
-      const det = detail.map((item) => {
-        return { ...item, value: item.max };
-      });
-      setCampaignName(det);
-    } else setCampaignName(detail);
-
-    setCampaignData(cmpData);
-  };
-
-  const togglePageDetails = () => {
-    setShowPageDetails(!showPageDetails);
-    setAssignAll(false);
-  };
-
-  const handleAllAssign = () => {
-    setShowPageDetails(!showPageDetails);
-    setAssignAll(true);
-  };
-
-  useEffect(() => {
-    if (allPhaseData.length > 0) {
-      let flag = false;
-      allPageData.forEach((page) => {
-        if (Number(page.postRemaining) > 0 || Number(page.storyRemaining) > 0) {
-          flag = true;
-        }
-      });
-
-      if (flag == true) {
-        setStopCreate(false);
-      } else setStopCreate(true);
+      const postResult = await axios.post(`${baseUrl}opcampaignphase`,{
+        campaignId:payloadData._id,
+        planId:campaignDetails[0]._id,
+        phaseName:phaseName,
+        start_date:startDate,
+        end_date:endDate,
+        pages: pages
+      })
+    }catch(err){
+      console.log(err)
     }
-  }, [allPageData]);
+  }
 
-  const handleChange = (panel) => (event, isExpanded) => {
-    setExpanded(isExpanded ? panel : false);
-  };
+  const columns = [
+    {
+      field: "checkbox",
+      headerName: "",
+      width: 10,
+    },
+    {
+      field: "S.NO",
+      headerName: "S.NO",
+      renderCell: (params) => {
+        const rowIndex = planData?.indexOf(params.row);
+        return <div>{rowIndex + 1}</div>;
+      },
+    },
+    {
+      field: "page_name",
+      headerName: "Page Name",
+      width: 150,
+      renderCell: (params) => {
+        const link = params.row.page_link;
+        return (
+          <div style={{ color: "blue" }}>
+            {link && (
+              <a href={link} target="_blank" rel="noopener noreferrer">
+                {params.row.page_name}
+              </a>
+            )}
+          </div>
+        );
+      },
+    },
+    {
+      field: "page_link",
+      headerName: "Page Link",
+      width: 250,
+    },
+    {
+      field: "cat_name",
+      headerName: "Category",
+      width: 150,
+    },
+    {
+      field: "follower_count",
+      headerName: "Follower Count",
+      width: 150,
+    },
+    {
+      field: "posts_per_page",
+      headerName: "Posts",
+      width: 140,
+      renderCell: (params) => <input type="number" style={{ width: "80px" }} />,
+    },
+    {
+      field: "story_per_page",
+      headerName: "Story ",
+      width: 140,
+      renderCell: (params) => <input type="number" style={{ width: "80px" }} />,
+    },
+  ];
 
-  const renderHard = () => {
-    getPhaseData();
-  };
-  const handlePlanDashboard = () => {
-    naviagte(`/admin/planOverview/${id}`);
+  const handleSelectionChange = (selectedIds) => {
+    setSelectedRows(selectedIds);
+
+    const selectedData = planData.filter((row) =>
+      selectedIds.includes(row.p_id)
+    );
+    // setPayload(selectedData);
   };
 
   return (
-    <div className="master-card-css">
-      <FormContainer
-        mainTitle="Phase Creation"
-        link="true"
-      />
-      <Button
-        variant="outlined"
-        onClick={handlePlanDashboard} color="error"
-        className="btn cmnbtn btn_sm btn-danger"
+    <>
+      <FormContainer mainTitle="Phase Creation" link="true" />
+      
+      <CampaignDetails cid={id} />
 
-      >
-        Plan Overview
-      </Button>
-      <CampaignDetails cid={id} getCampaign={getCampaignName} />
-      {/* add Accordion for show phase------------------- */}
-      <Paper>
-        {allPhaseData?.map((item, index) => (
-          <Paper key={index}>
-            <Link
-              to={`/admin/createAssign/${item.phase_id}`}
-              style={{
-                margin: "2px",
-                display: "flex",
-                justifyContent: "flex-end",
-              }}
-            >
-              <Button variant="contained" color="primary" size="small">
-                Create Assignment
-              </Button>
-              {/* {
-                allPhaseData.length == 0 &&
-                <Button variant="contained" color="primary" size="small">
-                  assign all
-                </Button>
-              } */}
-            </Link>
-            <Accordion
-              key={index}
-              expanded={expanded === `panel${index}`}
-              onChange={handleChange(`panel${index}`)}
-            >
-              <AccordionSummary
-                expandIcon={<GridExpandMoreIcon />}
-              // aria-controls={`panel${index}bh-content`}
-              // id={`panel${index}bh-header`}
-              >
-                <Typography>{`Phase ${index + 1}`}</Typography>
-              </AccordionSummary>
-              <AccordionDetails>
-                {/* <Accordioan data={item} /> */}
+      <div style={{display:'inline-flex'}}>
+        <input
+          type="text"
+          placeholder="Phase name"
+          className="form-control"
+          style={{width:'24%'}}
+          value={phaseName}
+          onChange={(e)=>setPhaseName(e.target.value)}
+        />
+        <input
+          type="text"
+          placeholder="Description"
+          className="form-control"
+          style={{width:'24%'}}
+          value={phaseDiscription}
+          onChange={(e)=>setPhaseDiscription(e.target.value)}
+        />
+        <input
+          type="date"
+          placeholder="start date"
+          className="form-control"
+          style={{width:'24%'}}
+          value={startDate}
+          onChange={(e)=>setStartDate(e.target.value)}
+        />
+        <input
+          type="date"
+          placeholder="End date"
+          className="form-control"
+          style={{width:'24%'}}
+          value={endDate}
+          onChange={(e)=>setEndDate(e.target.value)}
+        />
+      </div>
 
-                <PageOverview
-                  selectData={item.pages}
-                  phaseIndex={`Phase ${index + 1}`}
-                  stage={"phase"}
-                  setRender={renderHard}
-                  phase_id={item.phase_id}
-                />
-              </AccordionDetails>
-            </Accordion>
-          </Paper>
-        ))}
-      </Paper>
-      {/* add Accordion for show end phase------------------- */}
-
-      {!stopCreate && (
-        <>
-          <Button
-            variant="outlined"
-            onClick={togglePageDetails}
-            sx={{ mt: 2, mb: 2 }}
-          >
-            {showPageDetails ? "Hide Page Details" : "Create New Phase"}
-          </Button>
-        </>
-      )}
-
-      {showPageDetails && (
-        <>
-          <Typography
-            variant="h6"
-            sx={{
-              boxShadow: 4,
-              mb: 2,
-              borderRadius: "15px",
-              padding: "5px",
-            }}
-            color="secondary"
-          >
-            Phase Details
-          </Typography>
-          <Paper>
-            <Box sx={{ display: "flex", justifyContent: "space-around" }}>
-              <TextField
-                label="Phase"
-                defaultValue={`Phase ${allPhaseData.length + 1}`}
-                onChange={(e) => {
-                  setPhaseData(e.target.value);
-                  // if (phaseDataError) {
-                  //   setPhaseDataError("");
-                  // }
-                }}
-                sx={{ m: 1, width: "300px" }}
-              // error={!!phaseDataError}
-              // helperText={phaseDataError}
-              />
-
-              <TextField
-                label="Description"
-                value={phaseDcripation}
-                onChange={(e) => setPhaseDcripation(e.target.value)}
-                sx={{ m: 1, width: "300px" }}
-              />
-              <LocalizationProvider dateAdapter={AdapterDayjs}>
-                <DatePicker
-                  label="Start Date *"
-                  format="DD/MM/YY"
-                  value={startDate}
-                  onChange={(e) => setStartDate(e.$d)}
-                  sx={{ m: 1, width: "300px" }}
-                />
-                <DatePicker
-                  label="End Date *"
-                  format="DD/MM/YY"
-                  value={endDate}
-                  onChange={(e) => setEndDate(e.$d)}
-                  sx={{ m: 1, width: "300px" }}
-                />
-              </LocalizationProvider>
-            </Box>
-
-            {campaignName?.map((cmp, index) => {
-              return (
-                <Box
-                  sx={{ display: "flex", justifyContent: "space-around" }}
-                  key={index}
-                >
-                  <TextField
-                    disabled
-                    value={cmp?.commitment}
-                    sx={{ m: 1 }}
-                    fullWidth
-                  />
-                  <TextField
-                    label="Value"
-                    type="number"
-                    value={assignAll ? cmp?.max : cmp.value}
-                    disabled={assignAll ? true : false}
-                    onChange={(e) => {
-                      if (e.target.value > Number(cmp?.max)) {
-                        e.target.value = cmp?.max;
-                      }
-                      let x = [...campaignName];
-                      x.splice(index, 1, {
-                        commitment: cmp?.commitment,
-                        value: Number(e.target.value),
-                        max: cmp?.max,
-                      });
-                      setCampaignName(x);
-                    }}
-                    sx={{ m: 1 }}
-                    fullWidth
-                  />
-                </Box>
-              );
-            })}
-          </Paper>
-
-          <PageDetailingNew
-            pageName={"phaseCreation"}
-            data={{ campaignName: cmpName, campaignId: id }}
-            phaseInfo={{
-              phaseName: phaseData,
-              description: phaseDcripation,
-              commitment: campaignName,
-              phaseDataError: phaseDataError,
-              getPhaseData,
-              setExpanded,
-              setShowPageDetails,
-              assignAll,
-            }}
-            setPhaseDataError={setPhaseDataError}
+      <div style={{}}>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            gap: 0.5,
+            height: "700px",
+            width: `${selectedRows.length > 0 && "100%"}`,
+          }}
+        >
+          <DataGrid
+            rows={planData}
+            columns={columns}
+            getRowId={(row) => row.p_id}
+            checkboxSelection
+            pagination
+            onRowSelectionModelChange={(row) => handleSelectionChange(row)}
+            rowSelectionModel={selectedRows?.map((row) => row)}
           />
-        </>
-      )}
-    </div>
+          {/* <SummaryDetails
+            payload={payload}
+            campName={"campValue"}
+            drawer={false}
+          /> */}
+        </div>
+      </div>
+      <button
+        className="btn btn-outline-danger rounded-pill"
+        onClick={handleSubmit}
+        style={{ width: "10%" }}
+      >
+        Submit
+      </button>
+    </>
   );
 };
 
