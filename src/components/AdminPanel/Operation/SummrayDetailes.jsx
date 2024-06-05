@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { Paper, Typography, Button, Box } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
-import millify from "millify";
 import * as XLSX from "xlsx";
 import { SiMicrosoftexcel } from "react-icons/si";
 import generatePDF from "../../../utils/PdfConverter";
 import PictureAsPdfIcon from "@mui/icons-material/PictureAsPdf";
+import axios from "axios";
 
 const SummaryDetails = ({ payload, campName, generatePdf, drawer }) => {
+console.log(payload)
   const [summaryData, setSummaryData] = useState({
     total: 0,
     totalPost: 0,
@@ -19,9 +20,9 @@ const SummaryDetails = ({ payload, campName, generatePdf, drawer }) => {
   const [totalPostPerPage, setTotalPostPerPage] = useState(0);
   const [totalStoryPerPage, setStoryPerPage] = useState(0);
   const [filteredData, setFilteredData] = useState(payload);
-
-
-
+console.log(catNameLengths,"1");
+console.log(summaryData,"2");
+console.log(filteredData,"3");
   useEffect(() => {
     const updatedCatNameLengths = {};
     payload.forEach((entry) => {
@@ -46,7 +47,6 @@ const SummaryDetails = ({ payload, campName, generatePdf, drawer }) => {
       0
     );
     const lent = payload.length;
-
     setSummaryData({ total, totalPost, lent, totalStory });
   }, [payload]);
 
@@ -56,18 +56,8 @@ const SummaryDetails = ({ payload, campName, generatePdf, drawer }) => {
       if (!catName) {
         return e
       } else return e.cat_name === catName
-
     });
     setFilteredData(filteredRows);
-
-    // const totalFollowers = filteredRows.reduce(
-    //   (sum, current) => {
-    //     if(typeof(current)!=Number){
-    //       return sum
-    //     }
-    //     return sum + BigInt(current.follower_count)},
-    //   0
-    // );
     const totalFollowers = filteredRows.reduce(
       (sum, current) => sum + Number(current.follower_count),
       0
@@ -212,10 +202,7 @@ const SummaryDetails = ({ payload, campName, generatePdf, drawer }) => {
       {payload?.length > 0 && (
         <Box sx={{ height: `${drawer === true ? "100%" : "700px"}`, width: `${drawer === true ? "100%" : "40%"}`, border: "1px solid var(--gray-200)", overflow: "hidden", borderRadius: "12px", ml: 1 }}>
           <Paper elevation={1} sx={{ mb: 1, height: "130px", width: "100%", background: "var(--body-bg)" }}>
-            <h5
-
-              style={{ textAlign: "center", padding: "10px", color: "var(--gray-700)" }}
-            >
+            <h5 style={{ textAlign: "center", padding: "10px", color: "var(--gray-700)" }} >
               Summary
             </h5>
 
@@ -227,7 +214,6 @@ const SummaryDetails = ({ payload, campName, generatePdf, drawer }) => {
                 mt: 2,
                 background: "var(--white)",
                 color: "var(--gray-500)",
-                // height:"50px"
               }}
             >
               <Typography variant="6"> Pages: {summaryData.lent}</Typography>
@@ -265,13 +251,6 @@ const SummaryDetails = ({ payload, campName, generatePdf, drawer }) => {
                   <PictureAsPdfIcon />
                 </button>
               </div>
-              {/* <Button
-                onMouseEnter={downloadExcel} 
-                variant="contained"
-                color="primary"
-              >
-                Excel
-              </Button> */}
             </Box>
           </Paper>
 
@@ -282,7 +261,6 @@ const SummaryDetails = ({ payload, campName, generatePdf, drawer }) => {
                   display: "flex",
                   overflowX: "auto",
                   whiteSpace: "nowrap",
-                  // marginBottom: "20px",
                 }}
               >
                 {Object.entries(catNameLengths).map(([catName, count]) => (
@@ -308,7 +286,7 @@ const SummaryDetails = ({ payload, campName, generatePdf, drawer }) => {
           <DataGrid
             rows={filteredData ? filteredData : payload}
             columns={columns}
-            getRowId={(row) => row.p_id}
+            getRowId={(row) => row?.p_id}
             pageSizeOptions={[5]}
           />
         </Box>

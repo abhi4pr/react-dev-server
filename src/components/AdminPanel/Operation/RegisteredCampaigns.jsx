@@ -6,6 +6,8 @@ import axios from "axios";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import DeleteButton from "../DeleteButton";
 import { Link, useNavigate } from "react-router-dom";
+import Select from "react-select";
+import { useParams } from "react-router-dom";
 
 const style = {
   position: "absolute",
@@ -19,6 +21,13 @@ const style = {
   boxShadow: 24,
   p: 1,
 };
+const filterRange = [
+  { value: "", label: "All" },
+  { value: 1, label: "Today" },
+  { value: 7, label: " This week" },
+  { value: 30, label: "This Month" },
+  { value: 12, label: "This Year" },
+];
 const RegisteredCampaigns = () => {
   const navigate = useNavigate();
   const [allCampaign, setAllCampaign] = useState([]);
@@ -26,28 +35,31 @@ const RegisteredCampaigns = () => {
   const [open, setOpen] = useState(false);
   const [commitmentModalData, setCommitmentModalData] = useState([{}]);
   const [commitment, setCommitment] = useState([]);
-  // const [filterCampaign, setFilterCampaign] = useState([]);
+  const [filterCampaign, setFilterCampaign] = useState([]);
+  const [selectedFilter, setSelectedFilter] = useState(null);
+  const [count, setCount] = useState();
 
   const getRegisterCampaign = async () => {
     const res = await axios.get(`${baseUrl}opcampaign`);
+    setCount(res.data.length);
     setAllCampaign(res.data);
   };
   const getCommitment = async () => {
-    const CommitmentData = await axios.get(`${baseUrl}get_all_commitments`)
-    setCommitment(CommitmentData.data.data)
+    const CommitmentData = await axios.get(`${baseUrl}get_all_commitments`);
+    setCommitment(CommitmentData.data.data);
   };
-  // const getFilterCampaign = async () => {
-  //   const filterCampaign = await axios.get(`${baseUrl}get_filter_campaign`, {
-  //     "rangeType": ""
-  //   })
-  //   setFilterCampaign(filterCampaign.data.data)
-  // };
-
+  const getFilterCampaign = async () => {
+    const filterCampaign = await axios.post(`${baseUrl}get_filter_campaign`, {
+      rangeType: selectedFilter,
+    });
+  };
 
   useEffect(() => {
+    getFilterCampaign();
+  }, [selectedFilter]);
+  useEffect(() => {
     getRegisterCampaign();
-    getCommitment()
-    // getFilterCampaign()
+    getCommitment();
   }, []);
 
   const handleOpen = (params) => {
@@ -61,7 +73,7 @@ const RegisteredCampaigns = () => {
     navigate(path);
   };
   const handleShowPlan = (event) => {
-    const path = `/admin/planOverview/${event._id}`;
+    const path = `/admin/op-plan-overview/${event._id}`;
     navigate(path);
   };
   const handlePhase = (event) => {
@@ -165,7 +177,11 @@ const RegisteredCampaigns = () => {
       renderCell: (params) => {
         return (
           <div>
-            <button onClick={() => handleOpen(params)} className="icon-1" variant="text">
+            <button
+              onClick={() => handleOpen(params)}
+              className="icon-1"
+              variant="text"
+            >
               <i className="bi bi-chat-left-text"></i>
             </button>
           </div>
@@ -177,7 +193,7 @@ const RegisteredCampaigns = () => {
       headerName: "Plan Creation",
       renderCell: (params) => (
         <PlanCreationComponent
-          {...params}
+          params={params}
           handlePlan={handlePlan}
           handleShowPlan={handleShowPlan}
         />
@@ -222,7 +238,9 @@ const RegisteredCampaigns = () => {
       headerName: "Commits",
       width: 250,
       renderCell: (params) => {
-        const commit = commitment.filter((e) => e.cmtId === params.row.selectValue)[0];
+        const commit = commitment.filter(
+          (e) => e.cmtId === params.row.selectValue
+        )[0];
         return formatString(commit?.cmtName || "N/A");
       },
     },
@@ -263,17 +281,27 @@ const RegisteredCampaigns = () => {
         <div className="card-header sb">
           <h5> Vendor Sales Campaign</h5>
           <div className="pack w-75 gap-4">
+            <div className=" border border-danger rounded-pill p-2 ">
+              Total Campaign: {count}
+            </div>
+
             <div className="search-bar">
-              <TextField
-                type="text"
-                label="Search "
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-              />
+              <div className="form-group col-2">
+                <label className="form-label">Filter Range</label>
+                <Select
+                  options={filterRange.map((option) => ({
+                    value: option.value,
+                    label: `${option.label}`,
+                  }))}
+                  onChange={(selectedOption) => {
+                    setSelectedFilter(selectedOption.value);
+                  }}
+                />
+              </div>
             </div>
             <TextField
               type="text"
-              label="Filter Date"
+              label="Search"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
             />
@@ -328,41 +356,44 @@ const RegisteredCampaigns = () => {
 export default RegisteredCampaigns;
 
 // plan --
-const PlanCreationComponent = ({ row, handlePlan, handleShowPlan }) => {
+const PlanCreationComponent = ({ params, handlePlan, handleShowPlan }) => {
+  const { id } = useParams();
   const [planData, setPlanData] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const newData = await axios.get(
-          `${baseUrl}` + `campaignplan/${row._id}`
+          // `${baseUrl}` + `campaignplan/${row._id}`
+          `${baseUrl}opcampaignplan/${params.row._id}`
         );
         setPlanData(newData);
+        console.log(newData, "newData");
       } catch (error) {
         console.error("Error fetching plan data:", error);
       }
     };
     fetchData();
-  }, [row._id]);
+  }, [id]);
 
   return (
     <div className="d-flex text-center align-item-center justify-content-center">
-      {!planData?.data?.data.length > 0 ? (
-        <button
-          className="icon-1"
-          type="button"
-          onClick={() => handlePlan(row)}
-        >
-          <i className="bi bi-send"></i>
-        </button>
-      ) : (
+      {planData?.data?.data?.length > 0 ? (
         <Button
           className="btn cmnbtn btn-outline-primary btn_sm"
           variant="outlined"
-          onClick={() => handleShowPlan(row)}
+          onClick={() => handleShowPlan(params.row)}
         >
           Show plan
         </Button>
+      ) : (
+        <button
+          className="icon-1"
+          type="button"
+          onClick={() => handlePlan(params.row)}
+        >
+          <i className="bi bi-send"></i>
+        </button>
       )}
     </div>
   );

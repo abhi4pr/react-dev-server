@@ -341,6 +341,8 @@ import PaymentDoneTransactionList from "./Finance/PaymentDoneTransactionList";
 import PageStats from "./PageMS/PageStats";
 import CreateDocumentType from "./Sales/Account/CreateDocumentType";
 import DocumentTypeOverview from "./Sales/Account/DocumentTypeOverview";
+import PlanOverView from "./Operation/Plan/CampPlanOverview";
+import CampPlanOverview from "./Operation/Plan/CampPlanOverview";
 
 const Admin = () => {
   const [contextData, setData] = useState([]);
@@ -1621,6 +1623,7 @@ const Admin = () => {
                     path="/op-plan-creation/:id"
                     element={<PlanCreation />}
                   />
+                 
                   <Route
                     path="/op-phase-creation/:id"
                     element={<PhaseCreation />}
@@ -1628,6 +1631,12 @@ const Admin = () => {
                   <Route
                     path="/op-campaign-executions"
                     element={<CampaignExecutions />}
+                  />
+
+                  {/* new pla over view  */}
+                  <Route
+                    path="/op-plan-overview/:id"
+                    element={<CampPlanOverview />}
                   />
                 </Route>
               </Routes>
