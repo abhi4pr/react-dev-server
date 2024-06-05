@@ -30,7 +30,7 @@ const DepartmentUpdate = () => {
         dept_name: departmentName,
         short_name: shortName,
         remark: remark,
-        Created_by: createdBy,
+        // Created_by: createdBy,
       });
       setDepartmentName("");
       setRemark("");

@@ -2,15 +2,25 @@ import React from "react";
 
 const LetterTablePreviewMaxSalaryInHand = ({ UserDetails }) => {
   const salary = UserDetails?.ctc;
-  const basicSalary = salary > 21000 ? salary * 0.6 : "";
+  console.log(salary, "sakary");
+  // const basicSalary = salary > 21000 ? salary * 0.6 : "";
+  const basicSalary = salary < 20500 ? salary * 0.8 : salary * 0.6;
   const HRA = basicSalary * 0.3;
   const AdvanceBonus = basicSalary * 0.2;
   const monthlyEncashment = parseFloat(((basicSalary / 26) * 3).toFixed(0));
   const specialAllowance =
-    salary - basicSalary - HRA - AdvanceBonus - monthlyEncashment;
+    Number(salary) -
+    Number(basicSalary) -
+    Number(HRA) -
+    Number(AdvanceBonus) -
+    Number(monthlyEncashment);
 
   const TotalEarnings =
-    basicSalary + HRA + AdvanceBonus + monthlyEncashment + specialAllowance;
+    Number(basicSalary) +
+    Number(HRA) +
+    Number(AdvanceBonus) +
+    Number(monthlyEncashment) +
+    Number(specialAllowance);
   const PT =
     salary >= 18500 && salary <= 25000
       ? 125
