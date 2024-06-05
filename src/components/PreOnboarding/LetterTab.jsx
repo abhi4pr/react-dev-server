@@ -1327,13 +1327,13 @@ const LetterTab = ({ allUserData, gettingData }) => {
                   )}
 
                   {allUserData.emergency_contact_person_name2 == "in_hand" &&
-                    allUserData.ctc < 20000 && (
+                    allUserData.ctc < 20500 && (
                       <LetterTablePreviewMinSalaryInHand
                         UserDetails={UserDetails}
                       />
                     )}
                   {allUserData.emergency_contact_person_name2 == "in_hand" &&
-                    allUserData.ctc > 20000 && (
+                    allUserData.ctc >= 20500 && (
                       <LetterTablePreviewMaxSalaryInHand
                         UserDetails={UserDetails}
                       />

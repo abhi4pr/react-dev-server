@@ -1,8 +1,3 @@
-// salary <= 19000
-//   ? salary * 0.8
-//   : salary >= 20000 && salary <= 21000
-//   ? salary * 0.6
-//   : "";
 import React from "react";
 
 const LetterTabPreviewESIC = ({ UserDetails }) => {
@@ -10,7 +5,7 @@ const LetterTabPreviewESIC = ({ UserDetails }) => {
 
   const basicSalary = salary * 0.6;
 
-  const basicsal = (basicSalary < 12000 ? salary * 0.8 : basicSalary).toFixed(
+  const basicsal = (basicSalary < 12300 ? salary * 0.8 : basicSalary).toFixed(
     0
   );
 
@@ -23,30 +18,57 @@ const LetterTabPreviewESIC = ({ UserDetails }) => {
   const monthlyEncashment = ((basicsal / 26) * 3).toFixed(0);
 
   const monthEncash =
-    basicsal < 12000 ? salary - addbasicAdvance : monthlyEncashment;
+    salary >= 20500
+      ? monthlyEncashment
+      : Number(salary) - Number(addbasicAdvance);
 
   const specialAllowance =
-    Number(salary) -
-    Number(basicsal) -
-    Number(HRA) -
-    Number(AdvanceBonus) -
-    Number(monthlyEncashment);
+    salary >= 20500
+      ? Number(salary) -
+        Number(basicsal) -
+        Number(HRA) -
+        Number(AdvanceBonus) -
+        Number(monthlyEncashment)
+      : 0;
 
+  const specialCal = specialAllowance === 0 ? Number(basicsal) * 0.12 : 1800;
+  // const EmployeePF = parseFloat(
+  //   // (specialAllowance === 0
+  //   //   ? Number(basicsal) * 0.12
+  //   //   : basicsal < 14000
+  //   //   ? (Number(basicsal) + Number(specialAllowance)) * 0.12
+  //   //   : 1800
+  //   // ).toFixed(0)
+  //   (specialAllowance === 0
+  //     ? basicsal < 14000
+  //       ? Number(basicsal) * 0.12
+  //       : (Number(basicsal) + Number(specialAllowance)) * 0.12
+  //     : basicsal < 14000
+  //     ? (Number(basicsal) + Number(specialAllowance)) * 0.12
+  //     : 1800
+  //   ).toFixed(0)
+  // );
   const EmployeePF = parseFloat(
-    (basicsal < 14000 ? basicsal * 0.12 : 1800).toFixed(0)
+    (basicsal < 14000
+      ? specialAllowance === 0
+        ? Number(basicsal) * 0.12
+        : (Number(basicsal) + Number(specialAllowance)) * 0.12
+      : 1800
+    ).toFixed(0)
   );
+
   const EmployeESIC = parseFloat(((salary * 0.75) / 100).toFixed(0));
 
   const EmployeerESIC = parseFloat(((salary * 3.25) / 100).toFixed(0));
 
   const TotalEarnings =
-    basicsal < 12000
-      ? Number(basicsal) + Number(AdvanceBonus) + Number(monthEncash)
-      : Number(basicsal) +
+    salary >= 20500
+      ? Number(basicsal) +
         Number(HRA) +
         Number(AdvanceBonus) +
         Number(monthEncash) +
-        Number(specialAllowance);
+        Number(specialAllowance)
+      : Number(basicsal) + Number(AdvanceBonus) + Number(monthEncash);
 
   const TotalCTC =
     salary >= 21000
@@ -70,7 +92,7 @@ const LetterTabPreviewESIC = ({ UserDetails }) => {
               <td>INR {basicsal}</td>
               <td>INR {basicsal * 12}</td>
             </tr>
-            {basicSalary > 12000 && (
+            {salary >= 20500 && (
               <tr>
                 <td>HRA</td>
                 <td>INR {HRA}</td>
@@ -87,7 +109,7 @@ const LetterTabPreviewESIC = ({ UserDetails }) => {
               <td>INR {monthEncash}</td>
               <td>INR {monthEncash * 12}</td>
             </tr>
-            {basicSalary > 12000 && (
+            {salary >= 20500 && (
               <tr>
                 <td>Special Allowance</td>
                 <td>INR {specialAllowance}</td>

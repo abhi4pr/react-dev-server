@@ -12,6 +12,8 @@ const Designation = () => {
   const { toastAlert, toastError } = useGlobalContext();
   const { DepartmentContext } = useAPIGlobalContext();
 
+  const [isLoading, setIsLoading] = useState(false);
+
   const [designationName, setDesignationName] = useState("");
   const [departmentName, setDepartmentName] = useState("");
   const [remark, setRemark] = useState("");
@@ -35,6 +37,7 @@ const Designation = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     if (!designationName || designationName == "") {
       return toastError("Designation is Required");
     } else if (!departmentName || departmentName == "") {
@@ -43,6 +46,7 @@ const Designation = () => {
       return toastError("Sub-Department is Required");
     }
     try {
+      setIsLoading(true);
       await axios.post(baseUrl + "add_designation", {
         desi_name: designationName,
         dept_id: departmentName,
@@ -54,9 +58,11 @@ const Designation = () => {
       setRemark("");
       toastAlert("Submitted successfully");
       setIsFormSubmitted(true);
+      setIsLoading(false);
     } catch (error) {
       alert(error.response.data.message);
       toastError(errorMessage);
+      setIsLoading(false);
     }
   };
 
@@ -68,7 +74,7 @@ const Designation = () => {
       <FormContainer
         mainTitle="Designation"
         title="Designation"
-        handleSubmit={handleSubmit}
+        submitButton={false}
       >
         <div className="mb-3 row">
           <FieldContainer
@@ -132,6 +138,15 @@ const Designation = () => {
             onChange={(e) => setRemark(e.target.value)}
           />
         </div>
+
+        <button
+          type="submit"
+          className="btn cmnbtn btn-primary"
+          onClick={handleSubmit}
+          style={{ width: "20%", marginLeft: "1%" }}
+        >
+          {isLoading ? "Please wait submiting..." : "Submit"}
+        </button>
       </FormContainer>
     </div>
   );

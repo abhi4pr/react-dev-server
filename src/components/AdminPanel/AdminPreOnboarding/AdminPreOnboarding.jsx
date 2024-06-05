@@ -106,7 +106,7 @@ const AdminPreOnboarding = () => {
 
   const [isApplicable, setIsApplicable] = useState("");
   const IsApplicableData = [
-    { label: "PF", value: "pf" },
+    // { label: "PF", value: "pf" },
     { label: "PF & ESIC", value: "pf_and_esic" },
     { label: "IN Hand", value: "in_hand" },
   ];
@@ -304,6 +304,7 @@ const AdminPreOnboarding = () => {
       releaving_date: releavingDate,
       salary: Number(salary),
       onboard_status: onBoardStatus,
+      Nationality: "Indian",
       emergency_contact_person_name2: isApplicable.value, //This Payload use for Is Applicable Conditon
     };
 

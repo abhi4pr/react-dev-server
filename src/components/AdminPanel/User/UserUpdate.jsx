@@ -174,6 +174,14 @@ const UserUpdate = () => {
   const [roomId, setRoomId] = useState("");
   const [refrenceData, setRefrenceData] = useState([]);
 
+  const [userCtc, setUserCtc] = useState("");
+  const [isApplicable, setIsApplicable] = useState("");
+  const IsApplicableData = [
+    // { label: "PF", value: "pf" },
+    { label: "PF & ESIC", value: "pf_and_esic" },
+    { label: "IN Hand", value: "in_hand" },
+  ];
+
   //--------------------Official Info State End
   // Genral Information Tab-------------------End------------------------------------
 
@@ -560,6 +568,8 @@ const UserUpdate = () => {
         current_pin_code,
         cast_type,
         alternate_contact,
+        ctc,
+        emergency_contact_person_name2,
       } = fetchedData;
       setSpouseName(spouse_name);
       setUserName(user_name);
@@ -582,6 +592,9 @@ const UserUpdate = () => {
       setReportL3(Report_L3);
       setDesignation(user_designation);
       setUID(UID);
+
+      setUserCtc(ctc);
+      setIsApplicable(emergency_contact_person_name2);
 
       setJoiningDate(joining_date?.split("T")?.[0]);
       setReleavingDate(releaving_date?.split("T")?.[0]);
@@ -745,6 +758,10 @@ const UserUpdate = () => {
     formData.append("user_login_id", loginId);
     formData.append("user_login_password", password);
     formData.append("user_status", userStatus);
+
+    formData.append("emergency_contact_person_name2", isApplicable.value);
+    formData.append("ctc", userCtc);
+
     formData.append("sitting_id", jobType === "WFH" ? 0 : Number(sitting));
     formData.append(
       "room_id",
@@ -1809,6 +1826,46 @@ const UserUpdate = () => {
             />
           </div>
 
+          <div className="col-3">
+            <FieldContainer
+              label="Gross Salary"
+              type="number"
+              fieldGrid={3}
+              required={false}
+              value={userCtc}
+              onChange={(e) => {
+                // setUserCtc(e.target.value);
+                const value = e.target.value;
+                // Limit input to 6 digits
+                if (/^\d{0,7}$/.test(value)) {
+                  setUserCtc(value);
+                }
+              }}
+            />
+          </div>
+
+          {/* )} */}
+
+          <div className="form-group col-3">
+            <label className="form-label">Custom Rang</label>
+            <Select
+              options={IsApplicableData.map((option) => ({
+                value: `${option.value}`,
+                label: `${option.label}`,
+              }))}
+              value={{
+                value: isApplicable.value,
+                label: isApplicable.label || "",
+              }}
+              // value={IsApplicableData.find(
+              //   (option) => option.value === isApplicable.value
+              // )}
+              onChange={(e) => {
+                setIsApplicable(e);
+              }}
+            />
+          </div>
+
           {/* {userStatus == "Resign" && (
         <FieldContainer
           type="date"
@@ -1858,35 +1915,6 @@ const UserUpdate = () => {
             required={false}
           />
 
-          {/* <div className="form-group col-4">
-          <label className="form-label">
-            Current City <sup style={{ color: "red" }}>*</sup>
-          </label>
-          <Select
-            options={cityData.map((city) => ({
-              value: city.city_name,
-              label: city.city_name,
-            }))}
-            onChange={(e) => setcurrentCity(e ? e.value : "")}
-            required={true}
-            // value={currentCity}
-            value={{
-              value: currentCity,
-              label:
-                cityData.find((gotCity) => gotCity.city_name == currentCity)
-                  ?.city_name || "",
-            }}
-            placeholder="Select a city..."
-            isClearable
-          />
-        </div>
-
-        <div className="form-group col-4">
-          <IndianStates
-            newValue={currentState}
-            onChange={(option) => setcurrentState(option ? option.value : null)}
-          />
-        </div> */}
           <div className="form-group col-3 mt-3">
             <label className="form-label">State / UT</label>
 
@@ -1946,38 +1974,12 @@ const UserUpdate = () => {
             required={false}
           />
 
-          {/* <div className="form-group col-4">
-        <label className="form-label">Parmanent City</label>
-        <Select
-          options={cityData?.map((city) => ({
-            value: city.city_name,
-            label: city.city_name,
-          }))}
-          onChange={(e) => setCity(e ? e.value : "")}
-          required={true}
-          value={{
-            value: city,
-            label:
-              cityData.find((gotCity) => gotCity.city_name == city)
-                ?.city_name || "",
-          }}
-          placeholder="Select a city..."
-          isClearable
-        />
-      </div>
-
-      <div className="form-group col-4">
-        <IndianStates
-          newValue={state}
-          onChange={(option) => setState(option ? option.value : null)}
-        />
-      </div> */}
           <div className="form-group col-3 mt-3">
             <label className="form-label">State /UT</label>
 
             <IndianStatesMui
-              selectedState={currentState}
-              onChange={(option) => setcurrentState(option ? option : null)}
+              selectedState={state}
+              onChange={(option) => setState(option ? option : null)}
             />
           </div>
 
@@ -1985,9 +1987,9 @@ const UserUpdate = () => {
             <label className="form-label">City</label>
 
             <IndianCitiesMui
-              selectedState={currentState}
-              selectedCity={currentCity}
-              onChange={(option) => setcurrentCity(option ? option : null)}
+              selectedState={state}
+              selectedCity={city}
+              onChange={(option) => setCity(option ? option : null)}
             />
           </div>
           <div className="col-3 mt-3">
