@@ -11,6 +11,7 @@ import {
   Autocomplete,
   Box,
   Button,
+  Checkbox,
   FormControl,
   FormControlLabel,
   FormLabel,
@@ -46,11 +47,14 @@ import AddCircleTwoToneIcon from "@mui/icons-material/AddCircleTwoTone";
 import RemoveCircleTwoToneIcon from "@mui/icons-material/RemoveCircleTwoTone";
 import { useParams } from "react-router";
 import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
+import IndianStatesMui from "../../ReusableComponents/IndianStatesMui";
+import IndianCitiesMui from "../../ReusableComponents/IndianCitiesMui";
 
 const VendorMaster = () => {
   const { data: countryCodeData } = useGetCountryCodeQuery();
 
   const countries = countryCodeData?.data;
+  console.log(countries, "countries------");
   const { _id } = useParams();
   const dispatch = useDispatch();
   const isVendorModalOpen = useSelector(
@@ -60,12 +64,12 @@ const VendorMaster = () => {
   const { toastAlert, toastError } = useGlobalContext();
   const [isFormSubmitting, setIsFormSubmitting] = useState(false);
   const [vendorName, setVendorName] = useState("");
-  const [countryCode, setCountryCode] = useState(null);
+  const [countryCode, setCountryCode] = useState("91");
   const [isFormSubmitted, setIsFormSubmitted] = useState(false);
   const [mobile, setMobile] = useState("");
   const [altMobile, setAltMobile] = useState("");
   const [email, setEmail] = useState("");
-  const [perAddress, setPerAddress] = useState("");
+  // const [perAddress, setPerAddress] = useState("");
   const [pan, setPan] = useState("");
   const [panImage, setPanImage] = useState("");
   const [gstImage, setGstImage] = useState("");
@@ -78,6 +82,7 @@ const VendorMaster = () => {
   const [limit, setLimit] = useState("");
   const [homeAddress, setHomeAddress] = useState("");
   const [homeCity, setHomeCity] = useState("");
+  const [otherCountry, setOtherCountry] = useState("");
   const [homeState, setHomeState] = useState("");
   const [typeId, setTypeId] = useState("");
   const [platformId, setPlatformId] = useState("");
@@ -87,6 +92,7 @@ const VendorMaster = () => {
   const [gstApplicable, setGstApplicable] = useState("No");
   const [vendorCategory, setVendorCategory] = useState("Theme Page");
   const [whatsappLink, setWhatsappLink] = useState([]);
+  const [sameAsPrevious, setSameAsPrevious] = useState(false);
   const [bankRows, setBankRows] = useState([
     {
       bank_name: "",
@@ -240,12 +246,13 @@ const VendorMaster = () => {
     if (_id) {
       axios.get(baseUrl + `v1/vendor/${_id}`).then((res) => {
         const data = res.data.data;
+        console.log(data, "data------------");
         setVendorName(data.vendor_name);
         setCountryCode(data.country_code);
         setMobile(data.mobile);
         setAltMobile(data.alternate_mobile);
         setEmail(data.email);
-        setPerAddress(data.personal_address);
+        // setPerAddress(data.personal_address);
         setPan(data.pan_no);
         setPanImage(data?.pan_image_url);
         setGstImage(data?.gst_image_url);
@@ -571,6 +578,25 @@ const VendorMaster = () => {
     }
   };
 
+  const handleCheckboxChange = (e) => {
+    const { checked } = e.target;
+    setSameAsPrevious(checked);
+    if (checked) {
+      setCompAddress(homeAddress);
+      // if (countryCode === "91") {
+      setCompCity(homeCity);
+      setCompState(homeState);
+      // } else {
+      //   setCompCity(otherCountry);
+      //   setCompState(otherCountry);
+      // }
+    } else {
+      setCompAddress("");
+      setCompCity("");
+      setCompState("");
+    }
+  };
+
   const gstOptions = [
     {
       label: "Yes",
@@ -591,6 +617,7 @@ const VendorMaster = () => {
       <FormContainer
         mainTitle={_id ? "Edit Vendor Master" : "Add Vendor Master"}
         link={true}
+        title={_id ? "Edit Vendor Master" : "Vendor Details"}
         // handleSubmit={handleSubmit}
         submitButton={false}
       ></FormContainer>
@@ -646,17 +673,497 @@ const VendorMaster = () => {
                 )}
               </div>
             </div>
-            <div className="col-md-6 mb16">
-              <div className="form-group m0">
+            <div className="col-md-6 p0 mb16">
+              <FieldContainer
+                label="Mobile"
+                fieldGrid={12}
+                value={mobile}
+                astric
+                type="number"
+                required={true}
+                onChange={(e) => {
+                  handleMobileNumSet(e);
+                  // handleMobileValidate();
+                }}
+              />
+              {validator.mobile && (
+                <span style={{ color: "red", fontSize: "12px" }}>
+                  Please enter mobile number
+                </span>
+              )}
+              {/* {mobileValid && (
+        <div className="form-group col-6">
+          <label className="form-label">
+            Vendor Category <sup style={{ color: "red" }}>*</sup>
+          </label>
+          <Select
+            options={["Theme Page", "influencer"].map((option) => ({
+              label: option,
+              value: option,
+            }))}
+            required={true}
+            value={{
+              value: vendorCategory,
+              label: vendorCategory,
+            }}
+            onChange={(e) => {
+              setVendorCategory(e.value);
+            }}
+          ></Select>
+          {validator.vendorCategory && (
+            <span style={{ color: "red", fontSize: "12px" }}>
+              Please select vendor category
+            </span>
+          )}
+        </div>
+
+        <div className="col-6">
+          <FieldContainer
+            label="Mobile"
+            fieldGrid={12}
+            value={mobile}
+            astric
+            type="number"
+            required={true}
+            onChange={(e) => {
+              handleMobileNumSet(e);
+              // handleMobileValidate();
+            }}
+          />
+          {validator.mobile && (
+            <span style={{ color: "red", fontSize: "12px" }}>
+              Please enter mobile number
+            </span>
+          )}
+          {/* {mobileValid && (
+            <span style={{ color: "red", fontSize: "12px" }}>
+              Please enter valid mobile number
+            </span>
+          )} */}
+              {/* {
+            <span style={{ color: "red", fontSize: "12px" }}>
+              {mandatoryFieldsEmpty.mobile && "Please enter mobile number"}
+            </span>
+          } */}
+
+              {
+                <span style={{ color: "red", fontSize: "12px" }}>
+                  {!validator.mobile &&
+                    isContactTouched1 &&
+                    !mobileValid &&
+                    "Please enter valid mobile number"}
+                </span>
+              }
+            </div>
+            <div className="col-6">
+              <FieldContainer
+                label="Alternate Mobile"
+                fieldGrid={12}
+                value={altMobile}
+                required={false}
+                type="number"
+                onChange={(e) => handleAlternateMobileNumSet(e, setAltMobile)}
+              />
+              {
+                <span style={{ color: "red", fontSize: "12px" }}>
+                  {mandatoryFieldsEmpty.altMobile &&
+                    "Please enter alternate mobile"}
+                </span>
+              }
+            </div>
+            <div className="col-6">
+              <FieldContainer
+                label="Email"
+                fieldGrid={12}
+                astric
+                value={email}
+                required={true}
+                type="email"
+                onChange={(e) => handleEmailSet(e, setEmail)}
+              />
+              {emailIsInvalid && (
+                <span style={{ color: "red", fontSize: "12px" }}>
+                  Please enter a valid email
+                </span>
+              )}
+              {validator.email && (
+                <span style={{ color: "red", fontSize: "12px" }}>
+                  Please enter email
+                </span>
+              )}
+            </div>
+            {/* <FieldContainer
+          label="Personal Address"
+          value={perAddress}
+          required={false}
+          onChange={(e) => setPerAddress(e.target.value)}
+        /> */}
+
+            <div className="form-group col-6">
+              <label className="form-label">
+                Vendor Type <sup style={{ color: "red" }}>*</sup>
+              </label>
+              <Select
+                options={
+                  !typeLoading &&
+                  typeData.data?.map((option) => ({
+                    value: option._id,
+                    label: option.type_name,
+                  }))
+                }
+                required={true}
+                value={{
+                  value: typeId,
+                  label:
+                    (!typeLoading &&
+                      typeData.data?.find((role) => role._id == typeId)
+                        ?.type_name) ||
+                    "",
+                }}
+                onChange={(e) => {
+                  setTypeId(e.value);
+                  if (e.value) {
+                    setValidator((prev) => ({ ...prev, typeId: false }));
+                  }
+                }}
+              />
+              <IconButton
+                onClick={handleAddVendorTypeClick}
+                variant="contained"
+                color="primary"
+                aria-label="Add Vendor Type.."
+              >
+                <AddIcon />
+              </IconButton>
+              <IconButton
+                onClick={handleInfoClick}
+                variant="contained"
+                color="primary"
+                aria-label="Vendor Type Info.."
+              >
+                <RemoveRedEyeIcon />
+              </IconButton>
+              {validator.typeId && (
+                <span style={{ color: "red", fontSize: "12px" }}>
+                  Please select vendor type
+                </span>
+              )}
+            </div>
+
+            <div className="form-group col-6">
+              <label className="form-label">
+                Platform <sup style={{ color: "red" }}>*</sup>
+              </label>
+              <Select
+                options={platformData?.data?.map((option) => ({
+                  value: option._id,
+                  label: option.platform_name,
+                }))}
+                required={true}
+                value={{
+                  value: platformId,
+                  label:
+                    platformData?.data?.find((role) => role._id == platformId)
+                      ?.platform_name || "",
+                }}
+                onChange={(e) => {
+                  setPlatformId(e.value);
+                  if (e.value) {
+                    setValidator((prev) => ({ ...prev, platformId: false }));
+                  }
+                }}
+              ></Select>
+
+              <IconButton
+                onClick={handleAddPlatformClick}
+                variant="contained"
+                color="primary"
+                aria-label="Add Platform.."
+              >
+                <AddIcon />
+              </IconButton>
+              <IconButton
+                onClick={handlePlatformInfoClick}
+                variant="contained"
+                color="primary"
+                aria-label="Platform Info.."
+              >
+                <RemoveRedEyeIcon />
+              </IconButton>
+              {validator.platformId && (
+                <span style={{ color: "red", fontSize: "12px" }}>
+                  Please select platform
+                </span>
+              )}
+            </div>
+
+            <div className="form-group col-6">
+              <label className="form-label">
+                Payment Method <sup style={{ color: "red" }}>*</sup>
+              </label>
+              <Select
+                options={payData?.map((option) => ({
+                  value: option._id,
+                  label: option.payMethod_name,
+                }))}
+                required={true}
+                value={{
+                  value: payId,
+                  label:
+                    payData?.find((role) => role._id == payId)
+                      ?.payMethod_name || "",
+                }}
+                onChange={(e) => {
+                  setPayId(e.value);
+                  if (e.value) {
+                    setValidator((prev) => ({ ...prev, payId: false }));
+                  }
+                }}
+              ></Select>
+
+              <IconButton
+                onClick={handleAddPaymentMethodClick}
+                variant="contained"
+                color="primary"
+                aria-label="Add Payment Method.."
+              >
+                <AddIcon />
+              </IconButton>
+              <IconButton
+                onClick={handlePaymentMethodInfoClick}
+                variant="contained"
+                color="primary"
+                aria-label="Payment Method Info.."
+              >
+                <RemoveRedEyeIcon />
+              </IconButton>
+              {validator.payId && (
+                <span style={{ color: "red", fontSize: "12px" }}>
+                  Please select payment method
+                </span>
+              )}
+            </div>
+
+            {bankRows.map((row, i) => (
+              <>
+                <FieldContainer
+                  label="Bank Name "
+                  required={false}
+                  value={bankRows[i].bank_name}
+                  onChange={(e) => handleBankNameChange(e, i)}
+                />
+
+                <div className="form-group col-6">
+                  <label className="form-label">Account Type</label>
+                  <Select
+                    options={["Savings", "Current"].map((option) => ({
+                      label: option,
+                      value: option,
+                    }))}
+                    required={true}
+                    value={{
+                      value: bankRows[i].account_type,
+                      label: bankRows[i].account_type,
+                    }}
+                    onChange={(e) => {
+                      handleAccountTypeChange(e, i);
+                    }}
+                  />
+                </div>
+
+                <FieldContainer
+                  label="Account Number "
+                  type="number"
+                  maxLength={20}
+                  max={20}
+                  required={false}
+                  value={bankRows[i].account_number}
+                  onChange={(e) => handleAccountNoChange(e, i)}
+                />
+
+                <FieldContainer
+                  required={false}
+                  label="IFSC "
+                  value={bankRows[i].ifcs}
+                  onChange={(e) => handleIFSCChange(e, i)}
+                />
+
+                <FieldContainer
+                  required={false}
+                  label="UPI ID "
+                  value={bankRows[i].upi_id}
+                  onChange={(e) => handleUPIidChange(e, i)}
+                />
+
+                <FieldContainer
+                  label={"Registered Mobile Number"}
+                  value={bankRows[i].registered_number}
+                  required={false}
+                  type="number"
+                  onChange={(e) => handleRegisteredMobileChange(e, i)}
+                />
+
+                {i > 0 && (
+                  <IconButton
+                    onClick={handleRemoveBankInfoRow(i)}
+                    variant="contained"
+                    color="error"
+                  >
+                    <RemoveCircleTwoToneIcon />
+                  </IconButton>
+                )}
+              </>
+            ))}
+            <div className="row">
+              <IconButton
+                onClick={handleAddBankInfoRow}
+                variant="contained"
+                color="primary"
+              >
+                <AddCircleTwoToneIcon />
+              </IconButton>
+              {/* {bankRows.length > 1 && (
+            <IconButton
+              onClick={handleRemoveBankInfoRow}
+              variant="contained"
+              color="primary"
+            >
+              <RemoveCircleTwoToneIcon />
+            </IconButton>
+          )} */}
+            </div>
+
+            <div className="form-group col-6">
+              <label className="form-label">
+                Pay Cycle <sup style={{ color: "red" }}>*</sup>
+              </label>
+              <Select
+                options={cycleData?.map((option) => ({
+                  value: option._id,
+                  label: option.cycle_name,
+                }))}
+                required={true}
+                value={{
+                  value: cycleId,
+                  label:
+                    cycleData?.find((role) => role._id === cycleId)
+                      ?.cycle_name || "",
+                }}
+                onChange={(e) => {
+                  setCycleId(e.value);
+                  if (e.value) {
+                    setValidator((prev) => ({ ...prev, cycleId: false }));
+                  }
+                }}
+              ></Select>
+              <IconButton
+                onClick={handleAddPayCycleClick}
+                variant="contained"
+                color="primary"
+                aria-label="Add Pay Cycle.."
+              >
+                <AddIcon />
+              </IconButton>
+              <IconButton
+                onClick={handlePayCycleInfoClick}
+                variant="contained"
+                color="primary"
+                aria-label="Pay Cycle Info.."
+              >
+                <RemoveRedEyeIcon />
+              </IconButton>
+              {validator.cycleId && (
+                <span style={{ color: "red", fontSize: "12px" }}>
+                  Please select pay cycle
+                </span>
+              )}
+            </div>
+
+            <FieldContainer
+              label="PAN"
+              value={pan}
+              required={false}
+              onChange={handlePanChange}
+            />
+            <FieldContainer
+              type="file"
+              label="PAN Image"
+              // value={panImage}
+              required={false}
+              onChange={(e) => setPanImage(e.target.files[0])}
+            />
+
+            <div className="form-group col-6">
+              <label className="form-label">
+                GST Applicable<sup style={{ color: "red" }}>*</sup>
+              </label>
+              <Select
+                options={gstOptions.map((option) => ({
+                  value: option.value,
+                  label: option.label,
+                }))}
+                required={true}
+                value={{
+                  value: gstApplicable,
+                  label:
+                    gstOptions.find((role) => role.value === gstApplicable)
+                      ?.label || "",
+                }}
+                onChange={(e) => {
+                  setGstApplicable(e.value);
+                }}
+              ></Select>
+              {validator.gstApplicable && (
+                <span style={{ color: "red", fontSize: "12px" }}>
+                  Please select GST Applicable
+                </span>
+              )}
+            </div>
+
+            {gstApplicable == "Yes" && (
+              <>
+                {" "}
+                <FieldContainer
+                  label="GST"
+                  astric
+                  value={gst}
+                  required={gstApplicable == "Yes" ? true : false}
+                  onChange={(e) => setGst(e.target.value.toUpperCase())}
+                />
+                {gstApplicable === "Yes" && validator.gst && (
+                  <span style={{ color: "red", fontSize: "12px" }}>
+                    Please enter GST
+                  </span>
+                )}
+                <FieldContainer
+                  type="file"
+                  label="GST Image"
+                  // value={gstImage}
+                  required={false}
+                  onChange={(e) => setGstImage(e.target.files[0])}
+                />
+              </>
+            )}
+
+            <div className="card-header">Personal Details</div>
+            <div className="card-body row">
+              <FieldContainer
+                label="Home Address"
+                value={homeAddress}
+                required={false}
+                onChange={(e) => setHomeAddress(e.target.value)}
+              />
+              <div className="form-group col-6">
                 <label className="form-label">
                   Country Code <sup style={{ color: "red" }}>*</sup>
                 </label>
                 <Autocomplete
                   id="country-select-demo"
+                  sx={{ width: 300 }}
                   options={countries}
                   required={true}
                   value={countries?.find(
-                    (option) => option.phone == countryCode
+                    (option) => option.phone === countryCode || null
                   )}
                   onChange={(e, val) => {
                     setCountryCode(val ? val.phone : null);
@@ -665,7 +1172,10 @@ const VendorMaster = () => {
                     }
                   }}
                   autoHighlight
-                  getOptionLabel={(option) => option.phone}
+                  getOptionLabel={(option) =>
+                    `+${option.phone} ${option.country_name}`
+                  }
+                  // getOptionLabel={(option) => option.phone}
                   renderOption={(props, option) => (
                     <Box
                       component="li"
@@ -676,11 +1186,10 @@ const VendorMaster = () => {
                         loading="lazy"
                         style={{
                           width: 20,
-                          height: 16,
+                          height: 20,
                           borderRadius: 1,
                           objectFit: "cover",
-                          marginRight: 10,
-                          borderRadius: 2,
+                          marginRight: 1,
                         }}
                         srcSet={`https://flagcdn.com/w40/${option.code.toLowerCase()}.png 2x`}
                         src={`https://flagcdn.com/w20/${option.code.toLowerCase()}.png`}
@@ -707,36 +1216,145 @@ const VendorMaster = () => {
                   </span>
                 )}
               </div>
-            </div>
-            <div className="col-md-6 p0 mb16">
+              {countryCode === "91" ? (
+                <div className=" row">
+                  <div className="form-group col-6">
+                    <label className="form-label">Home State</label>
+                    <IndianStatesMui
+                      selectedState={homeState}
+                      onChange={(option) =>
+                        setHomeState(option ? option : null)
+                      }
+                    />
+                  </div>
+                  <div className="form-group col-6">
+                    <label className="form-label">Home City</label>
+                    <IndianCitiesMui
+                      selectedState={homeState}
+                      selectedCity={homeCity}
+                      onChange={(option) => setHomeCity(option ? option : null)}
+                    />
+                  </div>
+                </div>
+              ) : (
+                <FieldContainer
+                  label="Country"
+                  value={otherCountry}
+                  required={false}
+                  onChange={(e) => setOtherCountry(e.target.value)}
+                />
+              )}
               <FieldContainer
-                label="Mobile"
-                fieldGrid={12}
-                value={mobile}
-                astric
-                type="number"
-                required={true}
+                label="PinCode"
+                // value={otherCountry}
+                required={false}
+                // onChange={(e) => setOtherCountry(e.target.value)}
+              />
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={sameAsPrevious}
+                    onChange={(e) => handleCheckboxChange(e)}
+                    name="checked"
+                    color="primary"
+                  />
+                }
+                label="Check me out"
+              />
+            </div>
+
+            <div className="card-header">Company Details</div>
+            <div className="card-body row">
+              <FieldContainer
+                label="Company Name"
+                value={compName}
+                required={false}
+                onChange={(e) => setCompName(e.target.value)}
+              />
+
+              <FieldContainer
+                label="Company Address"
+                value={compAddress}
+                required={false}
+                onChange={(e) => setCompAddress(e.target.value)}
+              />
+
+              <FieldContainer
+                label="Company City"
+                value={compCity}
+                required={false}
+                onChange={(e) => setCompCity(e.target.value)}
+              />
+
+              <FieldContainer
+                label="Company Pincode"
+                value={compPin}
+                required={false}
+                maxLength={6}
                 onChange={(e) => {
-                  handleMobileNumSet(e);
-                  // handleMobileValidate();
+                  if (isNaN(e.target.value)) return;
+                  setCompPin(e.target.value);
                 }}
               />
-              {validator.mobile && (
-                <span style={{ color: "red", fontSize: "12px" }}>
-                  Please enter mobile number
-                </span>
-              )}
-              {/* {mobileValid && (
-            <span style={{ color: "red", fontSize: "12px" }}>
-              Please enter valid mobile number
-            </span>
-          )} */}
-              {/* {
-            <span style={{ color: "red", fontSize: "12px" }}>
-              {mandatoryFieldsEmpty.mobile && "Please enter mobile number"}
-            </span>
-          } */}
-              {
+
+              <FieldContainer
+                label="Company State"
+                value={compState}
+                required={false}
+                onChange={(e) => setCompState(e.target.value)}
+              />
+
+              <FieldContainer
+                label="Threshold Limit"
+                value={limit}
+                type="number"
+                required={false}
+                onChange={(e) => setLimit(e.target.value)}
+              />
+            </div>
+            {panImage && !_id && (
+              <img
+                src={URL.createObjectURL(panImage)}
+                alt="pan"
+                style={{ width: "100px", height: "100px" }}
+              />
+            )}
+            {gstImage && !_id && (
+              <img
+                src={URL.createObjectURL(gstImage)}
+                alt="gst"
+                style={{ width: "100px", height: "100px" }}
+              />
+            )}
+
+            {panImage && _id && (
+              <img
+                src={panImage}
+                alt="pan"
+                style={{ width: "100px", height: "100px" }}
+              />
+            )}
+            {gstImage && _id && (
+              <img
+                src={gstImage}
+                alt="gst"
+                style={{ width: "100px", height: "100px" }}
+              />
+            )}
+
+            {whatsappLink?.map((link, index) => (
+              <>
+                <div className="col-6">
+                  <FieldContainer
+                    key={index}
+                    fieldGrid={12}
+                    label={`Whatsapp Link ${index + 1}`}
+                    value={link.link}
+                    astric
+                    required={true}
+                    onChange={(e) => handleLinkChange(index, e.target.value)}
+                  />
+                  {/* {
                 <span style={{ color: "red", fontSize: "12px" }}>
                   {!validator.mobile &&
                     isContactTouched1 &&

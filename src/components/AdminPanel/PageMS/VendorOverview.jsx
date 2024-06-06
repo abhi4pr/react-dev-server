@@ -465,7 +465,7 @@ const VendorOverview = () => {
       <VendorWhatsappLinkModla />
       <div className="card">
         <div className="card-header flexCenterBetween">
-          <h5 className="card-title">Vendor : {vendorTypes.length}</h5>
+          <h5 className="card-title">Vendor : {vendorTypes?.length}</h5>
           <div className="flexCenter colGap8">
             <Link
               to={`/admin/pms-vendor-master`}
