@@ -553,20 +553,7 @@ const CreateSalesAccount = () => {
             >
               +
             </button>
-            <button
-              type="button"
-              className="btn cmnbtn btn_sm btn-primary mt-4"
-              onClick={() => openModal("viewBrandCategory")}
-            >
-              <i className="bi bi-eye" />
-            </button>
           </div>
-
-
-
-
-
-
         </div>
       </div>
       <div className="card">
@@ -689,12 +676,10 @@ const CreateSalesAccount = () => {
             onChange={(e) => setConnectedBillingCountry(e.target.value)}
             placeholder="Enter connected billing country"
           />
-
         </div>
       </div>
       <div className="card">
         <div className="card-header sb">
-
           <h3 className="card-title">Head Address</h3>
           <label className="card-title">
             <input

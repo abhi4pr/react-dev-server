@@ -17,7 +17,10 @@ import { useGetAllSaleServiceQuery } from "../../../Store/API/Sales/SalesService
 import { useGstDetailsMutation } from "../../../Store/API/Sales/GetGstDetailApi";
 import { useGetSingleDocumentOverviewQuery } from "../../../Store/API/Sales/DocumentOverview";
 import { add, set } from "date-fns";
-import { useAddSaleBookingMutation, useGetIndividualSaleBookingQuery } from "../../../Store/API/Sales/SaleBookingApi";
+import {
+  useAddSaleBookingMutation,
+  useGetIndividualSaleBookingQuery,
+} from "../../../Store/API/Sales/SaleBookingApi";
 import { sl } from "date-fns/locale";
 
 const todayDate = new Date().toISOString().split("T")[0];
@@ -29,7 +32,8 @@ const CreateSaleBooking = () => {
   const { loginUserData } = useAPIGlobalContext();
 
   const userCreditLimit = loginUserData?.user_credit_limit;
-  const [addsaledata, { isLoading: addsaleLoading, error: addsaleError }] = useAddSaleBookingMutation();
+  const [addsaledata, { isLoading: addsaleLoading, error: addsaleError }] =
+    useAddSaleBookingMutation();
   const {
     data: allBrands,
     error: allBrandsError,
@@ -45,12 +49,13 @@ const CreateSaleBooking = () => {
   const {
     data: salesdata,
     error: salesError,
-    isLoading: salesLoading
-  } = useGetIndividualSaleBookingQuery(`${un_id}`, { skip: !un_id })
+    isLoading: salesLoading,
+  } = useGetIndividualSaleBookingQuery(`${un_id}`, { skip: !un_id });
   // console.log(salesdata, "salesdata");
   const { data: serviceTypes } = useGetAllSaleServiceQuery();
 
-  const [getGst, { data: gstData, isLoading: gstLoading, error: gstError }] = useGstDetailsMutation();
+  const [getGst, { data: gstData, isLoading: gstLoading, error: gstError }] =
+    useGstDetailsMutation();
   const token = getDecodedToken();
   const loginUserId = token.id;
   const { toastAlert, toastError } = useGlobalContext();
@@ -97,7 +102,9 @@ const CreateSaleBooking = () => {
     data: singleDocumentOverviewData,
     error: singleDocumentOverviewError,
     isLoading: singleDocumentOverviewLoading,
-  } = useGetSingleDocumentOverviewQuery(`${selectedAccount}`, { skip: !selectedAccount });
+  } = useGetSingleDocumentOverviewQuery(`${selectedAccount}`, {
+    skip: !selectedAccount,
+  });
 
   useEffect(() => {
     const fetchData = async () => {
@@ -126,32 +133,51 @@ const CreateSaleBooking = () => {
   };
   useEffect(() => {
     if (editId) {
-      setCampaignName(salesdata?.campaign_name)
-      setSelectedAccount(salesdata?.account_id)
-      setSelectedBrand(allBrands?.find((item) => item._id == salesdata?.brand_id)?.instaBrandId)
-      setBookingDate(salesdata?.sale_booking_date?.split("T")[0])
-      setBaseAmount(salesdata?.base_amount)
-      setAddGst(salesdata?.gst_status)
-      setGstAmount(salesdata?.gst_amount)
-      setNetAmount(salesdata?.campaign_amount)
-      setDescription(salesdata?.description)
-      setSelectedPaymentStatus(paymentStatusList.find((item) => item.value == salesdata?.payment_credit_status))
-      setBalancePayDate(salesdata?.balance_payment_ondate?.split("T")[0])
-      setIncentiveCheck(salesdata?.incentive_status?.toLowerCase() == "no-incentive")
+      setCampaignName(salesdata?.campaign_name);
+      setSelectedAccount(salesdata?.account_id);
+      setSelectedBrand(
+        allBrands?.find((item) => item._id == salesdata?.brand_id)?.instaBrandId
+      );
+      setBookingDate(salesdata?.sale_booking_date?.split("T")[0]);
+      setBaseAmount(salesdata?.base_amount);
+      setAddGst(salesdata?.gst_status);
+      setGstAmount(salesdata?.gst_amount);
+      setNetAmount(salesdata?.campaign_amount);
+      setDescription(salesdata?.description);
+      setSelectedPaymentStatus(
+        paymentStatusList.find(
+          (item) => item.value == salesdata?.payment_credit_status
+        )
+      );
+      setBalancePayDate(salesdata?.balance_payment_ondate?.split("T")[0]);
+      setIncentiveCheck(
+        salesdata?.incentive_status?.toLowerCase() == "no-incentive"
+      );
       console.log(salesdata?.incentive_status?.toLowerCase() == "no-incentive");
     }
-  }, [salesdata])
+  }, [salesdata]);
 
   useEffect(() => {
-    if (singleDocumentOverviewData?.data?.length > 0 && !singleDocumentOverviewLoading) {
-      setGstAvailable(singleDocumentOverviewData?.data?.find((item) => item.document_name.toLowerCase() == "gst no.")?.document_no)
+    if (
+      singleDocumentOverviewData?.data?.length > 0 &&
+      !singleDocumentOverviewLoading
+    ) {
+      setGstAvailable(
+        singleDocumentOverviewData?.data?.find(
+          (item) => item.document_name.toLowerCase() == "gst no."
+        )?.document_no
+      );
     }
-  }, [selectedAccount, singleDocumentOverviewData, singleDocumentOverviewLoading]);
+  }, [
+    selectedAccount,
+    singleDocumentOverviewData,
+    singleDocumentOverviewLoading,
+  ]);
   useEffect(() => {
     if (gstAvailable !== undefined)
       getGst({
-        "flag": 1,
-        "gstNo": gstAvailable
+        flag: 1,
+        gstNo: gstAvailable,
       }).unwrap();
   }, [gstAvailable]);
   useEffect(() => {
@@ -192,8 +218,8 @@ const CreateSaleBooking = () => {
         selectedPaymentStatus?.label === "Sent For Payment Approval"
           ? 0
           : selectedPaymentStatus?.value === "sent_for_credit_approval"
-            ? 2
-            : 3
+          ? 2
+          : 3
       );
 
       reasonCreditApproval &&
@@ -300,34 +326,31 @@ const CreateSaleBooking = () => {
             setSelectedId={setSelectedAccount}
             required
           />
-          {gstAvailable && <div className="col-4">
+          {gstAvailable && (
+            <div className="col-4">
+              <div className="card gstinfo-card">
+                {gstLoading && <p>Loading...</p>}
+                {!gstLoading && (
+                  <>
+                    <p>
+                      {" "}
+                      Company Name:{" "}
+                      <span>{gstData?.data?.legal_business_name}</span>
+                    </p>
 
+                    <p>
+                      GST No.: <span>{gstData?.data?.gstin}</span>
+                    </p>
 
-
-            <div className="card gstinfo-card">
-              {gstLoading && <p>Loading...</p>}
-              {!gstLoading && <>
-                <p> Company Name: <span>{gstData?.data?.legal_business_name}</span></p>
-
-                <p>
-                  GST No.: <span>
-                    {gstData?.data?.gstin}
-                  </span>
-                </p>
-
-                <p>
-
-                  Address:
-                  <span>
-                    {gstData?.data?.principal_place_of_business}
-                  </span>
-                </p>
-
-
-              </>}
+                    <p>
+                      Address:
+                      <span>{gstData?.data?.principal_place_of_business}</span>
+                    </p>
+                  </>
+                )}
+              </div>
             </div>
-          </div>
-          }
+          )}
           <CustomSelect
             fieldGrid={4}
             label="Brand"
@@ -338,7 +361,22 @@ const CreateSaleBooking = () => {
             setSelectedId={setSelectedBrand}
             required
           />
-
+          <div className="col-md-6 mt-2 flex-row gap-2">
+            <button
+              type="button"
+              className="btn cmnbtn btn_sm btn-primary mt-4"
+              onClick={() => openModal("brandCategory")}
+            >
+              +
+            </button>
+            <button
+              type="button"
+              className="btn cmnbtn btn_sm btn-primary mt-4"
+              onClick={() => openModal("viewBrandCategory")}
+            >
+              <i className="bi bi-eye" />
+            </button>
+          </div>
 
           <FieldContainer
             label="Sale Booking Date"
@@ -350,7 +388,6 @@ const CreateSaleBooking = () => {
             onChange={(e) => setBookingDate(e.target.value)}
           />
           <div className="col-4">
-
             <FieldContainer
               label="Base Amount"
               fieldGrid={12}
@@ -369,12 +406,15 @@ const CreateSaleBooking = () => {
                 checked={addGst}
                 onChange={handleGstChange}
               />
-              <label className="mt-3  " htmlFor="addGst">+18% GST</label>
-              {addGst && <div className="flex-col gap-1 ">
-
-                <p>Gst Amount: Rs.{gstAmount}</p>
-                <p>Net / Campaign Amount: Rs.{netAmount}</p>
-              </div>}
+              <label className="mt-3  " htmlFor="addGst">
+                +18% GST
+              </label>
+              {addGst && (
+                <div className="flex-col gap-1 ">
+                  <p>Gst Amount: Rs.{gstAmount}</p>
+                  <p>Net / Campaign Amount: Rs.{netAmount}</p>
+                </div>
+              )}
             </div>
           </div>
 
@@ -491,7 +531,6 @@ const CreateSaleBooking = () => {
             <input
               className="form-check-input "
               type="checkbox"
-
               checked={incentiveCheck}
               onChange={(e) => setIncentiveCheck(e.target.checked)}
             />
@@ -521,7 +560,7 @@ const CreateSaleBooking = () => {
           Add Record Service
         </button>
       </div>
-    </div >
+    </div>
   );
 };
 

@@ -2,11 +2,19 @@ import React, { useEffect, useState } from "react";
 import FormContainer from "../../FormContainer";
 import DateISOtoNormal from "../../../../utils/DateISOtoNormal";
 import { Link } from "react-router-dom";
-import { useGetAllSaleBookingQuery, useGetSalesBookingPaymentDetailQuery } from "../../../Store/API/Sales/SaleBookingApi";
+import {
+  useDeleteSaleBookingMutation,
+  useGetAllSaleBookingQuery,
+  useGetSalesBookingPaymentDetailQuery,
+} from "../../../Store/API/Sales/SaleBookingApi";
 import View from "../Account/View/View";
 import { useGetAllAccountQuery } from "../../../Store/API/Sales/SalesAccountApi";
+import { useGlobalContext } from "../../../../Context/Context";
+import Modal from "react-modal";
+import ExecutionModal from "./ExecutionModal";
 
 const ViewSaleBooking = () => {
+  const { toastAlert, toastError } = useGlobalContext();
   const {
     data: allSaleBooking,
     error: allSalebBookingError,
@@ -15,14 +23,34 @@ const ViewSaleBooking = () => {
   const {
     data: allAccount,
     error: allAccountError,
-    isLoading: allAccountLoading
-  } = useGetAllAccountQuery()
+    isLoading: allAccountLoading,
+  } = useGetAllAccountQuery();
   const {
     data: allSalesBookingPaymentDetail,
     error: allSalesBookingPaymentDetailError,
-    isLoading: allSalesBookingPaymentDetailLoading
+    isLoading: allSalesBookingPaymentDetailLoading,
   } = useGetSalesBookingPaymentDetailQuery();
-  console.log(allSalesBookingPaymentDetail);
+
+  const [deleteSaleBooking, { isLoading }] = useDeleteSaleBookingMutation();
+
+  const [executionModal, setExecutionModal] = useState(false);
+
+  const handleDelete = async (rowId) => {
+    try {
+      await deleteSaleBooking(rowId);
+      toastAlert("Booking Deleted Successfully");
+    } catch (error) {
+      toastError("Error deleting sale booking:", error);
+    }
+  };
+
+  const openModal = () => {
+    setExecutionModal(true);
+  };
+  const closeModal = () => {
+    setExecutionModal(false);
+  };
+
   const columns = [
     {
       key: "Serial_no",
@@ -40,9 +68,9 @@ const ViewSaleBooking = () => {
     {
       key: "customer_name",
       name: "Account name",
-      renderRowCell: (row) => (
-        allAccount?.find((account) => account.account_id === row.account_id)?.account_name
-      ),
+      renderRowCell: (row) =>
+        allAccount?.find((account) => account.account_id === row.account_id)
+          ?.account_name,
       showCol: true,
       width: 100,
     },
@@ -112,14 +140,22 @@ const ViewSaleBooking = () => {
       name: "Action",
       width: 100,
       renderRowCell: (row) => (
-        <>
-          <Link to={`/admin/create-sales-booking/${row.sale_booking_id}/${row._id}`}>
+        <div className="flex-row">
+          <Link
+            to={`/admin/create-sales-booking/${row.sale_booking_id}/${row._id}`}
+          >
             <div className="icon-1">
               <i class="bi bi-pencil"></i>
             </div>
           </Link>
 
-        </>
+          <button className="icon-1" onClick={() => handleDelete(row._id)}>
+            <i className="bi bi-trash" />
+          </button>
+          <button className="icon-1" onClick={openModal}>
+            <i className="bi bi-eye" />
+          </button>
+        </div>
       ),
       showCol: true,
     },
@@ -127,6 +163,37 @@ const ViewSaleBooking = () => {
 
   return (
     <div>
+      <Modal
+        className="executionModal"
+        isOpen={executionModal}
+        onRequestClose={closeModal}
+        contentLabel="modal"
+        preventScroll={true}
+        appElement={document.getElementById("root")}
+        style={{
+          overlay: {
+            position: "fixed",
+            backgroundColor: "rgba(255, 255, 255, 0.75)",
+            height: "100vh",
+          },
+          content: {
+            position: "absolute",
+
+            maxWidth: "900px",
+            top: "50px",
+            border: "1px solid #ccc",
+            background: "#fff",
+            overflow: "auto",
+            WebkitOverflowScrolling: "touch",
+            borderRadius: "4px",
+            outline: "none",
+            padding: "20px",
+            maxHeight: "650px",
+          },
+        }}
+      >
+        <ExecutionModal />
+      </Modal>
       <div className="action_heading">
         <div className="action_title">
           <FormContainer mainTitle={"Sale Bookings Overview"} link={true} />
@@ -145,7 +212,11 @@ const ViewSaleBooking = () => {
       <View
         columns={columns}
         data={allSaleBooking}
-        isLoading={allSaleBookingLoading || allAccountLoading || allSalesBookingPaymentDetailLoading}
+        isLoading={
+          allSaleBookingLoading ||
+          allAccountLoading ||
+          allSalesBookingPaymentDetailLoading
+        }
         title={"Sale Booking"}
         // rowSelectable={true}
         pagination={[5, 10, 15]}
