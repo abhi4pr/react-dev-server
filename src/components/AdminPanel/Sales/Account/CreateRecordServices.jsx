@@ -2,45 +2,15 @@ import React, { useState, useEffect } from "react";
 import CustomSelect from "../../../ReusableComponents/CustomSelect";
 import FieldContainer from "../../FieldContainer";
 import { useGetSingleSaleServiceQuery } from "../../../Store/API/Sales/SalesServiceApi";
-import { set } from "date-fns";
 
 const RecordServices = ({ records, setRecords, serviceTypes }) => {
   const [selectedRecords, setSelectedRecords] = useState(records.map(() => ""));
-  const [recordId, setRecordId] = useState();
-  const [indexMain, setindexMain] = useState(0);
   const [serviceFieldsData, setServiceFieldsData] = useState([]);
-  const [recordLen, setRecordLen] = useState(serviceFieldsData.length);
-  const [justDeleted, setJustDeleted] = useState(false);
   const {
     data: saleServiceData,
     error: saleServiceError,
     isLoading: saleServiceLoading,
-  } = useGetSingleSaleServiceQuery(recordId, { skip: !recordId });
-
-  // const serviceFieldsData = selectedRecords.map(
-  //   (selectedRecord) => useGetSingleSaleServiceQuery(selectedRecord).data
-  // );
-
-  useEffect(() => {
-    if (!saleServiceLoading) {
-      setRecordId(selectedRecords[indexMain - 1]);
-      if (!justDeleted) {
-        (serviceFieldsData.length < recordLen) ?
-          setindexMain(indexMain - 1)
-          : setindexMain(indexMain + 1);
-      } else {
-        setJustDeleted(false);
-      }
-    }
-    setRecordLen(serviceFieldsData.length);
-  }, [selectedRecords]);
-  useEffect(() => {
-    if (saleServiceData && !saleServiceLoading) {
-      setServiceFieldsData(prevServiceFieldsData => [...prevServiceFieldsData, saleServiceData]);
-
-    }
-  }, [saleServiceData])
-
+  } = useGetSingleSaleServiceQuery();
 
   const handleRecordChange = (index, key, value) => {
     const updatedRecords = records?.map((record, recordIndex) =>
@@ -48,10 +18,16 @@ const RecordServices = ({ records, setRecords, serviceTypes }) => {
     );
     setRecords(updatedRecords);
 
-    if (key === "type") {
+    if (key === "sales_service_master_id") {
       const updatedSelectedRecords = [...selectedRecords];
       updatedSelectedRecords[index] = value;
+
+      const updatedServiceFieldsData = [...serviceFieldsData];
+      updatedServiceFieldsData[index] = serviceTypes?.find(
+        (service) => service?._id === value
+      );
       setSelectedRecords(updatedSelectedRecords);
+      setServiceFieldsData(updatedServiceFieldsData);
     }
   };
 
@@ -65,23 +41,22 @@ const RecordServices = ({ records, setRecords, serviceTypes }) => {
     const updatedServiceFieldsData = [...serviceFieldsData];
     updatedServiceFieldsData.splice(index, 1);
     setServiceFieldsData(updatedServiceFieldsData);
-    setindexMain(indexMain - 1);
-    setJustDeleted(true);
   };
 
   const getAvailableServiceTypes = (currentIndex) => {
-    const selectedTypes = records.map((record) => record.type)?.filter(Boolean);
+    const selectedTypes = selectedRecords?.map((record) => record);
+
     return serviceTypes?.filter(
       (type) =>
         !selectedTypes.includes(type._id) ||
-        records[currentIndex].type === type._id
+        type._id === selectedRecords[currentIndex]
     );
   };
 
   return (
     <>
       {records?.map((record, index) => {
-        const ServiceFields = serviceFieldsData[index];
+        const ServiceFields = serviceFieldsData?.[index];
 
         return (
           <div className="card" key={index}>
@@ -102,9 +77,9 @@ const RecordServices = ({ records, setRecords, serviceTypes }) => {
                   dataArray={getAvailableServiceTypes(index)}
                   optionId="_id"
                   optionLabel="service_name"
-                  selectedId={record.type}
+                  selectedId={record.sales_service_master_id}
                   setSelectedId={(value) =>
-                    handleRecordChange(index, "type", value)
+                    handleRecordChange(index, "sales_service_master_id", value)
                   }
                   required
                 />
