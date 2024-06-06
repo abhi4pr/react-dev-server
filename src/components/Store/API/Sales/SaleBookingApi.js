@@ -87,6 +87,26 @@ const SaleBookingApi = createApi({
         url: `sales/sales_booking/${id}`,
         method: "DELETE",
       }),
+      onQueryStarted: async (id, { dispatch, queryFulfilled }) => {
+        await queryFulfilled;
+        dispatch(
+          SaleBookingApi.util.updateQueryData(
+            "getAllSaleBooking",
+            undefined,
+            (draft) => {
+              const saleBookingIndex = draft.findIndex(
+                (saleBooking) => saleBooking._id == id
+              );
+              console.log(
+                draft.findIndex((saleBooking) => saleBooking._id == id)
+              );
+              if (saleBookingIndex !== -1) {
+                draft.splice(saleBookingIndex, 1); // Remove the deleted item
+              }
+            }
+          )
+        );
+      },
     }),
 
     getAllNewDeletedSale: builder.query({
