@@ -777,7 +777,12 @@ const PageOverview = () => {
       headerName: "Price Type",
       width: 200,
       renderCell: (params) => {
-        console.log(allPriceTypeList, "allPriceTypeList", params.row.page_price_type_id, "params.row.price_type_id");
+        console.log(
+          allPriceTypeList,
+          "allPriceTypeList",
+          params.row.page_price_type_id,
+          "params.row.price_type_id"
+        );
 
         let name = allPriceTypeList?.find(
           (item) => item._id == params.row.page_price_type_id
@@ -1627,7 +1632,7 @@ const PageOverview = () => {
                 </Box>
               </Box>
             ) : (
-              <Box sx={{ height: 400, width: "100%" }}>
+              <Box sx={{ height: 700, width: "100%" }}>
                 <DataGrid
                   title="Page Overview"
                   rows={filterData}
@@ -1646,7 +1651,7 @@ const PageOverview = () => {
                   // onPaginationModelChange={handlePageChange}
                   pageSize={5}
                   rowsPerPageOptions={[5]}
-                  rowHeight={38}
+                  // rowHeight={38}
                   disableSelectionOnClick
                   getRowId={(row) => row._id}
                   slots={{ toolbar: GridToolbar }}

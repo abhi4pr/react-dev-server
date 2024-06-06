@@ -47,6 +47,9 @@ const PageMaster = () => {
   const [link, setLink] = useState("");
   const [isFormSubmitted, setIsFormSubmitted] = useState(false);
   const [platformId, setPlatformId] = useState("");
+
+  const [primary, setPrimary] = useState({ value: "No", label: "No" });
+
   const [categoryId, setCategoryId] = useState("");
   const [tag, setTag] = useState([]);
   const [pageLevel, setPageLevel] = useState("");
@@ -89,6 +92,7 @@ const PageMaster = () => {
     rateType: false,
     variableType: false,
     tag: false,
+    primary: false,
   });
 
   const handleVariableTypeChange = (selectedOption) => {
@@ -182,6 +186,10 @@ const PageMaster = () => {
 
   const handleRateTypeChange = (selectedOption) => {
     setRateType(selectedOption);
+  };
+
+  const handlePrimaryChange = (selectedOption) => {
+    setPrimary(selectedOption);
   };
   useEffect(() => {
     if (platformId) {
@@ -279,55 +287,6 @@ const PageMaster = () => {
       return toastError("Please Fill All Required Fields");
     }
 
-    // return toastAlert("Submitted");
-
-    // if (pageName === "") {
-    //   toastError("Please Fill Page Name");
-    //   return;
-    // } else if (link === "") {
-    //   toastError("Please Fill Link");
-    //   return;
-    // } else if (platformId === "") {
-    //   toastError("Please Fill Platform ID");
-    //   return;
-    // } else if (categoryId === "") {
-    //   toastError("Please Fill Category");
-    //   return;
-    // } else if (pageLevel === "") {
-    //   toastError("Please Fill Page Level");
-    //   return;
-    // } else if (pageStatus === "") {
-    //   toastError("Please Fill Page Status");
-    //   return;
-    // } else if (closeBy === "") {
-    //   toastError("Please Fill Close By");
-    //   return;
-    // } else if (pageType === "") {
-    //   toastError("Please Fill Page Name Type");
-    //   return;
-    // } else if (content === "") {
-    //   toastError("Please Fill Content Creation");
-    //   return;
-    // } else if (ownerType === "") {
-    //   toastError("Please Fill Ownership Type");
-    //   return;
-    // } else if (vendorId === "") {
-    //   toastError("Please Fill Vendor");
-    //   return;
-    // } else if (followCount === "") {
-    //   toastError("Please Fill Followers Count");
-    //   return;
-    // } else if (profileId === "") {
-    //   toastError("Please Fill Profile Type");
-    //   return;
-    // } else if (platformActive === "") {
-    //   toastError("Please Fill Platform Active On");
-    //   return;
-    // } else if (rate === "") {
-    //   toastError("Please Fill Engagement Rate");
-    //   return;
-    // }
-
     const payload = {
       page_name: pageName,
       page_link: link,
@@ -350,6 +309,7 @@ const PageMaster = () => {
       rate_type: rateType.value,
       variable_type: rateType.value == "Variable" ? variableType.value : null,
       page_price_multiple: rowCount,
+      primary_pages: primary,
     };
 
     axios
@@ -735,6 +695,51 @@ const PageMaster = () => {
                 </small>
               )}
             </div>
+            <div className="col-md-6 mb16">
+              <div className="form-group m0">
+                <label className="form-label">
+                  Primary <sup style={{ color: "red" }}>*</sup>
+                </label>
+                <Select
+                  options={["No", "Yes"].map((option) => ({
+                    value: option,
+                    label: option,
+                  }))}
+                  required={true}
+                  value={{
+                    value: primary.value,
+                    label: primary.label,
+                  }}
+                  onChange={handlePrimaryChange}
+                />
+                {validateFields.primary && (
+                  <small style={{ color: "red" }}>
+                    Please Fill Primary Type
+                  </small>
+                )}
+              </div>
+            </div>
+            {/* <div className="col-md-6 p0 mb16">
+              <FieldContainer
+                label="Primary"
+                astric={true}
+                fieldGrid={12}
+                value={primary}
+                required={true}
+                onChange={(e) => {
+                  setPrimary(e.target.value);
+                  if (e.target.value) {
+                    setValidateFields((prev) => ({
+                      ...prev,
+                      primary: false,
+                    }));
+                  }
+                }}
+              />
+              {validateFields.primary && (
+                <small style={{ color: "red" }}>Please Fill Primary Type</small>
+              )}
+            </div> */}
             <div className="col-md-6 mb16">
               <div className="form-group m0">
                 <label className="form-label">
