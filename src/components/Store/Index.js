@@ -19,6 +19,7 @@ import SaleServiceApi from "./API/Sales/SalesServiceApi";
 import DocumentOverviewApi from "./API/Sales/DocumentOverview";
 import GetGstDetailApi from "./API/Sales/GetGstDetailApi";
 import ExecutionApi from "./API/Sales/ExecutionApi";
+import RecordServicesApi from "./API/Sales/RecordServicesApi";
 
 const store = configureStore({
   reducer: {
@@ -41,6 +42,7 @@ const store = configureStore({
     [DocumentOverviewApi.reducerPath]: DocumentOverviewApi.reducer,
     [GetGstDetailApi.reducerPath]: GetGstDetailApi.reducer,
     [ExecutionApi.reducerPath]: ExecutionApi.reducer,
+    [RecordServicesApi.reducerPath]: RecordServicesApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware()
@@ -58,7 +60,8 @@ const store = configureStore({
       .concat(SaleServiceApi.middleware)
       .concat(DocumentOverviewApi.middleware)
       .concat(GetGstDetailApi.middleware)
-      .concat(ExecutionApi.middleware),
+      .concat(ExecutionApi.middleware)
+      .concat(RecordServicesApi.middleware),
 });
 setupListeners(store.dispatch);
 
