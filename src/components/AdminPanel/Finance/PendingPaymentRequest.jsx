@@ -32,7 +32,7 @@ import ShowDataModal from "./ShowDataModal";
 import Checkbox from "@mui/material/Checkbox";
 import WhatsappAPI from "../../WhatsappAPI/WhatsappAPI";
 import moment from "moment";
-import jsPDF from "jspdf";
+// import { jsPDF } from "jspdf";
 import JSZip from "jszip";
 import { saveAs } from "file-saver";
 import Overview from "./Overview";
@@ -41,6 +41,8 @@ import PayVendorDialog from "./Purchase/Dialog/PayVendorDialog";
 import DynamicTable from "../Object/DynamicTable";
 import TableData from "./TableData";
 import { Link } from "react-router-dom";
+import CommonDialogBox from "./CommonDialog/CommonDialogBox";
+import BankDetailPendingPaymentDialog from "./CommonDialog/BankDetailPendingPaymentDialog";
 
 export default function PendingPaymentRequest() {
   const whatsappApi = WhatsappAPI();
@@ -56,12 +58,7 @@ export default function PendingPaymentRequest() {
   const [toDate, setToDate] = useState("");
   const [payDialog, setPayDialog] = useState(false);
   const [rowData, setRowData] = useState({});
-  const [paymentMode, setPaymentMode] = useState(null);
-  const [paymentModeData, setPaymentModeData] = useState([]);
-  const [payRemark, setPayRemark] = useState("");
-  const [payMentProof, setPayMentProof] = useState("");
   const [vendorName, setVendorName] = useState("");
-  const [partialVendorName, setPartialVendorName] = useState("");
   const [showDisCardModal, setShowDiscardModal] = useState(false);
   const [paymentAmout, setPaymentAmount] = useState("");
   const [openImageDialog, setOpenImageDialog] = useState(false);
@@ -92,10 +89,7 @@ export default function PendingPaymentRequest() {
   const [TDSDeduction, setTDSDeduction] = useState(false);
   const [gstHold, setGstHold] = useState(false);
   const [GSTHoldAmount, setGSTHoldAmount] = useState(0);
-  const [TDSPercentage, setTDSPercentage] = useState(1);
-  const [TDSValue, setTDSValue] = useState(0);
   const [baseAmount, setBaseAmount] = useState(0);
-  const [paymentStatus, setPaymentStatus] = useState("Fully Paid");
   const [bankDetailRowData, setBankDetailRowData] = useState([]);
 
   const [dateFilter, setDateFilter] = useState("");
@@ -106,13 +100,10 @@ export default function PendingPaymentRequest() {
   const [vendorNameList, setVendorNameList] = useState([]);
   const [rowSelectionModel, setRowSelectionModel] = useState([]);
   const [adjustAmount, setAdjustAmount] = useState("");
-  const [adjustmentAmt, setAdjustmentAmt] = useState("");
   // const [preview, setPreview] = useState("");
   const [openDialog, setOpenDialog] = useState(false);
   const [overviewDialog, setOverviewDialog] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [isTDSMandatory, setIsTDSMandatory] = useState(false);
-  const [isTDSDeducted, setIsTDSDeducted] = useState(false);
   const [netAmount, setNetAmount] = useState("");
   const [tdsDeductedCount, setTdsDeductedCount] = useState(0);
   const accordionButtons = ["All", "Partial", "Instant"];
@@ -563,7 +554,7 @@ export default function PendingPaymentRequest() {
   const handleOpenBankDetail = (row) => {
     let x = [];
     x.push(row);
-
+    console.log(x, "x data---------------");
     setBankDetailRowData(x);
     setBankDetail(true);
   };
@@ -1708,6 +1699,7 @@ export default function PendingPaymentRequest() {
     // Save the zip file
     saveAs(zipBlob, "invoices.zip");
   };
+
   function CustomColumnMenu(props) {
     return (
       <GridColumnMenu
@@ -2116,7 +2108,7 @@ export default function PendingPaymentRequest() {
       },
     },
   ];
-
+  console.log(filterData, "FD-----------------------");
   return (
     <div>
       <FormContainer
@@ -2152,271 +2144,36 @@ export default function PendingPaymentRequest() {
         instantTDSDeduction={instantTDSDeduction}
       />
       {/* Bank Details 14 */}
-      <Dialog
-        open={bankDetail}
-        onClose={handleCloseBankDetail}
-        fullWidth={"md"}
-        maxWidth={"md"}
-        sx={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
-        <DialogTitle>Bank Details</DialogTitle>
-        <IconButton
-          aria-label="close"
-          onClick={handleCloseBankDetail}
-          sx={{
-            position: "absolute",
-            right: 8,
-            top: 8,
-            color: (theme) => theme.palette.grey[500],
-          }}
-        >
-          <CloseIcon />
-        </IconButton>
 
-        <TextField
-          id="outlined-multiline-static"
-          multiline
-          value={
-            bankDetailRowData[0]?.payment_details +
-            "\n" +
-            "Mob:" +
-            bankDetailRowData[0]?.mob1 +
-            "\n" +
-            (bankDetailRowData[0]?.email
-              ? "Email:" + bankDetailRowData[0]?.email
-              : "")
-          }
-          rows={4}
-          defaultValue="Default Value"
-          variant="outlined"
-        />
-        <Button
-          onClick={() => {
-            navigator.clipboard.writeText(
-              bankDetailRowData[0]?.payment_details
-            );
-            toastAlert("Copied to clipboard");
-          }}
-        >
-          Copy
-        </Button>
-      </Dialog>
+      <BankDetailPendingPaymentDialog
+        bankDetail={bankDetail}
+        handleCloseBankDetail={handleCloseBankDetail}
+        bankDetailRowData={bankDetailRowData}
+      />
       {/* Payment History */}
-      <Dialog
-        open={paymentHistory}
-        onClose={handleClosePaymentHistory}
-        fullWidth={"md"}
-        maxWidth={"md"}
-        sx={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
-        <DialogTitle>Payment History</DialogTitle>
-        <IconButton
-          aria-label="close"
-          onClick={handleClosePaymentHistory}
-          sx={{
-            position: "absolute",
-            right: 8,
-            top: 8,
-            color: (theme) => theme.palette.grey[500],
-          }}
-        >
-          <CloseIcon />
-        </IconButton>
-        <DialogContent
-          dividers={true}
-          sx={{ maxHeight: "80vh", overflowY: "auto" }}
-        >
-          <DataGrid
-            rows={historyData}
-            columns={paymentDetailColumns}
-            pageSize={5}
-            rowsPerPageOptions={[5]}
-            disableSelectionOnClick
-            autoHeight
-            slots={{ toolbar: GridToolbar }}
-            slotProps={{
-              toolbar: {
-                showQuickFilter: true,
-              },
-            }}
-            getRowId={(row) => row.request_id}
-          />
-        </DialogContent>
-      </Dialog>
+      <CommonDialogBox
+        dialog={paymentHistory}
+        handleCloseDialog={handleClosePaymentHistory}
+        activeAccordionIndex={0}
+        data={historyData}
+        columnsData={paymentDetailColumns}
+      />
       {/* Same Vendor Dialog Box */}
-      <Dialog
-        open={sameVendorDialog}
-        onClose={handleCloseSameVender}
-        fullWidth={"md"}
-        maxWidth={"md"}
-        sx={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
-        <DialogTitle>Same Vendors</DialogTitle>
-        <IconButton
-          aria-label="close"
-          onClick={handleCloseSameVender}
-          sx={{
-            position: "absolute",
-            right: 8,
-            top: 8,
-            color: (theme) => theme.palette.grey[500],
-          }}
-        >
-          <CloseIcon />
-        </IconButton>
-        <DialogContent
-          dividers={true}
-          sx={{ maxHeight: "80vh", overflowY: "auto" }}
-        >
-          {activeAccordionIndex === 0 && (
-            <DataGrid
-              rows={sameVendorData}
-              columns={sameVenderColumns}
-              pageSize={5}
-              rowsPerPageOptions={[5]}
-              disableSelectionOnClick
-              autoHeight
-              checkboxSelection
-              slots={{ toolbar: GridToolbar, columnMenu: CustomColumnMenu }}
-              slotProps={{
-                toolbar: {
-                  showQuickFilter: true,
-                },
-              }}
-              getRowId={(row) => sameVendorData.indexOf(row)}
-            />
-          )}
-          {activeAccordionIndex === 1 && (
-            <DataGrid
-              rows={sameVendorData.filter((d) => d.status === "3")}
-              columns={sameVenderColumns}
-              pageSize={5}
-              rowsPerPageOptions={[5]}
-              disableSelectionOnClick
-              autoHeight
-              slots={{ toolbar: GridToolbar, columnMenu: CustomColumnMenu }}
-              slotProps={{
-                toolbar: {
-                  showQuickFilter: true,
-                },
-              }}
-              getRowId={(row) => sameVendorData.indexOf(row)}
-            />
-          )}
-          {activeAccordionIndex === 2 && (
-            <DataGrid
-              rows={sameVendorData.filter((d) => d.status === "0")}
-              columns={sameVenderColumns}
-              pageSize={5}
-              rowsPerPageOptions={[5]}
-              disableSelectionOnClick
-              autoHeight
-              slots={{ toolbar: GridToolbar, columnMenu: CustomColumnMenu }}
-              slotProps={{
-                toolbar: {
-                  showQuickFilter: true,
-                },
-              }}
-              getRowId={(row) => sameVendorData.indexOf(row)}
-            />
-          )}
-        </DialogContent>
-      </Dialog>
+      <CommonDialogBox
+        dialog={sameVendorDialog}
+        handleCloseDialog={handleCloseSameVender}
+        activeAccordionIndex={activeAccordionIndex}
+        data={sameVendorData}
+        columnsData={sameVenderColumns}
+      />
       {/* Unique Vendor Dialog Box */}
-      <Dialog
-        open={uniqueVenderDialog}
-        onClose={handleCloseUniqueVendor}
-        fullWidth={"md"}
-        maxWidth={"md"}
-        sx={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
-        <DialogTitle>Unique Vendors</DialogTitle>
-        <IconButton
-          aria-label="close"
-          onClick={handleCloseUniqueVendor}
-          sx={{
-            position: "absolute",
-            right: 8,
-            top: 8,
-            color: (theme) => theme.palette.grey[500],
-          }}
-        >
-          <CloseIcon />
-        </IconButton>
-        <DialogContent
-          dividers={true}
-          sx={{ maxHeight: "80vh", overflowY: "auto" }}
-        >
-          {activeAccordionIndex === 0 && (
-            <DataGrid
-              rows={uniqueVendorData}
-              columns={uniqueVendorColumns}
-              pageSize={5}
-              rowsPerPageOptions={[5]}
-              disableSelectionOnClick
-              autoHeight
-              slots={{ toolbar: GridToolbar }}
-              slotProps={{
-                toolbar: {
-                  showQuickFilter: true,
-                },
-              }}
-              getRowId={(row) => uniqueVendorData.indexOf(row)}
-            />
-          )}
-          {activeAccordionIndex === 1 && (
-            <DataGrid
-              rows={uniqueVendorData.filter((d) => d.status === "3")}
-              columns={uniqueVendorColumns}
-              pageSize={5}
-              rowsPerPageOptions={[5]}
-              disableSelectionOnClick
-              autoHeight
-              slots={{ toolbar: GridToolbar }}
-              slotProps={{
-                toolbar: {
-                  showQuickFilter: true,
-                },
-              }}
-              getRowId={(row) => uniqueVendorData.indexOf(row)}
-            />
-          )}
-          {activeAccordionIndex === 2 && (
-            <DataGrid
-              rows={uniqueVendorData.filter((d) => d.status === "0")}
-              columns={uniqueVendorColumns}
-              pageSize={5}
-              rowsPerPageOptions={[5]}
-              disableSelectionOnClick
-              autoHeight
-              slots={{ toolbar: GridToolbar }}
-              slotProps={{
-                toolbar: {
-                  showQuickFilter: true,
-                },
-              }}
-              getRowId={(row) => uniqueVendorData.indexOf(row)}
-            />
-          )}
-        </DialogContent>
-      </Dialog>
-
+      <CommonDialogBox
+        dialog={uniqueVenderDialog}
+        handleCloseDialog={handleCloseUniqueVendor}
+        activeAccordionIndex={activeAccordionIndex}
+        data={uniqueVendorData}
+        columnsData={uniqueVendorColumns}
+      />
       {/* Overview Dialog Box */}
       <Dialog
         open={overviewDialog}
@@ -2449,6 +2206,7 @@ export default function PendingPaymentRequest() {
           <Overview data={filterData} columns={columns} />
         </DialogContent>
       </Dialog>
+
       <div className="row">
         <div className="col-12">
           <div className="card">
@@ -2643,27 +2401,6 @@ export default function PendingPaymentRequest() {
           </div>
           <div className="card-body thm_table fx-head">
             {activeAccordionIndex === 0 && (
-              // <DataGrid
-              //   rows={filterData}
-              //   columns={columns}
-              //   pageSize={5}
-              //   rowsPerPageOptions={[5]}
-              //   getRowClassName={getValidationCSSForRemainder}
-              //   slots={{ toolbar: GridToolbar }}
-              //   disableSelectionOnClick
-              //   checkboxSelection
-              //   slotProps={{
-              //     toolbar: {
-              //       showQuickFilter: true,
-              //     },
-              //   }}
-              //   getRowId={(row) => row?.request_id}
-              //   onRowSelectionModelChange={(rowIds) => {
-              //     handleRowSelectionModelChange(rowIds);
-              //     console.log(rowIds, "IDS");
-              //   }}
-              //   rowSelectionModel={rowSelectionModel}
-              // />
               <TableData
                 tableName="Pending Payment Request Table"
                 tableFields={[
@@ -2682,23 +2419,6 @@ export default function PendingPaymentRequest() {
                 tableActions={tableActions}
                 tableApi="phpvendorpaymentrequest"
               />
-              //   <DynamicTable
-              //   tableName="Overview Table"
-              //   tableFields={[
-              //     "invc_img",
-              //     "invc_no",
-              //     "invc_Date",
-              //     "request_by",
-              //     "Reminder",
-              //     "vendor_name",
-              //     "page_name",
-              //     "payment_cycle",
-              //     "total_paid",
-              //     "finacial_year",
-              //   ]}
-              //   tableActions={tableActions}
-              //   tableApi="phpvendorpaymentrequest"
-              // />
             )}
             {openImageDialog && (
               <ImageView

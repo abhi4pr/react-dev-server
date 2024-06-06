@@ -161,7 +161,7 @@ const PaymentDoneTransactionList = () => {
               setOpenImageDialog(true);
               setViewImgSrc(imgUrl);
             }}
-            src={pdf}
+            src={imgUrl}
             style={{ width: "40px", height: "40px" }}
             title="PDF Preview"
           />

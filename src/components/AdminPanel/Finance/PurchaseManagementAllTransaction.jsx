@@ -546,22 +546,16 @@ export default function PurchaseManagementAllTransaction() {
   ).length;
 
   // total pending  amount data :-
-  const totalRequestAmount = filterData.reduce(
+  const totalRequestAmount = filterData?.reduce(
     (total, item) => total + parseFloat(item.request_amount),
     0
   );
 
-  console.log(
-    sameVendorData,
-    "same vendor data>>>",
-    uniqueVendorData,
-    "unique vendor data>>>>"
-  );
   // ==============================================================
   // Calculate GST hold amount and count
   const gstHoldData = data.filter((item) => item.gst_amount); // Assuming 'gstApplied' is a boolean field indicating if GST is applied
   const gstHoldCount = gstHoldData.length;
-  const gstHoldAmount = gstHoldData.reduce(
+  const gstHoldAmount = gstHoldData?.reduce(
     (total, item) => total + parseFloat(item.gst_amount),
     0
   );
@@ -657,7 +651,7 @@ export default function PurchaseManagementAllTransaction() {
           (e) => e.vendor_name === row.vendor_name
         );
 
-        const reduceAmt = sameVendor.reduce(
+        const reduceAmt = sameVendor?.reduce(
           (a, b) => a + 1 * b.request_amount,
           0
         );
@@ -970,7 +964,6 @@ export default function PurchaseManagementAllTransaction() {
       headerName: "TDS Amount",
       width: 150,
       renderCell: (params) => {
-        console.log(params.row.tds_deduction, "tds_deduction");
         return params.row.tds_deduction ? (
           <p>&#8377; {params.row.tds_deduction}</p>
         ) : (
@@ -1018,9 +1011,9 @@ export default function PurchaseManagementAllTransaction() {
         if (matchingItems.length > 0) {
           return matchingItems.map((item, index) => (
             <p key={params.row.request_id}>
-              {item.status == 0
+              {item.status === 0
                 ? "Pending"
-                : item.status == 2
+                : item.status === 2
                 ? "Discarded"
                 : "Paid"}
             </p>
@@ -1046,7 +1039,7 @@ export default function PurchaseManagementAllTransaction() {
   );
 
   // Calculate aging sum
-  const agingSum = agingFilterData.reduce((sum, value) => sum + value, 0);
+  const agingSum = agingFilterData?.reduce((sum, value) => sum + value, 0);
 
   // Calculate total number of aging count
   const agingCount = agingFilterData.length;
@@ -1068,7 +1061,7 @@ export default function PurchaseManagementAllTransaction() {
     return item.gstHold == 1;
   });
   const totalGstHoldCount = gstHoldDataMerged.length;
-  const totalGstHoldAmount = gstHoldDataMerged.reduce(
+  const totalGstHoldAmount = gstHoldDataMerged?.reduce(
     (total, item) => total + parseFloat(item.gst_hold),
     0
   );
@@ -1078,7 +1071,7 @@ export default function PurchaseManagementAllTransaction() {
     (item) => item.TDSDeduction == 1
   );
   const totalTDSDeductedCount = totalDeductedAmountMerged.length;
-  const totalTDSDeductedAmount = totalDeductedAmountMerged.reduce(
+  const totalTDSDeductedAmount = totalDeductedAmountMerged?.reduce(
     (total, item) => total + parseFloat(item.tds_deduction),
     0
   );
@@ -1108,7 +1101,32 @@ export default function PurchaseManagementAllTransaction() {
   const handleWithInvoiceButtonClick = () => {
     filterDataByInvoice(true);
   };
+  const handlePendingButtonClick = () => {
+    const pendingData = filterData.filter(
+      (item) =>
+        parseInt(item.status) === 0 &&
+        !nodeData.some((item2) => item.request_id === item2.request_id)
+    );
+    setFilterData(pendingData);
+  };
+  const handleDoneButtonClick = () => {
+    const doneData = filterData.filter(
+      (item) =>
+        parseInt(item.status) === 1 &&
+        !nodeData.some((item2) => item.request_id === item2.request_id)
+    );
+    setFilterData(doneData);
+  };
+  const handleDiscardButtonClick = () => {
+    const discardData = filterData?.filter((item) => {
+      return (
+        parseFloat(item.status) === 2 &&
+        !nodeData.some((item2) => item.request_id === item2.request_id)
+      );
+    });
 
+    setFilterData(discardData);
+  };
   // Event handler for the "Without Invoice" button click
   const handleWithoutInvoiceButtonClick = () => {
     filterDataByInvoice(false);
@@ -1514,7 +1532,7 @@ export default function PurchaseManagementAllTransaction() {
                 Pending
                 <Link
                   className="link-primary"
-                  to="/admin/finance-pruchasemanagement-pendingpaymentrequest"
+                  onClick={handlePendingButtonClick}
                 >
                   <span class="iconLink">
                     <i class="bi bi-arrow-up-right"></i>
@@ -1528,14 +1546,17 @@ export default function PurchaseManagementAllTransaction() {
                 {filterData.length > 0
                   ? filterData
                       .filter((item) => {
-                        return !nodeData.some(
-                          (item2) => item.request_id == item2.request_id
+                        return (
+                          parseFloat(item.status) === 0 &&
+                          !nodeData.some(
+                            (item2) => item.request_id === item2.request_id
+                          )
                         );
                       })
-                      .reduce((total, currentItem) => {
-                        return total + parseFloat(currentItem.request_amount);
+                      ?.reduce((total, currentItem) => {
+                        return total + parseFloat(currentItem?.request_amount);
                       }, 0)
-                  : ""}
+                  : 0}
               </h4>
             </div>
           </div>
@@ -1545,10 +1566,7 @@ export default function PurchaseManagementAllTransaction() {
             <div class="card-header">
               <h5 class="card-title w-100 flexCenterBetween">
                 Done
-                <Link
-                  className="link-primary"
-                  to="/admin/finance-pruchasemanagement-paymentdone"
-                >
+                <Link className="link-primary" onClick={handleDoneButtonClick}>
                   <span class="iconLink">
                     <i class="bi bi-arrow-up-right"></i>
                   </span>
@@ -1567,11 +1585,9 @@ export default function PurchaseManagementAllTransaction() {
                             (item2) => item.request_id === item2.request_id
                           )
                       )
-                      .reduce(
-                        (total, currentItem) =>
-                          total + parseFloat(currentItem.request_amount),
-                        0
-                      )
+                      ?.reduce((total, currentItem) => {
+                        total + parseFloat(currentItem.request_amount);
+                      }, 0)
                   : 0}
               </h4>
             </div>
@@ -1584,7 +1600,7 @@ export default function PurchaseManagementAllTransaction() {
                 Discard
                 <Link
                   className="link-primary"
-                  to="/admin/finance-pruchasemanagement-discardpayment"
+                  onClick={handleDiscardButtonClick}
                 >
                   <span class="iconLink">
                     <i class="bi bi-arrow-up-right"></i>
@@ -1606,10 +1622,10 @@ export default function PurchaseManagementAllTransaction() {
                           )
                         );
                       })
-                      .reduce((total, currentItem) => {
+                      ?.reduce((total, currentItem) => {
                         return total + parseFloat(currentItem.request_amount);
                       }, 0)
-                  : ""}
+                  : 0}
               </h4>
             </div>
           </div>
