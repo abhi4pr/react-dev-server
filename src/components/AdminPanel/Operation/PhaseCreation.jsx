@@ -9,9 +9,24 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { baseUrl } from "../../../utils/config";
 import { useGlobalContext } from "../../../Context/Context";
+import { Tabs, Tab, Box, Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
+import Modal from '@mui/material/Modal';
+import Select from "react-select";
+
+const style = {
+  position: 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  width: 400,
+  bgcolor: 'background.paper',
+  border: '2px solid #000',
+  boxShadow: 24,
+  p: 4,
+};
 
 const PhaseCreation = () => {
-  const naviagte = useNavigate();
+  const navigate = useNavigate();
   const param = useParams();
   const id = param.id;
 
@@ -24,13 +39,25 @@ const PhaseCreation = () => {
   const [campaignDetails, setCampaignDetails] = useState({})
   const [planData, setPlanData] = useState([])
   const [payloadData, setPayloadData] = useState({})
+  const [phaseData, setPhaseData] = useState([])
+  const [tabIndex, setTabIndex] = useState(0);
+  const [open, setOpen] = useState(false);
+  const [newPids, setNewPids] = useState([])
+  const [replacePages, setReplacePages] = useState([])
+  const [replaceId, setReplaceId] = useState('')
 
-  const getCampaignDetails = async() =>{
-    try{
-      const forPayload = await axios.get(baseUrl+`opcampaign/${id}`)
-      setPayloadData(forPayload.data.data)
+  const handleOpen = (page) => {
+    setOpen(true);
+    setReplaceId(page)
+  }
+  const handleClose = () => setOpen(false);
 
-      const Fdata = await axios.get(baseUrl+`opcampaignplan/${id}`)
+  const getCampaignDetails = async () => {
+    try {
+      const forPayload = await axios.get(baseUrl + `opcampaign/${id}`)
+      setPayloadData(forPayload.data[0])
+
+      const Fdata = await axios.get(baseUrl + `opcampaignplan/${id}`)
       setCampaignDetails(Fdata.data.data)
 
       const campaignPIds = Fdata.data.data.map((campaign) => campaign.p_id);
@@ -52,37 +79,72 @@ const PhaseCreation = () => {
       }));
 
       setPlanData(newData);
-    }catch(error){
+
+      const filteredInventoryDataN = inventoryDataResponse.data.body.filter(
+        (item) => !campaignPIds.includes(item.p_id)
+      );
+
+      const newDataN = filteredInventoryDataN.map((item) => ({
+        p_id: item.p_id,
+        page_name: item.page_name,
+        cat_name: item.cat_name,
+        follower_count: item.follower_count,
+        page_link: item.page_link,
+      }));
+
+      setReplacePages(newDataN)
+    
+    } catch (error) {
       console.log(error)
     }
   }
 
+  const getPhaseDetails = async () => {
+    try {
+      const phaseDataVar = await axios.get(baseUrl + `opcampaignphase/${id}`);
+      const groupedPhaseData = phaseDataVar.data.reduce((acc, item) => {
+        const { phaseName, ...rest } = item;
+        if (!acc[phaseName]) {
+          acc[phaseName] = {
+            phaseName,
+            pages: []
+          };
+        }
+        acc[phaseName].pages.push(rest);
+        return acc;
+      }, {});
+      setPhaseData(Object.values(groupedPhaseData));
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   useEffect(() => {
-    // getPageData();
-    getCampaignDetails()
+    getPhaseDetails();
+    getCampaignDetails();
   }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    try{
-      const selectedPages = planData.filter((row)=>
+    try {
+      const selectedPages = planData.filter((row) =>
         selectedRows.includes(row.p_id)
       );
-      const pages = selectedPages.map((page)=>({
+      const pages = selectedPages.map((page) => ({
         p_id: page.p_id,
         postPerPage: page.posts_per_page || 1,
         storyPerPage: page.story_per_page || 1
       }))
 
-      const postResult = await axios.post(`${baseUrl}opcampaignphase`,{
-        campaignId:payloadData._id,
-        planId:campaignDetails[0]._id,
-        phaseName:phaseName,
-        start_date:startDate,
-        end_date:endDate,
+      const postResult = await axios.post(`${baseUrl}opcampaignphase`, {
+        campaignId: payloadData._id,
+        planId: 1,
+        phaseName: phaseName,
+        start_date: startDate,
+        end_date: endDate,
         pages: pages
       })
-    }catch(err){
+    } catch (err) {
       console.log(err)
     }
   }
@@ -149,51 +211,151 @@ const PhaseCreation = () => {
 
   const handleSelectionChange = (selectedIds) => {
     setSelectedRows(selectedIds);
-
     const selectedData = planData.filter((row) =>
       selectedIds.includes(row.p_id)
     );
-    // setPayload(selectedData);
   };
+
+  const handleTabChange = (event, newValue) => {
+    setTabIndex(newValue);
+  };
+
+  const deletePage = async (page) => {
+    try {
+      const response = await axios.delete(baseUrl + `opcampaignphase`, {
+        data: {
+          campaignId: id,
+          p_id: page.p_id,
+        }
+      });
+    } catch (error) {
+      console.error("Error deleting page:", error);
+    }
+  }
+
+  const replacePage = async(page) => {
+    try{
+      const filteredPids = newPids.map((item)=>item.value)
+      const response = await axios.post(baseUrl + `replace_phase_pages`,{
+        campaignId: id,
+        old_pid: replaceId.p_id,
+        new_pid: filteredPids,
+        // phaseName: phaseData[0].phaseName
+        phaseName: 'ph1'
+      })
+    }catch(err){
+      console.log(err)
+    }
+  }
+
+  const renderPhaseTable = (phase) => (
+    <TableContainer component={Paper}>
+      <Table>
+        <TableHead>
+          <TableRow>
+            <TableCell>Page Name</TableCell>
+            <TableCell>Follower Count</TableCell>
+            <TableCell>Page Link</TableCell>
+            <TableCell>Category</TableCell>
+            <TableCell>Replace</TableCell>
+            <TableCell>Delete</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {phase.pages.map((page, index) => (
+            <TableRow key={index}>
+              <TableCell>{page.page_name}</TableCell>
+              <TableCell>{page.follower_count}</TableCell>
+              <TableCell>
+                <a href={page.page_link} target="_blank" rel="noopener noreferrer">
+                  {page.page_link}
+                </a>
+              </TableCell>
+              <TableCell>{page.cat_name}</TableCell>
+              <TableCell><button onClick={()=>handleOpen(page)}>Replace</button></TableCell>
+              <TableCell><button onClick={()=>deletePage(page)}>Delete</button></TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </TableContainer>
+  );
+
+  const phasePIds = phaseData.flatMap(phase => phase.pages.map(page => page.p_id));
+  const filteredPlanData = planData.filter(row => !phasePIds.includes(row.p_id));
 
   return (
     <>
       <FormContainer mainTitle="Phase Creation" link="true" />
-      
+
       <CampaignDetails cid={id} />
 
-      <div style={{display:'inline-flex'}}>
+      <Modal
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box sx={style}>
+          <div className="form-group col-12">
+            <p> You Are replacing {replaceId.page_name} {replaceId.p_id} </p>
+            <label className="form-label">
+              With <sup className="form-error">*</sup>
+            </label>
+            <Select
+              className=""
+              isMulti
+              options={replacePages.map((option) => ({
+                value: `${option.p_id}`,
+                label: `${option.page_name}`,
+              }))}
+              onChange={(e) => {
+                setNewPids(e);
+              }}
+            />
+          </div>
+          <button
+            className="btn btn-outline-success rounded-pill"
+            onClick={()=>replacePage()}
+            style={{ width: "30%" }}
+          >
+            Replace
+          </button>
+        </Box>
+      </Modal>
+
+      <div style={{ display: 'inline-flex' }}>
         <input
           type="text"
           placeholder="Phase name"
           className="form-control"
-          style={{width:'24%'}}
+          style={{ width: '24%' }}
           value={phaseName}
-          onChange={(e)=>setPhaseName(e.target.value)}
+          onChange={(e) => setPhaseName(e.target.value)}
         />
         <input
           type="text"
           placeholder="Description"
           className="form-control"
-          style={{width:'24%'}}
+          style={{ width: '24%' }}
           value={phaseDiscription}
-          onChange={(e)=>setPhaseDiscription(e.target.value)}
+          onChange={(e) => setPhaseDiscription(e.target.value)}
         />
         <input
           type="date"
           placeholder="start date"
           className="form-control"
-          style={{width:'24%'}}
+          style={{ width: '24%' }}
           value={startDate}
-          onChange={(e)=>setStartDate(e.target.value)}
+          onChange={(e) => setStartDate(e.target.value)}
         />
         <input
           type="date"
           placeholder="End date"
           className="form-control"
-          style={{width:'24%'}}
+          style={{ width: '24%' }}
           value={endDate}
-          onChange={(e)=>setEndDate(e.target.value)}
+          onChange={(e) => setEndDate(e.target.value)}
         />
       </div>
 
@@ -208,7 +370,7 @@ const PhaseCreation = () => {
           }}
         >
           <DataGrid
-            rows={planData}
+            rows={filteredPlanData} // Use filtered plan data here
             columns={columns}
             getRowId={(row) => row.p_id}
             checkboxSelection
@@ -216,22 +378,51 @@ const PhaseCreation = () => {
             onRowSelectionModelChange={(row) => handleSelectionChange(row)}
             rowSelectionModel={selectedRows?.map((row) => row)}
           />
-          {/* <SummaryDetails
-            payload={payload}
-            campName={"campValue"}
-            drawer={false}
-          /> */}
         </div>
+        <br />
+        <button
+          className="btn btn-outline-danger rounded-pill"
+          onClick={handleSubmit}
+          style={{ width: "10%" }}
+        >
+          Submit
+        </button>
       </div>
-      <button
-        className="btn btn-outline-danger rounded-pill"
-        onClick={handleSubmit}
-        style={{ width: "10%" }}
-      >
-        Submit
-      </button>
+
+      <div style={{ marginTop: '20px' }}>
+        <Tabs value={tabIndex} onChange={handleTabChange} aria-label="phase tabs">
+          {phaseData.map((phase, index) => (
+            <Tab key={index} label={phase.phaseName} />
+          ))}
+        </Tabs>
+        {phaseData.map((phase, index) => (
+          <TabPanel key={index} value={tabIndex} index={index}>
+            {renderPhaseTable(phase)}
+          </TabPanel>
+        ))}
+      </div>
     </>
   );
 };
+
+function TabPanel(props) {
+  const { children, value, index, ...other } = props;
+
+  return (
+    <div
+      role="tabpanel"
+      hidden={value !== index}
+      id={`tabpanel-${index}`}
+      aria-labelledby={`tab-${index}`}
+      {...other}
+    >
+      {value === index && (
+        <Box sx={{ p: 3 }}>
+          <Typography>{children}</Typography>
+        </Box>
+      )}
+    </div>
+  );
+}
 
 export default PhaseCreation;
