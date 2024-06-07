@@ -26,7 +26,7 @@ const CampaignExecutions = () => {
   const location = useLocation();
   const executionExcel = location.state?.executionExcel;
   const [selectedRows, setSelectedRows] = useState([]);
-  console.log(executionExcel, selectedRows);
+
   const { toastAlert, toastError } = useGlobalContext();
   const [shortcode, setShortcode] = useState([]);
   const [pageDetails, setPageDetails] = useState([]);
@@ -84,8 +84,8 @@ const CampaignExecutions = () => {
     setAssignData(res.data.data);
   };
   const getCampaign = async () => {
-    const res = await axios.get(`${baseUrl}register_campaign`);
-    setAllCampData(res.data.data);
+    const res = await axios.get(`${baseUrl}opcampaign`);
+    setAllCampData(res.data);
   };
   const getAllPhases = async () => {
     const res = await axios.get(
@@ -102,7 +102,7 @@ const CampaignExecutions = () => {
 
   const handleAllCampaign = async () => {
     const res = await axios.get(
-      `${baseUrl}assignment/get_all_exe_phases_by_campid/${selectedCampaign}`
+      `${baseUrl}get_all_exe_phases_by_campid/${selectedCampaign}`
     );
     setphases("all");
     setAllExecutedData(res?.data?.data);
@@ -151,7 +151,7 @@ const CampaignExecutions = () => {
             payload,
             config
           );
-          console.log(response, "response");
+          // console.log(response, "response");
           if (response.data.success == true) {
             const res = await axios.put(
               `${baseUrl}assignment/post/details/update`,
@@ -486,12 +486,12 @@ const CampaignExecutions = () => {
       new_pId: newPage,
       _id: selectedCampaign,
     });
-    console.log(res.data);
+    // console.log(res.data);
     closeModal3();
   };
 
   const handleSelectedPages = () => {
-    console.log("new ");
+    // console.log("new ");
   };
 
   const handleSelectionChange = (selectedIds) => {
@@ -508,7 +508,7 @@ const CampaignExecutions = () => {
             <Select
               options={allCampData.map((option) => ({
                 value: option._id,
-                label: option.exeCmpName,
+                label: option.campaign_data.exeCmpName,
               }))}
               onChange={(e) => {
                 setSelectedCampaign(e.value);
