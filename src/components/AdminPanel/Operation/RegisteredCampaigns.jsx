@@ -434,7 +434,7 @@ const PhaseCreationComponent = ({ row, handlePhase }) => {
             justifyContent: "center",
           }}
         >
-          <span style={{ width: "5em", color: "red" }}>N/A</span>
+          <Link to={`/admin/op-phase-creation/${rowId}`}><i className="bi bi-send"></i></Link>
         </div>
       )}
     </div>
