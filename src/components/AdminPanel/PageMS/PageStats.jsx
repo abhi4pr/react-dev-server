@@ -23,6 +23,13 @@ export default function PageStats() {
 
   const navitage = useNavigate();
 
+  const [reachImageURL, setReachImageURL] = useState("");
+  const [impressionImageURL, setImpressionImageURL] = useState("");
+  const [engagementImageURL, setEngagementImageURL] = useState("");
+  const [storyViewImageURL, setStoryViewImageURL] = useState("");
+  const [cityImageURL, setCityImageURL] = useState("");
+  const [countryImageURL, setCountryImageURL] = useState("");
+  const [ageImageURL, setAgeImageURL] = useState("");
   const [imagePreview, setImagePreviews] = useState({
     cityImage: null,
     countryImage: null,
@@ -59,37 +66,47 @@ export default function PageStats() {
   } = useForm({
     mode: "onChange",
   });
-  let isStatsFor = watch("statsFor");
-  switch (isStatsFor) {
-    case "daily":
-      setValue("startDate", new Date().toISOString().split("T")[0]);
-      setValue("endDate", new Date().toISOString().split("T")[0]);
-      break;
-    case "monthly":
-      setValue("startDate", null);
-      setValue("endDate", null);
-      break;
-    case "fortnight":
-      setValue("startDate", null);
-      setValue("endDate", null);
-      break;
-    case "quarterly":
-      setValue("startDate", null);
-      setValue("endDate", null);
-      break;
-    default:
-      setValue("startDate", null);
-      setValue("endDate", null);
-      break;
-  }
+  // let isStatsFor = watch("statsFor");
+  // switch (isStatsFor) {
+  //   case "daily":
+  //     setValue("startDate", new Date().toISOString().split("T")[0]);
+  //     setValue("endDate", new Date().toISOString().split("T")[0]);
+  //     break;
+  //   case "monthly":
+  //     setValue("startDate", null);
+  //     setValue("endDate", null);
+  //     break;
+  //   case "fortnight":
+  //     setValue("startDate", null);
+  //     setValue("endDate", null);
+  //     break;
+  //   case "quarterly":
+  //     setValue("startDate", null);
+  //     setValue("endDate", null);
+  //     break;
+  //   default:
+  //     setValue("startDate", null);
+  //     setValue("endDate", null);
+  //     break;
+  // }
 
   const [addPageState] = useAddPageStateMutation();
   const [updatePageState] = useUpdatePageStateMutation();
 
   useEffect(() => {
     if (pageStateData) {
+      setReachImageURL(pageStateData?.reach_image_url);
+      setImpressionImageURL(pageStateData?.impression_image_url);
+      setEngagementImageURL(pageStateData?.engagement_image_url);
+      setStoryViewImageURL(pageStateData?.story_view_image_url);
+      setCityImageURL(pageStateData?.city_image_url);
+      setCountryImageURL(pageStateData?.country_image_url);
+      setAgeImageURL(pageStateData?.Age_upload_url);
+
       setValue("reach", pageStateData?.reach);
+
       setValue("impressions", pageStateData?.impression);
+
       setValue("engagement", pageStateData?.engagement);
       setValue("storyView", pageStateData?.story_view);
       // setValue("storyViewDate", pageStateData?.story_view_date);
@@ -144,7 +161,9 @@ export default function PageStats() {
       formData.append(key, value);
     }
   };
+
   const handleSubmitForm = (data) => {
+    console.log(data?.reachImage[0], "gooooooddd");
     const formData = new FormData();
     appendIfDefined(formData, "page_master_id", id);
     appendIfDefined(formData, "reach", data?.reach);
@@ -216,7 +235,6 @@ export default function PageStats() {
     appendIfDefined(formData, "Age_upload", data?.ageGroupImage[0]);
     appendIfDefined(formData, "country_image", data?.countryImage[0]);
 
-    console.log(pageStateData, "pageStateData");
     if (!pageStateData?._id) {
       console.log("add");
       addPageState(formData)
@@ -373,16 +391,23 @@ export default function PageStats() {
                           type="file"
                           style={{ display: "none" }}
                           {...register("reachImage")}
-                          onChange={(event) =>
+                          onInputCapture={(event) =>
                             handleFileChange(event, "reachImage")
                           }
                         />
                         <i className="bi bi-cloud-arrow-up-fill"></i>
                       </label>
-                      {imagePreview.reachImage && (
+                      {imagePreview.reachImage ? (
                         <img
                           className="profile-holder-1"
                           src={imagePreview.reachImage}
+                          alt="Selected"
+                          style={{ maxWidth: "50px", maxHeight: "50px" }}
+                        />
+                      ) : (
+                        <img
+                          className="profile-holder-1"
+                          src={reachImageURL}
                           alt="Selected"
                           style={{ maxWidth: "50px", maxHeight: "50px" }}
                         />
@@ -419,16 +444,23 @@ export default function PageStats() {
                           type="file"
                           style={{ display: "none" }}
                           {...register("impressionsImage")}
-                          onChange={(event) =>
+                          onInputCapture={(event) =>
                             handleFileChange(event, "impressionsImage")
                           }
                         />
                         <i className="bi bi-cloud-arrow-up-fill"></i>
                       </label>
-                      {imagePreview.impressionsImage && (
+                      {imagePreview.impressionsImage ? (
                         <img
                           className="profile-holder-1"
                           src={imagePreview.impressionsImage}
+                          alt="Selected"
+                          style={{ maxWidth: "50px", maxHeight: "50px" }}
+                        />
+                      ) : (
+                        <img
+                          className="profile-holder-1"
+                          src={impressionImageURL}
                           alt="Selected"
                           style={{ maxWidth: "50px", maxHeight: "50px" }}
                         />
@@ -469,16 +501,23 @@ export default function PageStats() {
                           type="file"
                           style={{ display: "none" }}
                           {...register("engagementImage")}
-                          onChange={(event) =>
+                          onInputCapture={(event) =>
                             handleFileChange(event, "engagementImage")
                           }
                         />
                         <i className="bi bi-cloud-arrow-up-fill"></i>
                       </label>
-                      {imagePreview.engagementImage && (
+                      {imagePreview.engagementImage ? (
                         <img
                           className="profile-holder-1"
                           src={imagePreview.engagementImage}
+                          alt="Selected"
+                          style={{ maxWidth: "50px", maxHeight: "50px" }}
+                        />
+                      ) : (
+                        <img
+                          className="profile-holder-1"
+                          src={engagementImageURL}
                           alt="Selected"
                           style={{ maxWidth: "50px", maxHeight: "50px" }}
                         />
@@ -518,16 +557,23 @@ export default function PageStats() {
                           type="file"
                           style={{ display: "none" }}
                           {...register("storyViewImage")}
-                          onChange={(event) =>
+                          onInputCapture={(event) =>
                             handleFileChange(event, "storyViewImage")
                           }
                         />
                         <i className="bi bi-cloud-arrow-up-fill"></i>
                       </label>
-                      {imagePreview.storyViewImage && (
+                      {imagePreview.storyViewImage ? (
                         <img
                           className="profile-holder-1"
                           src={imagePreview.storyViewImage}
+                          alt="Selected"
+                          style={{ maxWidth: "50px", maxHeight: "50px" }}
+                        />
+                      ) : (
+                        <img
+                          className="profile-holder-1"
+                          src={storyViewImageURL}
                           alt="Selected"
                           style={{ maxWidth: "50px", maxHeight: "50px" }}
                         />
@@ -542,7 +588,7 @@ export default function PageStats() {
                     </div>
                   </div>
                 </div>
-                <div className="col-md-4 col-sm-12">
+                {/* <div className="col-md-4 col-sm-12">
                   <div className="form-group">
                     <label>Story View Date</label>
                     <input
@@ -551,7 +597,7 @@ export default function PageStats() {
                       {...register("storyViewDate")}
                     />
                   </div>
-                </div>
+                </div> */}
                 <div className="col-md-4 col-sm-12">
                   <div className="form-group">
                     <label>Profile Visit</label>
@@ -641,7 +687,7 @@ export default function PageStats() {
                         id="cityFileInput"
                         style={{ display: "none" }}
                         {...register("cityImage")}
-                        onChange={(event) =>
+                        onInputCapture={(event) =>
                           handleFileChange(event, "cityImage")
                         }
                       />
@@ -655,10 +701,17 @@ export default function PageStats() {
                       >
                         <i className="bi bi-cloud-arrow-up-fill"></i> Image
                       </button>
-                      {imagePreview.cityImage && (
+                      {imagePreview.cityImage ? (
                         <img
                           className="profile-holder-1 mt-4"
                           src={imagePreview.cityImage}
+                          alt="Selected"
+                          style={{ maxWidth: "50px", maxHeight: "50px" }}
+                        />
+                      ) : (
+                        <img
+                          className="profile-holder-1 mt-4"
+                          src={cityImageURL}
                           alt="Selected"
                           style={{ maxWidth: "50px", maxHeight: "50px" }}
                         />
@@ -744,7 +797,7 @@ export default function PageStats() {
                       id="countryFileInput"
                       style={{ display: "none" }}
                       {...register("countryImage")}
-                      onChange={(event) =>
+                      onInputCapture={(event) =>
                         handleFileChange(event, "countryImage")
                       }
                     />
@@ -758,10 +811,17 @@ export default function PageStats() {
                     >
                       <i className="bi bi-cloud-arrow-up-fill"></i> Image
                     </button>
-                    {imagePreview.countryImage && (
+                    {imagePreview.countryImage ? (
                       <img
                         className="profile-holder-1 mt-4"
                         src={imagePreview.countryImage}
+                        alt="Selected"
+                        style={{ maxWidth: "50px", maxHeight: "50px" }}
+                      />
+                    ) : (
+                      <img
+                        className="profile-holder-1 mt-4"
+                        src={countryImageURL}
                         alt="Selected"
                         style={{ maxWidth: "50px", maxHeight: "50px" }}
                       />
@@ -891,7 +951,7 @@ export default function PageStats() {
                       id="ageFileInput"
                       style={{ display: "none" }}
                       {...register("ageGroupImage")}
-                      onChange={(event) =>
+                      onInputCapture={(event) =>
                         handleFileChange(event, "ageGroupImage")
                       }
                     />
@@ -905,10 +965,17 @@ export default function PageStats() {
                     >
                       <i className="bi bi-cloud-arrow-up-fill"></i> Image
                     </button>
-                    {imagePreview.ageGroupImage && (
+                    {imagePreview.ageGroupImage ? (
                       <img
                         className="profile-holder-1 mt-4"
                         src={imagePreview.ageGroupImage}
+                        alt="Selected"
+                        style={{ maxWidth: "50px", maxHeight: "50px" }}
+                      />
+                    ) : (
+                      <img
+                        className="profile-holder-1 mt-4"
+                        src={ageImageURL}
                         alt="Selected"
                         style={{ maxWidth: "50px", maxHeight: "50px" }}
                       />
