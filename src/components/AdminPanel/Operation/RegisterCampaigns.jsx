@@ -313,7 +313,6 @@ export default function RegisterCampaigns() {
       )[0]?.user_id
     );
   };
-  console.log(campaignClosedBy, "campclose");
 
   const addCampaignData = () => {
     setMaster("Campaign");
@@ -532,7 +531,7 @@ export default function RegisterCampaigns() {
                   disablePortal
                   id="combo-box-demo"
                   options={campignData.map((option) => ({
-                    label: formatString(option.exeCmpName),
+                    label: formatString(option.exe_campaign_name),
                     value: option._id,
                   }))}
                   require={true}
