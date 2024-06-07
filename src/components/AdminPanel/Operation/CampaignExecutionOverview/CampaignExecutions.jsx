@@ -84,18 +84,18 @@ const CampaignExecutions = () => {
     setAssignData(res.data.data);
   };
   const getCampaign = async () => {
-    const res = await axios.get(`${baseUrl}opcampaign`);
+    const res = await axios.get(`${baseUrl}phase_created_campaign`);
     setAllCampData(res.data);
   };
   const getAllPhases = async () => {
     const res = await axios.get(
-      `${baseUrl}assignment/get_all_phases_by_campid/${selectedCampaign}`
+      `${baseUrl}get_all_phases_by_campid/${selectedCampaign}`
     );
     setAllPhaseData(res.data.data);
   };
   const allCommitInOverview = async () => {
     const res = await axios.get(
-      `${baseUrl}assignment/get_camp_commitments/${selectedCampaign}`
+      `${baseUrl}get_camp_commitments/${selectedCampaign}`
     );
     setOverviewCommitData(res.data);
   };
@@ -154,9 +154,10 @@ const CampaignExecutions = () => {
           // console.log(response, "response");
           if (response.data.success == true) {
             const res = await axios.put(
-              `${baseUrl}assignment/post/details/update`,
+              `${baseUrl}opexecution`,
               {
-                ass_id: assId,
+                id: assId,
+                // here assId is state name while we sending _id,
                 post_link: shortcode,
                 post_date: response.data.data?.postedOn,
                 post_type: response.data.data?.postType,
@@ -341,7 +342,7 @@ const CampaignExecutions = () => {
             }
             onChange={(event) => {
               setShortcode(event.target.value);
-              setAssId(params.row.ass_id);
+              setAssId(params.row._id);
             }}
           />
         </>
@@ -439,14 +440,14 @@ const CampaignExecutions = () => {
     },
   ];
 
-  const handleClick = async (phase_id) => {
-    setphases(phase_id);
+  const handleClick = async (phaseName) => {
+    setphases(phaseName);
     const res = await axios.get(
-      `${baseUrl}assignment/get_all_phases/${phase_id}`
+      `${baseUrl}get_all_phases_by_phaseName/${phaseName}`
     );
     setAllExecutedData(res.data.data);
     const response = await axios.get(
-      `${baseUrl}assignment/get_phase_commitments/${phase_id}`
+      `${baseUrl}get_phase_commitments/${phaseName}`
     );
     setAllPhaseCommitCount(response.data.data);
   };
@@ -480,7 +481,7 @@ const CampaignExecutions = () => {
   };
 
   const handleReplace = async () => {
-    const res = await axios.post(`${baseUrl}assignment/replace_page_new`, {
+    const res = await axios.post(`${baseUrl}replace_single_phase_pages`, {
       phase_id: replaceData?.phase_id,
       p_id: replaceData?.p_id,
       new_pId: newPage,
@@ -562,17 +563,19 @@ const CampaignExecutions = () => {
             >
               All Pages
             </button>
-            {allPhaseData.length > 0 &&
+            {allPhaseData?.length >= 0 ? (
               allPhaseData.map((item, i) => (
                 <button
                   key={i}
-                  className={`named-tab ${phases === item.phase_id ? "active-tab" : ""
-                    }`}
-                  onClick={() => handleClick(item.phase_id)}
+                  className={`named-tab ${phases === item?._id ? "active-tab" : ""}`}
+                  onClick={() => handleClick(item?.phaseName)}
                 >
                   {item?.phaseName}
                 </button>
-              ))}
+              ))
+            ) : (
+              <div>Phase not created</div>
+            )}
           </div>
 
           <DataGrid

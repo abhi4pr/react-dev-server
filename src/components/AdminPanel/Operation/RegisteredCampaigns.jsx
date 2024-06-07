@@ -368,7 +368,7 @@ const PlanCreationComponent = ({ params, handlePlan, handleShowPlan }) => {
           `${baseUrl}opcampaignplan/${params.row._id}`
         );
         setPlanData(newData);
-        console.log(newData, "newData");
+        // console.log(newData, "newData");
       } catch (error) {
         console.error("Error fetching plan data:", error);
       }
@@ -406,7 +406,7 @@ const PhaseCreationComponent = ({ row, handlePhase }) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const newData = await axios.get(`${baseUrl}` + `campaignplan/${rowId}`);
+        const newData = await axios.get(`${baseUrl}` + `opcampaignplan/${rowId}`);
         setPlanData(newData);
       } catch (error) {
         console.error("Error fetching plan data:", error);
@@ -424,7 +424,7 @@ const PhaseCreationComponent = ({ row, handlePhase }) => {
           type="button"
           onClick={() => handlePhase(row)}
         >
-          <i className="bi bi-send"></i>
+          <Link to={`/admin/op-phase-creation/${rowId}`}><i className="bi bi-send"></i></Link>
         </button>
       ) : (
         <div
@@ -434,7 +434,7 @@ const PhaseCreationComponent = ({ row, handlePhase }) => {
             justifyContent: "center",
           }}
         >
-          <Link to={`/admin/op-phase-creation/${rowId}`}><i className="bi bi-send"></i></Link>
+          <p>N/A</p>
         </div>
       )}
     </div>
