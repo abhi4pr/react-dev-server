@@ -2,17 +2,22 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { baseUrl } from "../../../../utils/config";
 import { DataGrid } from "@mui/x-data-grid";
-import { Button, TextField } from "@mui/material";
 import { useParams } from "react-router-dom";
+import DeleteButton from "../../DeleteButton";
+import CampaignDetails from "../CampaignDetails";
+import ReplacementModal from "./ReplacementModal";
 
 const CampPlanOverview = () => {
+  const { id } = useParams();
   const [plan, setPlan] = useState([]);
-  const { id } = useParams()
+  const [open, setOpen] = useState(false);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
+  const [selectedRow, setSelectedRow] = useState(null)
+
   const getPlan = async () => {
     try {
-      const res = await axios.get(
-        `${baseUrl}opcampaignplan/${id}`
-      );
+      const res = await axios.get(`${baseUrl}opcampaignplan/${id}`);
       setPlan(res.data.data);
     } catch (error) {
       console.error(error);
@@ -23,8 +28,9 @@ const CampPlanOverview = () => {
     getPlan();
   }, []);
 
-  const handleDelete = (id) => {
-    console.log(`Delete row with id: ${id}`);
+  const handleOpenModal = (row) => {
+    setSelectedRow(row); 
+    handleOpen(); 
   };
 
   const columns = [
@@ -75,14 +81,27 @@ const CampPlanOverview = () => {
       renderCell: (params) => {
         return (
           <>
-            {/* onClick={() => updateSinglePlan(params)}   onClick={() => handleDeleteSinglePlan(params)} */}
-            {/* <button className="icon-1" color="primary">
-              <i className="bi bi-pencil" />
-            </button> */}
-            <button className="icon-1" color="error">
-              <i className="bi bi-trash" />
-            </button>
+            <DeleteButton
+              endpoint="opcampaignplansingle"
+              id={params.row._id}
+              getData={getPlan}
+            />
           </>
+        );
+      },
+    },
+    {
+      field: "replace",
+      headerName: "Replace Pages",
+      width: 150,
+      renderCell: (params) => {
+        return (
+          <button
+            className="icon-1"
+            onClick={() => handleOpenModal(params.row)}
+          >
+            <i className="bi bi-arrow-repeat" />
+          </button>
         );
       },
     },
@@ -90,7 +109,24 @@ const CampPlanOverview = () => {
 
   return (
     <div>
+      <h1> Plan Overview </h1>
+      <CampaignDetails cid={""} />
+      <div className="d-flex justify-content-end mb-3">
+        <div className="border d-flex justify-content-between align-items-center p-2 w-16 border-danger rounded-pill">
+          <span>Delete Plan</span>
+          <DeleteButton endpoint="opcampaignplan" id={id} getData={getPlan} />
+        </div>
+      </div>
       <DataGrid rows={plan} columns={columns} getRowId={(row) => row.p_id} />
+      <>
+        <ReplacementModal
+          open={open}
+          handleOpen={handleOpen}
+          handleClose={handleClose}
+          selectedRow={selectedRow}
+          plan={plan}
+        />
+      </>
     </div>
   );
 };

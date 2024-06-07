@@ -1,4 +1,4 @@
-import { useParams, useLocation } from "react-router-dom";
+import { useParams, useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import FormContainer from "../FormContainer";
 import axios from "axios";
@@ -9,6 +9,7 @@ import { baseUrl } from "../../../utils/config";
 import SummaryDetails from "./SummrayDetailes";
 
 const TempPlanCreation = () => {
+  const navigate = useNavigate();
   const [pageData, setPageData] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
   const [selectedRows, setSelectedRows] = useState([]);
@@ -18,6 +19,18 @@ const TempPlanCreation = () => {
   const param = useParams();
   const id = param.id;
 
+  const [postData, setPostData] = useState({});
+
+  const handleChange = (event, rowIndex) => {
+    const { name, value } = event.target;
+    setPostData((prevData) => ({
+      ...prevData,
+      [rowIndex]: {
+        ...prevData[rowIndex],
+        [name]: value
+      }
+    }));
+  };
   const getPageData = async () => {
     try {
       const Fdata = await axios.get(
@@ -114,6 +127,7 @@ const TempPlanCreation = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+  
     try {
       const selectedPages = filteredData.filter((row) =>
         selectedRows.includes(row.p_id)
@@ -127,13 +141,16 @@ const TempPlanCreation = () => {
         postPerPage: page.posts_per_page || 1,
         storyPerPage: page.story_per_page || 1,
       }));
-
+  
       const postResult = await axios.post(`${baseUrl}opcampaignplan`, {
-        campaignId: "665574c2abca204b5b1422c1",
+        campaignId: id,
         campaignName: "Test Campaign",
         planName: "Test Plan",
         pages: pages,
       });
+  
+      // Navigate to the new path upon successful submission
+      navigate('/admin/op-registered-campaign');
     } catch (error) {
       console.error("Error posting data", error);
     }
@@ -189,13 +206,23 @@ const TempPlanCreation = () => {
       field: "posts_per_page",
       headerName: "Posts",
       width: 140,
-      renderCell: (params) => <input type="number" style={{ width: "80px" }} />,
+      renderCell: (params) => (
+        <input
+          type="number"
+          name={`posts_${params.rowIndex}`}
+          className="form-control border border-primary"
+          value={postData[params.rowIndex]?.posts || 1}
+          onChange={(event) => handleChange(event, params.rowIndex)}
+        />
+      ),
     },
     {
       field: "story_per_page",
       headerName: "Story ",
       width: 140,
-      renderCell: (params) => <input type="number" style={{ width: "80px" }} />,
+      renderCell: (params) => (
+        <input type="number" className="form-control border border-primary" value={"1"} />
+      ),
     },
   ];
   const handleSelectionChange = (selectedIds) => {
