@@ -35,6 +35,7 @@ import {
 import AddVendorModal from "./AddVendorModal";
 import {
   useGetAllVendorTypeQuery,
+  useGetBankNameDetailQuery,
   useGetCountryCodeQuery,
   useGetPmsPayCycleQuery,
   useGetPmsPaymentMethodQuery,
@@ -52,9 +53,8 @@ import IndianCitiesMui from "../../ReusableComponents/IndianCitiesMui";
 
 const VendorMaster = () => {
   const { data: countryCodeData } = useGetCountryCodeQuery();
-
   const countries = countryCodeData?.data;
-  console.log(countries, "countries------");
+
   const { _id } = useParams();
   const dispatch = useDispatch();
   const isVendorModalOpen = useSelector(
@@ -133,8 +133,12 @@ const VendorMaster = () => {
   const { data: cycleQueryData } = useGetPmsPayCycleQuery();
 
   const { data: whatsappLinkType } = useGetVendorWhatsappLinkTypeQuery();
-
   const cycleData = cycleQueryData?.data;
+
+  const { data: bankNameData } = useGetBankNameDetailQuery();
+  const bankName = bankNameData?.data;
+
+  console.log(bankName, "Bank ----- Name----");
 
   const handleRemarkChange = (i, value) => {
     const remark = [...whatsappLink];
@@ -180,6 +184,11 @@ const VendorMaster = () => {
   const handlePayCycleInfoClick = () => {
     dispatch(handleChangeVendorInfoModal());
     dispatch(setModalType("PayCycle"));
+  };
+  // Bank Name:-=> {
+  const handleAddBankNameClick = () => {
+    dispatch(setShowAddVendorModal());
+    dispatch(setModalType("BankName"));
   };
 
   const handleBankNameChange = (e, i) => {
@@ -946,12 +955,59 @@ const VendorMaster = () => {
 
             {bankRows.map((row, i) => (
               <>
-                <FieldContainer
+                {/* <FieldContainer
                   label="Bank Name "
                   required={false}
                   value={bankRows[i].bank_name}
                   onChange={(e) => handleBankNameChange(e, i)}
-                />
+                /> */}
+
+                <div className="form-group col-6">
+                  <label className="form-label">
+                    Bank Name <sup style={{ color: "red" }}>*</sup>
+                  </label>
+                  <Select
+                    options={bankName?.map((option) => ({
+                      value: option._id,
+                      label: option.bank_name,
+                    }))}
+                    required={true}
+                    value={{
+                      value: payId,
+                      label:
+                        bankName?.find((role) => role._id == payId)
+                          ?.bank_name || "",
+                    }}
+                    onChange={(e) => {
+                      setPayId(e.value);
+                      if (e.value) {
+                        setValidator((prev) => ({ ...prev, payId: false }));
+                      }
+                    }}
+                  ></Select>
+
+                  <IconButton
+                    onClick={handleAddBankNameClick}
+                    variant="contained"
+                    color="primary"
+                    aria-label="Add Bank Detail.."
+                  >
+                    <AddIcon />
+                  </IconButton>
+                  <IconButton
+                    // onClick={handlePaymentMethodInfoClick}
+                    variant="contained"
+                    color="primary"
+                    aria-label="Bank Detail Info.."
+                  >
+                    <RemoveRedEyeIcon />
+                  </IconButton>
+                  {validator.payId && (
+                    <span style={{ color: "red", fontSize: "12px" }}>
+                      Please select payment method
+                    </span>
+                  )}
+                </div>
 
                 <div className="form-group col-6">
                   <label className="form-label">Account Type</label>

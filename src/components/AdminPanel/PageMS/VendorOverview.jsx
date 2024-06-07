@@ -63,6 +63,7 @@ const VendorOverview = () => {
   } = useGetAllVendorQuery();
   let vendorTypes = vendorData?.data;
   let filterData = vendorData?.data;
+  console.log(filterData, "filterData----------------");
   // !loading && setVendorTypes(vendorData.data);
   // !loading && setFilterData(vendorData.data);
   // console.log(vendorData.data);

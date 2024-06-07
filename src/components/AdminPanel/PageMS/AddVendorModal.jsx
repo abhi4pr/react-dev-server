@@ -9,14 +9,16 @@ import {
   setVendorRowData,
 } from "../../Store/VendorMaster";
 import { useDispatch, useSelector } from "react-redux";
-import { TextField } from "@mui/material";
+import { DialogContent, TextField } from "@mui/material";
 import { useForm } from "react-hook-form";
 import {
+  useAddBankNameDetailMutation,
   useAddPmsPayCycleMutation,
   useAddPmsPaymentMethodMutation,
   useAddPmsPlatformMutation,
   useAddPmsVendorTypeMutation,
   useAddVendorWhatsappLinkTypeMutation,
+  useUpdateBankNameDetailMutation,
   useUpdatePmsPayCycleMutation,
   useUpdatePmsPaymentMethodMutation,
   useUpdatePmsPlatformMutation,
@@ -40,6 +42,8 @@ export default function AddVendorModal() {
   const [updatePayCycle] = useUpdatePmsPayCycleMutation();
   const [whatsapplinkTypePost] = useAddVendorWhatsappLinkTypeMutation();
   const [updateWhatsapplinkType] = useUpdateVendorWhatsappLinkTypeMutation();
+  const [addBankName] = useAddBankNameDetailMutation();
+  const [updateBankName] = useUpdateBankNameDetailMutation();
   const open = useSelector((state) => state.vendorMaster.showAddVendorModal);
   const venodrRowData = useSelector(
     (state) => state.vendorMaster.vendorRowData
@@ -71,6 +75,9 @@ export default function AddVendorModal() {
       setValue("description", venodrRowData.description);
     } else if (venodrRowData?.link_type) {
       setValue("typeName", venodrRowData.link_type);
+      setValue("description", venodrRowData.description);
+    } else if (venodrRowData?.link_type) {
+      setValue("typeName", venodrRowData.bank_name);
       setValue("description", venodrRowData.description);
     }
   }, [venodrRowData]);
@@ -250,6 +257,44 @@ export default function AddVendorModal() {
         .catch((err) => {
           toastError(err.message);
         });
+    } else if (modalType == "BankName") {
+      delete obj.type_name;
+      delete obj.created_by;
+      obj.id = venodrRowData._id;
+      obj.link_type = data.typeName;
+      obj.last_updated_by = userID;
+      addBankName(obj)
+        .unwrap()
+        .then(() => {
+          toastAlert("Bank Detail Added ");
+          dispatch(setVendorRowData(null));
+          setValue("typeName", null);
+          setValue("description", null);
+          handleClose();
+          dispatch(handleChangeVendorInfoModal());
+        })
+        .catch((err) => {
+          toastError(err.message);
+        });
+    } else if (modalType == "addBankName") {
+      delete obj.type_name;
+      delete obj.created_by;
+      obj.id = venodrRowData._id;
+      obj.link_type = data.typeName;
+      obj.last_updated_by = userID;
+      updateBankName(obj)
+        .unwrap()
+        .then(() => {
+          toastAlert("Bank Detail Updated");
+          dispatch(setVendorRowData(null));
+          setValue("typeName", null);
+          setValue("description", null);
+          handleClose();
+          dispatch(handleChangeVendorInfoModal());
+        })
+        .catch((err) => {
+          toastError(err.message);
+        });
     }
   };
 
@@ -272,8 +317,11 @@ export default function AddVendorModal() {
       setTitle("Update Payment Cycle");
     } else if (modalType == "WhatsappLinkType") {
       setTitle("Add Whatsapp Link Type");
+    } else if (modalType == "addBankName") {
+      setTitle("Add Bank Name Type");
     }
   }, [modalType]);
+
   return (
     <>
       <Dialog
@@ -283,7 +331,7 @@ export default function AddVendorModal() {
         onClose={handleClose}
       >
         <DialogTitle>{title}</DialogTitle>
-        <fDialogContent>
+        <DialogContent>
           <Box noValidate component="form" onSubmit={handleSubmit(formSubmit)}>
             <TextField
               margin="dense"
@@ -314,7 +362,7 @@ export default function AddVendorModal() {
               </Button>
             </DialogActions>
           </Box>
-        </fDialogContent>
+        </DialogContent>
       </Dialog>
     </>
   );

@@ -96,6 +96,7 @@ export const reduxBaseURL = createApi({
       query: () => `v1/paycycle`,
       providesTags: ["addPaycycle"],
     }),
+
     updatePmsPayCycle: builder.mutation({
       query: (data) => ({
         // url: `updatePayCycle/${data._id}`,
@@ -159,6 +160,30 @@ export const reduxBaseURL = createApi({
     getAllVendor: builder.query({
       query: () => `v1/vendor`,
     }),
+
+    // Bank Detail Api's:-
+    getBankNameDetail: builder.query({
+      query: () => `v1/bank_name`,
+      providesTags: ["addBankName"],
+    }),
+    addBankNameDetail: builder.mutation({
+      query: (data) => ({
+        // url: `addPayCycle`,
+        url: `v1/bank_name`,
+        method: "POST",
+        body: data,
+      }),
+      invalidatesTags: ["addBankName"],
+    }),
+    updateBankNameDetail: builder.mutation({
+      query: (data) => ({
+        // url: `updatePayCycle/${data._id}`,
+        url: `v1/bank_name`,
+        method: "PUT",
+        body: data,
+      }),
+      invalidatesTags: ["addBankName"],
+    }),
   }),
 });
 
@@ -184,5 +209,8 @@ export const {
   useGetCountryCodeQuery,
   useAddCountryCodeMutation,
   useUpdateCountryCodeMutation,
-  useGetAllVendorQuery
+  useGetAllVendorQuery,
+  useGetBankNameDetailQuery,
+  useAddBankNameDetailMutation,
+  useUpdateBankNameDetailMutation,
 } = reduxBaseURL;
