@@ -1,17 +1,29 @@
 import React, { useState, useEffect } from "react";
 import CustomSelect from "../../../ReusableComponents/CustomSelect";
 import FieldContainer from "../../FieldContainer";
-import { useGetSingleSaleServiceQuery } from "../../../Store/API/Sales/SalesServiceApi";
+import { useParams } from "react-router-dom";
 
 const RecordServices = ({ records, setRecords, serviceTypes }) => {
-  const [selectedRecords, setSelectedRecords] = useState(records.map(() => ""));
+  console.log("records", records, "serviceTypes", serviceTypes);
+  const { editId } = useParams();
+  const [selectedRecords, setSelectedRecords] = useState(records?.map(() => ""));
   const [serviceFieldsData, setServiceFieldsData] = useState([]);
-  const {
-    data: saleServiceData,
-    error: saleServiceError,
-    isLoading: saleServiceLoading,
-  } = useGetSingleSaleServiceQuery();
+  useEffect(() => {
+    if (records && serviceTypes) {
+      setSelectedRecords(records.map(record => record.sales_service_master_id));
 
+      if (editId !== undefined) {
+        // Create a copy of serviceFieldsData and update based on records
+        const updatedServiceFieldsData = records.map((record, index) => {
+          return serviceTypes.find(service => service._id === record.sales_service_master_id) || serviceFieldsData[index] || {};
+        });
+
+        setServiceFieldsData(updatedServiceFieldsData);
+      }
+    }
+  }, [serviceTypes, records, editId]);
+
+  console.log("records", records, "servicefieldsdata", serviceFieldsData, "selectedrecords", selectedRecords, "serviceTypes", serviceTypes)
   const handleRecordChange = (index, key, value) => {
     const updatedRecords = records?.map((record, recordIndex) =>
       recordIndex === index ? { ...record, [key]: value } : record
@@ -48,7 +60,7 @@ const RecordServices = ({ records, setRecords, serviceTypes }) => {
 
     return serviceTypes?.filter(
       (type) =>
-        !selectedTypes.includes(type._id) ||
+        !selectedTypes?.includes(type._id) ||
         type._id === selectedRecords[currentIndex]
     );
   };

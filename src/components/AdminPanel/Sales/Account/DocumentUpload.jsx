@@ -9,6 +9,7 @@ const DocumentUpload = ({ documents, setDocuments, documentTypes }) => {
     );
     setDocuments(updatedDocuments);
   };
+  console.log(documents);
 
   const handleDeleteDocument = (index) => {
     const updatedDocuments = [...documents];

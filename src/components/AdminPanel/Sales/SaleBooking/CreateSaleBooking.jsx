@@ -16,13 +16,15 @@ import CreateRecordServices from "../Account/CreateRecordServices";
 import { useGetAllSaleServiceQuery } from "../../../Store/API/Sales/SalesServiceApi";
 import { useGstDetailsMutation } from "../../../Store/API/Sales/GetGstDetailApi";
 import { useGetSingleDocumentOverviewQuery } from "../../../Store/API/Sales/DocumentOverview";
-import { add, set } from "date-fns";
+import BrandRegistration from './BrandRegistration';  // Adjust the path as necessary
 import {
   useAddSaleBookingMutation,
+  useEditSaleBookingMutation,
   useGetIndividualSaleBookingQuery,
 } from "../../../Store/API/Sales/SaleBookingApi";
-import { sl } from "date-fns/locale";
-import { useGetSingleRecordServiceQuery } from "../../../Store/API/Sales/RecordServicesApi";
+
+import { useEditMultipleRecordServicesMutation, useGetSingleRecordServiceQuery } from "../../../Store/API/Sales/RecordServicesApi";
+import { useGetAllCreditApprovalsQuery, useGetCreditApprovalDetailQuery } from "../../../Store/API/Sales/CreditApprovalApi";
 
 const todayDate = new Date().toISOString().split("T")[0];
 
@@ -35,16 +37,17 @@ const CreateSaleBooking = () => {
     data: recordServiceData,
     error: recordServiceError,
     isLoading: recordServiceLoading,
+    refetch: recordServiceRefetch,
   } = useGetSingleRecordServiceQuery(editId, { skip: !editId });
   const userCreditLimit = loginUserData?.user_credit_limit;
-  const [addsaledata, { isLoading: addsaleLoading, error: addsaleError }] =
-    useAddSaleBookingMutation();
+  const [addsaledata, { isLoading: addsaleLoading, error: addsaleError }] = useAddSaleBookingMutation();
+  const [updateRecordServices, { isLoading: updateRecordServicesLoading, error: updateRecordServicesError }] = useEditMultipleRecordServicesMutation();
   const {
     data: allBrands,
     error: allBrandsError,
     isLoading: allBrandsLoading,
   } = useGetAllBrandQuery();
-
+  const [updateSalesBooking, { isLoading: updateSalesBookingLoading, error: updateSalesBookingError }] = useEditSaleBookingMutation();
   const {
     data: allAccounts,
     error: allAccoutsError,
@@ -56,7 +59,6 @@ const CreateSaleBooking = () => {
     error: salesError,
     isLoading: salesLoading,
   } = useGetIndividualSaleBookingQuery(`${un_id}`, { skip: !un_id });
-  // console.log(salesdata, "salesdata");
   const { data: serviceTypes } = useGetAllSaleServiceQuery();
 
   const [getGst, { data: gstData, isLoading: gstLoading, error: gstError }] =
@@ -71,12 +73,11 @@ const CreateSaleBooking = () => {
   const [bookingDate, setBookingDate] = useState(
     new Date().toISOString().split("T")[0]
   );
-
   const [baseAmount, setBaseAmount] = useState(0);
   const [gstAmount, setGstAmount] = useState(0);
   const [addGst, setAddGst] = useState(false);
   const [netAmount, setNetAmount] = useState(0);
-
+  const [campaignList, setCampaignList] = useState([]);
   const [selectedPaymentStatus, setSelectedPaymentStatus] = useState();
   const [creditApprovalList, setCreditApprovalList] = useState([]);
   const [selectedCreditApp, setSelectedCreditApp] = useState("");
@@ -85,7 +86,7 @@ const CreateSaleBooking = () => {
   const [selectedReasonType, setSelectedReasonType] = useState("");
   const [balancePayDate, setBalancePayDate] = useState("");
   // const [executiveSelfCredit, setExecutiveSelfCredit] = useState(false);
-  // const [excelFile, setExcelFile] = useState(null);
+  const [excelFile, setExcelFile] = useState(null);
   const [incentiveCheck, setIncentiveCheck] = useState(false);
   const [recServices, setRecServices] = useState([]);
   const [gstAvailable, setGstAvailable] = useState();
@@ -115,20 +116,28 @@ const CreateSaleBooking = () => {
     skip: !selectedAccount,
   });
 
+  const {
+    data: allCreditApprovals,
+    error: allCreditApprovalsError,
+    isLoading: allCreditApprovalsLoading,
+  } = useGetAllCreditApprovalsQuery()
   useEffect(() => {
-    const fetchData = async () => {
+
+    const fetchcampaign = async () => {
       try {
-        const creditAppList = await axios.get(
-          `${baseUrl}sales/getlist_reason_credit_approval`
-        );
-        setCreditApprovalList(creditAppList.data.data);
+        const campaignList = await axios.get(`${baseUrl}exe_campaign_name_wise`);
+        setCampaignList(campaignList.data.data);
       } catch (error) {
         toastError(error);
       }
     };
 
-    fetchData();
+
+    fetchcampaign();
+
+    setCreditApprovalList(allCreditApprovals);
   }, []);
+  console.log(allCreditApprovals, "allCreditApprovals");
 
   const handleGstChange = (e) => {
     setAddGst(e.target.checked);
@@ -142,10 +151,10 @@ const CreateSaleBooking = () => {
   };
   useEffect(() => {
     if (editId) {
-      setCampaignName(salesdata?.campaign_name);
+      setCampaignName(salesdata?.campaign_id);
       setSelectedAccount(salesdata?.account_id);
       setSelectedBrand(
-        allBrands?.find((item) => item._id == salesdata?.brand_id)?.instaBrandId
+        salesdata?.brand_id
       );
       setBookingDate(salesdata?.sale_booking_date?.split("T")[0]);
       setBaseAmount(salesdata?.base_amount);
@@ -205,6 +214,9 @@ const CreateSaleBooking = () => {
   const handleSubmit = async (e, draft) => {
     e.preventDefault();
     try {
+
+
+      // Create FormData instance
       const formData = new FormData();
       formData.append("account_id", selectedAccount);
       formData.append("sale_booking_date", bookingDate);
@@ -213,38 +225,50 @@ const CreateSaleBooking = () => {
       formData.append("gst_status", gstAmount !== 0);
       formData.append("net_amount", netAmount);
       formData.append("campaign_amount", netAmount);
-      formData.append("campaign_name", campaignName);
-      formData.append("payment_credit_status", selectedPaymentStatus?.value);
+      formData.append("campaign_name", campaignList.find((item) => item._id == campaignName)?.exe_campaign_name || "");
+      formData.append("campaign_id", campaignName);
+      formData.append("payment_credit_status", selectedPaymentStatus?.value || "");
       formData.append(
         "credit_approval_status",
         selectedPaymentStatus?.value === "self_credit_used"
           ? "self_credit_used"
           : "pending"
       );
-      reasonCreditApproval &&
+      if (reasonCreditApproval) {
         formData.append("reason_credit_approval", selectedCreditApp);
-      formData.append(
-        "reason_credit_approval_own_reason",
-        reasonCreditApproval
-      );
+        formData.append("reason_credit_approval_own_reason", reasonCreditApproval);
+      }
+      formData.append("brand_id", selectedBrand || "");
 
       formData.append("balance_payment_ondate", balancePayDate);
-      // if (excelFile) {
-      //   formData.append("excel_file", excelFile);
-      // }
       formData.append(
         "incentive_status",
         incentiveCheck ? "no-incentive" : "incentive"
       );
-
       formData.append("is_draft_save", draft);
-      formData.append("created_by", loginUserId);
 
       if (editId === undefined) {
+        // For creating a new sale booking
+        formData.append("created_by", loginUserId);
         formData.append("record_services", JSON.stringify(recServices));
-      }
 
-      await addsaledata(formData).unwrap();
+        await addsaledata(formData).unwrap();
+      } else {
+        // For updating an existing sale booking
+        formData.append("updated_by", loginUserId);
+
+
+        // Convert FormData to an object for updating
+        const formDataObj = {};
+        formData.forEach((value, key) => {
+          formDataObj[key] = value;
+        });
+
+
+
+        await updateSalesBooking({ ...formDataObj, id: un_id }).unwrap();
+        await updateRecordServices({ id: editId, record_services: recServices, updated_by: loginUserId }).unwrap();
+      }
 
       toastAlert("Sale Booking Created Successfully");
       navigate("/admin/view-sales-booking");
@@ -255,6 +279,7 @@ const CreateSaleBooking = () => {
     }
   };
 
+
   const handlePaymentStatusSelect = (selectedOption) => {
     setSelectedPaymentStatus(selectedOption);
   };
@@ -263,8 +288,9 @@ const CreateSaleBooking = () => {
     setSelectedCreditApp(selectedOption.value);
     setSelectedReasonDays(selectedOption.days);
     setSelectedReasonType(selectedOption.reasonType);
+    setReasonCreditApproval("");
   };
-
+  console.log(selectedReasonDays, "selectedReasonDays", selectedCreditApp, "selectedCreditApp", selectedReasonType, "selectedReasonType", reasonCreditApproval, "reasonCreditApproval");
   useEffect(() => {
     if (selectedReasonDays > 0) {
       const currentDate = new Date();
@@ -296,7 +322,8 @@ const CreateSaleBooking = () => {
         deliverables_info: "",
         remarks: "",
         excel_upload: "",
-        excel_upload_url: "",
+
+        created_by: loginUserId,
       },
     ]);
   };
@@ -309,13 +336,23 @@ const CreateSaleBooking = () => {
             <h5 className="card-title">Create</h5>
           </div>
           <div className="card-body row">
-            <FieldContainer
+            {/* <FieldContainer
               fieldGrid={4}
               astric
               label="Campaign Name"
               placeholder="Campaign Name"
               value={campaignName}
               onChange={(e) => setCampaignName(e.target.value)}
+            /> */}
+            <CustomSelect
+              fieldGrid={4}
+              label="Campaign Name"
+              dataArray={campaignList}
+              optionId="_id"
+              optionLabel="exe_campaign_name"
+              selectedId={campaignName}
+              setSelectedId={setCampaignName}
+              required
             />
             <CustomSelect
               fieldGrid={4}
@@ -354,25 +391,24 @@ const CreateSaleBooking = () => {
                 </div>
               </div>
             )}
-            <div className="col-4 flex-row gap-4">
+            <div className="col-4 flex-row gap-2">
               <CustomSelect
                 fieldGrid={10}
                 label="Brand"
                 dataArray={allBrands}
-                optionId="instaBrandId"
+                optionId="_id"
                 optionLabel="instaBrandName"
                 selectedId={selectedBrand}
                 setSelectedId={setSelectedBrand}
                 required
               />
-              <div className="col-1 mt-2 flex-row gap-2">
-                <button
-                  type="button"
-                  className="btn cmnbtn btn_sm btn-primary mt-4"
-                  onClick={() => openModal("brandCategory")}
-                >
-                  +
-                </button>
+              <div className="col-1 mt-4 flex-row gap-1">
+                <div className="mt-2">
+
+                  <BrandRegistration userID={
+                    loginUserId
+                  } />
+                </div>
               </div>
             </div>
 
@@ -448,14 +484,14 @@ const CreateSaleBooking = () => {
               />
             </div>
 
-            {selectedPaymentStatus?.value === "sent_for_credit_approval" && (
+            {selectedPaymentStatus?.value === "self_credit_used" && (
               <>
                 <div className="form-group col-4">
                   <label className="form-label">
                     Reason Credit Approval<sup style={{ color: "red" }}>*</sup>
                   </label>
                   <Select
-                    options={creditApprovalList.map((option) => ({
+                    options={creditApprovalList?.map((option) => ({
                       days: option.day_count,
                       value: option._id,
                       label: option.reason,
@@ -464,7 +500,7 @@ const CreateSaleBooking = () => {
                     value={{
                       value: selectedCreditApp,
                       label:
-                        creditApprovalList.find(
+                        creditApprovalList?.find(
                           (item) => item?._id == selectedCreditApp
                         )?.reason || "",
                     }}

@@ -56,31 +56,38 @@ const RecordServicesApi = createApi({
         method: "PUT",
         body: updatedRecordService,
       }),
-      onQueryStarted: async (
-        { id, ...updatedRecordService },
-        { dispatch, queryFulfilled }
-      ) => {
-        try {
-          const { data: returnedRecordService } = await queryFulfilled;
+      // onQueryStarted: async (
+      //   { id, ...updatedRecordService },
+      //   { dispatch, queryFulfilled }
+      // ) => {
+      //   try {
+      //     const { data: returnedRecordService } = await queryFulfilled;
 
-          dispatch(
-            RecordServicesApi.util.updateQueryData(
-              "getAllRecordServices",
-              undefined,
-              (draft) => {
-                const recordServiceIndex = draft.findIndex(
-                  (recordService) => recordService.id === id
-                );
-                if (recordServiceIndex !== -1) {
-                  draft[recordServiceIndex] = returnedRecordService.data; // Update the object in its current position
-                }
-              }
-            )
-          );
-        } catch (error) {
-          console.error("Failed to edit record service:", error);
-        }
-      },
+      //     dispatch(
+      //       RecordServicesApi.util.updateQueryData(
+      //         "getAllRecordServices",
+      //         undefined,
+      //         (draft) => {
+      //           const recordServiceIndex = draft.findIndex(
+      //             (recordService) => recordService.id === id
+      //           );
+      //           if (recordServiceIndex !== -1) {
+      //             draft[recordServiceIndex] = returnedRecordService.data; // Update the object in its current position
+      //           }
+      //         }
+      //       )
+      //     );
+      //   } catch (error) {
+      //     console.error("Failed to edit record service:", error);
+      //   }
+      // },
+    }),
+    editMultipleRecordServices: builder.mutation({
+      query: ({ id, ...updatedMultipleRecordServices }) => ({
+        url: `/sales/update_multiple_record_service/${id}`,
+        method: "PUT",
+        body: updatedMultipleRecordServices,
+      }),
     }),
 
     deleteRecordService: builder.mutation({
@@ -115,6 +122,7 @@ export const {
   useGetSingleRecordServiceQuery,
   useAddRecordServiceMutation,
   useEditRecordServiceMutation,
+  useEditMultipleRecordServicesMutation,
   useDeleteRecordServiceMutation,
 } = RecordServicesApi;
 
