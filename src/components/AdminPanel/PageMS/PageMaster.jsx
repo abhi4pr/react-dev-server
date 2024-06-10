@@ -72,6 +72,7 @@ const PageMaster = () => {
     value: "Per Thousand",
     label: "Per Thousand",
   });
+
   const [validateFields, setValidateFields] = useState({
     pageName: false,
     link: false,
@@ -179,9 +180,27 @@ const PageMaster = () => {
       setUserData(res.data.data);
     });
   };
+  const [ownerShipData, setOwnerShipData] = useState([]);
+  const getOwnershipData = () => {
+    axios
+      .get(baseUrl + "/accounts/get_all_account_company_type", {
+        headers: {
+          Authorization:
+            "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InRlc3RpbmciLCJpYXQiOjE3MDczMTIwODB9.ytDpwGbG8dc9jjfDasL_PI5IEhKSQ1wXIFAN-2QLrT8",
+        },
+      })
+      .then((res) => {
+        setOwnerShipData(res.data.data);
+        console.log(res.data.data, ">>>>>>>>>>>>>ok>>>>>>>>>>>>");
+      })
+      .catch((error) => {
+        console.error("Error fetching ownership data:", error);
+      });
+  };
 
   useEffect(() => {
     getData();
+    getOwnershipData();
   }, []);
 
   const handleRateTypeChange = (selectedOption) => {
@@ -246,7 +265,6 @@ const PageMaster = () => {
     if (profileId === "") {
       setValidateFields((prev) => ({ ...prev, profileId: true }));
     }
-    console.log(platformActive);
     if (platformActive?.length == 0 || platformActive == null) {
       setValidateFields((prev) => ({ ...prev, platformActive: true }));
     }
@@ -309,7 +327,7 @@ const PageMaster = () => {
       rate_type: rateType.value,
       variable_type: rateType.value == "Variable" ? variableType.value : null,
       page_price_multiple: rowCount,
-      primary_pages: primary,
+      primary_pages: primary.value,
     };
 
     axios
@@ -355,6 +373,9 @@ const PageMaster = () => {
     });
     setFilterPriceTypeList(filteredData);
   };
+
+  const val = variableType.value === "Per Thousand" ? 1000 : 1000000;
+  const FollowerCountCalcualtion = (followCount / val) * rowCount[0]?.price;
 
   return (
     <>
@@ -622,7 +643,7 @@ const PageMaster = () => {
                 label="Followers Count"
                 fieldGrid={12}
                 astric={true}
-                type="number"
+                type="text"
                 value={followCount}
                 required={true}
                 onChange={(e) => {
@@ -673,22 +694,34 @@ const PageMaster = () => {
               </div>
             </div>
             <div className="col-md-6 p0 mb16">
-              <FieldContainer
-                label="Ownership type"
-                astric={true}
-                fieldGrid={12}
-                value={ownerType}
-                required={true}
-                onChange={(e) => {
-                  setOwnerType(e.target.value);
-                  if (e.target.value) {
-                    setValidateFields((prev) => ({
-                      ...prev,
-                      ownerType: false,
-                    }));
-                  }
-                }}
-              />
+              <div className="form-group m0">
+                <label className="form-label">
+                  Ownership type<sup style={{ color: "red" }}>*</sup>
+                </label>
+                <Select
+                  className="w-100"
+                  options={ownerShipData.map((option) => ({
+                    value: option._id,
+                    label: option.company_type_name,
+                  }))}
+                  required={true}
+                  value={{
+                    value: ownerType,
+                    label:
+                      ownerShipData.find((role) => role._id === ownerType)
+                        ?.company_type_name || "",
+                  }}
+                  onChange={(e) => {
+                    setOwnerType(e.value);
+                    if (e.value) {
+                      setValidateFields((prev) => ({
+                        ...prev,
+                        categoryId: false,
+                      }));
+                    }
+                  }}
+                />
+              </div>
               {validateFields.ownerType && (
                 <small style={{ color: "red" }}>
                   Please Fill Ownership Type
@@ -1051,10 +1084,15 @@ const PageMaster = () => {
                     fieldGrid={12}
                     astric={true}
                     required={true}
-                    type="number"
+                    type="text"
                     onChange={(e) => handlePriceChange(e, index)}
                     value={rowCount[index].price}
                   />
+                  {rateType.label == "Variable" && (
+                    <p className="ml-3" style={{ color: "blue" }}>
+                      This Page Cost = {FollowerCountCalcualtion}
+                    </p>
+                  )}
                 </div>
                 <div className="col-md-1 text-center">
                   {index != 0 && (
