@@ -12,19 +12,15 @@ const SaleBookingApi = createApi({
     }),
 
     getAllDeletedSaleBooking: builder.query({
-      query: (id) => `sales/get_all_new_deleted_data`,
+      query: () => `sales/deleted_sale_booking_list`,
       transformResponse: (response) => response.data,
-
       keepUnusedDataFor: 60 * 60,
     }),
+
     getIndividualSaleBooking: builder.query({
       query: (id) => `sales/sales_booking/${id}`,
       transformResponse: (response) => response.data,
 
-      keepUnusedDataFor: 60 * 60,
-    }),
-    getSalesBookingPaymentDetail: builder.query({
-      query: (id) => `sales/get_all_list_sales_booking/${id}`, //padd _id of account
       keepUnusedDataFor: 60 * 60,
     }),
     addSaleBooking: builder.mutation({
@@ -120,7 +116,6 @@ const SaleBookingApi = createApi({
 export const {
   useGetAllSaleBookingQuery,
   useGetAllDeletedSaleBookingQuery,
-  useGetSalesBookingPaymentDetailQuery,
   useGetIndividualSaleBookingQuery,
   useAddSaleBookingMutation,
   useEditSaleBookingMutation,

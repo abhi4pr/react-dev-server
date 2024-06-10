@@ -54,7 +54,7 @@ const SalesServicesCreate = () => {
     data: singleSaleService,
     isLoading: isSingleSaleServiceLoading,
     error: singleSaleServiceError,
-  } = useGetSingleSaleServiceQuery(id);
+  } = useGetSingleSaleServiceQuery(id, { skip: !id });
 
   const [updatesalesservice, { isLoading: isUpdating, error: updateError }] =
     useEditSaleServiceMutation();

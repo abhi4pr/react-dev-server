@@ -5,7 +5,6 @@ import { Link } from "react-router-dom";
 import {
   useDeleteSaleBookingMutation,
   useGetAllSaleBookingQuery,
-  useGetSalesBookingPaymentDetailQuery,
 } from "../../../Store/API/Sales/SaleBookingApi";
 import View from "../Account/View/View";
 import { useGetAllAccountQuery } from "../../../Store/API/Sales/SalesAccountApi";
@@ -25,11 +24,6 @@ const ViewSaleBooking = () => {
     error: allAccountError,
     isLoading: allAccountLoading,
   } = useGetAllAccountQuery();
-  const {
-    data: allSalesBookingPaymentDetail,
-    error: allSalesBookingPaymentDetailError,
-    isLoading: allSalesBookingPaymentDetailLoading,
-  } = useGetSalesBookingPaymentDetailQuery();
 
   const [deleteSaleBooking, { isLoading }] = useDeleteSaleBookingMutation();
 
@@ -214,8 +208,7 @@ const ViewSaleBooking = () => {
         data={allSaleBooking}
         isLoading={
           allSaleBookingLoading ||
-          allAccountLoading ||
-          allSalesBookingPaymentDetailLoading
+          allAccountLoading
         }
         title={"Sale Booking"}
         // rowSelectable={true}
