@@ -56,10 +56,10 @@ export default function ExeHistory() {
   //       "stats_for": "daily",
   //       "start_date": "2024-05-30T00:00:00.000Z",
   //       "end_date": "2024-05-30T00:00:00.000Z",
-  //       "reach_image": "",
-  //       "impression_image": "",
-  //       "engagement_image": "",
-  //       "story_view_image": "",
+  //       "reach_image": "NA",
+  //       "impression_image": "NA",
+  //       "engagement_image": "NA",
+  //       "story_view_image": "NA",
   //       "city1_name": "Raipur ",
   //       "city2_name": "Bhopal",
   //       "city3_name": "Bhopal",
@@ -70,11 +70,11 @@ export default function ExeHistory() {
   //       "percentage_city3_name": 234,
   //       "percentage_city4_name": 234,
   //       "percentage_city5_name": 234,
-  //       "city_image": "",
+  //       "city_image": "NA",
   //       "male_percent": 23412312,
   //       "female_percent": 23412313,
   //       "Age_13_17_percent": 234,
-  //       "Age_upload": "",
+  //       "Age_upload": "NA",
   //       "Age_18_24_percent": 234,
   //       "Age_25_34_percent": 423,
   //       "Age_35_44_percent": 234,
@@ -92,7 +92,7 @@ export default function ExeHistory() {
   //       "percentage_country3_name": 342,
   //       "percentage_country4_name": 234,
   //       "percentage_country5_name": 234,
-  //       "country_image": "",
+  //       "country_image": "NA",
   //       "created_by": 712,
   //       "last_updated_by": 0,
   //       "status": 0,
@@ -112,17 +112,18 @@ export default function ExeHistory() {
     {
       field: "createdAt",
       headerName: "Creation Date",
-      readerCell: (params) => {
+      width: 150,
+      renderCell: (params) => {
         return (
           <div>
             {params.row?.createdAt ? (
               <>
-                {new Date(params.row.creation_date).toISOString().substr(8, 2)}/
-                {new Date(params.row.creation_date).toISOString().substr(5, 2)}/
-                {new Date(params.row.creation_date).toISOString().substr(2, 2)}
+                {new Date(params.row.createdAt).toISOString().substr(8, 2)}/
+                {new Date(params.row.createdAt).toISOString().substr(5, 2)}/
+                {new Date(params.row.createdAt).toISOString().substr(2, 2)}
               </>
             ) : (
-              ""
+              "NA"
             )}
           </div>
         );
@@ -143,7 +144,7 @@ export default function ExeHistory() {
     //             }
     //           </>
     //         ) : (
-    //           ""
+    //           "NA"
     //         )}
     //       </div>
     //     );
@@ -174,7 +175,7 @@ export default function ExeHistory() {
                 )}
               </>
             ) : (
-              ""
+              "NA"
             )}
           </div>
         );
@@ -206,7 +207,7 @@ export default function ExeHistory() {
                 )}
               </>
             ) : (
-              ""
+              "NA"
             )}
           </div>
         );
@@ -238,7 +239,7 @@ export default function ExeHistory() {
                 )}
               </>
             ) : (
-              ""
+              "NA"
             )}
           </div>
         );
@@ -283,22 +284,22 @@ export default function ExeHistory() {
                 )}
               </>
             ) : (
-              ""
+              "NA"
             )}
           </div>
         );
       },
     },
-    {
-      field: "stats_for",
-      headerName: "Stats For",
-      width: 150,
-    },
-    {
-      field: "quater",
-      headerName: "Quater",
-      width: 150,
-    },
+    // {
+    //   field: "stats_for",
+    //   headerName: "Stats For",
+    //   width: 150,
+    // },
+    // {
+    //   field: "quater",
+    //   headerName: "Quater",
+    //   width: 150,
+    // },
     {
       field: "city1_name",
       headerName: "City 1",
@@ -325,7 +326,7 @@ export default function ExeHistory() {
                 )}
               </>
             ) : (
-              ""
+              "NA"
             )}
           </div>
         );
@@ -344,7 +345,7 @@ export default function ExeHistory() {
                 {params.row.percentage_city2_name}
               </>
             ) : (
-              ""
+              "NA"
             )}
           </div>
         );
@@ -363,7 +364,7 @@ export default function ExeHistory() {
                 {params.row.percentage_city3_name}
               </>
             ) : (
-              ""
+              "NA"
             )}
           </div>
         );
@@ -382,7 +383,7 @@ export default function ExeHistory() {
                 {params.row.percentage_city4_name}
               </>
             ) : (
-              ""
+              "NA"
             )}
           </div>
         );
@@ -401,7 +402,7 @@ export default function ExeHistory() {
                 {params.row.percentage_city5_name}
               </>
             ) : (
-              ""
+              "NA"
             )}
           </div>
         );
@@ -442,7 +443,7 @@ export default function ExeHistory() {
                 )}
               </>
             ) : (
-              ""
+              "NA"
             )}
           </div>
         );
@@ -487,40 +488,40 @@ export default function ExeHistory() {
                 {new Date(params.row.start_date).toISOString().substr(2, 2)}
               </>
             ) : (
-              ""
+              "NA"
             )}
           </div>
         );
       },
     },
-    {
-      field: "story_view_date",
-      headerName: "Story View Date",
-      width: 150,
-      renderCell: (params) => {
-        return (
-          <div>
-            {params.row?.story_view_date ? (
-              <>
-                {new Date(params.row.story_view_date)
-                  .toISOString()
-                  .substr(8, 2)}
-                /
-                {new Date(params.row.story_view_date)
-                  .toISOString()
-                  .substr(5, 2)}
-                /
-                {new Date(params.row.story_view_date)
-                  .toISOString()
-                  .substr(2, 2)}
-              </>
-            ) : (
-              ""
-            )}
-          </div>
-        );
-      },
-    },
+    // {
+    //   field: "story_view_date",
+    //   headerName: "Story View Date",
+    //   width: 150,
+    //   renderCell: (params) => {
+    //     return (
+    //       <div>
+    //         {params.row?.story_view_date ? (
+    //           <>
+    //             {new Date(params.row.story_view_date)
+    //               .toISOString()
+    //               .substr(8, 2)}
+    //             /
+    //             {new Date(params.row.story_view_date)
+    //               .toISOString()
+    //               .substr(5, 2)}
+    //             /
+    //             {new Date(params.row.story_view_date)
+    //               .toISOString()
+    //               .substr(2, 2)}
+    //           </>
+    //         ) : (
+    //           "NA"
+    //         )}
+    //       </div>
+    //     );
+    //   },
+    // },
     {
       field: "end_date",
       headerName: "End Date",
@@ -540,7 +541,7 @@ export default function ExeHistory() {
                 {new Date(data).toISOString().substr(2, 2)}
               </>
             ) : (
-              ""
+              "NA"
             )}
           </div>
         );
