@@ -67,11 +67,14 @@ const RegisteredCampaigns = () => {
     setOpen(true);
   };
   const handleClose = () => setOpen(false);
-
   const handlePlan = (event) => {
-    const path = `/admin/op-plan-creation/${event._id}`;
-    navigate(path);
+    const id = event?._id;
+    const sale_id = event?.sale_booking_id;
+    navigate(`/admin/op-plan-creation/${id}`, {
+      state: { sale_id: sale_id },
+    });
   };
+
   const handleShowPlan = (event) => {
     const path = `/admin/op-plan-overview/${event._id}`;
     navigate(path);
@@ -105,7 +108,7 @@ const RegisteredCampaigns = () => {
       },
     },
     {
-      field: "Campaign",
+      field: "exe_campaign_image",
       headerName: "Campaign",
       width: 150,
       renderCell: (params) => {
@@ -309,7 +312,7 @@ const RegisteredCampaigns = () => {
         </div>
         <div className="card-body body-padding fx-head thm_table">
           <DataGrid
-            rows={filteredData}
+            rows={allCampaign}
             columns={Column}
             getRowId={(row) => row?._id}
             slots={{
@@ -406,7 +409,9 @@ const PhaseCreationComponent = ({ row, handlePhase }) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const newData = await axios.get(`${baseUrl}` + `opcampaignplan/${rowId}`);
+        const newData = await axios.get(
+          `${baseUrl}` + `opcampaignplan/${rowId}`
+        );
         setPlanData(newData);
       } catch (error) {
         console.error("Error fetching plan data:", error);
@@ -424,7 +429,9 @@ const PhaseCreationComponent = ({ row, handlePhase }) => {
           type="button"
           onClick={() => handlePhase(row)}
         >
-          <Link to={`/admin/op-phase-creation/${rowId}`}><i className="bi bi-send"></i></Link>
+          <Link to={`/admin/op-phase-creation/${rowId}`}>
+            <i className="bi bi-send"></i>
+          </Link>
         </button>
       ) : (
         <div

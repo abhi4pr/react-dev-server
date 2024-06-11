@@ -291,10 +291,10 @@ function ExecutionPending() {
   };
 
   const handleStartExecutions = (params) => {
-    navigate('/admin/op-plan-creation/665574c2abca204b5b1422c1', {
-      state: { executionExcel: params?.row?.execution_excel }
+    navigate('/admin/op-register-campaign', {
+      state: { sale_id: params?.row?.sale_booking_id }
     });
-    // console.log(params?.row?.execution_excel,"mmm");
+    console.log(params?.row?.sale_booking_id,"mmm");
   }
 
   const theme = createTheme({

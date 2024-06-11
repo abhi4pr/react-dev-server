@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { TextField, Modal, Button, Box, Typography,Autocomplete } from "@mui/material";
+import { TextField, Modal, Box, Typography } from "@mui/material";
 import axios from "axios";
 import Select from "react-select";
+import { baseUrl } from "../../../../utils/config";
 
 const ReplacementModal = ({
   open,
@@ -9,13 +10,10 @@ const ReplacementModal = ({
   handleClose,
   selectedRow,
   plan,
+  id,
 }) => {
   const [pageData, setPageData] = useState([]);
   const [selectedPages, setSelectedPages] = useState([]);
-  const [postPages, setPostpages] = useState([]);
-  const [storyPages, setStorypages] = useState([]);
-
-  console.log(pageData);
 
   useEffect(() => {
     const getPageData = async () => {
@@ -24,23 +22,36 @@ const ReplacementModal = ({
           `https://purchase.creativefuel.io/webservices/RestController.php?view=inventoryDataList`
         );
         const remainingData = res?.data?.body.filter(
-            (item) =>
-              !plan.some((selectedItem) => selectedItem.p_id === item.p_id)
-          );
-          setPageData(remainingData);
+          (item) =>
+            !plan.some((selectedItem) => selectedItem.p_id === item.p_id)
+        );
+        setPageData(remainingData);
+        console.log(remainingData);
       } catch (error) {
         console.error("Error fetching page data: ", error);
       }
     };
 
     getPageData();
-  }, []);
+  }, [plan]);
 
- 
+  const replacePlanPages = async () => {
+    try {
+      const oldPid = selectedRow.p_id;
+      const newPidArray = selectedPages.map((selectedPage) => selectedPage);
+      console.log(newPidArray);
+      const response = await axios.post(`${baseUrl}replace_plan_pages`, {
+        campaignId: id,
+        old_pid: oldPid,
+        new_pid: newPidArray,
+      });
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   return (
     <div>
-      <Button onClick={handleOpen}>Open modal</Button>
       <Modal
         open={open}
         onClose={handleClose}
@@ -67,7 +78,9 @@ const ReplacementModal = ({
           <Typography variant="h6" component="h6">
             Old page
           </Typography>
-          <Box sx={{ display: "flex", justifyContent: "space-between", gap: 1 }}>
+          <Box
+            sx={{ display: "flex", justifyContent: "space-between", gap: 1 }}
+          >
             <TextField
               label="Page"
               variant="outlined"
@@ -100,31 +113,27 @@ const ReplacementModal = ({
           <Typography variant="h6" component="h6">
             New Page
           </Typography>
-          <Autocomplete
-            id="combo-box-demo"
-            multiple
-            options={pageData}
-            getOptionLabel={(option) => option?.page_name}
-            onChange={(event, value) => setSelectedPages(value)}
-            sx={{ width: 300, mb: 2 }}
-            renderInput={(params) => <TextField {...params} label="Pages" />}
+          <Select
+            options={pageData.map((page) => ({
+              value: page.p_id,
+              label: page.page_name,
+            }))}
+            isMulti
+            onChange={(selectedOptions) => {
+              const selectedValues = selectedOptions.map(
+                (option) => option.value
+              );
+              setSelectedPages(selectedValues);
+            }}
           />
+          <button
+            className="btn btn-outline-success rounded-pill"
+            onClick={() => replacePlanPages()}
+            style={{ width: "30%" }}
+          >
+            Replace
+          </button>{" "}
         </Box>
-<>
-{selectedPages?.map(( page, index)=>(
-
-    <Box>
-          <TextField
-                label="Page Name"
-                value={page.page_name}
-                disabled
-                fullWidth
-                margin="normal"
-              />
-    </Box>
-))}
-</>
-       
       </Modal>
     </div>
   );
