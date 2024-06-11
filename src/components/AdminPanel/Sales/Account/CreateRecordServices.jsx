@@ -6,16 +6,26 @@ import { useParams } from "react-router-dom";
 const RecordServices = ({ records, setRecords, serviceTypes }) => {
   console.log("records", records, "serviceTypes", serviceTypes);
   const { editId } = useParams();
-  const [selectedRecords, setSelectedRecords] = useState(records?.map(() => ""));
+  const [selectedRecords, setSelectedRecords] = useState(
+    records?.map(() => "")
+  );
   const [serviceFieldsData, setServiceFieldsData] = useState([]);
   useEffect(() => {
     if (records && serviceTypes) {
-      setSelectedRecords(records.map(record => record.sales_service_master_id));
+      setSelectedRecords(
+        records.map((record) => record.sales_service_master_id)
+      );
 
       if (editId !== undefined) {
         // Create a copy of serviceFieldsData and update based on records
         const updatedServiceFieldsData = records.map((record, index) => {
-          return serviceTypes.find(service => service._id === record.sales_service_master_id) || serviceFieldsData[index] || {};
+          return (
+            serviceTypes.find(
+              (service) => service._id === record.sales_service_master_id
+            ) ||
+            serviceFieldsData[index] ||
+            {}
+          );
         });
 
         setServiceFieldsData(updatedServiceFieldsData);
@@ -23,7 +33,16 @@ const RecordServices = ({ records, setRecords, serviceTypes }) => {
     }
   }, [serviceTypes, records, editId]);
 
-  console.log("records", records, "servicefieldsdata", serviceFieldsData, "selectedrecords", selectedRecords, "serviceTypes", serviceTypes)
+  console.log(
+    "records",
+    records,
+    "servicefieldsdata",
+    serviceFieldsData,
+    "selectedrecords",
+    selectedRecords,
+    "serviceTypes",
+    serviceTypes
+  );
   const handleRecordChange = (index, key, value) => {
     const updatedRecords = records?.map((record, recordIndex) =>
       recordIndex === index ? { ...record, [key]: value } : record
@@ -313,6 +332,7 @@ const RecordServices = ({ records, setRecords, serviceTypes }) => {
                     label="Excel Upload"
                     placeholder="Enter Excel Upload"
                     type="file"
+                    accept=".xls, .xlsx"
                     fieldGrid={6}
                     onChange={(e) =>
                       handleRecordChange(
@@ -325,7 +345,7 @@ const RecordServices = ({ records, setRecords, serviceTypes }) => {
                   />
                 )}
 
-                {record.excel_upload_url && (
+                {/* {record.excel_upload_url && (
                   <div className="col-6">
                     <label>Uploaded File</label>
                     <a
@@ -336,7 +356,7 @@ const RecordServices = ({ records, setRecords, serviceTypes }) => {
                       View File
                     </a>
                   </div>
-                )}
+                )} */}
               </div>
             </div>
           </div>

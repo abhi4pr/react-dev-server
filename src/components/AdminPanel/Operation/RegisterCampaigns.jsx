@@ -4,31 +4,32 @@ import {
   Autocomplete,
   FormControl,
   Box,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
 } from "@mui/material";
-
+import { IconButton, Stack } from "@mui/material";
+import AddIcon from "@mui/icons-material/Add";
+import InfoIcon from "@mui/icons-material/Info";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import * as XLSX from "xlsx";
 import dayjs from "dayjs";
 import { useGlobalContext } from "../../../Context/Context";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate, Link, useLocation } from "react-router-dom";
 import { baseUrl } from "../../../utils/config";
 import FormContainer from "../FormContainer";
+import CreateCampaign from "./CampaignMaster/CreateCampaign";
+import OverViewCampaign from "./CampaignMaster/OverViewCampaign";
 
-const platform = [
-  { plt_id: 1, plat_name: "Instagram" },
-  { plt_id: 2, plat_name: "Facebook" },
-  { plt_id: 3, plat_name: "Whatsapp" },
-  { plt_id: 4, plat_name: "Youtube" },
-  { plt_id: 5, plat_name: "x" },
-];
-
-const brandURL = baseUrl + "";
 export default function RegisterCampaigns() {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const saleBookingId = location.state?.sale_id;
+  const [openCamp, setOpenCamp] = useState(false);
+  const [openCampView, setOpenCampView] = useState(false);
+  const handleOpenCampaign = () => setOpenCamp(true);
+  const handleCloseCampaign = () => setOpenCamp(false);
+
+  const handleViewCampaign = () => setOpenCampView(true);
+  const handleCloseCampaignView = () => setOpenCampView(false);
+
   const [salesUsers, setSalesUsers] = useState([]);
   const { toastAlert, toastError } = useGlobalContext();
   const [campaignDetailing, setCampaignDetailing] = useState("");
@@ -46,40 +47,12 @@ export default function RegisterCampaigns() {
   const [caption, setCaption] = useState("");
   const [selectedAgency, setSelectedAgency] = useState("");
   const [agencyList, setAgencyList] = useState([]);
-  const [master, setMaster] = useState(null);
   const [campaignClosedBy, setCampaignClosedBy] = useState("");
   const [categoryOptions, setCategoryOptions] = useState([]);
-  const [subcategoryOptions, setSubCategoryOptions] = useState([]);
-  const [selectedPages, setSelectedPages] = useState([]);
-  const [SubCategoryString, setSubCategoryString] = useState();
   const [brandName, setBrandName] = useState("");
-  const [userName, setUserName] = useState([]);
-  const [errBrandName, setErrBrandName] = useState();
-  const [isModalOpenForCampaign, setIsModalOpenForCampaign] = useState(false);
-  const [campaignModalPayload, setCampaignModalPayload] = useState({
-    exeCmpName: "",
-    exeRemark: "",
-  });
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [selectedDate, setSelectedDate] = useState(dayjs());
-
-  const [postData, setPostData] = useState({
-    brand_name: "",
-    category_id: "",
-    sub_category_id: "",
-  });
-
-  const navigate = useNavigate();
-  const createExcel = () => {
-    const ws = XLSX.utils.json_to_sheet(xlxsData);
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, "Sheet1");
-    const excelBuffer = XLSX.write(wb, { bookType: "xlsx", type: "array" });
-    return new Blob([excelBuffer], {
-      type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-    });
-  };
+  const [campaignList, setCampignList] = useState([]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -106,38 +79,20 @@ export default function RegisterCampaigns() {
     }
 
     setShowAlert(false);
-    // const blob = createExcel();
     const payload = {
       pre_brand_id: brandName,
       brnad_dt: selectedDate,
       commitments: JSON.stringify(fields),
-      // excel_file: createExcel(),
       pre_campaign_id: campaign?.value,
       details: campaignDetailing,
-      // status: 0,
-      // stage: 0,
       captions: caption,
       hash_tag: hashtag,
       pre_agency_id: selectedAgency,
       pre_industry_id: selectedIndustry,
       pre_goal_id: selectedGoal,
       campaign_closed_by: campaignClosedBy,
+      sale_booking_id:saleBookingId
     };
-    // const form = new FormData();
-    // form.append("pre_brand_id", brandName);
-    // form.append("brnad_dt", selectedDate);
-    // form.append("commitment", JSON.stringify(fields));
-    // form.append("excel_file", blob);
-    // form.append("pre_campaign_id", campaign?.value);
-    // form.append("detailing", campaignDetailing);
-    // form.append("status", 0);
-    // form.append("stage", 0);
-    // form.append("captions", caption);
-    // form.append("hashtags", hashtag);
-    // form.append("pre_agency_id", selectedAgency);
-    // form.append("pre_industry_id", selectedIndustry);
-    // form.append("pre_goal_id", selectedGoal);
-    // form.append("campaignClosedBy", campaignClosedBy);
     setLoading(true);
     axios
       .post(baseUrl + "opcampaign", payload)
@@ -191,7 +146,6 @@ export default function RegisterCampaigns() {
     } else {
     }
   };
-  const [campaignList, setCampignList] = useState([]);
   const handleChange = (event) => {
     setBrandName(
       showBrandName.filter(
@@ -199,32 +153,23 @@ export default function RegisterCampaigns() {
       )[0]?._id
     );
   };
-  const handleChangeBrand = (event) => {
-    const { name, value } = event.target;
-
-    if (name === "brand_name") {
-      if (!value === "") {
-        setErrBrandName("Brand should not be blank.");
-      } else if (!/^[a-zA-Z\s]+$/.test(value)) {
-        setErrBrandName("Brand should be characters.");
-      } else {
-        setErrBrandName(" ");
-      }
-    }
-    setPostData({
-      ...postData,
-      [name]: value,
-    });
-  };
 
   useEffect(() => {
     setSelectedDate(dayjs().format("YYYY-MM-DD HH:mm:ss"));
     getAllData();
   }, []);
 
+  const getExeCampData = async () => {
+    const res = await axios.get(
+      `${baseUrl}get_single_sale_booking_data_old_table/${saleBookingId}`
+    );
+    console.log(res.data.data);
+  };
+
   const getAllData = () => {
     axios
       .get(baseUrl + "get_brands")
+      // .get(`http://35.200.154.203:8080/api/insta_brand`)
       .then((response) => {
         const data = response.data.data;
         setShowBrandName(data);
@@ -278,6 +223,7 @@ export default function RegisterCampaigns() {
       .catch((err) => {
         console.log(err);
       });
+    getExeCampData();
   };
 
   const handleHashtagChange = (event) => {
@@ -314,16 +260,6 @@ export default function RegisterCampaigns() {
     );
   };
 
-  const addCampaignData = () => {
-    setMaster("Campaign");
-    setIsModalOpenForCampaign(true);
-  };
-
-  const addBrandData = () => {
-    setMaster("Brand");
-    setIsModalOpen(true);
-  };
-
   const fetchSalesUsers = () => {
     axios
       .get(`${baseUrl}get_all_sales_users`)
@@ -334,19 +270,6 @@ export default function RegisterCampaigns() {
         console.log(err);
         toastError("Failed to fetch sales users");
       });
-  };
-
-  const handlePlatfromChange = (index, value) => {
-    const updatedpages = [...userName];
-    updatedpages[index] = value;
-    setUserName(updatedpages);
-  };
-
-  const handleClose = () => {
-    setCampaignModalPayload({ exeCmpName: "", exeRemark: "" });
-    setSelectedPages([]);
-    setIsModalOpen(false);
-    setIsModalOpenForCampaign(false);
   };
 
   const categoryData = () => {
@@ -360,82 +283,15 @@ export default function RegisterCampaigns() {
     getAllData();
   }, []);
 
-  const subCategoryDataOnEdit = () => {
-    axios.get(baseUrl + "projectxSubCategory").then((res) => {
-      const filteredData = res.data.data.filter((item) => {
-        return item.category_id == postData.category_id;
-      });
-      setSubCategoryOptions(filteredData);
-    });
-  };
-
-  useEffect(() => {
-    subCategoryDataOnEdit();
-  }, [postData.category_id, postData]);
-
-  const handleSave = (e) => {
-    e.preventDefault();
-    const platformsData = selectedPages.reduce((acc, platform, index) => {
-      const key = platform.plat_name;
-      const value = userName[index] || "";
-      acc[key] = value;
-      return acc;
-    }, {});
-    const updatedPostData = {
-      ...postData,
-      platform: platformsData,
-    };
-    if (
-      !updatedPostData.brand_name ||
-      !updatedPostData.category_id ||
-      !updatedPostData.sub_category_id
-    ) {
-      alert(" * Please fill in all required fields ");
-    } else {
-      axios
-        .post(`${brandURL}add_brand`, updatedPostData)
-        .then((response) => {
-          response.data.message
-            ? toastError(response.data.message)
-            : toastAlert("Add Successfully");
-          setPostData("");
-          setReload(!reload);
-          getAllData();
-        })
-        .catch((error) => {
-          console.error("Error saving data:", error);
-          toastError("Error adding data. Please try again later.");
-        });
-      setIsModalOpen(false);
-    }
-  };
-
-  const handleCampaignAdd = async () => {
-    if (campaignModalPayload.exeCmpName == "") {
-      toastError("Campaign Name is required");
-    } else {
-      try {
-        const response = await axios.post(
-          `${baseUrl}exe_campaign`,
-          campaignModalPayload
-        );
-        toastAlert("Campaign Added");
-        setCampaignModalPayload({ exeCmpName: "", exeRemark: "" });
-        setIsModalOpenForCampaign(false);
-        getAllData();
-      } catch (error) {}
-    }
-  };
-
   const formatString = (s) => {
     let formattedString = s?.replace(/^_+/, "");
     if (formattedString) {
       formattedString = formattedString
-        .split(' ')
-        .map(word => {
+        .split(" ")
+        .map((word) => {
           return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
         })
-        .join(' '); 
+        .join(" ");
     }
     return formattedString;
   };
@@ -445,24 +301,7 @@ export default function RegisterCampaigns() {
         <div className="action_title">
           <FormContainer mainTitle="Register Campaign" link="true" />
         </div>
-        {/* <h2 className="form-heading">Register Campaign</h2> */}
         <div className="action_btns">
-          <Link to="/admin/brandmaster" style={{ marginRight: "5px" }}>
-            <button
-              type="button"
-              className="btn cmnbtn btn-outline-primary btn_sm"
-            >
-              Brand Master
-            </button>
-          </Link>
-          <Link to="/admin/overview/agency" style={{ marginRight: "5px" }}>
-            <button
-              type="button"
-              className="btn cmnbtn btn-outline-primary btn_sm"
-            >
-              Agency Master
-            </button>
-          </Link>
           <Link to="/admin/overview/industry" style={{ marginRight: "5px" }}>
             <button
               type="button"
@@ -500,6 +339,41 @@ export default function RegisterCampaigns() {
         <>
           <Box>
             <Box className="row">
+              <div className="col-md-4 mb16">
+                <div className="form-group m0">
+                  <div className="input-group inputAddGroup">
+                    <Autocomplete
+                      options={campignData.map((option) => ({
+                        label: formatString(option.exe_campaign_name),
+                        value: option._id,
+                      }))}
+                      require={true}
+                      value={campaign?.label}
+                      onChange={(e, newValue) => setCampaign(newValue)}
+                      renderInput={(params) => (
+                        <TextField {...params} label="Campaign *" />
+                      )}
+                    />
+
+                    <IconButton
+                      onClick={handleOpenCampaign}
+                      variant="contained"
+                      color="primary"
+                      aria-label="Add Platform.."
+                    >
+                      <AddIcon />
+                    </IconButton>
+                    <IconButton
+                      onClick={handleViewCampaign}
+                      variant="contained"
+                      color="primary"
+                      aria-label="Platform Info.."
+                    >
+                      <InfoIcon />
+                    </IconButton>
+                  </div>
+                </div>
+              </div>
               <div className="form-group col-4">
                 <Autocomplete
                   disablePortal
@@ -517,39 +391,6 @@ export default function RegisterCampaigns() {
                   onSelect={handleChange}
                 />
               </div>
-              <div className="form-group col-2">
-                <button
-                  className="btn btn-primary cmnbtn  mt-2 "
-                  onClick={addBrandData}
-                >
-                  Add Brand
-                </button>
-              </div>
-
-              <div className="form-group col-4">
-                <Autocomplete
-                  disablePortal
-                  id="combo-box-demo"
-                  options={campignData.map((option) => ({
-                    label: formatString(option.exe_campaign_name),
-                    value: option._id,
-                  }))}
-                  require={true}
-                  value={campaign?.label}
-                  onChange={(e, newValue) => setCampaign(newValue)}
-                  renderInput={(params) => (
-                    <TextField {...params} label="Campaign *" />
-                  )}
-                />
-              </div>
-              <div className="form-group col-2">
-                <button
-                  className="btn btn-primary cmnbtn  mt-2"
-                  onClick={addCampaignData}
-                >
-                  Add Campaign
-                </button>
-              </div>
 
               <div className="form-group col-4">
                 <TextField
@@ -562,17 +403,13 @@ export default function RegisterCampaigns() {
               </div>
               <div className="form-group col-4">
                 <Autocomplete
-                  disablePortal
-                  id="agency-dropdown"
                   options={
                     industry?.length > 0 &&
                     industry.map((option) => option.name)
                   }
-                  // value={selectedIndustry}
                   value={
                     industry.filter((e) => selectedIndustry == e._id)[0]?.name
                   }
-                  // onChange={handleIndusrtyChange}
                   onSelect={handleIndusrtyChange}
                   renderInput={(params) => (
                     <TextField {...params} label="Industry" />
@@ -581,13 +418,10 @@ export default function RegisterCampaigns() {
               </div>
               <div className="form-group col-4">
                 <Autocomplete
-                  disablePortal
-                  id="agency-dropdown"
                   options={
                     agencyList?.length > 0 &&
                     agencyList?.map((option) => option?.name)
                   }
-                  // value={selectedAgency}
                   value={
                     agencyList.filter((e) => selectedAgency == e._id)[0]?.name
                   }
@@ -599,14 +433,10 @@ export default function RegisterCampaigns() {
               </div>
               <div className="form-group col-4">
                 <Autocomplete
-                  disablePortal
-                  id="agency-dropdown"
                   options={
                     goal?.length > 0 && goal?.map((option) => option?.name)
                   }
-                  // value={selectedGoal}
                   value={goal.filter((e) => selectedGoal == e._id)[0]?.name}
-                  // onChange={handleGoalChange}
                   onSelect={handleGoalChange}
                   renderInput={(params) => (
                     <TextField {...params} label="Goal" />
@@ -624,20 +454,14 @@ export default function RegisterCampaigns() {
               </div>
               <div className="form-group col-4">
                 <Autocomplete
-                  disablePortal
-                  id="campaign-closed-by-dropdown"
                   options={
                     salesUsers?.length > 0 &&
                     salesUsers?.map((user) => formatString(user.user_name))
                   }
-                  // value={campaignClosedBy}
                   value={
                     salesUsers.filter((e) => campaignClosedBy == e._id)[0]
                       ?.user_name
                   }
-                  // onChange={(event, newValue) => {
-                  //   setCampaignClosedBy(newValue);
-                  // }}
                   onSelect={handleCampaignClose}
                   renderInput={(params) => (
                     <TextField {...params} label="Campaign Closed By *" />
@@ -751,7 +575,6 @@ export default function RegisterCampaigns() {
             handleSubmit(e);
           }}
           variant="outlined"
-          size="large"
           color="secondary"
           className="btn btn-primary cmnbtn  mt-3 mb-3"
           disabled={loading}
@@ -760,168 +583,19 @@ export default function RegisterCampaigns() {
         </button>
       </Box>
       <>
-        <Dialog open={isModalOpenForCampaign} onClose={handleClose}>
-          <DialogTitle>Add Campaign</DialogTitle>
-          <DialogContent>
-            <Box
-              sx={{
-                "& .MuiTextField-root": { m: 1 },
-              }}
-            >
-              <>
-                <TextField
-                  id="outlined-password-input"
-                  label="  * Campaign"
-                  name="exeCmpName"
-                  type="text"
-                  onChange={(e) => {
-                    setCampaignModalPayload({
-                      ...campaignModalPayload,
-                      exeCmpName: e.target.value,
-                    });
-                  }}
-                  sx={{ width: "100%" }}
-                />
-                <TextField
-                  id="outlined-password-input"
-                  label="Remark"
-                  name="exeRemark"
-                  type="text"
-                  onChange={(e) => {
-                    setCampaignModalPayload({
-                      ...campaignModalPayload,
-                      exeRemark: e.target.value,
-                    });
-                  }}
-                  sx={{ width: "100%" }}
-                />
-              </>
-            </Box>
-          </DialogContent>
-          <DialogActions>
-            <Button
-              variant="contained"
-              onClick={handleCampaignAdd}
-              color="primary"
-            >
-              Save
-            </Button>
-          </DialogActions>
-        </Dialog>
-        <Dialog open={isModalOpen} onClose={handleClose}>
-          <DialogTitle>Add Record</DialogTitle>
-
-          <DialogContent>
-            <Box
-              sx={{
-                "& .MuiTextField-root": { m: 1 },
-              }}
-            >
-              <div>
-                <>
-                  <TextField
-                    id="outlined-password-input"
-                    label="  * Brand"
-                    name="brand_name"
-                    type="text"
-                    value={postData.brand_name}
-                    onChange={handleChangeBrand}
-                    sx={{ width: "100%" }}
-                  />
-                  <span style={{ color: "red" }}>{errBrandName}</span>
-                </>
-
-                <>
-                  <Autocomplete
-                    disablePortal
-                    options={categoryOptions.map((option) => ({
-                      label: option.category_name,
-                      value: option.category_id,
-                    }))}
-                    renderInput={(params) => (
-                      <TextField {...params} label="  * Category" />
-                    )}
-                    onChange={(event, newValue) => {
-                      setPostData({
-                        ...postData,
-                        category_id: newValue.value,
-                      });
-                    }}
-                  />
-                </>
-                <>
-                  <Autocomplete
-                    disablePortal
-                    options={subcategoryOptions.map((item) => ({
-                      label: item.sub_category_name,
-                      value: item.sub_category_id,
-                    }))}
-                    renderInput={(params) => (
-                      <TextField {...params} label="  * Subcategory" />
-                    )}
-                    onChange={(event, newValue) => {
-                      if (newValue) {
-                        setPostData({
-                          ...postData,
-                          sub_category_id: newValue.value,
-                        });
-                        setSubCategoryString(newValue.label);
-                      }
-                    }}
-                  />
-                </>
-
-                <Autocomplete
-                  id="combo-box-demo"
-                  multiple
-                  options={platform}
-                  getOptionLabel={(option) => option.plat_name}
-                  value={selectedPages}
-                  onChange={(event, newValue) => {
-                    setSelectedPages(newValue);
-                  }}
-                  renderInput={(params) => (
-                    <TextField {...params} label="  * Platform" />
-                  )}
-                  isOptionEqualToValue={(option, value) =>
-                    option.plt_id === value.plt_id
-                  }
-                />
-
-                {selectedPages?.map((page, index) => (
-                  <Box key={index} sx={{ display: "flex", mb: 1 }}>
-                    <TextField
-                      label="Page Name"
-                      value={page.plat_name}
-                      fullWidth
-                      margin="normal"
-                      InputProps={{
-                        readOnly: true,
-                      }}
-                      InputLabelProps={{ shrink: true }}
-                    />
-                    <TextField
-                      label="User name"
-                      value={userName[index]}
-                      fullWidth
-                      onChange={(e) =>
-                        handlePlatfromChange(index, e.target.value)
-                      }
-                      sx={{ m: 2 }}
-                    />
-                  </Box>
-                ))}
-
-                <div></div>
-              </div>
-            </Box>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={handleSave} color="primary">
-              Save
-            </Button>
-          </DialogActions>
-        </Dialog>
+        <>
+          {/* Create Campaign */}
+          <CreateCampaign
+            openCamp={openCamp}
+            handleOpenCampaign={handleOpenCampaign}
+            handleCloseCampaign={handleCloseCampaign}
+          />
+          <OverViewCampaign
+            openCamp={openCampView}
+            handleOpenCampaign={handleViewCampaign}
+            handleCloseCampaign={handleCloseCampaignView}
+          />
+        </>
       </>
     </div>
   );

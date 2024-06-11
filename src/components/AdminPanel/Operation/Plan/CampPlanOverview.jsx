@@ -13,7 +13,7 @@ const CampPlanOverview = () => {
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
-  const [selectedRow, setSelectedRow] = useState(null)
+  const [selectedRow, setSelectedRow] = useState(null);
 
   const getPlan = async () => {
     try {
@@ -29,8 +29,8 @@ const CampPlanOverview = () => {
   }, []);
 
   const handleOpenModal = (row) => {
-    setSelectedRow(row); 
-    handleOpen(); 
+    setSelectedRow(row);
+    handleOpen();
   };
 
   const columns = [
@@ -125,6 +125,7 @@ const CampPlanOverview = () => {
           handleClose={handleClose}
           selectedRow={selectedRow}
           plan={plan}
+          id={id}
         />
       </>
     </div>

@@ -28,6 +28,7 @@ const ViewSaleBooking = () => {
   const [deleteSaleBooking, { isLoading }] = useDeleteSaleBookingMutation();
 
   const [executionModal, setExecutionModal] = useState(false);
+  const [selectedRowData, setSelectedRowData] = useState();
 
   const handleDelete = async (rowId) => {
     try {
@@ -38,7 +39,8 @@ const ViewSaleBooking = () => {
     }
   };
 
-  const openModal = () => {
+  const openModal = (row) => {
+    setSelectedRowData(row);
     setExecutionModal(true);
   };
   const closeModal = () => {
@@ -146,7 +148,7 @@ const ViewSaleBooking = () => {
           <button className="icon-1" onClick={() => handleDelete(row._id)}>
             <i className="bi bi-trash" />
           </button>
-          <button className="icon-1" onClick={openModal}>
+          <button className="icon-1" onClick={() => openModal(row)}>
             <i className="bi bi-eye" />
           </button>
         </div>
@@ -186,7 +188,7 @@ const ViewSaleBooking = () => {
           },
         }}
       >
-        <ExecutionModal />
+        <ExecutionModal saleBookingData={selectedRowData} />
       </Modal>
       <div className="action_heading">
         <div className="action_title">
@@ -206,10 +208,7 @@ const ViewSaleBooking = () => {
       <View
         columns={columns}
         data={allSaleBooking}
-        isLoading={
-          allSaleBookingLoading ||
-          allAccountLoading
-        }
+        isLoading={allSaleBookingLoading || allAccountLoading}
         title={"Sale Booking"}
         // rowSelectable={true}
         pagination={[5, 10, 15]}

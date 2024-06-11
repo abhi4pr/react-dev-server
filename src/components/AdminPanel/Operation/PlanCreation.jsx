@@ -1,4 +1,4 @@
-import { useParams, useLocation, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
 import FormContainer from "../FormContainer";
 import axios from "axios";
@@ -9,28 +9,35 @@ import { baseUrl } from "../../../utils/config";
 import SummaryDetails from "./SummrayDetailes";
 
 const TempPlanCreation = () => {
+  const location = useLocation();
+  const saleBookingId = location.state?.sale_id;
   const navigate = useNavigate();
+  const { id } = useParams(); 
+  const [postData, setPostData] = useState({});
   const [pageData, setPageData] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
   const [selectedRows, setSelectedRows] = useState([]);
   const [payload, setPayload] = useState([]);
-  const location = useLocation();
-  const executionExcel = location.state?.executionExcel;
-  const param = useParams();
-  const id = param.id;
-
-  const [postData, setPostData] = useState({});
-
+  const [exeCampData, setExeCampData] = useState({});
+  console.log(exeCampData?.execution_excel);
   const handleChange = (event, rowIndex) => {
     const { name, value } = event.target;
     setPostData((prevData) => ({
       ...prevData,
       [rowIndex]: {
         ...prevData[rowIndex],
-        [name]: value
-      }
+        [name]: value,
+      },
     }));
   };
+
+  const getExeCampData = async () => {
+    const res = await axios.get(
+      `${baseUrl}get_single_sale_booking_data_old_table/${saleBookingId}`
+    );
+    setExeCampData(res.data.data);
+  };
+
   const getPageData = async () => {
     try {
       const Fdata = await axios.get(
@@ -38,11 +45,17 @@ const TempPlanCreation = () => {
       );
       setPageData(Fdata.data.body);
       setFilteredData(Fdata.data.body);
-      if (executionExcel !== undefined) {
+      // if (executionExcel !== undefined) {
+        const res = await axios.get(
+          `${baseUrl}get_single_sale_booking_data_old_table/${saleBookingId}`
+        );
+        setExeCampData(res.data.data);
+
+        console.log(exeCampData?.execution_excel);
         const urlData = await axios.post(
           baseUrl + `get_excel_data_in_json_from_url`,
           {
-            excelUrl: executionExcel,
+            excelUrl: res.data.data?.execution_excel,
           }
         );
         const filteredDataU = urlData.data.filter((item) => item.Sno !== "");
@@ -83,11 +96,14 @@ const TempPlanCreation = () => {
           (item) => item.page_name !== "Poetsgram"
         );
         setFilteredData(filteredMatchedData);
-      }
+      // }
     } catch (error) {
       console.error("Error fetching page data", error);
     }
   };
+useEffect(()=>{
+  // getExeCampData();
+},[saleBookingId])
 
   useEffect(() => {
     getPageData();
@@ -127,7 +143,7 @@ const TempPlanCreation = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
+
     try {
       const selectedPages = filteredData.filter((row) =>
         selectedRows.includes(row.p_id)
@@ -141,16 +157,16 @@ const TempPlanCreation = () => {
         postPerPage: page.posts_per_page || 1,
         storyPerPage: page.story_per_page || 1,
       }));
-  
+
       const postResult = await axios.post(`${baseUrl}opcampaignplan`, {
         campaignId: id,
         campaignName: "Test Campaign",
         planName: "Test Plan",
         pages: pages,
       });
-  
+
       // Navigate to the new path upon successful submission
-      navigate('/admin/op-registered-campaign');
+      navigate("/admin/op-registered-campaign");
     } catch (error) {
       console.error("Error posting data", error);
     }
@@ -221,7 +237,11 @@ const TempPlanCreation = () => {
       headerName: "Story ",
       width: 140,
       renderCell: (params) => (
-        <input type="number" className="form-control border border-primary" value={"1"} />
+        <input
+          type="number"
+          className="form-control border border-primary"
+          value={"1"}
+        />
       ),
     },
   ];

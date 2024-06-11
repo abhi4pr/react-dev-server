@@ -1,22 +1,18 @@
 import React, { useState } from "react";
 import { useGlobalContext } from "../../../../Context/Context";
 import { useGetAllBrandQuery } from "../../../Store/API/Sales/BrandApi";
-import CustomSelect from "../../../ReusableComponents/CustomSelect";
+import axios from "axios";
+import { baseUrl } from "../../../../utils/config";
 const DEBOUNCE_DELAY = 300;
 
-const ExecutionModal = ({ loginUserId, closeModal }) => {
+const ExecutionModal = ({ loginUserId, closeModal, saleBookingData }) => {
   const { toastAlert, toastError } = useGlobalContext();
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [startDateTimeout, setStartDateTimeout] = useState(null); // Define startDateTimeout
   const [endDateTimeout, setEndDateTimeout] = useState(null);
-  const [brandName, setBrandName] = useState("");
-  const [selectedBrand, setSelectedBrand] = useState();
   const [campaignName, setCampaignName] = useState("");
-  const [excelFile, setExcelFile] = useState(null);
   const [remarks, setRemarks] = useState("");
-  //   const [addAccountType, { isLoading, isSuccess, isError }] =
-  //     useAddAccountTypeMutation();
 
   const { data: brandArray } = useGetAllBrandQuery();
   const handleStartDateChange = (e) => {
@@ -35,6 +31,7 @@ const ExecutionModal = ({ loginUserId, closeModal }) => {
     setEndDateTimeout(setTimeout(() => setEndDate(newEndDate), DEBOUNCE_DELAY));
   };
 
+  console.log(saleBookingData);
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (campaignName.length < 5) {
@@ -42,17 +39,20 @@ const ExecutionModal = ({ loginUserId, closeModal }) => {
       return;
     }
     try {
-      // Your form submission logic here
-      // Example: await addAccountType({ ... });
-      // Reset form fields after submission
-      setStartDate("");
-      setEndDate("");
-      setBrandName("");
-      setCampaignName("");
-      setExcelFile(null);
-      setRemarks("");
+      await axios.post(`${baseUrl}sales/sales_booking_execution`, {
+        sale_booking_id: saleBookingData?.sale_booking_id,
+        record_service_id: saleBookingData?.record_service_id,
+        start_date: startDate,
+        end_date: endDate,
+        execution_excel: execution_excel,
+        execution_done_by: execution_done_by,
+        execution_remark: execution_remark,
+        commitment: commitment,
+        execution_sent_date: execution_sent_date,
+        created_by: loginUserId,
+      });
+      toastAlert("Sent to Execution");
       closeModal();
-      toastAlert("Campaign created successfully");
     } catch (err) {
       console.error("Failed to create campaign:", err);
       toastError("Failed to create campaign");
@@ -82,42 +82,12 @@ const ExecutionModal = ({ loginUserId, closeModal }) => {
             required
           />
         </div>
-        <CustomSelect
-          fieldGrid={12}
-          label="Brand"
-          dataArray={brandArray}
-          optionId="instaBrandId"
-          optionLabel="instaBrandName"
-          selectedId={selectedBrand}
-          setSelectedId={setSelectedBrand}
-          required
-        />
-
-        <div className="form-group">
-          <label htmlFor="campaign_name">Campaign Name:</label>
-          <input
-            type="text"
-            id="campaign_name"
-            value={campaignName}
-            onChange={(e) => setCampaignName(e.target.value)}
-            className="form-control"
-            required
-          />
-          {campaignName.length < 5 && (
-            <small className="text-danger">
-              Campaign Name must be at least 5 characters long.
-            </small>
-          )}
-        </div>
-        <div className="form-group">
-          <label htmlFor="excel_file">Upload Excel File:</label>
-          <input
-            type="file"
-            id="excel_file"
-            onChange={(e) => setExcelFile(e.target.files[0])}
-            className="form-control-file"
-          />
-        </div>
+        bRand Name:{" "}
+        {
+          brandArray?.find((item) => item._id == saleBookingData?.brand_id)
+            .instaBrandName
+        }
+        campaign Name: {saleBookingData?.campaign_name}
         <div className="form-group">
           <label htmlFor="remarks">Remarks:</label>
           <textarea
@@ -128,12 +98,12 @@ const ExecutionModal = ({ loginUserId, closeModal }) => {
             className="form-control"
             rows="4"
             cols="50"
-          ></textarea>
+          />
         </div>
         {/* <button type="submit" className="btn btn-primary" disabled={isLoading}>
           {isLoading ? "Submitting..." : "Submit"}
         </button> */}
-        <button type="submit" className="btn btn-primary">
+        <button type="submit" className="btn cmnbtn btn-primary">
           Submit
         </button>
       </form>
