@@ -379,6 +379,9 @@ const PageMaster = () => {
   };
 
   const handlePriceChange = (e, index) => {
+    if (e.target.value !== "" && (e.target.value < 0 || isNaN(e.target.value))) {
+      return;
+    }
     const newRowCount = [...rowCount];
     newRowCount[index].price = e.target.value;
     setRowCount(newRowCount);
@@ -667,6 +670,9 @@ const PageMaster = () => {
                 value={followCount}
                 required={true}
                 onChange={(e) => {
+                  if (e.target.value !== "" && (e.target.value < 0 || isNaN(e.target.value))) {
+                    return;
+                  }
                   setFollowCount(e.target.value);
                   if (e.target.value) {
                     setValidateFields((prev) => ({
@@ -952,11 +958,14 @@ const PageMaster = () => {
               <FieldContainer
                 label="Engagement Rate"
                 astric={true}
-                type="number"
+                type="text"
                 fieldGrid={12}
                 value={rate}
                 required={true}
                 onChange={(e) => {
+                  if (e.target.value !== "" && (e.target.value < 0 || isNaN(e.target.value))) {
+                    return;
+                  }
                   setRate(e.target.value);
                   if (e.target.value) {
                     setValidateFields((prev) => ({ ...prev, rate: false }));

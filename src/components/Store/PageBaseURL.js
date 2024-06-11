@@ -1,11 +1,9 @@
-import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { baseUrl } from "../../utils/config";
-import { get } from "jquery";
+import { createApi } from "@reduxjs/toolkit/query/react";
 import authBaseQuery from "../../utils/authBaseQuery";
 
 export const PageBaseURL = createApi({
   // baseQuery: fetchBaseQuery({ baseUrl }),
-  baseQuery: authBaseQuery,
+  baseQuery:authBaseQuery,
   reducerPath: "PageBaseURL",
   tagTypes: ["profileList", "categoryList"],
   endpoints: (builder) => ({

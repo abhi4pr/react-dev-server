@@ -236,7 +236,7 @@ export default function PageStats() {
       console.log("add");
       addPageState(formData)
         .unwrap()
-        .then((res) => {
+        .then(() => {
           toastAlert("Stats Added Successfully");
           navitage(`/admin/pms-page-overview`);
         })
@@ -251,7 +251,7 @@ export default function PageStats() {
         formData,
       })
         .unwrap()
-        .then((res) => {
+        .then(() => {
           toastAlert("Stats Updated Successfully");
           navitage(`/admin/pms-page-overview`);
         })
@@ -270,6 +270,12 @@ export default function PageStats() {
       }
     }
   };
+
+  function addOneDay(date) {
+    const result = new Date(date);
+    result.setDate(result.getDate() + 1);
+    return result.toISOString().split('T')[0];
+  }
 
   return (
     <>
@@ -340,6 +346,8 @@ export default function PageStats() {
                     </label>
                     <input
                       type="date"
+                      disabled={watch("startDate")?false:true}
+                      min={addOneDay(watch("startDate"))}
                       className="form-control"
                       {...register("endDate", {
                         required: "Please Select The End Date",
