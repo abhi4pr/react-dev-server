@@ -409,6 +409,101 @@ export default function ExeHistory() {
       },
     },
     {
+      field:'country1_name',
+      headerName:'Country 1',
+      width:150,
+      renderCell:(params)=>{
+        return(
+          <div>
+            {params.row?.country1_name ? (
+              <>
+                {params.row.country1_name} &nbsp;{" "}
+                {params.row.percentage_country1_name}
+              </>
+            ) : (
+              "NA"
+            )}
+          </div>
+        )
+      }
+    },
+    {
+      field:'country2_name',
+      headerName:'Country 2',
+      width:150,
+      renderCell:(params)=>{
+        return(
+          <div>
+            {params.row?.country2_name ? (
+              <>
+                {params.row.country2_name} &nbsp;{" "}
+                {params.row.percentage_country2_name}
+              </>
+            ) : (
+              "NA"
+            )}
+          </div>
+        )
+      }
+    },
+    {
+      field:'country3_name',
+      headerName:'Country 3',
+      width:150,
+      renderCell:(params)=>{
+        return(
+          <div>
+            {params.row?.country3_name ? (
+              <>
+                {params.row.country3_name} &nbsp;{" "}
+                {params.row.percentage_country3_name}
+              </>
+            ) : (
+              "NA"
+            )}
+          </div>
+        )
+      }
+    },
+    {
+      field:'country4_name',
+      headerName:'Country 4',
+      width:150,
+      renderCell:(params)=>{
+        return(
+          <div>
+            {params.row?.country4_name ? (
+              <>
+                {params.row.country4_name} &nbsp;{" "}
+                {params.row.percentage_country4_name}
+              </>
+            ) : (
+              "NA"
+            )}
+          </div>
+        )
+      }
+    },
+    {
+      field:'country5_name',
+      headerName:'Country 5',
+      width:150,
+      renderCell:(params)=>{
+        return(
+          <div>
+            {params.row?.country5_name ? (
+              <>
+                {params.row.country5_name} &nbsp;{" "}
+                {params.row.percentage_country5_name}
+              </>
+            ) : (
+              "NA"
+            )}
+          </div>
+        )
+      }
+    },
+    {
       field: "male_percent",
       headerName: "Male %",
       width: 150,
