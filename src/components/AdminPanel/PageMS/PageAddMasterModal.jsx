@@ -125,7 +125,7 @@ export default function PageAddMasterModal() {
     } else if (modalType === "Category") {
       delete obj.updated_by;
       delete obj.profile_type;
-      obj.page_category = data.name;
+      obj.category_name = data.name;
       addCategory(obj)
         .unwrap()
         .then(() => {
@@ -138,7 +138,7 @@ export default function PageAddMasterModal() {
     } else if (modalType === "Category Update") {
       delete obj.updated_by;
       delete obj.profile_type;
-      obj.page_category = data.name;
+      obj.category_name = data.name;
       updateCategory(obj)
         .unwrap()
         .then(() => {
@@ -289,15 +289,19 @@ export default function PageAddMasterModal() {
               helperText={errors.name?.message}
               error={Boolean(errors.name)}
             />
-            <TextField
-              autoFocus
-              margin="dense"
-              id="description"
-              label="Description"
-              type="text"
-              fullWidth
-              {...register("description")}
-            />
+            {!modalType == "category" ||
+              !modalType == "Add Category" ||
+              (!modalType == "Category" && (
+                <TextField
+                  autoFocus
+                  margin="dense"
+                  id="description"
+                  label="Description"
+                  type="text"
+                  fullWidth
+                  {...register("description")}
+                />
+              ))}
             <DialogActions>
               <Button autoFocus type="submit">
                 submit

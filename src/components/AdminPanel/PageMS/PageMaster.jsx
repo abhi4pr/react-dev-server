@@ -536,14 +536,14 @@ const PageMaster = () => {
                     className="w-100"
                     options={categoryData.map((option) => ({
                       value: option._id,
-                      label: option.page_category,
+                      label: option.category_name,
                     }))}
                     required={true}
                     value={{
                       value: categoryId,
                       label:
                         categoryData.find((role) => role._id === categoryId)
-                          ?.page_category || "",
+                          ?.category_name || "",
                     }}
                     onChange={(e) => {
                       setCategoryId(e.value);
@@ -586,7 +586,7 @@ const PageMaster = () => {
                   isMulti
                   options={categoryData.map((option) => ({
                     value: option._id,
-                    label: option.page_category,
+                    label: option.category_name,
                   }))}
                   required={true}
                   value={tag}
@@ -1107,7 +1107,7 @@ const PageMaster = () => {
                         );
                       }}
                     >
-                      <i class="bi bi-x-lg"></i>
+                      <i className="bi bi-x-lg"></i>
                     </button>
                   )}
                 </div>
@@ -1119,7 +1119,7 @@ const PageMaster = () => {
               onClick={addPriceRow}
               className="btn tableIconBtn btn-outline-primary w-auto"
             >
-              <i class="bi bi-plus-lg"></i>
+              <i className="bi bi-plus-lg"></i>
             </button>
           </div>
           <div className="row thm_form">
@@ -1140,7 +1140,7 @@ const PageMaster = () => {
         </div>
       </div>
       <PageAddMasterModal />
-      <PageInfoModal />
+      {pageInfoModlaOpen && <PageInfoModal />}
       {vendorInfoModalOpen && <VendorTypeInfoModal />}
       <AddVendorModal />
     </>
