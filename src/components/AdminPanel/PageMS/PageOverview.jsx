@@ -544,7 +544,11 @@ const PageOverview = () => {
       renderCell: (params) => {
         let name = params.row.page_name;
         return (
-          <Link target="__black" to={params.row.page_link} className="link-primary">
+          <Link
+            target="__black"
+            to={params.row.page_link}
+            className="link-primary"
+          >
             {name}
           </Link>
         );
@@ -584,8 +588,7 @@ const PageOverview = () => {
       headerName: "Category",
       width: 200,
       renderCell: (params) => {
-
-        console.log( params.row.page_category_id, "params.row.page_category_id")
+        console.log(params.row.page_category_id, "params.row.page_category_id");
         let name = cat?.find(
           (item) => item?._id == params.row?.page_category_id
         )?.category_name;
@@ -666,7 +669,7 @@ const PageOverview = () => {
                   style={{ display: "inline", cursor: "pointer" }}
                 >
                   {item}
-                  {i !== data.length - 1 && ","}
+                  {i !== data?.length - 1 && ","}
                 </p>
               );
             })}
@@ -871,7 +874,7 @@ const PageOverview = () => {
       width: 150,
       headerName: "Stats Update",
       renderCell: (params) => {
-        console.log(params.row.pageId)
+        console.log(params.row.pageId);
         return (
           params.row?.pageId && (
             <Link
@@ -1000,8 +1003,8 @@ const PageOverview = () => {
       valueGetter: (params) => {
         let data = params.row?.city1_name;
         let percentage = params.row?.percentage_city1_name;
-        return data ? data + ` (${percentage}%)`  : "NA";
-      }
+        return data ? data + ` (${percentage}%)` : "NA";
+      },
     },
     {
       field: "city2_name",
@@ -1010,7 +1013,7 @@ const PageOverview = () => {
       valueGetter: (params) => {
         let data = params.row?.city2_name;
         let percentage = params.row?.percentage_city2_name;
-        return data ? data + `(${percentage}%)`: "NA";
+        return data ? data + `(${percentage}%)` : "NA";
       },
     },
     {
@@ -1020,7 +1023,7 @@ const PageOverview = () => {
       valueGetter: (params) => {
         let data = params.row?.city3_name;
         let percentage = params.row?.percentage_city3_name;
-        return data ? data + `(${percentage}%)`: "NA";
+        return data ? data + `(${percentage}%)` : "NA";
       },
     },
     {
@@ -1030,7 +1033,7 @@ const PageOverview = () => {
       renderCell: (params) => {
         let data = params.row?.city4_name;
         let percentage = params.row?.percentage_city4_name;
-        return data ? data + `(${percentage}%)`: "NA";
+        return data ? data + `(${percentage}%)` : "NA";
       },
     },
     {
@@ -1040,7 +1043,7 @@ const PageOverview = () => {
       renderCell: (params) => {
         let data = params.row?.city5_name;
         let percentage = params.row?.percentage_city5_name;
-        return data ? data + `(${percentage}%)`: "NA";
+        return data ? data + `(${percentage}%)` : "NA";
       },
     },
     {
@@ -1063,7 +1066,7 @@ const PageOverview = () => {
       renderCell: (params) => {
         let data = params.row?.country1_name;
         let percentage = params.row?.percentage_country1_name;
-        return data ? data + `(${percentage})%`: "NA";
+        return data ? data + `(${percentage})%` : "NA";
       },
     },
     {
@@ -1073,7 +1076,7 @@ const PageOverview = () => {
       renderCell: (params) => {
         let data = params.row?.country2_name;
         let percentage = params.row?.percentage_country2_name;
-        return data ? data + `(${percentage}%)`: "NA";
+        return data ? data + `(${percentage}%)` : "NA";
       },
     },
     {
@@ -1083,7 +1086,7 @@ const PageOverview = () => {
       renderCell: (params) => {
         let data = params.row?.country3_name;
         let percentage = params.row?.percentage_country3_name;
-        return data ? data + `(${percentage}%)`: "NA";
+        return data ? data + `(${percentage}%)` : "NA";
       },
     },
     {
@@ -1093,7 +1096,7 @@ const PageOverview = () => {
       renderCell: (params) => {
         let data = params.row?.country4_name;
         let percentage = params.row?.percentage_country4_name;
-        return data ? data + `(${percentage}%)`: "NA";
+        return data ? data + `(${percentage}%)` : "NA";
       },
     },
     {
@@ -1103,7 +1106,7 @@ const PageOverview = () => {
       renderCell: (params) => {
         let data = params.row?.country5_name;
         let percentage = params.row?.percentage_country5_name;
-        return data ? data + `(${percentage}%)`: "NA";
+        return data ? data + `(${percentage}%)` : "NA";
       },
     },
     {
@@ -1159,7 +1162,7 @@ const PageOverview = () => {
         );
       },
     },
-  
+
     {
       field: "impression",
       width: 150,
@@ -1389,7 +1392,7 @@ const PageOverview = () => {
               color="primary"
             />
             <Typography>Page Health</Typography>
-            <Typography>: {filterData.length}</Typography>
+            <Typography>: {filterData?.length}</Typography>
           </h5>
           <div className="flexCenter colGap8">
             <Link
@@ -1415,7 +1418,7 @@ const PageOverview = () => {
                 getOptionLabel={(option) => {
                   const count = vendorTypes.filter(
                     (d) => d.platform_id == option._id
-                  ).length;
+                  )?.length;
                   return `${option.platform_name} (${count})`;
                 }}
                 style={{ width: 270 }}
@@ -1448,7 +1451,7 @@ const PageOverview = () => {
                 getOptionLabel={(option) => {
                   const count = vendorTypes.filter(
                     (d) => d.ownership_type == option
-                  ).length;
+                  )?.length;
                   return `${option} (${count})`;
                 }}
                 style={{ width: 270 }}
@@ -1484,7 +1487,7 @@ const PageOverview = () => {
                 getOptionLabel={(option) => {
                   const count = vendorTypes.filter(
                     (d) => d.page_status == option
-                  ).length;
+                  )?.length;
                   return `${option} (${count})`;
                 }}
                 style={{ width: 270 }}
@@ -1520,7 +1523,7 @@ const PageOverview = () => {
                 getOptionLabel={(option) => {
                   const count = vendorTypes.filter(
                     (d) => d.page_name_type == option
-                  ).length;
+                  )?.length;
                   return `${option} (${count})`;
                 }}
                 style={{ width: 270 }}
@@ -1557,7 +1560,7 @@ const PageOverview = () => {
                   const users = user?.find((e) => e.user_id == option);
                   const count = vendorTypes.filter(
                     (d) => d.page_closed_by == option
-                  ).length;
+                  )?.length;
                   return `${users?.user_name} (${count})`;
                 }}
                 style={{ width: 270 }}
@@ -1590,7 +1593,7 @@ const PageOverview = () => {
                   const category = cat?.find((e) => e._id == option);
                   const count = vendorTypes.filter(
                     (d) => d.page_catg_id == option
-                  ).length;
+                  )?.length;
                   return `${category?.page_category} (${count})`;
                 }}
                 style={{ width: 270 }}
@@ -1598,14 +1601,15 @@ const PageOverview = () => {
                   <TextField {...params} label="Category" variant="outlined" />
                 )}
                 onChange={(event, newValue) => {
-                if(newValue === null){
-                  setFilterData(vendorTypes);
-                }else{
-                  let result = vendorTypes.filter(
-                    (d) => d.page_catg_id == newValue
-                  );
-                  setFilterData(result);
-                }}}
+                  if (newValue === null) {
+                    setFilterData(vendorTypes);
+                  } else {
+                    let result = vendorTypes.filter(
+                      (d) => d.page_catg_id == newValue
+                    );
+                    setFilterData(result);
+                  }
+                }}
               />
             </div>
             <div className="col-md-3 mb4">
@@ -1621,7 +1625,7 @@ const PageOverview = () => {
                 getOptionLabel={(option) => {
                   const count = vendorTypes.filter(
                     (d) => d.ownership_type == option
-                  ).length;
+                  )?.length;
                   return `${option} (${count})`;
                 }}
                 style={{ width: 270 }}
@@ -1629,14 +1633,15 @@ const PageOverview = () => {
                   <TextField {...params} label="Ownership" variant="outlined" />
                 )}
                 onChange={(event, newValue) => {
-               if(newValue === null){
-                 setFilterData(vendorTypes);
-                }else{
-                  let result = vendorTypes.filter(
-                    (d) => d.ownership_type == newValue
-                  );
-                  setFilterData(result);
-                }}}
+                  if (newValue === null) {
+                    setFilterData(vendorTypes);
+                  } else {
+                    let result = vendorTypes.filter(
+                      (d) => d.ownership_type == newValue
+                    );
+                    setFilterData(result);
+                  }
+                }}
               />
             </div>
           </div>

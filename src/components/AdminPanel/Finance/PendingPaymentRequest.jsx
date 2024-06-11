@@ -1740,7 +1740,7 @@ export default function PendingPaymentRequest() {
       label: "invc_img",
       header: "Invoice Image",
       action: (row) => {
-        if (row.invc_img) {
+        if (!row.invc_img) {
           return "No Image";
         }
         // Extract file extension and check if it's a PDF

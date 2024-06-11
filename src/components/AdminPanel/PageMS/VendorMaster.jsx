@@ -7,6 +7,7 @@ import { baseUrl } from "../../../utils/config";
 import jwtDecode from "jwt-decode";
 import { Navigate } from "react-router";
 import Select from "react-select";
+import authBaseQuery from "../../../utils/authBaseQuery";
 import {
   Autocomplete,
   Box,
@@ -56,6 +57,10 @@ const VendorMaster = () => {
   const { data: countryCodeData } = useGetCountryCodeQuery();
 
   const countries = countryCodeData?.data;
+
+  const token = sessionStorage.getItem("token");
+  const decodedToken = jwtDecode(token);
+  const userID = decodedToken.id;
 
   const { _id } = useParams();
   const dispatch = useDispatch();
@@ -286,7 +291,6 @@ const VendorMaster = () => {
     if (_id) {
       axios.get(baseUrl + `v1/vendor/${_id}`).then((res) => {
         const data = res.data.data;
-        console.log(data, "data------------");
         setVendorName(data.vendor_name);
         setCountryCode(data.country_code);
         setMobile(data.mobile);
@@ -323,20 +327,31 @@ const VendorMaster = () => {
         setVendorCategory(data.vendor_category);
       });
 
-      axios.get(baseUrl + `v1/bank_details_by_vendor_id/${_id}`).then((res) => {
-        const data = res.data.data;
-        setBankRows(data);
-      });
+      axios
+        .get(baseUrl + `v1/bank_details_by_vendor_id/${_id}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json", // Adjust content type as needed
+          },
+        })
+        .then((res) => {
+          const data = res.data.data;
+          setBankRows(data);
+        });
 
       axios
-        .get(baseUrl + `v1/vendor_group_link_vendor_id/${_id}`)
+        .get(baseUrl + `v1/vendor_group_link_vendor_id/${_id}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json", // Adjust content type as needed
+          },
+        })
         .then((res) => {
           const data = res.data?.data;
           setWhatsappLink(data);
         });
     }
   }, [_id]);
-  console.log(panImage, "PAN IMG----");
   const addLink = () => {
     setWhatsappLink([
       ...whatsappLink,
@@ -374,9 +389,6 @@ const VendorMaster = () => {
     };
   };
 
-  const token = sessionStorage.getItem("token");
-  const decodedToken = jwtDecode(token);
-  const userID = decodedToken.id;
   const [mobileValid, setMobileValid] = useState(false);
   // const handleMobileNumSet = (e, setState) => {
   //   const re = /^[0-9\b]+$/;
@@ -589,7 +601,12 @@ const VendorMaster = () => {
     if (!_id) {
       setIsFormSubmitting(true);
       axios
-        .post(baseUrl + "v1/vendor", formData)
+        .post(baseUrl + "v1/vendor", formData, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json", // Adjust content type as needed
+          },
+        })
         .then(() => {
           setIsFormSubmitted(true);
           toastAlert("Data Submitted Successfully");
@@ -604,7 +621,8 @@ const VendorMaster = () => {
       axios
         .put(baseUrl + `v1/vendor/${_id}`, formData, {
           headers: {
-            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json", // Adjust content type as needed
           },
         })
         .then(() => {
@@ -653,7 +671,6 @@ const VendorMaster = () => {
   if (isFormSubmitted) {
     return <Navigate to="/admin/pms-vendor-overview" />;
   }
-  console.log(panImage, "PanImage-----------------");
   return (
     <>
       <FormContainer
