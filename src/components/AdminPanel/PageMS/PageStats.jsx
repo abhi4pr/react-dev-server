@@ -19,10 +19,7 @@ import handlePercentage from "../../../utils/Percentage";
 // import ReactApexChart from "react-apexcharts";
 
 export default function PageStats() {
-  const update = useSelector((state) => state.pageMaster.statsUpdate);
-
   const navitage = useNavigate();
-
   const [reachImageURL, setReachImageURL] = useState("");
   const [impressionImageURL, setImpressionImageURL] = useState("");
   const [engagementImageURL, setEngagementImageURL] = useState("");
@@ -54,7 +51,7 @@ export default function PageStats() {
   const userID = decodedToken.id;
   const { data: cities } = useGetAllCitiesQuery();
   const { id } = useParams();
-  const { data: pageStateData } = useGetPageStateByIdQuery(id);
+  const { data: pageStateData ,isLoading:pageStateDataIsLoaidng } = useGetPageStateByIdQuery(id);
   const countryList = Country.getAllCountries();
   const {
     register,
@@ -283,7 +280,9 @@ export default function PageStats() {
         >
           <div className="card">
             <div className="card-body flexCenterBetween">
-              <h5 className="card-title">Stats History</h5>
+              <h5 className="card-title">
+                {!pageStateDataIsLoaidng&&!pageStateData?._id ? "Add" : "Update"}    Stats
+              </h5>
               {/* <div className="form-group flexCenter colGap8 w-40 m0">
                 <label className="w-25 m0">Stats for</label>
                 <select
@@ -389,6 +388,7 @@ export default function PageStats() {
                       <label className="btn iconBtn btn-outline-border">
                         <input
                           type="file"
+                          accept="image/*"
                           style={{ display: "none" }}
                           {...register("reachImage")}
                           onInputCapture={(event) =>
@@ -442,6 +442,7 @@ export default function PageStats() {
                       <label className="btn iconBtn btn-outline-border">
                         <input
                           type="file"
+                          accept="image/*"
                           style={{ display: "none" }}
                           {...register("impressionsImage")}
                           onInputCapture={(event) =>
@@ -481,6 +482,7 @@ export default function PageStats() {
                     <div className="input-group">
                       <input
                         type="text"
+                        accept="image/*"
                         className="form-control"
                         {...register("engagement", {
                           // required: "Please Select The Engagement ",
@@ -499,6 +501,7 @@ export default function PageStats() {
                       <label className="btn iconBtn btn-outline-border">
                         <input
                           type="file"
+                          accept="image/*"
                           style={{ display: "none" }}
                           {...register("engagementImage")}
                           onInputCapture={(event) =>
@@ -538,6 +541,7 @@ export default function PageStats() {
                     <div className="input-group">
                       <input
                         type="text"
+                        accept="image/*"
                         className="form-control"
                         {...register("storyView", {
                           required: "Please Enter Valid Story View",
@@ -555,6 +559,7 @@ export default function PageStats() {
                       <label className="btn iconBtn btn-outline-border">
                         <input
                           type="file"
+                          accept="image/*"
                           style={{ display: "none" }}
                           {...register("storyViewImage")}
                           onInputCapture={(event) =>
@@ -684,6 +689,7 @@ export default function PageStats() {
                     <div className="form-group flex-row">
                       <input
                         type="file"
+                        accept="image/*"
                         id="cityFileInput"
                         style={{ display: "none" }}
                         {...register("cityImage")}
@@ -794,6 +800,7 @@ export default function PageStats() {
                     </button> */}
                     <input
                       type="file"
+                      accept="image/*"
                       id="countryFileInput"
                       style={{ display: "none" }}
                       {...register("countryImage")}
@@ -948,6 +955,7 @@ export default function PageStats() {
                     </button> */}
                     <input
                       type="file"
+                      accept="image/*"
                       id="ageFileInput"
                       style={{ display: "none" }}
                       {...register("ageGroupImage")}

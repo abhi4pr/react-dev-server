@@ -37,7 +37,8 @@ export const PageBaseURL = createApi({
     }),
     getAllPageCategory: builder.query({
       // query: () => `getPageCatgList`,
-      query: () => `v1/page_category`,
+      // query: () => `v1/page_category`,
+      query: () => `projectxpagecategory`,
       providesTags: ["categoryList"],
     }),
     updatePageCategory: builder.mutation({

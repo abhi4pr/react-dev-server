@@ -46,16 +46,16 @@ export default function PageInfoModal() {
     refetch: refetchProfileList,
   } = useGetAllProfileListQuery();
 
-  useEffect(() => {
-    if(open==true){
-    if (modalType === "Profile Type Info") {
-      return refetchProfileList();
-    } else if (modalType === "Category Info") {
-      refetchCategoryList();
-    } else if (modalType === "Price Type Info") {
-      refetchPriceList();
-    }}  
-  }, []);
+  // useEffect(() => {
+  //   if(open==true){
+  //   if (modalType === "Profile Type Info") {
+  //     return refetchProfileList();
+  //   } else if (modalType === "Category Info") {
+  //     refetchCategoryList();
+  //   } else if (modalType === "Price Type Info") {
+  //     refetchPriceList();
+  //   }}  
+  // }, []);
 
   const {
     data: categoryList,
@@ -140,29 +140,29 @@ export default function PageInfoModal() {
     },
     {
       name: "Page Category Name",
-      selector: (row) => row.page_category,
+      selector: (row) => row.category_name,
     },
-    {
-      name: "Description",
-      selector: (row) => row.description,
-    },
-    {
-      name: "Action",
-      cell: (row) => (
-        <>
-          <button
-            title="Edit"
-            className="btn btn-outline-primary btn-sm user-button"
-            onClick={() => handlRowClick(row, "Category Update")}
-            data-toggle="modal"
-            data-target="#myModal"
-          >
-            <FaEdit />{" "}
-          </button>
-          <DeleteButton endpoint="deletePage" id={row._id} getData={getData} />
-        </>
-      ),
-    },
+    // {
+    //   name: "Description",
+    //   selector: (row) => row.description,
+    // },
+      // {
+      //   name: "Action",
+      //   cell: (row) => (
+      //     <>
+      //       <button
+      //         title="Edit"
+      //         className="btn btn-outline-primary btn-sm user-button"
+      //         onClick={() => handlRowClick(row, "Category Update")}
+      //         data-toggle="modal"
+      //         data-target="#myModal"
+      //       >
+      //         <FaEdit />{" "}
+      //       </button>
+      //       <DeleteButton endpoint="deletePage" id={row._id} getData={getData} />
+      //     </>
+      //   ),
+      // },
   ];
 
   const priceTypeColumn = [
@@ -247,15 +247,6 @@ export default function PageInfoModal() {
             fixedHeaderScrollHeight="64vh"
             highlightOnHover
             subHeader
-            // subHeaderComponent={
-            //   <input
-            //     type="text"
-            //     placeholder="Search Here"
-            //     className="w-50 form-control"
-            //     value={search}
-            //     onChange={(e) => setSearch(e.target.value)}
-            //   />
-            // }
           />
         </DialogContent>
         <DialogActions>
