@@ -1,14 +1,17 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { baseUrl } from "../../utils/config";
+import authBaseQuery from "../../utils/authBaseQuery";
 
 export const reduxBaseURL = createApi({
-  baseQuery: fetchBaseQuery({ baseUrl: baseUrl }),
+  // baseQuery: fetchBaseQuery({ baseUrl: baseUrl }),
+  baseQuery: authBaseQuery,
   tagTypes: [
     "addVendor",
     "addPaycycle",
     "addPlatform",
     "addPayMethod",
     "whatsappLinkType",
+    "addBankName",
   ],
   endpoints: (builder) => ({
     getnotAssignedVendors: builder.query({
@@ -166,6 +169,7 @@ export const reduxBaseURL = createApi({
       query: () => `v1/bank_name`,
       providesTags: ["addBankName"],
     }),
+
     addBankNameDetail: builder.mutation({
       query: (data) => ({
         // url: `addPayCycle`,
@@ -175,6 +179,7 @@ export const reduxBaseURL = createApi({
       }),
       invalidatesTags: ["addBankName"],
     }),
+
     updateBankNameDetail: builder.mutation({
       query: (data) => ({
         // url: `updatePayCycle/${data._id}`,

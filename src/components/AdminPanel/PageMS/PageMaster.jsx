@@ -42,6 +42,11 @@ const PageMaster = () => {
   const pageInfoModlaOpen = useSelector(
     (state) => state.pageMaster.showInfoModal
   );
+
+  const token = sessionStorage.getItem("token");
+  const decodedToken = jwtDecode(token);
+  const userID = decodedToken.id;
+
   const { toastAlert, toastError } = useGlobalContext();
   const [pageName, setPageName] = useState("");
   const [link, setLink] = useState("");
@@ -102,9 +107,6 @@ const PageMaster = () => {
   const [rowCount, setRowCount] = useState([
     { page_price_type_id: "", price: "" },
   ]);
-  const token = sessionStorage.getItem("token");
-  const decodedToken = jwtDecode(token);
-  const userID = decodedToken.id;
 
   const dispatch = useDispatch();
 
@@ -176,9 +178,16 @@ const PageMaster = () => {
   };
 
   const getData = () => {
-    axios.get(baseUrl + "get_all_users").then((res) => {
-      setUserData(res.data.data);
-    });
+    axios
+      .get(baseUrl + "get_all_users", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json", // Adjust content type as needed
+        },
+      })
+      .then((res) => {
+        setUserData(res.data.data);
+      });
   };
   const [ownerShipData, setOwnerShipData] = useState([]);
   const getOwnershipData = () => {
@@ -215,8 +224,14 @@ const PageMaster = () => {
       setPriceTypeList([]);
       let priceData = platformData.find((role) => role._id == platformId)?._id;
       axios
-        .get(baseUrl + `v1/pagePriceTypesForPlatformId/${priceData}`)
+        .get(baseUrl + `v1/pagePriceTypesForPlatformId/${priceData}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json", // Adjust content type as needed
+          },
+        })
         .then((res) => {
+          console.log(priceData, "priceData", res);
           setPriceTypeList(res.data.data);
           setFilterPriceTypeList(res.data.data);
         });
@@ -331,10 +346,15 @@ const PageMaster = () => {
     };
 
     axios
-      .post(baseUrl + "v1/pageMaster", payload)
+      .post(baseUrl + "v1/pageMaster", payload, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json", // Adjust content type as needed
+        },
+      })
       .then(() => {
         setIsFormSubmitted(true);
-        toastAlert("Submitted");
+        toastAlert(" Data Submitted Successfully");
       })
       .catch((error) => {
         toastError(error.response.data.message);
@@ -379,7 +399,7 @@ const PageMaster = () => {
 
   const val = variableType.value === "Per Thousand" ? 1000 : 1000000;
   const FollowerCountCalcualtion = (followCount / val) * rowCount[0]?.price;
-
+  console.log(filterPriceTypeList, "filterPriceTypeList--------------------");
   return (
     <>
       <FormContainer
@@ -1054,17 +1074,17 @@ const PageMaster = () => {
                     <div className="input-group inputAddGroup">
                       <Select
                         className="w-100"
-                        options={filterPriceTypeList.map((option) => ({
+                        options={filterPriceTypeList?.map((option) => ({
                           value: option._id,
                           label: option.name,
                         }))}
                         required={true}
                         value={{
-                          label: priceTypeList.find(
+                          label: priceTypeList?.find(
                             (role) =>
-                              role._id === rowCount[index].page_price_type_id
+                              role._id === rowCount[index]?.page_price_type_id
                           )?.name,
-                          value: rowCount[index].page_price_type_id,
+                          value: rowCount[index]?.page_price_type_id,
                         }}
                         onChange={(e) => handlePriceTypeChange(e, index)}
                       />
