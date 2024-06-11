@@ -15,6 +15,7 @@ import {
 import DataTable from "react-data-table-component";
 import {
   useGetAllVendorTypeQuery,
+  useGetBankNameDetailQuery,
   useGetPmsPayCycleQuery,
   useGetPmsPaymentMethodQuery,
   useGetPmsPlatformQuery,
@@ -71,6 +72,13 @@ export default function VendorTypeInfoModal() {
     refetch: whatsappLinkRefetch,
   } = useGetVendorWhatsappLinkTypeQuery();
 
+  const {
+    data: bankNameData,
+    isLoading: bankNameIsLoading,
+    error: bankNameError,
+    refetch: bankNameRefetch,
+  } = useGetBankNameDetailQuery();
+
   const handleClose = () => {
     dispatch(handleChangeVendorInfoModal());
   };
@@ -105,6 +113,12 @@ export default function VendorTypeInfoModal() {
     dispatch(setVendorRowData(row));
   };
 
+  const handleBankNameRowData = (row) => {
+    dispatch(setShowAddVendorModal());
+    dispatch(setModalType("UpdateBankName"));
+    dispatch(setVendorRowData(row));
+  };
+
   const getData = () => {
     if (modalType == "Vendor") {
       vendorRefetch();
@@ -116,6 +130,8 @@ export default function VendorTypeInfoModal() {
       payCycleRefetch();
     } else if (modalType == "WhatsappLinkType") {
       whatsappLinkRefetch();
+    } else if (modalType == "BankName") {
+      bankNameRefetch();
     }
     handleClose();
   };
@@ -134,7 +150,7 @@ export default function VendorTypeInfoModal() {
       name: "Description",
       selector: (row) => row.description,
     },
-   
+
     {
       name: "Action",
       cell: (row) => (
@@ -172,7 +188,7 @@ export default function VendorTypeInfoModal() {
       name: "Description",
       selector: (row) => row.description,
     },
-   
+
     {
       name: "Action",
       cell: (row) => (
@@ -211,7 +227,7 @@ export default function VendorTypeInfoModal() {
       name: "Description",
       selector: (row) => row.description,
     },
-   
+
     {
       name: "Action",
       cell: (row) => (
@@ -249,7 +265,7 @@ export default function VendorTypeInfoModal() {
       name: "Description",
       selector: (row) => row.description,
     },
-   
+
     {
       name: "Action",
       cell: (row) => (
@@ -283,7 +299,7 @@ export default function VendorTypeInfoModal() {
       name: "Description",
       selector: (row) => row.description,
     },
-    
+
     {
       name: "Action",
       cell: (row) => (
@@ -306,6 +322,45 @@ export default function VendorTypeInfoModal() {
       ),
     },
   ];
+
+  const bankNameColumns = [
+    {
+      name: "S.NO",
+      selector: (row, index) => <div>{index + 1}</div>,
+      sortable: true,
+    },
+    {
+      name: "Bank Name",
+      selector: (row) => row.bank_name,
+    },
+    {
+      name: "Description",
+      selector: (row) => row.description,
+    },
+
+    {
+      name: "Action",
+      cell: (row) => (
+        <>
+          <button
+            title="Edit"
+            className="btn btn-outline-primary btn-sm user-button"
+            onClick={() => handleBankNameRowData(row)}
+            data-toggle="modal"
+            data-target="#myModal"
+          >
+            <FaEdit />{" "}
+          </button>
+          <DeleteButton
+            endpoint="v1/bank_name"
+            id={row._id}
+            getData={getData}
+          />
+        </>
+      ),
+    },
+  ];
+
   useEffect(() => {
     if (modalType == "Vendor") {
       vendorRefetch();
@@ -337,6 +392,12 @@ export default function VendorTypeInfoModal() {
       setTitle("Whatsapp Link Type Overview");
       setData(whatsappLinkData);
       setLoading(whatsappLinkIsLoading);
+    } else if (modalType == "BankName") {
+      bankNameRefetch();
+      setColumns(bankNameColumns);
+      setTitle("Bank Name Overview");
+      setData(bankNameData);
+      setLoading(bankNameIsLoading);
     }
   }, [modalType]);
 

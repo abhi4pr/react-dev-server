@@ -9,6 +9,7 @@ export const reduxBaseURL = createApi({
     "addPlatform",
     "addPayMethod",
     "whatsappLinkType",
+    "addBankName",
   ],
   endpoints: (builder) => ({
     getnotAssignedVendors: builder.query({
@@ -166,6 +167,7 @@ export const reduxBaseURL = createApi({
       query: () => `v1/bank_name`,
       providesTags: ["addBankName"],
     }),
+
     addBankNameDetail: builder.mutation({
       query: (data) => ({
         // url: `addPayCycle`,
@@ -175,6 +177,7 @@ export const reduxBaseURL = createApi({
       }),
       invalidatesTags: ["addBankName"],
     }),
+    
     updateBankNameDetail: builder.mutation({
       query: (data) => ({
         // url: `updatePayCycle/${data._id}`,

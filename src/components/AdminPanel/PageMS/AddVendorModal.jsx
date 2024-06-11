@@ -58,6 +58,7 @@ export default function AddVendorModal() {
   const decodedToken = jwtDecode(token);
   const userID = decodedToken.id;
   const modalType = useSelector((state) => state.vendorMaster.modalType);
+  console.log(modalType, "modal type-------------");
   const [title, setTitle] = useState("");
 
   useEffect(() => {
@@ -76,7 +77,7 @@ export default function AddVendorModal() {
     } else if (venodrRowData?.link_type) {
       setValue("typeName", venodrRowData.link_type);
       setValue("description", venodrRowData.description);
-    } else if (venodrRowData?.link_type) {
+    } else if (venodrRowData?.bank_name) {
       setValue("typeName", venodrRowData.bank_name);
       setValue("description", venodrRowData.description);
     }
@@ -261,7 +262,7 @@ export default function AddVendorModal() {
       delete obj.type_name;
       delete obj.created_by;
       obj.id = venodrRowData._id;
-      obj.link_type = data.typeName;
+      obj.bank_name = data.typeName;
       obj.last_updated_by = userID;
       addBankName(obj)
         .unwrap()
@@ -276,11 +277,11 @@ export default function AddVendorModal() {
         .catch((err) => {
           toastError(err.message);
         });
-    } else if (modalType == "addBankName") {
+    } else if (modalType == "UpdateBankName") {
       delete obj.type_name;
       delete obj.created_by;
       obj.id = venodrRowData._id;
-      obj.link_type = data.typeName;
+      obj.bank_name = data.typeName;
       obj.last_updated_by = userID;
       updateBankName(obj)
         .unwrap()
@@ -317,8 +318,10 @@ export default function AddVendorModal() {
       setTitle("Update Payment Cycle");
     } else if (modalType == "WhatsappLinkType") {
       setTitle("Add Whatsapp Link Type");
-    } else if (modalType == "addBankName") {
+    } else if (modalType == "bankName") {
       setTitle("Add Bank Name Type");
+    } else if (modalType == "updateBankName") {
+      setTitle("update Bank Name Type");
     }
   }, [modalType]);
 
