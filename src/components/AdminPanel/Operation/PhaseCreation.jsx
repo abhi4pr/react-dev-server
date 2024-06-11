@@ -1,5 +1,3 @@
-import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import FormContainer from "../FormContainer";
 import axios from "axios";
 import { DataGrid, GridExpandMoreIcon } from "@mui/x-data-grid";
@@ -9,56 +7,66 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { baseUrl } from "../../../utils/config";
 import { useGlobalContext } from "../../../Context/Context";
-import { Tabs, Tab, Box, Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
-import Modal from '@mui/material/Modal';
+import {
+  Tabs,
+  Tab,
+  Box,
+  Typography,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+} from "@mui/material";
+import Modal from "@mui/material/Modal";
 import Select from "react-select";
 
 const style = {
-  position: 'absolute',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
   width: 400,
-  bgcolor: 'background.paper',
-  border: '2px solid #000',
+  bgcolor: "background.paper",
+  border: "2px solid #000",
   boxShadow: 24,
   p: 4,
 };
 
 const PhaseCreation = () => {
-  const navigate = useNavigate();
   const param = useParams();
   const id = param.id;
-
-  const { toastAlert, toastError } = useGlobalContext();
   const [phaseDiscription, setPhaseDiscription] = useState("");
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
-  const [selectedRows, setSelectedRows] = useState([])
-  const [phaseName, setPhaseName] = useState('')
-  const [campaignDetails, setCampaignDetails] = useState({})
-  const [planData, setPlanData] = useState([])
-  const [payloadData, setPayloadData] = useState({})
-  const [phaseData, setPhaseData] = useState([])
+  const [selectedRows, setSelectedRows] = useState([]);
+  const [phaseName, setPhaseName] = useState("");
+  const [campaignDetails, setCampaignDetails] = useState({});
+  const [planData, setPlanData] = useState([]);
+  const [payloadData, setPayloadData] = useState({});
+  const [phaseData, setPhaseData] = useState([]);
   const [tabIndex, setTabIndex] = useState(0);
   const [open, setOpen] = useState(false);
-  const [newPids, setNewPids] = useState([])
-  const [replacePages, setReplacePages] = useState([])
-  const [replaceId, setReplaceId] = useState('')
-
-  const handleOpen = (page) => {
+  const [newPids, setNewPids] = useState([]);
+  const [replacePages, setReplacePages] = useState([]);
+  const [replaceId, setReplaceId] = useState("");
+  const handleOpen = (page,phaseName) => {
+    console.log('qqqqq',phaseName)
     setOpen(true);
-    setReplaceId(page)
-  }
+    setReplaceId(page);
+    setPhaseName(phaseName);
+  };
   const handleClose = () => setOpen(false);
 
   const getCampaignDetails = async () => {
     try {
-      const forPayload = await axios.get(baseUrl + `opcampaign/${id}`)
-      setPayloadData(forPayload.data[0])
+      const forPayload = await axios.get(baseUrl + `opcampaign/${id}`);
+      setPayloadData(forPayload.data[0]);
 
-      const Fdata = await axios.get(baseUrl + `opcampaignplan/${id}`)
-      setCampaignDetails(Fdata.data.data)
+      const Fdata = await axios.get(baseUrl + `opcampaignplan/${id}`);
+      setCampaignDetails(Fdata.data.data);
 
       const campaignPIds = Fdata.data.data.map((campaign) => campaign.p_id);
 
@@ -79,7 +87,6 @@ const PhaseCreation = () => {
       }));
 
       setPlanData(newData);
-
       const filteredInventoryDataN = inventoryDataResponse.data.body.filter(
         (item) => !campaignPIds.includes(item.p_id)
       );
@@ -92,12 +99,11 @@ const PhaseCreation = () => {
         page_link: item.page_link,
       }));
 
-      setReplacePages(newDataN)
-    
+      setReplacePages(newDataN);
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
-  }
+  };
 
   const getPhaseDetails = async () => {
     try {
@@ -107,7 +113,7 @@ const PhaseCreation = () => {
         if (!acc[phaseName]) {
           acc[phaseName] = {
             phaseName,
-            pages: []
+            pages: [],
           };
         }
         acc[phaseName].pages.push(rest);
@@ -133,8 +139,8 @@ const PhaseCreation = () => {
       const pages = selectedPages.map((page) => ({
         p_id: page.p_id,
         postPerPage: page.posts_per_page || 1,
-        storyPerPage: page.story_per_page || 1
-      }))
+        storyPerPage: page.story_per_page || 1,
+      }));
 
       const postResult = await axios.post(`${baseUrl}opcampaignphase`, {
         campaignId: payloadData._id,
@@ -142,12 +148,12 @@ const PhaseCreation = () => {
         phaseName: phaseName,
         start_date: startDate,
         end_date: endDate,
-        pages: pages
-      })
+        pages: pages,
+      });
     } catch (err) {
-      console.log(err)
+      console.log(err);
     }
-  }
+  };
 
   const columns = [
     {
@@ -226,27 +232,27 @@ const PhaseCreation = () => {
         data: {
           campaignId: id,
           p_id: page.p_id,
-        }
+        },
       });
     } catch (error) {
       console.error("Error deleting page:", error);
     }
-  }
+  };
 
-  const replacePage = async(page) => {
-    try{
-      const filteredPids = newPids.map((item)=>item.value)
-      const response = await axios.post(baseUrl + `replace_phase_pages`,{
+  const replacePage = async (page) => {
+    try {
+      const filteredPids = newPids.map((item) => item.value);
+      const response = await axios.post(baseUrl + `replace_phase_pages`, {
         campaignId: id,
         old_pid: replaceId.p_id,
         new_pid: filteredPids,
-        // phaseName: phaseData[0].phaseName
-        phaseName: 'ph1'
-      })
-    }catch(err){
-      console.log(err)
+        phaseName: phaseName,
+        // phaseName: 'ph1'
+      });
+    } catch (err) {
+      console.log(err);
     }
-  }
+  };
 
   const renderPhaseTable = (phase) => (
     <TableContainer component={Paper}>
@@ -267,13 +273,21 @@ const PhaseCreation = () => {
               <TableCell>{page.page_name}</TableCell>
               <TableCell>{page.follower_count}</TableCell>
               <TableCell>
-                <a href={page.page_link} target="_blank" rel="noopener noreferrer">
+                <a
+                  href={page.page_link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
                   {page.page_link}
                 </a>
               </TableCell>
               <TableCell>{page.cat_name}</TableCell>
-              <TableCell><button onClick={()=>handleOpen(page)}>Replace</button></TableCell>
-              <TableCell><button onClick={()=>deletePage(page)}>Delete</button></TableCell>
+              <TableCell>
+                <button onClick={() => handleOpen(page, phase.phaseName)}>Replace</button>
+              </TableCell>
+              <TableCell>
+                <button onClick={() => deletePage(page)}>Delete</button>
+              </TableCell>
             </TableRow>
           ))}
         </TableBody>
@@ -281,8 +295,12 @@ const PhaseCreation = () => {
     </TableContainer>
   );
 
-  const phasePIds = phaseData.flatMap(phase => phase.pages.map(page => page.p_id));
-  const filteredPlanData = planData.filter(row => !phasePIds.includes(row.p_id));
+  const phasePIds = phaseData.flatMap((phase) =>
+    phase.pages.map((page) => page.p_id)
+  );
+  const filteredPlanData = planData.filter(
+    (row) => !phasePIds.includes(row.p_id)
+  );
 
   return (
     <>
@@ -298,7 +316,10 @@ const PhaseCreation = () => {
       >
         <Box sx={style}>
           <div className="form-group col-12">
-            <p> You Are replacing {replaceId.page_name} {replaceId.p_id} </p>
+            <p>
+              {" "}
+              You Are replacing {replaceId.page_name} {replaceId.p_id}{" "}
+            </p>
             <label className="form-label">
               With <sup className="form-error">*</sup>
             </label>
@@ -316,7 +337,7 @@ const PhaseCreation = () => {
           </div>
           <button
             className="btn btn-outline-success rounded-pill"
-            onClick={()=>replacePage()}
+            onClick={() => replacePage()}
             style={{ width: "30%" }}
           >
             Replace
@@ -324,12 +345,12 @@ const PhaseCreation = () => {
         </Box>
       </Modal>
 
-      <div style={{ display: 'inline-flex' }}>
+      <div style={{ display: "inline-flex" }}>
         <input
           type="text"
           placeholder="Phase name"
           className="form-control"
-          style={{ width: '24%' }}
+          style={{ width: "24%" }}
           value={phaseName}
           onChange={(e) => setPhaseName(e.target.value)}
         />
@@ -337,7 +358,7 @@ const PhaseCreation = () => {
           type="text"
           placeholder="Description"
           className="form-control"
-          style={{ width: '24%' }}
+          style={{ width: "24%" }}
           value={phaseDiscription}
           onChange={(e) => setPhaseDiscription(e.target.value)}
         />
@@ -345,7 +366,7 @@ const PhaseCreation = () => {
           type="date"
           placeholder="start date"
           className="form-control"
-          style={{ width: '24%' }}
+          style={{ width: "24%" }}
           value={startDate}
           onChange={(e) => setStartDate(e.target.value)}
         />
@@ -353,7 +374,7 @@ const PhaseCreation = () => {
           type="date"
           placeholder="End date"
           className="form-control"
-          style={{ width: '24%' }}
+          style={{ width: "24%" }}
           value={endDate}
           onChange={(e) => setEndDate(e.target.value)}
         />
@@ -389,8 +410,12 @@ const PhaseCreation = () => {
         </button>
       </div>
 
-      <div style={{ marginTop: '20px' }}>
-        <Tabs value={tabIndex} onChange={handleTabChange} aria-label="phase tabs">
+      <div style={{ marginTop: "20px" }}>
+        <Tabs
+          value={tabIndex}
+          onChange={handleTabChange}
+          aria-label="phase tabs"
+        >
           {phaseData.map((phase, index) => (
             <Tab key={index} label={phase.phaseName} />
           ))}
