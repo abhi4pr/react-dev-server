@@ -1,4 +1,4 @@
-import { useState, useEffect, use } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 import { useGlobalContext } from "../../../Context/Context";
 import FieldContainer from "../FieldContainer";
@@ -40,7 +40,7 @@ import { useParams } from "react-router";
 
 const PageMaster = () => {
   const { pageMast_id } = useParams();
-  console.log(pageMast_id, "pageMast id");
+
   const vendorInfoModalOpen = useSelector(
     (state) => state.vendorMaster.showVendorInfoModal
   );
@@ -126,16 +126,16 @@ const PageMaster = () => {
   const { data: vendor } = useGetAllVendorQuery();
 
   const vendorData = vendor?.data || [];
-  const { data: singlePageData, isLoading: singlePageLoading } =
+  const { data: singlePageData, isLoading: singlePageLoading, refetch:refetchSiglePageData } =
     useGetPageByIdQuery(pageMast_id ? pageMast_id : null);
 
   const { data: priceData, isLoading: isPriceLoading } =
     useGetMultiplePagePriceQuery(pageMast_id ? pageMast_id : null);
 
   useEffect(() => {
-    if (pageMast_id) {
+
       // return
-      if (!singlePageLoading) {
+      if (!singlePageLoading &&pageMast_id) {
         setPageName(singlePageData?.page_name);
         setLink(singlePageData?.page_link);
         setPlatformId(singlePageData?.platform_id);
@@ -143,30 +143,30 @@ const PageMaster = () => {
         const tags = categoryData?.filter((e) =>
           singlePageData.tags_page_category.includes(e._id)
         );
-        let tagData = tags.map((e) => ({
+        let tagData = tags?.map((e) => ({
           value: e._id,
           label: e.category_name,
         }));
         setTag(tagData);
 
-        setPageLevel(singlePageData.preference_level);
+        setPageLevel(singlePageData?.preference_level);
         if (singlePageData.status == 1) {
           setPageStatus("Active");
         } else {
           setPageStatus("Inactive");
         }
-        setCloseBy(singlePageData.page_closed_by);
-        setPageType(singlePageData.page_name_type);
-        setContent(singlePageData.content_creation);
-        setOwnerType(singlePageData.ownership_type);
+        setCloseBy(singlePageData?.page_closed_by);
+        setPageType(singlePageData?.page_name_type);
+        setContent(singlePageData?.content_creation);
+        setOwnerType(singlePageData?.ownership_type);
         setVendorId(singlePageData.vendor_id);
-        setFollowCount(singlePageData.followers_count);
-        setProfileId(singlePageData.page_profile_type_id);
+        setFollowCount(singlePageData?.followers_count);
+        setProfileId(singlePageData?.page_profile_type_id);
 
-        const platformActiveData = platformData.filter((e) =>
-          singlePageData.platform_active_on.includes(e._id)
+        const platformActiveData = platformData?.filter((e) =>
+          singlePageData?.platform_active_on.includes(e._id)
         );
-        let platformActiveDataList = platformActiveData.map((e) => ({
+        let platformActiveDataList = platformActiveData?.map((e) => ({
           value: e._id,
           label: e.platform_name,
         }));
@@ -192,7 +192,7 @@ const PageMaster = () => {
           value: singlePageData.primary_page,
           label: singlePageData.primary_page,
         });
-      }
+      
     }
   }, [pageMast_id, singlePageLoading]);
 
@@ -422,11 +422,12 @@ const PageMaster = () => {
       return axios.put(`${baseUrl}v1/pageMaster/${pageMast_id}`, payload, {
         headers: {
           Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json", // Adjust content type as needed
+          "Content-Type": "application/json", 
         },
       })
         .then(() => {
           setIsFormSubmitted(true);
+          refetchSiglePageData();
           toastAlert(" Data Updated Successfully");
         })
         .catch((error) => {
@@ -437,7 +438,7 @@ const PageMaster = () => {
         .post(baseUrl + "v1/pageMaster", payload, {
           headers: {
             Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json", // Adjust content type as needed
+            "Content-Type": "application/json", 
           },
         })
         .then(() => {
@@ -1162,9 +1163,9 @@ const PageMaster = () => {
             </div>
           </div>
           <div className="row thm_form pagePriceRow">
-            {rowCount.map((row, index) => (
+            {rowCount?.map((row, index) => (
               <>
-                <div className="col-md-6">
+                <div key={index} className="col-md-6">
                   <div className="form-group m0">
                     <label className="form-label">
                       Price Type <sup style={{ color: "red" }}>*</sup>

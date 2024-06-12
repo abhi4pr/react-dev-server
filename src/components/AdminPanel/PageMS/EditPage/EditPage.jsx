@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import FormContainer from '../../FormContainer'
 import PageMaster from '../PageMaster';
+import PageStats from '../PageStats';
 
 const accordionButtons = ["Edit Page", "Page Health", "Performance"];
 
@@ -22,8 +23,8 @@ export default function EditPage() {
         submitButton={false}
       >
         {activeAccordionIndex === 0 && <PageMaster />}
-        {/* {activeAccordionIndex === 1 && <PageHealth />}
-        {activeAccordionIndex === 2 && <PerformanceDashboard />} */}
+        {activeAccordionIndex === 1 && <PageStats />}
+        {/* {activeAccordionIndex === 2 && <PerformanceDashboard />} */}
       </FormContainer>
     </div>
   )

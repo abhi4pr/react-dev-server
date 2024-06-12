@@ -1441,10 +1441,10 @@ const Admin = () => {
                     path="/pms-purchase-price/:id"
                     element={<PurchasePrice />}
                   />
-                  {/* <Route
-                    path="/pms-page-edit/:pageMast_id"
+                  <Route
+                    path="/pms-page-edit-old/:pageMast_id"
                     element={<PageEdit />}
-                  /> */}
+                  />
                   <Route
                     path="/pms-page-edit/:pageMast_id"
                     element={<EditPage />}
