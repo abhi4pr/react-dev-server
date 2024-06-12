@@ -7,7 +7,7 @@ import { Link } from "react-router-dom";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import RouteIcon from "@mui/icons-material/Route";
 import PriceChangeIcon from "@mui/icons-material/PriceChange";
-import { Box, Grid, Skeleton, Stack, Typography } from "@mui/material";
+import { Autocomplete, Box, Grid, Skeleton, Stack, TextField, Typography } from "@mui/material";
 // import ContentCopyOutlinedIcon from "@mui/icons-material/ContentCopyOutlined";
 // import CopyAllOutlinedIcon from "@mui/icons-material/CopyAllOutlined";
 import { useGlobalContext } from "../../../Context/Context";
@@ -34,13 +34,17 @@ import {
 import VendorBankDetailModal from "./VendorBankDetailModal";
 import { fi } from "date-fns/locale";
 import { filter } from "jszip";
+import VendorDetails from "./Vendor/VendorDetails";
+import VendorFilters from "./Vendor/VendorFilters";
 
 const VendorOverview = () => {
   const { toastAlert } = useGlobalContext();
   // const [vendorTypes, setVendorTypes] = useState([]);
   const [search, setSearch] = useState("");
-  // const [filterData, setFilterData] = useState([]);
   const [data, setData] = useState([]);
+  const [vendorDetails, setVendorDetails] = useState(null);
+
+
   const dispatch = useDispatch();
   const { data: vendor } = useGetAllVendorTypeQuery();
   const typeData = vendor?.data;
@@ -62,8 +66,9 @@ const VendorOverview = () => {
     refetch: refetchVendor,
   } = useGetAllVendorQuery();
   let vendorTypes = vendorData?.data;
-  let filterData = vendorData?.data;
-  console.log(filterData, "filterData------------------");
+  // let filterData = vendorData?.data;
+  const [filterData, setFilterData] = useState([]);
+  // console.log(filterData, "filterData----------------");
   // !loading && setVendorTypes(vendorData.data);
   // !loading && setFilterData(vendorData.data);
   // console.log(vendorData.data);
@@ -73,20 +78,18 @@ const VendorOverview = () => {
   };
 
   // useEffect(() => {
-  //   if (!loading) {
-  //     // setVendorTypes(vendorData.data);
-  //     // setFilterData(vendorData.data);
-  //   }
-  // }, [vendorData]);
-
+  //   const result = vendorTypes?.filter((d) => {
+  //     return d.vendor_name?.toLowerCase().match(search?.toLowerCase());
+  //   });
+  //   // setFilterData(result);
+  //   filterData = result;
+  //   setData(result);
+  // }, [search]);
   useEffect(() => {
-    const result = vendorTypes?.filter((d) => {
-      return d.vendor_name?.toLowerCase().match(search?.toLowerCase());
-    });
-    // setFilterData(result);
-    filterData = result;
-    setData(result);
-  }, [search]);
+    console.log(vendorData.data);
+    setFilterData(vendorData?.data);
+    
+  }, [vendorData]);
 
   const handleOpenWhatsappModal = (row) => {
     return () => {
@@ -102,12 +105,14 @@ const VendorOverview = () => {
     };
   };
 
-  // const handleClickVendorName = (params) => {
-  //   return () => {
-  //     dispatch(setVendorRowData(params.row));
-  //     dispatch(setShowPageModal());
-  //   };
-  // };
+  const handleClickVendorName = (params) => {
+    setVendorDetails(params.row);
+
+    // return () => {
+    //   dispatch(setVendorRowData(params.row));
+    //   dispatch(setShowPageModal());
+    // };
+  };
 
   const dataGridcolumns = [
     {
@@ -127,8 +132,8 @@ const VendorOverview = () => {
       renderCell: (params) => {
         return (
           <div
-          // onClick={handleClickVendorName(params)}
-          // className="link-primary cursor-pointer text-truncate"
+            onClick={() => handleClickVendorName(params)}
+            className="link-primary cursor-pointer text-truncate"
           >
             {params.row.vendor_name}
           </div>
@@ -359,112 +364,17 @@ const VendorOverview = () => {
       ),
     },
   ];
-  // const copySelectedRows = (type) => {
-  //   let data = [];
-  //   let selectedRows = [];
-
-  //   if (type === 1) {
-  //     selectedRows = Array.from(
-  //       document.getElementsByClassName("MuiDataGrid-row")
-  //     ).filter((row) => row.classList.contains("Mui-selected"));
-  //   }
-
-  //   data = selectedRows.map((row) => {
-  //     let rowData = {};
-  //     for (let j = 1; j < row.children.length - 1; j++) {
-  //       if (dataGridcolumns[j].field) {
-  //         rowData[dataGridcolumns[j].field] = row.children[j + 1].innerText;
-  //       }
-  //     }
-  //     return rowData;
-  //   });
-
-  //   let copyData = data.map((item) => {
-  //     return (
-  //       `Vendor Name: ${item.vendorMast_name}\n` +
-  //       `Mobile: ${item.mobile}\n` +
-  //       `Alternate Mobile: ${item.alternate_mobile}\n` +
-  //       `Email: ${item.email}\n` +
-  //       `Home City: ${item.home_city}\n` +
-  //       `GST No: ${item.gst_no}\n` +
-  //       `Threshold Limit: ${item.threshold_limit}\n` +
-  //       `Country Code: ${item.country_code}\n` +
-  //       `Company Pincode: ${item.company_pincode}\n` +
-  //       `Company Address: ${item.company_address}\n` +
-  //       `Company City: ${item.company_city}\n` +
-  //       `Company Name: ${item.company_name}\n` +
-  //       `Company State: ${item.company_state}\n` +
-  //       `Home Address: ${item.home_address}\n` +
-  //       `Home State: ${item.home_state}\n` +
-  //       `Pan No: ${item.pan_no}\n` +
-  //       `Personal Address: ${item.personal_address}\n` +
-  //       `Vendor Type: ${
-  //         typeData?.find((type) => type._id == item.type_id)?.type_name
-  //       }\n` +
-  //       `Platform: ${item.platform_id}\n` +
-  //       `Payment Method: ${
-  //         payData?.find((pay) => pay._id == item.payMethod_id)?.payMethod_name
-  //       }\n` +
-  //       `Cycle: ${
-  //         cycleData?.find((cycle) => cycle._id == item.cycle_id)?.cycle_name
-  //       }\n`
-  //     );
-  //   });
-
-  //   converttoclipboard(copyData.join("\n"));
-  //   toastAlert("Copied Selected Pages");
-  // };
-
-  // const converttoclipboard = (copydata) => {
-  //   const textarea = document.createElement("textarea");
-  //   textarea.value = copydata;
-  //   document.body.appendChild(textarea);
-  //   textarea.select();
-  //   document.execCommand("copy");
-  //   document.body.removeChild(textarea);
-  // };
-
-  // const copyAllRows = () => {
-  //   let data = filterData.map((item) => {
-  //     let formattedData =
-  //       `Vendor Name: ${item.vendorMast_name}\n` +
-  //       `Mobile: ${item.mobile}\n` +
-  //       `Alternate Mobile: ${item.alternate_mobile}\n` +
-  //       `Email: ${item.email}\n` +
-  //       `Home City: ${item.home_city}\n` +
-  //       `GST No: ${item.gst_no}\n` +
-  //       `Threshold Limit: ${item.threshold_limit}\n` +
-  //       `Country Code: ${item.country_code}\n` +
-  //       `Company Pincode: ${item.company_pincode}\n` +
-  //       `Company Address: ${item.company_address}\n` +
-  //       `Company City: ${item.company_city}\n` +
-  //       `Company Name: ${item.company_name}\n` +
-  //       `Company State: ${item.company_state}\n` +
-  //       `Home Address: ${item.home_address}\n` +
-  //       `Home State: ${item.home_state}\n` +
-  //       `Pan No: ${item.pan_no}\n` +
-  //       `Personal Address: ${item.personal_address}\n` +
-  //       `Vendor Type: ${
-  //         typeData?.find((type) => type._id == item.type_id)?.type_name
-  //       }\n` +
-  //       `Platform: ${item.platform_id}\n` +
-  //       `Payment Method: ${
-  //         payData?.find((pay) => pay._id == item.payMethod_id)?.payMethod_name
-  //       }\n` +
-  //       `Cycle: ${
-  //         cycleData?.find((cycle) => cycle._id == item.cycle_id)?.cycle_name
-  //       }\n`;
-  //     return formattedData;
-  //   });
-
-  //   converttoclipboard(data.join("\n"));
-  //   toastAlert("Copied All Pages");
-  // };
-
+console.log(filterData,"filterData",vendorData);
   return (
     <>
+      {filterData && <div className="card">
+      {vendorDetails && (
+        <VendorDetails
+          vendorDetails={vendorDetails}
+          setVendorDetails={setVendorDetails}
+        />
+      )}
       <VendorWhatsappLinkModla />
-      <div className="card">
         <div className="card-header flexCenterBetween">
           <h5 className="card-title">Vendor : {vendorTypes?.length}</h5>
           <div className="flexCenter colGap8">
@@ -480,8 +390,10 @@ const VendorOverview = () => {
             >
               Page <KeyboardArrowRightIcon />
             </Link>
-          </div>
+          </div>         
+         
         </div>
+        <VendorFilters filterData={filterData} setFilterData={setFilterData} />
         <div className="data_tbl thm_table table-responsive card-body p0">
           {loading ? (
             <Box mt={2} ml={2} mb={3} sx={{ width: "95%" }}>
@@ -534,10 +446,10 @@ const VendorOverview = () => {
             />
           )}
         </div>
-      </div>
       <VendorBankDetailModal />
       <VendorPageModal />
       <VendorWhatsappLinkModla />
+      </div>}
     </>
   );
 };

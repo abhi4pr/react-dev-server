@@ -159,7 +159,7 @@ export const reduxBaseURL = createApi({
 
     //Vendor
     getAllVendor: builder.query({
-      query: () => `v1/vendor`,
+      query: () => `v1/vendor?page=1&limit=50`,
     }),
 
     // Bank Detail Api's:-
