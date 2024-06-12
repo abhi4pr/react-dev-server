@@ -9,8 +9,8 @@ import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
 import Typography from "@mui/material/Typography";
 import axios from "axios";
-import { baseUrl } from '../../utils/config'
-import {  useGetPageStateQuery } from "../Store/PageBaseURL";
+import { baseUrl } from "../../utils/config";
+import { useGetPageStateQuery } from "../Store/PageBaseURL";
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   "& .MuiDialogContent-root": {
@@ -29,17 +29,19 @@ export default function DeleteHistoryConfirmation(props) {
     apiCall,
   } = props;
 
- const {refetch} =useGetPageStateQuery()
+  const { refetch } = useGetPageStateQuery();
 
   const handleDeleteConfirmation = () => {
     axios
-      .delete(
-        `${baseUrl}` + `v1/page_states/${rowData._id}`
-      )
+      .delete(`${baseUrl}` + `v1/page_states/${rowData._id}`, {
+        headers: {
+          Authorization: `Bearer ${sessionStorage.getItem("token")}`,
+        },
+      })
       .then(() => {
         handleCloseDeleteHistoryConFirmation();
         apiCall();
-        refetch()
+        refetch();
       });
   };
   return (
@@ -71,7 +73,6 @@ export default function DeleteHistoryConfirmation(props) {
         </DialogContent>
         <DialogActions>
           <div className="w-100 sb">
-
             <Button
               color="error"
               autoFocus

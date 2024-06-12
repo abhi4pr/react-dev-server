@@ -31,6 +31,7 @@ export default function PageStats() {
     cityImage: null,
     countryImage: null,
   });
+  const [isFormsubmitting,setIsFormSubmitting] = useState(false)
   const handleFileChange = (event, imageKey) => {
     const file = event.target.files[0];
     if (file) {
@@ -183,7 +184,7 @@ let err
   };
 
   const handleSubmitForm = (data) => {
-    console.log(data?.reachImage[0], "gooooooddd");
+setIsFormSubmitting(true)
     const formData = new FormData();
     appendIfDefined(formData, "page_master_id", id);
     appendIfDefined(formData, "reach", data?.reach);
@@ -265,7 +266,7 @@ let err
         })
         .catch((err) => {
           toastError(`Something Went Wrong ${err.message}`);
-        });
+        }).finally(()=>setIsFormSubmitting(false))
     } else {
       delete formData.created_by;
       delete formData.page_master_id;
@@ -280,7 +281,7 @@ let err
         })
         .catch((err) => {
           toastError(`Something Went Wrong ${err.message}`);
-        });
+        }).finally(()=>setIsFormSubmitting())
     }
   };
   const handlePercentageMax = (event) => {
@@ -1077,7 +1078,7 @@ let err
           <div className="card">
             <div className="card-body">
               <div className="flexCenter colGap16">
-                <button className="btn cmnbtn btn-primary" type="submit">
+                <button disabled={isFormsubmitting} className="btn cmnbtn btn-primary" type="submit">
                   Save
                 </button>
                 <button className="btn cmnbtn btn-secondary" type="button">

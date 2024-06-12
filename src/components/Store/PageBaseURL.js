@@ -4,7 +4,7 @@ import authBaseQuery from "../../utils/authBaseQuery";
 export const PageBaseURL = createApi({
   baseQuery: authBaseQuery,
   reducerPath: "PageBaseURL",
-  tagTypes: ["profileList", "categoryList"],
+  tagTypes: ["profileList", "categoryList", "PageList"],
   endpoints: (builder) => ({
     getAllProfileList: builder.query({
       query: () => `v1/profile_type`,
@@ -101,10 +101,12 @@ export const PageBaseURL = createApi({
         method: "POST",
         body: data,
       }),
+      invalidatesTags: ["pageState"],
     }),
     getPageState: builder.query({
       query: () => `v1/page_states`,
       transformResponse: (response) => response.data,
+      providesTags: ["pageState"],
     }),
     getPageStateById: builder.query({
       query: (data) => `v1/page_states/${data}`,
