@@ -56,7 +56,7 @@ export default function VendorDetailAccordion({ vendorDetails, bankRows }) {
     setOpen(!open);
   };
 
-  console.log(vendorDetails, "vendorDetails");
+  console.log(vendorDetails, "vendorDetails",bankRows);
   return (
     <div>
       <Stack direction="row" spacing={2}>
@@ -269,7 +269,7 @@ export default function VendorDetailAccordion({ vendorDetails, bankRows }) {
                 </ListItemButton>
               </List>
 
-              {bankRows.map((ele, index) => {
+              {/* {bankRows && bankRows.map((ele, index) => {
                 return (
                   <List
                     key={index}
@@ -296,7 +296,7 @@ export default function VendorDetailAccordion({ vendorDetails, bankRows }) {
                     </ListItemButton>
                   </List>
                 );
-              })}
+              })} */}
             </Stack>
           </AccordionDetails>
         </Accordion>
@@ -333,6 +333,7 @@ export default function VendorDetailAccordion({ vendorDetails, bankRows }) {
           </Stack>
         </AccordionDetails>
       </Accordion>
+      
       <Accordion
         expanded ={expanded === ("panel1" || "panel2" || "panel3") || "panel4" }
         onChange={handleChange("panel4")}

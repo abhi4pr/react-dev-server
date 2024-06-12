@@ -86,8 +86,11 @@ const VendorOverview = () => {
   //   setData(result);
   // }, [search]);
   useEffect(() => {
-    console.log(vendorData.data);
-    setFilterData(vendorData?.data);
+    console.log(vendorData?.data);
+    if(vendorData){
+
+      setFilterData(vendorData?.data);
+    }
     
   }, [vendorData]);
 
