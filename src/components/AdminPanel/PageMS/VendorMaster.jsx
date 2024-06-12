@@ -288,6 +288,7 @@ const VendorMaster = () => {
   };
 
   useEffect(() => {
+    console.log(_id);
     if (_id) {
       axios.get(baseUrl + `v1/vendor/${_id}`).then((res) => {
         const data = res.data.data;
@@ -336,6 +337,7 @@ const VendorMaster = () => {
         })
         .then((res) => {
           const data = res.data.data;
+          console.log(res.data.data,"bankrooooooooow");
           setBankRows(data);
         });
 

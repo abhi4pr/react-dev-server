@@ -16,13 +16,19 @@ import {
 function VendorPages({ vendorDetails }) {
   const { data: platData } = useGetPmsPlatformQuery();
   const { data: pageCate } = useGetAllPageCategoryQuery();
+  const token = sessionStorage.getItem("token");
   const cat = pageCate?.data;
   const platformData = platData?.data;
   const [vendorPages, setVendorPages] = useState([]);
 
   useEffect(() => {
     axios
-      .get(baseUrl + `v1/vendor_wise_page_master_data/${vendorDetails?._id}`)
+      .get(baseUrl + `v1/vendor_wise_page_master_data/${vendorDetails?._id}`,{
+        headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json", // Adjust content type as needed
+          },
+      })
       .then((res) => {
         // const data = res.data.data;
         // setBankRows(data);
@@ -234,7 +240,7 @@ function VendorPages({ vendorDetails }) {
 
   return (
     <>
-      <DataGrid
+      {vendorPages && <DataGrid
         title="Page Overview"
         rows={vendorPages}
         columns={dataGridcolumns}
@@ -263,7 +269,7 @@ function VendorPages({ vendorDetails }) {
         //   }}
         checkboxSelection
         disableRowSelectionOnClick
-      />
+      />}
     </>
   );
 }

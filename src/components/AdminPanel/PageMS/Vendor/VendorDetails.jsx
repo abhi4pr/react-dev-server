@@ -14,16 +14,10 @@ import { baseUrl } from "../../../../utils/config";
 export default function VendorDetails({vendorDetails,setVendorDetails}) {
   const [open, setOpen] = React.useState(true);
   const [scroll, setScroll] = React.useState('paper');
-  const [bankRows, setBankRows] = useState([
-    {
-      bank_name: "",
-      account_type: "",
-      account_number: "",
-      ifcs: "",
-      upi_id: "",
-      registered_number: "",
-    },
-  ]);
+  const [bankRows, setBankRows] = useState([]);
+  const token = sessionStorage.getItem("token");
+
+
   const handleClickOpen = (scrollType) => () => {
     setOpen(true);
     // setScroll(scrollType);
@@ -43,21 +37,25 @@ export default function VendorDetails({vendorDetails,setVendorDetails}) {
       }
     }
   }, [open]);
+
   useEffect(()=>{
-    axios.get(baseUrl + `v1/bank_details_by_vendor_id/${vendorDetails?._id}`).then((res) => {
+    axios.get(baseUrl + `v1/bank_details_by_vendor_id/${vendorDetails?._id}`,{headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json", // Adjust content type as needed
+          },}).then((res) => {
         const data = res.data.data;
-        setBankRows(data);
-        // console.log(data);
+        // setBankRows(data);
+        console.log(data);
       });
   
   },[])
-
+console.log(vendorDetails,"vendorDetails");
   return (
     <React.Fragment>
       <Button onClick={handleClickOpen('paper')}>scroll=paper</Button>
       <Dialog
         open={open}
-        fullWidth={'lg'}
+        // fullWidth={'lg'}
         maxWidth={'lg'}
         onClose={handleClose}
         scroll={scroll}

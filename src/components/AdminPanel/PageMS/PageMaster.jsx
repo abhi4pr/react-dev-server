@@ -40,7 +40,6 @@ import { useParams } from "react-router";
 
 const PageMaster = () => {
   const { pageMast_id } = useParams();
-
   const vendorInfoModalOpen = useSelector(
     (state) => state.vendorMaster.showVendorInfoModal
   );
@@ -126,77 +125,71 @@ const PageMaster = () => {
   const { data: vendor } = useGetAllVendorQuery();
 
   const vendorData = vendor?.data || [];
-  const {
-    data: singlePageData,
-    isLoading: singlePageLoading,
-    refetch: refetchSiglePageData,
-  } = useGetPageByIdQuery(pageMast_id ? pageMast_id : null);
+  const { data: singlePageData, isLoading: singlePageLoading, refetch:refetchSiglePageData } =
+    useGetPageByIdQuery(pageMast_id ? pageMast_id : null);
 
   const { data: priceData, isLoading: isPriceLoading } =
     useGetMultiplePagePriceQuery(pageMast_id ? pageMast_id : null);
 
-  useEffect(() => {
-    // return
-    if (!singlePageLoading && pageMast_id) {
-      setPageName(singlePageData?.page_name);
-      setLink(singlePageData?.page_link);
-      setPlatformId(singlePageData?.platform_id);
-      setCategoryId(singlePageData?.page_category_id);
-      const tags = categoryData?.filter((e) =>
-        singlePageData.tags_page_category.includes(e._id)
-      );
-      let tagData = tags?.map((e) => ({
-        value: e._id,
-        label: e.category_name,
-      }));
-      setTag(tagData);
-
-      setPageLevel(singlePageData?.preference_level);
-      if (singlePageData.status == 1) {
-        setPageStatus("Active");
-      } else {
-        setPageStatus("Inactive");
+    useEffect(() => {
+      // return
+      if (!singlePageLoading && pageMast_id) {
+        setPageName(singlePageData?.page_name);
+        setLink(singlePageData?.page_link);
+        setPlatformId(singlePageData?.platform_id);
+        setCategoryId(singlePageData?.page_category_id);
+        const tags = categoryData?.filter((e) =>
+          singlePageData.tags_page_category.includes(e._id)
+        );
+        let tagData = tags?.map((e) => ({
+          value: e._id,
+          label: e.category_name,
+        }));
+        setTag(tagData);
+        setPageLevel(singlePageData?.preference_level);
+        if (singlePageData.status == 1) {
+          setPageStatus("Active");
+        } else {
+          setPageStatus("Inactive");
+        }
+        setCloseBy(singlePageData?.page_closed_by);
+        setPageType(singlePageData?.page_name_type);
+        setContent(singlePageData?.content_creation);
+        setOwnerType(singlePageData?.ownership_type);
+        setVendorId(singlePageData.vendor_id);
+        setFollowCount(singlePageData?.followers_count);
+        setProfileId(singlePageData?.page_profile_type_id);
+        const platformActiveData = platformData?.filter((e) =>
+          singlePageData?.platform_active_on.includes(e._id)
+        );
+        let platformActiveDataList = platformActiveData?.map((e) => ({
+          value: e._id,
+          label: e.platform_name,
+        }));
+        setPlatformActive(platformActiveDataList);
+        setRate(singlePageData.engagment_rate);
+        setDescription(singlePageData.description);
+        setRateType({
+          value: singlePageData.rate_type,
+          label: singlePageData.rate_type,
+        });
+        setVariableType({
+          value: singlePageData.variable_type,
+          label: singlePageData.variable_type,
+        });
+        setRowCount(
+          !isPriceLoading &&
+            priceData?.map((e) => ({
+              page_price_type_id: e.page_price_type_id,
+              price: e.price,
+            }))
+        );
+        setPrimary({
+          value: singlePageData.primary_page,
+          label: singlePageData.primary_page,
+        });
       }
-      setCloseBy(singlePageData?.page_closed_by);
-      setPageType(singlePageData?.page_name_type);
-      setContent(singlePageData?.content_creation);
-      setOwnerType(singlePageData?.ownership_type);
-      setVendorId(singlePageData.vendor_id);
-      setFollowCount(singlePageData?.followers_count);
-      setProfileId(singlePageData?.page_profile_type_id);
-
-      const platformActiveData = platformData?.filter((e) =>
-        singlePageData?.platform_active_on.includes(e._id)
-      );
-      let platformActiveDataList = platformActiveData?.map((e) => ({
-        value: e._id,
-        label: e.platform_name,
-      }));
-      setPlatformActive(platformActiveDataList);
-      setRate(singlePageData.engagment_rate);
-      setDescription(singlePageData.description);
-      setRateType({
-        value: singlePageData.rate_type,
-        label: singlePageData.rate_type,
-      });
-      setVariableType({
-        value: singlePageData.variable_type,
-        label: singlePageData.variable_type,
-      });
-      setRowCount(
-        !isPriceLoading &&
-          priceData?.map((e) => ({
-            page_price_type_id: e.page_price_type_id,
-            price: e.price,
-          }))
-      );
-      setPrimary({
-        value: singlePageData.primary_page,
-        label: singlePageData.primary_page,
-      });
-    }
-  }, [pageMast_id, singlePageLoading]);
-
+    }, [pageMast_id, singlePageLoading]);
   const PageLevels = [
     { value: "Level 1 (High)", label: "Level 1 (High)" },
     { value: "Level 2 (Medium)", label: "Level 2 (Medium)" },
@@ -417,16 +410,15 @@ const PageMaster = () => {
       page_price_multiple: rowCount,
       primary_page: primary.value,
     };
-    if (pageMast_id) {
+    if (pageMast_id){
       payload.last_updated_by = userID;
       delete payload.created_by;
-      return axios
-        .put(`${baseUrl}v1/pageMaster/${pageMast_id}`, payload, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        })
+      return axios.put(`${baseUrl}v1/pageMaster/${pageMast_id}`, payload, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json", 
+        },
+      })
         .then(() => {
           setIsFormSubmitted(true);
           refetchSiglePageData();
@@ -435,12 +427,12 @@ const PageMaster = () => {
         .catch((error) => {
           toastError(error.response.data.message);
         });
-    } else {
+    } else  {
       return axios
         .post(baseUrl + "v1/pageMaster", payload, {
           headers: {
             Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
+            "Content-Type": "application/json", 
           },
         })
         .then(() => {
@@ -469,27 +461,6 @@ const PageMaster = () => {
     newRowCount[index].page_price_type_id = e.value;
     setRowCount(newRowCount);
   };
-  //Milion convert format function
-  const formatNumber = (value) => {
-    if (value >= 1000000) {
-      return `${(value / 1000000).toFixed(2)}M`;
-    } else if (value >= 1000) {
-      return `${(value / 1000).toFixed(2)}k`;
-    } else {
-      return value.toString();
-    }
-  };
-  const formatString = (s) => {
-    // Remove leading underscores
-    let formattedString = s.replace(/^_+/, "");
-    // Capitalize the first letter and make the rest lowercase
-    if (formattedString) {
-      formattedString =
-        formattedString.charAt(0).toUpperCase() +
-        formattedString.slice(1).toLowerCase();
-    }
-    return formattedString;
-  };
 
   const handlePriceChange = (e, index) => {
     if (
@@ -502,12 +473,6 @@ const PageMaster = () => {
     newRowCount[index].price = e.target.value;
     setRowCount(newRowCount);
   };
-  // const val = variableType.value === "Per Thousand" ? 1000 : 1000000;
-  // const FollowerCountCalcualtion = (followCount / val) * rowCount[0]?.price;
-  const calculateFollowerCount = (index) => {
-    const val = variableType.value === "Per Thousand" ? 1000 : 1000000;
-    return (followCount / val) * rowCount[index]?.price;
-  };
 
   const handleFilterPriceType = () => {
     let filteredData = priceTypeList.filter((row) => {
@@ -519,6 +484,8 @@ const PageMaster = () => {
     setFilterPriceTypeList(filteredData);
   };
 
+  const val = variableType.value === "Per Thousand" ? 1000 : 1000000;
+  const FollowerCountCalcualtion = (followCount / val) * rowCount[0]?.price;
   return (
     <>
       <FormContainer
@@ -806,7 +773,6 @@ const PageMaster = () => {
                   }
                 }}
               />
-              <small className="ml-3">{formatNumber(followCount)}</small>
               {validateFields.followCount && (
                 <small style={{ color: "red" }}>
                   Please Fill Followers Count
@@ -1246,8 +1212,7 @@ const PageMaster = () => {
                   />
                   {rateType.label == "Variable" && (
                     <p className="ml-3" style={{ color: "blue" }}>
-                      This Page Cost ={" "}
-                      {calculateFollowerCount(index.toFixed(0))}
+                      This Page Cost = {FollowerCountCalcualtion}
                     </p>
                   )}
                 </div>
