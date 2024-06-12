@@ -67,286 +67,286 @@ const PageOverview = () => {
   } = useGetAllPageListQuery();
   const { data: pageStates } = useGetPageStateQuery();
   const [vendorTypes, setVendorTypes] = useState([]);
-  const [pieChart, setPieChart] = useState({
-    series: [40, 60],
-    options: {
-      chart: {
-        type: "donut",
-      },
-      labels: ["Male", "Female"],
-      colors: ["#FAA7E0", "#DD2590"],
-      stroke: {
-        show: false,
-        width: 0,
-      },
-      dataLabels: {
-        enabled: false,
-      },
-      legend: {
-        position: "left",
-        offsetY: 70,
-        offsetX: 0,
-        fontSize: "16px",
-        fontWeight: 500,
-        markers: {
-          width: 14,
-          height: 14,
-          radius: 14,
-        },
-        itemMargin: {
-          horizontal: 0,
-          vertical: 5,
-        },
-      },
-    },
-  });
-  const [columnChartAge, setcolumnChartAge] = useState({
-    series: [
-      {
-        name: "Demographics (Age group)",
-        data: [15, 32, 13, 7, 4, 47, 19],
-      },
-    ],
-    tooltip: {
-      enabled: false,
-    },
-    options: {
-      chart: {
-        type: "bar",
-        toolbar: {
-          show: false, // Disables the toolbar
-        },
-      },
-      plotOptions: {
-        bar: {
-          borderRadius: 7,
-          borderRadiusApplication: "end",
-          dataLabels: {
-            position: "top", // top, center, bottom
-          },
-        },
-      },
-      grid: {
-        show: false, // Removes the horizontal grid lines
-      },
-      colors: ["#DD2590"],
-      dataLabels: {
-        enabled: true,
-        formatter: function (val) {
-          return val + "%";
-        },
-        offsetY: -25,
-        style: {
-          fontSize: "14px",
-          fontWeight: "400",
-          colors: ["#344054"],
-        },
-      },
+  // const [pieChart, setPieChart] = useState({
+  //   series: [40, 60],
+  //   options: {
+  //     chart: {
+  //       type: "donut",
+  //     },
+  //     labels: ["Male", "Female"],
+  //     colors: ["#FAA7E0", "#DD2590"],
+  //     stroke: {
+  //       show: false,
+  //       width: 0,
+  //     },
+  //     dataLabels: {
+  //       enabled: false,
+  //     },
+  //     legend: {
+  //       position: "left",
+  //       offsetY: 70,
+  //       offsetX: 0,
+  //       fontSize: "16px",
+  //       fontWeight: 500,
+  //       markers: {
+  //         width: 14,
+  //         height: 14,
+  //         radius: 14,
+  //       },
+  //       itemMargin: {
+  //         horizontal: 0,
+  //         vertical: 5,
+  //       },
+  //     },
+  //   },
+  // });
+  // const [columnChartAge, setcolumnChartAge] = useState({
+  //   series: [
+  //     {
+  //       name: "Demographics (Age group)",
+  //       data: [15, 32, 13, 7, 4, 47, 19],
+  //     },
+  //   ],
+  //   tooltip: {
+  //     enabled: false,
+  //   },
+  //   options: {
+  //     chart: {
+  //       type: "bar",
+  //       toolbar: {
+  //         show: false, // Disables the toolbar
+  //       },
+  //     },
+  //     plotOptions: {
+  //       bar: {
+  //         borderRadius: 7,
+  //         borderRadiusApplication: "end",
+  //         dataLabels: {
+  //           position: "top", // top, center, bottom
+  //         },
+  //       },
+  //     },
+  //     grid: {
+  //       show: false, // Removes the horizontal grid lines
+  //     },
+  //     colors: ["#DD2590"],
+  //     dataLabels: {
+  //       enabled: true,
+  //       formatter: function (val) {
+  //         return val + "%";
+  //       },
+  //       offsetY: -25,
+  //       style: {
+  //         fontSize: "14px",
+  //         fontWeight: "400",
+  //         colors: ["#344054"],
+  //       },
+  //     },
 
-      xaxis: {
-        categories: [
-          "13 - 17",
-          "18 - 24",
-          "25 - 34",
-          "35 - 44",
-          "45 - 54",
-          "55 - 64",
-          "65 Above",
-        ],
-        position: "bottom",
-        axisBorder: {
-          show: false,
-        },
-        axisTicks: {
-          show: false,
-        },
-        crosshairs: {
-          show: false,
-          enabled: false,
-        },
-        tooltip: {
-          enabled: false,
-          show: false,
-        },
-      },
-      yaxis: {
-        axisBorder: {
-          show: false,
-        },
-        axisTicks: {
-          show: false,
-        },
-        labels: {
-          show: false,
-        },
-      },
-    },
-  });
-  const [columnChartCountry, setcolumnChartCountry] = useState({
-    series: [
-      {
-        name: "Top Country",
-        data: [43, 12, 26, 14, 44, 20, 25],
-      },
-    ],
-    tooltip: {
-      enabled: false,
-    },
-    options: {
-      chart: {
-        type: "bar",
-        toolbar: {
-          show: false, // Disables the toolbar
-        },
-      },
-      plotOptions: {
-        bar: {
-          borderRadius: 7,
-          borderRadiusApplication: "end",
-          dataLabels: {
-            position: "top", // top, center, bottom
-          },
-        },
-      },
-      grid: {
-        show: false, // Removes the horizontal grid lines
-      },
-      colors: ["#DD2590"],
-      dataLabels: {
-        enabled: true,
-        formatter: function (val) {
-          return val + "%";
-        },
-        offsetY: -25,
-        style: {
-          fontSize: "14px",
-          fontWeight: "400",
-          colors: ["#344054"],
-        },
-      },
+  //     xaxis: {
+  //       categories: [
+  //         "13 - 17",
+  //         "18 - 24",
+  //         "25 - 34",
+  //         "35 - 44",
+  //         "45 - 54",
+  //         "55 - 64",
+  //         "65 Above",
+  //       ],
+  //       position: "bottom",
+  //       axisBorder: {
+  //         show: false,
+  //       },
+  //       axisTicks: {
+  //         show: false,
+  //       },
+  //       crosshairs: {
+  //         show: false,
+  //         enabled: false,
+  //       },
+  //       tooltip: {
+  //         enabled: false,
+  //         show: false,
+  //       },
+  //     },
+  //     yaxis: {
+  //       axisBorder: {
+  //         show: false,
+  //       },
+  //       axisTicks: {
+  //         show: false,
+  //       },
+  //       labels: {
+  //         show: false,
+  //       },
+  //     },
+  //   },
+  // });
+  // const [columnChartCountry, setcolumnChartCountry] = useState({
+  //   series: [
+  //     {
+  //       name: "Top Country",
+  //       data: [43, 12, 26, 14, 44, 20, 25],
+  //     },
+  //   ],
+  //   tooltip: {
+  //     enabled: false,
+  //   },
+  //   options: {
+  //     chart: {
+  //       type: "bar",
+  //       toolbar: {
+  //         show: false, // Disables the toolbar
+  //       },
+  //     },
+  //     plotOptions: {
+  //       bar: {
+  //         borderRadius: 7,
+  //         borderRadiusApplication: "end",
+  //         dataLabels: {
+  //           position: "top", // top, center, bottom
+  //         },
+  //       },
+  //     },
+  //     grid: {
+  //       show: false, // Removes the horizontal grid lines
+  //     },
+  //     colors: ["#DD2590"],
+  //     dataLabels: {
+  //       enabled: true,
+  //       formatter: function (val) {
+  //         return val + "%";
+  //       },
+  //       offsetY: -25,
+  //       style: {
+  //         fontSize: "14px",
+  //         fontWeight: "400",
+  //         colors: ["#344054"],
+  //       },
+  //     },
 
-      xaxis: {
-        categories: [
-          "India",
-          "Myanmar",
-          "Philippine",
-          "Japan",
-          "Korea",
-          "Cambodia",
-          "Thailand",
-        ],
-        position: "bottom",
-        axisBorder: {
-          show: false,
-        },
-        axisTicks: {
-          show: false,
-        },
-        crosshairs: {
-          show: false,
-          enabled: false,
-        },
-        tooltip: {
-          enabled: false,
-          show: false,
-        },
-      },
-      yaxis: {
-        axisBorder: {
-          show: false,
-        },
-        axisTicks: {
-          show: false,
-        },
-        labels: {
-          show: false,
-        },
-      },
-    },
-  });
+  //     xaxis: {
+  //       categories: [
+  //         "India",
+  //         "Myanmar",
+  //         "Philippine",
+  //         "Japan",
+  //         "Korea",
+  //         "Cambodia",
+  //         "Thailand",
+  //       ],
+  //       position: "bottom",
+  //       axisBorder: {
+  //         show: false,
+  //       },
+  //       axisTicks: {
+  //         show: false,
+  //       },
+  //       crosshairs: {
+  //         show: false,
+  //         enabled: false,
+  //       },
+  //       tooltip: {
+  //         enabled: false,
+  //         show: false,
+  //       },
+  //     },
+  //     yaxis: {
+  //       axisBorder: {
+  //         show: false,
+  //       },
+  //       axisTicks: {
+  //         show: false,
+  //       },
+  //       labels: {
+  //         show: false,
+  //       },
+  //     },
+  //   },
+  // });
 
-  const [columnChartCity, setcolumnChartCity] = useState({
-    series: [
-      {
-        name: "Top City",
-        data: [40, 23, 10, 34, 27, 32, 38],
-      },
-    ],
-    tooltip: {
-      enabled: false,
-    },
-    options: {
-      chart: {
-        type: "bar",
-        toolbar: {
-          show: false, // Disables the toolbar
-        },
-      },
-      plotOptions: {
-        bar: {
-          borderRadius: 7,
-          borderRadiusApplication: "end",
-          dataLabels: {
-            position: "top", // top, center, bottom
-          },
-        },
-      },
-      grid: {
-        show: false, // Removes the horizontal grid lines
-      },
-      colors: ["#DD2590"],
-      dataLabels: {
-        enabled: true,
-        formatter: function (val) {
-          return val + "%";
-        },
-        offsetY: -25,
-        style: {
-          fontSize: "14px",
-          fontWeight: "400",
-          colors: ["#344054"],
-        },
-      },
+  // const [columnChartCity, setcolumnChartCity] = useState({
+  //   series: [
+  //     {
+  //       name: "Top City",
+  //       data: [40, 23, 10, 34, 27, 32, 38],
+  //     },
+  //   ],
+  //   tooltip: {
+  //     enabled: false,
+  //   },
+  //   options: {
+  //     chart: {
+  //       type: "bar",
+  //       toolbar: {
+  //         show: false, // Disables the toolbar
+  //       },
+  //     },
+  //     plotOptions: {
+  //       bar: {
+  //         borderRadius: 7,
+  //         borderRadiusApplication: "end",
+  //         dataLabels: {
+  //           position: "top", // top, center, bottom
+  //         },
+  //       },
+  //     },
+  //     grid: {
+  //       show: false, // Removes the horizontal grid lines
+  //     },
+  //     colors: ["#DD2590"],
+  //     dataLabels: {
+  //       enabled: true,
+  //       formatter: function (val) {
+  //         return val + "%";
+  //       },
+  //       offsetY: -25,
+  //       style: {
+  //         fontSize: "14px",
+  //         fontWeight: "400",
+  //         colors: ["#344054"],
+  //       },
+  //     },
 
-      xaxis: {
-        categories: [
-          "Bhopal",
-          "Indore",
-          "Delhi",
-          "Noida",
-          "Kolkata",
-          "Chennai",
-          "Pune",
-        ],
-        position: "bottom",
-        axisBorder: {
-          show: false,
-        },
-        axisTicks: {
-          show: false,
-        },
-        crosshairs: {
-          show: false,
-          enabled: false,
-        },
-        tooltip: {
-          enabled: false,
-          show: false,
-        },
-      },
-      yaxis: {
-        axisBorder: {
-          show: false,
-        },
-        axisTicks: {
-          show: false,
-        },
-        labels: {
-          show: false,
-        },
-      },
-    },
-  });
+  //     xaxis: {
+  //       categories: [
+  //         "Bhopal",
+  //         "Indore",
+  //         "Delhi",
+  //         "Noida",
+  //         "Kolkata",
+  //         "Chennai",
+  //         "Pune",
+  //       ],
+  //       position: "bottom",
+  //       axisBorder: {
+  //         show: false,
+  //       },
+  //       axisTicks: {
+  //         show: false,
+  //       },
+  //       crosshairs: {
+  //         show: false,
+  //         enabled: false,
+  //       },
+  //       tooltip: {
+  //         enabled: false,
+  //         show: false,
+  //       },
+  //     },
+  //     yaxis: {
+  //       axisBorder: {
+  //         show: false,
+  //       },
+  //       axisTicks: {
+  //         show: false,
+  //       },
+  //       labels: {
+  //         show: false,
+  //       },
+  //     },
+  //   },
+  // });
 
   const [filterData, setFilterData] = useState([]);
   const [venodr, setVenodr] = useState([{}]);
