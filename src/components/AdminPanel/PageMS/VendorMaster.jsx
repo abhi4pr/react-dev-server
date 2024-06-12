@@ -712,7 +712,7 @@ const VendorMaster = () => {
                   Vendor Category <sup style={{ color: "red" }}>*</sup>
                 </label>
                 <Select
-                  options={["Theme Page", "influencer"].map((option) => ({
+                  options={["Theme Page", "Influencer"].map((option) => ({
                     label: option,
                     value: option,
                   }))}
