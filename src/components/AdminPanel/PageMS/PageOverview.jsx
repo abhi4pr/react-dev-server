@@ -406,8 +406,8 @@ const PageOverview = () => {
   const { data: cities } = useGetAllCitiesQuery();
   function pageHealthToggleCheck() {
     if (showPageHealthColumn) {
+
       const data = filterData?.map((item) => {
-        // debugger;
         const matchingState = pageStates?.find(
           (state) => state?.page_master_id === item?._id
         );
@@ -424,12 +424,13 @@ const PageOverview = () => {
   }
 
   useEffect(() => {
+    
     pageHealthToggleCheck();
-  }, [showPageHealthColumn]);
+  }, [showPageHealthColumn,filterData]);
   useEffect(() => {
-    if (showPageHealthColumn) {
-      dispatch(setShowPageHealthColumn(false));
-    }
+    // if (showPageHealthColumn) {
+    //   dispatch(setShowPageHealthColumn(false));
+    // }
     if (userID && !contextData) {
       axios
         .get(`${baseUrl}get_single_user_auth_detail/${userID}`)
@@ -1376,6 +1377,7 @@ const PageOverview = () => {
           <h5 className="card-title flexCenterBetween">
             <Switch
               checked={showPageHealthColumn}
+              value={showPageHealthColumn}
               onChange={() =>
                 dispatch(setShowPageHealthColumn(!showPageHealthColumn))
               }
