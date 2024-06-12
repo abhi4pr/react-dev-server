@@ -343,6 +343,7 @@ import CreateDocumentType from "./Sales/Account/CreateDocumentType";
 import DocumentTypeOverview from "./Sales/Account/DocumentTypeOverview";
 import PlanOverView from "./Operation/Plan/CampPlanOverview";
 import CampPlanOverview from "./Operation/Plan/CampPlanOverview";
+import EditPage from "./PageMS/EditPage/EditPage";
 
 const Admin = () => {
   const [contextData, setData] = useState([]);
@@ -1440,9 +1441,13 @@ const Admin = () => {
                     path="/pms-purchase-price/:id"
                     element={<PurchasePrice />}
                   />
-                  <Route
+                  {/* <Route
                     path="/pms-page-edit/:pageMast_id"
                     element={<PageEdit />}
+                  /> */}
+                  <Route
+                    path="/pms-page-edit/:pageMast_id"
+                    element={<EditPage />}
                   />
                   <Route
                     path="/pms-vendor-page-price-overview"

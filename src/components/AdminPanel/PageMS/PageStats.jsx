@@ -272,9 +272,10 @@ export default function PageStats() {
   };
 
   function addOneDay(date) {
+    if(!date) return;
     const result = new Date(date);
-    result.setDate(result.getDate() + 1);
-    return result.toISOString().split('T')[0];
+    result?.setDate(result.getDate() + 1);
+    return result?.toISOString().split('T')[0];
   }
 
   return (

@@ -588,7 +588,6 @@ const PageOverview = () => {
       headerName: "Category",
       width: 200,
       renderCell: (params) => {
-        console.log(params.row.page_category_id, "params.row.page_category_id");
         let name = cat?.find(
           (item) => item?._id == params.row?.page_category_id
         )?.category_name;
@@ -782,13 +781,6 @@ const PageOverview = () => {
       headerName: "Price Type",
       width: 200,
       renderCell: (params) => {
-        console.log(
-          allPriceTypeList,
-          "allPriceTypeList",
-          params.row.page_price_type_id,
-          "params.row.price_type_id"
-        );
-
         let name = allPriceTypeList?.find(
           (item) => item._id == params.row.page_price_type_id
         )?.name;
@@ -874,7 +866,6 @@ const PageOverview = () => {
       width: 150,
       headerName: "Stats Update",
       renderCell: (params) => {
-        console.log(params.row.pageId);
         return (
           params.row?.pageId && (
             <Link

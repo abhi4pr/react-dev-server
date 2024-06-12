@@ -1,8 +1,8 @@
-import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { baseUrl } from "../../utils/config";
+import { createApi } from "@reduxjs/toolkit/query/react";
+import authBaseQuery from "../../utils/authBaseQuery";
 
 export const reduxBaseURL = createApi({
-  baseQuery: fetchBaseQuery({ baseUrl: baseUrl }),
+baseQuery: authBaseQuery,
   tagTypes: [
     "addVendor",
     "addPaycycle",
