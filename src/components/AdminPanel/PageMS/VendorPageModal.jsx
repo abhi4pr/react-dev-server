@@ -116,7 +116,7 @@ export default function VendorPageModal() {
               width: "fit-content",
             }}
           >
-            {pages.length > 0 ? (
+            {pages?.length > 0 ? (
               <DataGrid
                 title="Page Overview"
                 rows={pages}
