@@ -21,6 +21,8 @@ import PageAddMasterModal from "./PageAddMasterModal";
 import {
   useGetAllPageCategoryQuery,
   useGetAllProfileListQuery,
+  useGetMultiplePagePriceQuery,
+  useGetPageByIdQuery,
 } from "../../Store/PageBaseURL";
 import PageInfoModal from "./PageInfoModal";
 import {
@@ -34,8 +36,11 @@ import {
   useGetAllVendorQuery,
   useGetPmsPlatformQuery,
 } from "../../Store/reduxBaseURL";
+import { useParams } from "react-router";
 
 const PageMaster = () => {
+  const { pageMast_id } = useParams();
+
   const vendorInfoModalOpen = useSelector(
     (state) => state.vendorMaster.showVendorInfoModal
   );
@@ -121,6 +126,75 @@ const PageMaster = () => {
   const { data: vendor } = useGetAllVendorQuery();
 
   const vendorData = vendor?.data || [];
+  const { data: singlePageData, isLoading: singlePageLoading, refetch:refetchSiglePageData } =
+    useGetPageByIdQuery(pageMast_id ? pageMast_id : null);
+
+  const { data: priceData, isLoading: isPriceLoading } =
+    useGetMultiplePagePriceQuery(pageMast_id ? pageMast_id : null);
+
+  useEffect(() => {
+
+      // return
+      if (!singlePageLoading &&pageMast_id) {
+        setPageName(singlePageData?.page_name);
+        setLink(singlePageData?.page_link);
+        setPlatformId(singlePageData?.platform_id);
+        setCategoryId(singlePageData?.page_category_id);
+        const tags = categoryData?.filter((e) =>
+          singlePageData.tags_page_category.includes(e._id)
+        );
+        let tagData = tags?.map((e) => ({
+          value: e._id,
+          label: e.category_name,
+        }));
+        setTag(tagData);
+
+        setPageLevel(singlePageData?.preference_level);
+        if (singlePageData.status == 1) {
+          setPageStatus("Active");
+        } else {
+          setPageStatus("Inactive");
+        }
+        setCloseBy(singlePageData?.page_closed_by);
+        setPageType(singlePageData?.page_name_type);
+        setContent(singlePageData?.content_creation);
+        setOwnerType(singlePageData?.ownership_type);
+        setVendorId(singlePageData.vendor_id);
+        setFollowCount(singlePageData?.followers_count);
+        setProfileId(singlePageData?.page_profile_type_id);
+
+        const platformActiveData = platformData?.filter((e) =>
+          singlePageData?.platform_active_on.includes(e._id)
+        );
+        let platformActiveDataList = platformActiveData?.map((e) => ({
+          value: e._id,
+          label: e.platform_name,
+        }));
+        setPlatformActive(platformActiveDataList);
+        setRate(singlePageData.engagment_rate);
+        setDescription(singlePageData.description);
+        setRateType({
+          value: singlePageData.rate_type,
+          label: singlePageData.rate_type,
+        });
+        setVariableType({
+          value: singlePageData.variable_type,
+          label: singlePageData.variable_type,
+        });
+        setRowCount(
+          !isPriceLoading &&
+            priceData?.map((e) => ({
+              page_price_type_id: e.page_price_type_id,
+              price: e.price,
+            }))
+        );
+        setPrimary({
+          value: singlePageData.primary_page,
+          label: singlePageData.primary_page,
+        });
+      
+    }
+  }, [pageMast_id, singlePageLoading]);
 
   const PageLevels = [
     { value: "Level 1 (High)", label: "Level 1 (High)" },
@@ -200,7 +274,6 @@ const PageMaster = () => {
       })
       .then((res) => {
         setOwnerShipData(res.data.data);
-        console.log(res.data.data, ">>>>>>>>>>>>>ok>>>>>>>>>>>>");
       })
       .catch((error) => {
         console.error("Error fetching ownership data:", error);
@@ -231,7 +304,6 @@ const PageMaster = () => {
           },
         })
         .then((res) => {
-          console.log(priceData, "priceData", res);
           setPriceTypeList(res.data.data);
           setFilterPriceTypeList(res.data.data);
         });
@@ -344,21 +416,39 @@ const PageMaster = () => {
       page_price_multiple: rowCount,
       primary_page: primary.value,
     };
-
-    axios
-      .post(baseUrl + "v1/pageMaster", payload, {
+    if (pageMast_id){
+      payload.last_updated_by = userID;
+      delete payload.created_by;
+      return axios.put(`${baseUrl}v1/pageMaster/${pageMast_id}`, payload, {
         headers: {
           Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json", // Adjust content type as needed
+          "Content-Type": "application/json", 
         },
       })
-      .then(() => {
-        setIsFormSubmitted(true);
-        toastAlert(" Data Submitted Successfully");
-      })
-      .catch((error) => {
-        toastError(error.response.data.message);
-      });
+        .then(() => {
+          setIsFormSubmitted(true);
+          refetchSiglePageData();
+          toastAlert(" Data Updated Successfully");
+        })
+        .catch((error) => {
+          toastError(error.response.data.message);
+        });
+    } else  {
+      return axios
+        .post(baseUrl + "v1/pageMaster", payload, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json", 
+          },
+        })
+        .then(() => {
+          setIsFormSubmitted(true);
+          toastAlert(" Data Submitted Successfully");
+        })
+        .catch((error) => {
+          toastError(error.response.data.message);
+        });
+    }
   };
 
   if (isFormSubmitted) {
@@ -379,7 +469,10 @@ const PageMaster = () => {
   };
 
   const handlePriceChange = (e, index) => {
-    if (e.target.value !== "" && (e.target.value < 0 || isNaN(e.target.value))) {
+    if (
+      e.target.value !== "" &&
+      (e.target.value < 0 || isNaN(e.target.value))
+    ) {
       return;
     }
     const newRowCount = [...rowCount];
@@ -399,19 +492,20 @@ const PageMaster = () => {
 
   const val = variableType.value === "Per Thousand" ? 1000 : 1000000;
   const FollowerCountCalcualtion = (followCount / val) * rowCount[0]?.price;
-  console.log(filterPriceTypeList, "filterPriceTypeList--------------------");
   return (
     <>
       <FormContainer
-        mainTitle="Page Master"
+        mainTitle={!pageMast_id ? "Page Master" : ""}
         link={true}
         // handleSubmit={handleSubmit}
         submitButton={false}
       />
-      <div className="card">
-        <div className="card-header">
-          <h5 className="card-title">Page Master</h5>
-        </div>
+      <div className={!pageMast_id ? "card" : ""}>
+        {!pageMast_id && (
+          <div className="card-header">
+            <h5 className="card-title">Page Master</h5>
+          </div>
+        )}
         <div className="card-body pb4">
           <div className="row thm_form">
             <div className="col-md-6 mb16">
@@ -422,7 +516,7 @@ const PageMaster = () => {
                 <div className="input-group inputAddGroup">
                   <Select
                     className="w-100"
-                    options={platformData.map((option) => ({
+                    options={platformData?.map((option) => ({
                       value: option._id,
                       label: option.platform_name,
                     }))}
@@ -670,7 +764,10 @@ const PageMaster = () => {
                 value={followCount}
                 required={true}
                 onChange={(e) => {
-                  if (e.target.value !== "" && (e.target.value < 0 || isNaN(e.target.value))) {
+                  if (
+                    e.target.value !== "" &&
+                    (e.target.value < 0 || isNaN(e.target.value))
+                  ) {
                     return;
                   }
                   setFollowCount(e.target.value);
@@ -875,7 +972,6 @@ const PageMaster = () => {
                   value={platformActive}
                   onChange={(e) => {
                     setPlatformActive(e);
-                    console.log(e);
                     if (e) {
                       setValidateFields((prev) => ({
                         ...prev,
@@ -963,7 +1059,10 @@ const PageMaster = () => {
                 value={rate}
                 required={true}
                 onChange={(e) => {
-                  if (e.target.value !== "" && (e.target.value < 0 || isNaN(e.target.value))) {
+                  if (
+                    e.target.value !== "" &&
+                    (e.target.value < 0 || isNaN(e.target.value))
+                  ) {
                     return;
                   }
                   setRate(e.target.value);
@@ -1064,9 +1163,9 @@ const PageMaster = () => {
             </div>
           </div>
           <div className="row thm_form pagePriceRow">
-            {rowCount.map((row, index) => (
+            {rowCount?.map((row, index) => (
               <>
-                <div className="col-md-6">
+                <div key={index} className="col-md-6">
                   <div className="form-group m0">
                     <label className="form-label">
                       Price Type <sup style={{ color: "red" }}>*</sup>
@@ -1163,7 +1262,7 @@ const PageMaster = () => {
               type="submit"
               onClick={handleSubmit}
             >
-              Submit
+              {pageMast_id ? "Update" : "Submit"}
             </button>
           </Stack>
         </div>

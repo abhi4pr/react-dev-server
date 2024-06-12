@@ -58,7 +58,6 @@ export default function AddVendorModal() {
   const decodedToken = jwtDecode(token);
   const userID = decodedToken.id;
   const modalType = useSelector((state) => state.vendorMaster.modalType);
-  console.log(modalType, "modal type-------------");
   const [title, setTitle] = useState("");
 
   useEffect(() => {
