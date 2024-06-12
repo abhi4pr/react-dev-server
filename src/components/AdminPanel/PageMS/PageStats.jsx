@@ -64,6 +64,28 @@ export default function PageStats() {
   } = useForm({
     mode: "onChange",
   });
+
+useEffect(() => {
+
+let err
+  for (const key in errors) {
+    if (Object.hasOwnProperty.call(errors, key)) {
+      const element = errors[key];
+      console.log(element.message);
+
+      // toastError(element.message)
+      err = true
+    }
+
+  }
+  if(err){
+    toastError("Please Fill All The Required Fields")
+  }
+
+  
+},[errors])
+
+
   // let isStatsFor = watch("statsFor");
   // switch (isStatsFor) {
   //   case "daily":

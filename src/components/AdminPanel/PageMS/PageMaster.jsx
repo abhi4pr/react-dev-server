@@ -125,71 +125,86 @@ const PageMaster = () => {
   const { data: vendor } = useGetAllVendorQuery();
 
   const vendorData = vendor?.data || [];
-  const { data: singlePageData, isLoading: singlePageLoading, refetch:refetchSiglePageData } =
-    useGetPageByIdQuery(pageMast_id ? pageMast_id : null);
+  const {
+    data: singlePageData,
+    isLoading: singlePageLoading,
+    refetch: refetchSiglePageData,
+  } = useGetPageByIdQuery(pageMast_id ? pageMast_id : null);
 
   const { data: priceData, isLoading: isPriceLoading } =
     useGetMultiplePagePriceQuery(pageMast_id ? pageMast_id : null);
 
-    useEffect(() => {
-      // return
-      if (!singlePageLoading && pageMast_id) {
-        setPageName(singlePageData?.page_name);
-        setLink(singlePageData?.page_link);
-        setPlatformId(singlePageData?.platform_id);
-        setCategoryId(singlePageData?.page_category_id);
-        const tags = categoryData?.filter((e) =>
-          singlePageData.tags_page_category.includes(e._id)
-        );
-        let tagData = tags?.map((e) => ({
-          value: e._id,
-          label: e.category_name,
-        }));
-        setTag(tagData);
-        setPageLevel(singlePageData?.preference_level);
-        if (singlePageData.status == 1) {
-          setPageStatus("Active");
-        } else {
-          setPageStatus("Inactive");
-        }
-        setCloseBy(singlePageData?.page_closed_by);
-        setPageType(singlePageData?.page_name_type);
-        setContent(singlePageData?.content_creation);
-        setOwnerType(singlePageData?.ownership_type);
-        setVendorId(singlePageData.vendor_id);
-        setFollowCount(singlePageData?.followers_count);
-        setProfileId(singlePageData?.page_profile_type_id);
-        const platformActiveData = platformData?.filter((e) =>
-          singlePageData?.platform_active_on.includes(e._id)
-        );
-        let platformActiveDataList = platformActiveData?.map((e) => ({
-          value: e._id,
-          label: e.platform_name,
-        }));
-        setPlatformActive(platformActiveDataList);
-        setRate(singlePageData.engagment_rate);
-        setDescription(singlePageData.description);
-        setRateType({
-          value: singlePageData.rate_type,
-          label: singlePageData.rate_type,
-        });
-        setVariableType({
-          value: singlePageData.variable_type,
-          label: singlePageData.variable_type,
-        });
-        setRowCount(
-          !isPriceLoading &&
-            priceData?.map((e) => ({
-              page_price_type_id: e.page_price_type_id,
-              price: e.price,
-            }))
-        );
-        setPrimary({
-          value: singlePageData.primary_page,
-          label: singlePageData.primary_page,
-        });
+  useEffect(() => {
+    // return
+
+    if (!singlePageLoading && pageMast_id) {
+
+      setPageName(singlePageData?.page_name);
+      setLink(singlePageData?.page_link);
+      setPlatformId(singlePageData?.platform_id);
+      setCategoryId(singlePageData?.page_category_id);
+     
+      setPageLevel(singlePageData?.preference_level);
+      if (singlePageData.status == 1) {
+        setPageStatus("Active");
+      } else {
+        setPageStatus("Inactive");
       }
-    }, [pageMast_id, singlePageLoading]);
+      setCloseBy(singlePageData?.page_closed_by);
+      setPageType(singlePageData?.page_name_type);
+      setContent(singlePageData?.content_creation);
+      setOwnerType(singlePageData?.ownership_type);
+      setVendorId(singlePageData.vendor_id);
+      setFollowCount(singlePageData?.followers_count);
+      setProfileId(singlePageData?.page_profile_type_id);
+      const platformActiveData = platformData?.filter((e) =>
+        singlePageData?.platform_active_on?.includes(e._id)
+      );
+      let platformActiveDataList = platformActiveData?.map((e) => ({
+        value: e._id,
+        label: e.platform_name,
+      }));
+      setPlatformActive(platformActiveDataList ? platformActiveDataList : []);
+      setRate(singlePageData?.engagment_rate);
+      setDescription(singlePageData?.description);
+      setRateType({
+        value: singlePageData?.rate_type,
+        label: singlePageData?.rate_type,
+      });
+      setVariableType({
+        value: singlePageData?.variable_type,
+        label: singlePageData?.variable_type,
+      });
+    
+      setPrimary({
+        value: singlePageData?.primary_page,
+        label: singlePageData?.primary_page,
+      });
+
+      const tags = categoryData?.filter((e) =>
+        singlePageData?.tags_page_category?.includes(e._id)
+      );
+      let tagData = tags?.map((e) => ({
+        value: e?._id,
+        label: e?.category_name,
+      }));
+      setTag(tagData);
+    }
+  }, [singlePageLoading]);
+
+
+useEffect(() => {
+  
+    if (!isPriceLoading && pageMast_id) {
+      setRowCount(
+        priceData?.map((e) => ({
+          page_price_type_id: e.page_price_type_id,
+          price: e.price,
+        }))
+      );
+    }
+}, [priceData]);
+
   const PageLevels = [
     { value: "Level 1 (High)", label: "Level 1 (High)" },
     { value: "Level 2 (Medium)", label: "Level 2 (Medium)" },
@@ -410,15 +425,16 @@ const PageMaster = () => {
       page_price_multiple: rowCount,
       primary_page: primary.value,
     };
-    if (pageMast_id){
+    if (pageMast_id) {
       payload.last_updated_by = userID;
       delete payload.created_by;
-      return axios.put(`${baseUrl}v1/pageMaster/${pageMast_id}`, payload, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json", 
-        },
-      })
+      return axios
+        .put(`${baseUrl}v1/pageMaster/${pageMast_id}`, payload, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        })
         .then(() => {
           setIsFormSubmitted(true);
           refetchSiglePageData();
@@ -427,12 +443,12 @@ const PageMaster = () => {
         .catch((error) => {
           toastError(error.response.data.message);
         });
-    } else  {
+    } else {
       return axios
         .post(baseUrl + "v1/pageMaster", payload, {
           headers: {
             Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json", 
+            "Content-Type": "application/json",
           },
         })
         .then(() => {
