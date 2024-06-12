@@ -51,7 +51,8 @@ export default function PageStats() {
   const userID = decodedToken.id;
   const { data: cities } = useGetAllCitiesQuery();
   const { id } = useParams();
-  const { data: pageStateData ,isLoading:pageStateDataIsLoaidng } = useGetPageStateByIdQuery(id);
+  const { data: pageStateData, isLoading: pageStateDataIsLoaidng } =
+    useGetPageStateByIdQuery(id);
   const countryList = Country.getAllCountries();
   const {
     register,
@@ -272,10 +273,10 @@ export default function PageStats() {
   };
 
   function addOneDay(date) {
-    if(!date) return;
+    if (!date) return;
     const result = new Date(date);
     result?.setDate(result.getDate() + 1);
-    return result?.toISOString().split('T')[0];
+    return result?.toISOString().split("T")[0];
   }
 
   return (
@@ -288,7 +289,10 @@ export default function PageStats() {
           <div className="card">
             <div className="card-body flexCenterBetween">
               <h5 className="card-title">
-                {!pageStateDataIsLoaidng&&!pageStateData?._id ? "Add" : "Update"}    Stats
+                {!pageStateDataIsLoaidng && !pageStateData?._id
+                  ? "Add"
+                  : "Update"}{" "}
+                Stats
               </h5>
               {/* <div className="form-group flexCenter colGap8 w-40 m0">
                 <label className="w-25 m0">Stats for</label>
@@ -347,7 +351,7 @@ export default function PageStats() {
                     </label>
                     <input
                       type="date"
-                      disabled={watch("startDate")?false:true}
+                      disabled={watch("startDate") ? false : true}
                       min={addOneDay(watch("startDate"))}
                       className="form-control"
                       {...register("endDate", {
@@ -494,7 +498,7 @@ export default function PageStats() {
                         accept="image/*"
                         className="form-control"
                         {...register("engagement", {
-                          // required: "Please Select The Engagement ",
+                          required: "Please Select The Engagement ",
                           pattern: {
                             value: /^[0-9]*$/,
                             message: "Please Enter Valid Engagement",
