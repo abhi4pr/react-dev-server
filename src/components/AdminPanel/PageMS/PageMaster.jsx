@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, use } from "react";
 import axios from "axios";
 import { useGlobalContext } from "../../../Context/Context";
 import FieldContainer from "../FieldContainer";
@@ -138,12 +138,11 @@ const PageMaster = () => {
     // return
 
     if (!singlePageLoading && pageMast_id) {
-
       setPageName(singlePageData?.page_name);
       setLink(singlePageData?.page_link);
       setPlatformId(singlePageData?.platform_id);
       setCategoryId(singlePageData?.page_category_id);
-     
+
       setPageLevel(singlePageData?.preference_level);
       if (singlePageData.status == 1) {
         setPageStatus("Active");
@@ -175,7 +174,7 @@ const PageMaster = () => {
         value: singlePageData?.variable_type,
         label: singlePageData?.variable_type,
       });
-    
+
       setPrimary({
         value: singlePageData?.primary_page,
         label: singlePageData?.primary_page,
@@ -192,9 +191,7 @@ const PageMaster = () => {
     }
   }, [singlePageLoading]);
 
-
-useEffect(() => {
-  
+  useEffect(() => {
     if (!isPriceLoading && pageMast_id) {
       setRowCount(
         priceData?.map((e) => ({
@@ -203,7 +200,7 @@ useEffect(() => {
         }))
       );
     }
-}, [priceData]);
+  }, [priceData]);
 
   const PageLevels = [
     { value: "Level 1 (High)", label: "Level 1 (High)" },

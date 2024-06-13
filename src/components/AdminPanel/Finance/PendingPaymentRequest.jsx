@@ -2401,23 +2401,46 @@ export default function PendingPaymentRequest() {
           </div>
           <div className="card-body thm_table fx-head">
             {activeAccordionIndex === 0 && (
-              <TableData
-                tableName="Pending Payment Request Table"
-                tableFields={[
-                  "invc_no",
-                  "page_name",
-                  "payment_cycle",
-                  "gst",
-                  "remark_audit",
-                  "priority",
-                ]}
-                getData={callApi}
-                setData={setData}
-                setFilterData={setFilterData}
-                datas={data}
-                filterData={filterData}
-                tableActions={tableActions}
-                tableApi="phpvendorpaymentrequest"
+              // <TableData
+              //   tableName="Pending Payment Request Table"
+              //   tableFields={[
+              //     "invc_no",
+              //     "page_name",
+              //     "payment_cycle",
+              //     "gst",
+              //     "remark_audit",
+              //     "priority",
+              //   ]}
+              //   getData={callApi}
+              //   setData={setData}
+              //   setFilterData={setFilterData}
+              //   datas={data}
+              //   filterData={filterData}
+              //   tableActions={tableActions}
+              //   tableApi="phpvendorpaymentrequest"
+              // />
+              <DataGrid
+                rows={filterData.filter((d) => d.status === "3")}
+                columns={columns}
+                pageSize={5}
+                rowsPerPageOptions={[5]}
+                h
+                getRowClassName={getValidationCSSForRemainder}
+                slots={{ toolbar: GridToolbar }}
+                checkboxSelection
+                disableSelectionOnClick
+                disableColumnMenu
+                getRowId={(row) => row?.request_id}
+                slotProps={{
+                  toolbar: {
+                    showQuickFilter: true,
+                  },
+                }}
+                onRowSelectionModelChange={(rowIds) => {
+                  handleRowSelectionModelChange(rowIds);
+                  console.log(rowIds, "IDS");
+                }}
+                rowSelectionModel={rowSelectionModel}
               />
             )}
             {openImageDialog && (
@@ -2432,7 +2455,7 @@ export default function PendingPaymentRequest() {
 
             {activeAccordionIndex === 1 && (
               <DataGrid
-                rows={filterData.filter((d) => d.status === "3")}
+                rows={filterData}
                 columns={columns}
                 pageSize={5}
                 rowsPerPageOptions={[5]}

@@ -417,8 +417,8 @@ const Admin = () => {
                       (contextData &&
                         contextData[38] &&
                         contextData[38].view_value === 1)) && (
-                        <Route path="/user" element={<UserMaster />} />
-                      )}
+                      <Route path="/user" element={<UserMaster />} />
+                    )}
 
                     {/* User Profile Routing Here  */}
                     <Route path="/user-timeline" element={<Timeline />} />
@@ -1450,10 +1450,6 @@ const Admin = () => {
                     element={<EditPage />}
                   />
                   <Route
-                    path="/pms-page-edit/:pageMast_id"
-                    element={<EditPage />}
-                  />
-                  <Route
                     path="/pms-vendor-page-price-overview"
                     element={<VendorPagePriceOverview />}
                   />
@@ -1636,7 +1632,7 @@ const Admin = () => {
                     path="/op-plan-creation/:id"
                     element={<PlanCreation />}
                   />
-                 
+
                   <Route
                     path="/op-phase-creation/:id"
                     element={<PhaseCreation />}
