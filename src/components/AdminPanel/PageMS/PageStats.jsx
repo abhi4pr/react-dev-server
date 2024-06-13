@@ -32,6 +32,7 @@ export default function PageStats() {
     cityImage: null,
     countryImage: null,
   });
+  const [isFormsubmitting, setIsFormSubmitting] = useState(false);
   const handleFileChange = (event, imageKey) => {
     const file = event.target.files[0];
     if (file) {
@@ -51,10 +52,21 @@ export default function PageStats() {
   const decodedToken = jwtDecode(token);
   const userID = decodedToken.id;
   const { data: cities } = useGetAllCitiesQuery();
-  const { id } = useParams();
-  const { data: pageStateData, isLoading: pageStateDataIsLoaidng } =
-    useGetPageStateByIdQuery(id);
-  const countryList = Country.getAllCountries();
+  const [copyCities, setCopyCities] = useState([]);
+  const [copyCountries, setCopyCountries] = useState([]);
+
+  useEffect(() => {
+    if (cities) {
+      setCopyCities(cities);
+    }
+  }, [cities]);
+
+  useEffect(() => {
+    if (Country.getAllCountries()) {
+      setCopyCountries(Country.getAllCountries());
+    }
+  }, []);
+
   const {
     register,
     handleSubmit,
@@ -65,6 +77,52 @@ export default function PageStats() {
   } = useForm({
     mode: "onChange",
   });
+
+  useEffect(() => {
+    let citiesArr = cities?.filter(
+      (city) =>
+        !(
+          city.city_name === watch("city1") ||
+          city.city_name === watch("city2") ||
+          city.city_name === watch("city3") ||
+          city.city_name === watch("city4") ||
+          city.city_name === watch("city5")
+        )
+    );
+    console.log(citiesArr);
+    setCopyCities(citiesArr);
+  }, [
+    watch("city1"),
+    watch("city2"),
+    watch("city3"),
+    watch("city4"),
+    watch("city5"),
+  ]);
+  const countryList = Country.getAllCountries();
+
+  useEffect(() => {
+    let countriesArr = countryList?.filter(
+      (country) =>
+        !(
+          country.name === watch("country1") ||
+          country.name === watch("country2") ||
+          country.name === watch("country3") ||
+          country.name === watch("country4") ||
+          country.name === watch("country5")
+        )
+    );
+    setCopyCountries(countriesArr);
+  }, [
+    watch("country1"),
+    watch("country2"),
+    watch("country3"),
+    watch("country4"),
+    watch("country5"),
+  ]);
+
+  const { id } = useParams();
+  const { data: pageStateData, isLoading: pageStateDataIsLoaidng } =
+    useGetPageStateByIdQuery(id);
 
   useEffect(() => {
     let err;
@@ -189,6 +247,7 @@ export default function PageStats() {
   };
 
   const handleSubmitForm = (data) => {
+    setIsFormSubmitting(true);
     const formData = new FormData();
     appendIfDefined(formData, "page_master_id", id);
     appendIfDefined(formData, "reach", data?.reach);
@@ -270,7 +329,8 @@ export default function PageStats() {
         })
         .catch((err) => {
           toastError(`Something Went Wrong ${err.message}`);
-        });
+        })
+        .finally(() => setIsFormSubmitting(false));
     } else {
       delete formData.created_by;
       delete formData.page_master_id;
@@ -285,7 +345,8 @@ export default function PageStats() {
         })
         .catch((err) => {
           toastError(`Something Went Wrong ${err.message}`);
-        });
+        })
+        .finally(() => setIsFormSubmitting());
     }
   };
   const handlePercentageMax = (event) => {
@@ -708,7 +769,7 @@ export default function PageStats() {
                                 render={({ field }) => (
                                   <Autocomplete
                                     {...field}
-                                    options={cities}
+                                    options={copyCities}
                                     getOptionLabel={(option) =>
                                       option.city_name || ""
                                     }
@@ -824,7 +885,7 @@ export default function PageStats() {
                             render={({ field }) => (
                               <Autocomplete
                                 {...field}
-                                options={countryList}
+                                options={copyCountries}
                                 getOptionLabel={(option) => option.name}
                                 isOptionEqualToValue={(option, value) =>
                                   option.name === value?.name
@@ -1126,7 +1187,11 @@ export default function PageStats() {
           <div className="card">
             <div className="card-body">
               <div className="flexCenter colGap16">
-                <button className="btn cmnbtn btn-primary" type="submit">
+                <button
+                  disabled={isFormsubmitting}
+                  className="btn cmnbtn btn-primary"
+                  type="submit"
+                >
                   Save
                 </button>
                 <button className="btn cmnbtn btn-secondary" type="button">

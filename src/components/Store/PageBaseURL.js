@@ -1,10 +1,11 @@
 import { createApi } from "@reduxjs/toolkit/query/react";
 import authBaseQuery from "../../utils/authBaseQuery";
+import { get } from "jquery";
 
 export const PageBaseURL = createApi({
   baseQuery: authBaseQuery,
   reducerPath: "PageBaseURL",
-  tagTypes: ["profileList", "categoryList"],
+  tagTypes: ["profileList", "categoryList", "PageList"],
   endpoints: (builder) => ({
     getAllProfileList: builder.query({
       query: () => `v1/profile_type`,
@@ -101,10 +102,12 @@ export const PageBaseURL = createApi({
         method: "POST",
         body: data,
       }),
+      invalidatesTags: ["pageState"],
     }),
     getPageState: builder.query({
       query: () => `v1/page_states`,
       transformResponse: (response) => response.data,
+      providesTags: ["pageState"],
     }),
     getPageStateById: builder.query({
       query: (data) => `v1/page_states/${data}`,
@@ -121,6 +124,12 @@ export const PageBaseURL = createApi({
     //cities
     getAllCities: builder.query({
       query: () => `get_all_cities`,
+      transformResponse: (response) => response.data,
+    }),
+
+    //ownership type
+    getOwnershipType: builder.query({
+      query: () => `accounts/get_all_account_company_type`,
       transformResponse: (response) => response.data,
     }),
   }),
@@ -146,4 +155,5 @@ export const {
   useGetPageStateByIdQuery,
   useUpdatePageStateMutation,
   useGetAllCitiesQuery,
+  useGetOwnershipTypeQuery,
 } = PageBaseURL;

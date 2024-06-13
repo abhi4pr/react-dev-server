@@ -28,7 +28,11 @@ export default function ExeHistory() {
   };
 
   const apiCall = () => {
-    axios.get(`${baseUrl}` + `v1/states_history/${id}`).then((res) => {
+    axios.get(`${baseUrl}` + `v1/states_history/${id}`,{
+      headers: {
+        Authorization: `Bearer ${sessionStorage.getItem("token")}`,
+      },
+    }).then((res) => {
       const data = res.data.data;
       console.log(data, "data");
       if (!data) return;
@@ -44,6 +48,7 @@ export default function ExeHistory() {
   }, []);
 
   const handleDeleteRowData = (data) => {
+
     setRowData(data);
     handleClickOpenDeleteHistoryConFirmation();
   };

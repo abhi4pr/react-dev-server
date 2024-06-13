@@ -51,6 +51,7 @@ import {
   useGetAllPageListQuery,
   useGetAllPriceListQuery,
   useGetMultiplePagePriceQuery,
+  useGetOwnershipTypeQuery,
   useGetPageStateQuery,
   useGetpagePriceTypeQuery,
 } from "../../Store/PageBaseURL";
@@ -375,6 +376,7 @@ const PageOverview = () => {
   // }
 
   const { data: allPriceTypeList } = useGetpagePriceTypeQuery();
+  const { data: ownerShipData } = useGetOwnershipTypeQuery();
   // const handleEditCellChange = (params) => {
   //   (async () => {
   //     const updatedRow = {
@@ -407,7 +409,6 @@ const PageOverview = () => {
   function pageHealthToggleCheck() {
     if (showPageHealthColumn) {
       const data = filterData?.map((item) => {
-        // debugger;
         const matchingState = pageStates?.find(
           (state) => state?.page_master_id === item?._id
         );
@@ -425,11 +426,11 @@ const PageOverview = () => {
 
   useEffect(() => {
     pageHealthToggleCheck();
-  }, [showPageHealthColumn]);
+  }, [showPageHealthColumn, filterData]);
   useEffect(() => {
-    if (showPageHealthColumn) {
-      dispatch(setShowPageHealthColumn(false));
-    }
+    // if (showPageHealthColumn) {
+    //   dispatch(setShowPageHealthColumn(false));
+    // }
     if (userID && !contextData) {
       axios
         .get(`${baseUrl}get_single_user_auth_detail/${userID}`)
@@ -561,7 +562,23 @@ const PageOverview = () => {
       width: 200,
       valueGetter: (params) => (params.row.status == 1 ? "Active" : "Inactive"),
     },
-    { field: "ownership_type", headerName: "Ownership", width: 200 },
+    {
+      field: "ownership_type",
+      headerName: "Ownership",
+      width: 200,
+      valueGetter: (params) => {
+        if (!ownerShipData) {
+          console.log("ownerShipData is not defined");
+          return <div>Unknown</div>;
+        }
+    
+        const ownership = ownerShipData?.find(item => item._id === params.row.ownership_type)?.company_type_name;
+        const finalName = ownership ? ownership : "NA";
+    
+        return finalName;
+      },
+    },
+    
     // {
     //   field: "link",
     //   headerNa: "Link",
@@ -1376,6 +1393,7 @@ const PageOverview = () => {
           <h5 className="card-title flexCenterBetween">
             <Switch
               checked={showPageHealthColumn}
+              value={showPageHealthColumn}
               onChange={() =>
                 dispatch(setShowPageHealthColumn(!showPageHealthColumn))
               }

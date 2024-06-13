@@ -22,6 +22,7 @@ import {
   useGetAllPageCategoryQuery,
   useGetAllProfileListQuery,
   useGetMultiplePagePriceQuery,
+  useGetOwnershipTypeQuery,
   useGetPageByIdQuery,
 } from "../../Store/PageBaseURL";
 import PageInfoModal from "./PageInfoModal";
@@ -113,6 +114,8 @@ const PageMaster = () => {
   ]);
 
   const dispatch = useDispatch();
+  
+  const { data: ownerShipData } = useGetOwnershipTypeQuery();
 
   const { data: profileData } = useGetAllProfileListQuery();
 
@@ -269,26 +272,10 @@ const PageMaster = () => {
         setUserData(res.data.data);
       });
   };
-  const [ownerShipData, setOwnerShipData] = useState([]);
-  const getOwnershipData = () => {
-    axios
-      .get(baseUrl + "/accounts/get_all_account_company_type", {
-        headers: {
-          Authorization:
-            "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InRlc3RpbmciLCJpYXQiOjE3MDczMTIwODB9.ytDpwGbG8dc9jjfDasL_PI5IEhKSQ1wXIFAN-2QLrT8",
-        },
-      })
-      .then((res) => {
-        setOwnerShipData(res.data.data);
-      })
-      .catch((error) => {
-        console.error("Error fetching ownership data:", error);
-      });
-  };
+
 
   useEffect(() => {
     getData();
-    getOwnershipData();
   }, []);
 
   const handleRateTypeChange = (selectedOption) => {
@@ -830,7 +817,7 @@ const PageMaster = () => {
                 </label>
                 <Select
                   className="w-100"
-                  options={ownerShipData.map((option) => ({
+                  options={ownerShipData?.map((option) => ({
                     value: option._id,
                     label: option.company_type_name,
                   }))}
@@ -838,7 +825,7 @@ const PageMaster = () => {
                   value={{
                     value: ownerType,
                     label:
-                      ownerShipData.find((role) => role._id === ownerType)
+                      ownerShipData?.find((role) => role._id === ownerType)
                         ?.company_type_name || "",
                   }}
                   onChange={(e) => {
