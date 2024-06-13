@@ -25,7 +25,6 @@ import { blue } from "@mui/material/colors";
 import ImageView from "./ImageView";
 import moment from "moment";
 
-
 const Invoice = () => {
   const navigate = useNavigate();
   const { toastAlert, toastError } = useGlobalContext();
@@ -1370,6 +1369,12 @@ const Invoice = () => {
       headerName: "Address",
       width: 210,
       renderCell: (params) => params.row.address,
+    },
+    {
+      field: "invoice_remark",
+      headerName: "Invoice Remark",
+      width: 210,
+      renderCell: (params) => params.row.invoice_remark,
     },
   ];
 
