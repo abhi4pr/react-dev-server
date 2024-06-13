@@ -1,5 +1,6 @@
 import { createApi } from "@reduxjs/toolkit/query/react";
 import authBaseQuery from "../../utils/authBaseQuery";
+import { get } from "jquery";
 
 export const PageBaseURL = createApi({
   baseQuery: authBaseQuery,
@@ -125,6 +126,12 @@ export const PageBaseURL = createApi({
       query: () => `get_all_cities`,
       transformResponse: (response) => response.data,
     }),
+
+    //ownership type
+    getOwnershipType: builder.query({
+      query: () => `accounts/get_all_account_company_type`,
+      transformResponse: (response) => response.data,
+    }),
   }),
 });
 
@@ -148,4 +155,5 @@ export const {
   useGetPageStateByIdQuery,
   useUpdatePageStateMutation,
   useGetAllCitiesQuery,
+  useGetOwnershipTypeQuery,
 } = PageBaseURL;

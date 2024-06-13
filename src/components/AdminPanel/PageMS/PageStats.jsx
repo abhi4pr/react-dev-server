@@ -31,7 +31,7 @@ export default function PageStats() {
     cityImage: null,
     countryImage: null,
   });
-  const [isFormsubmitting,setIsFormSubmitting] = useState(false)
+  const [isFormsubmitting, setIsFormSubmitting] = useState(false);
   const handleFileChange = (event, imageKey) => {
     const file = event.target.files[0];
     if (file) {
@@ -51,10 +51,21 @@ export default function PageStats() {
   const decodedToken = jwtDecode(token);
   const userID = decodedToken.id;
   const { data: cities } = useGetAllCitiesQuery();
-  const { id } = useParams();
-  const { data: pageStateData, isLoading: pageStateDataIsLoaidng } =
-    useGetPageStateByIdQuery(id);
-  const countryList = Country.getAllCountries();
+  const [copyCities, setCopyCities] = useState([]);
+  const [copyCountries, setCopyCountries] = useState([]);
+
+  useEffect(() => {
+    if (cities) {
+      setCopyCities(cities);
+    }
+  }, [cities]);
+
+  useEffect(() => {
+    if (Country.getAllCountries()) {
+      setCopyCountries(Country.getAllCountries());
+    }
+  }, []);
+
   const {
     register,
     handleSubmit,
@@ -66,26 +77,67 @@ export default function PageStats() {
     mode: "onChange",
   });
 
-useEffect(() => {
+  useEffect(() => {
+    let citiesArr = cities?.filter(
+      (city) =>
+        !(
+          city.city_name === watch("city1") ||
+          city.city_name === watch("city2") ||
+          city.city_name === watch("city3") ||
+          city.city_name === watch("city4") ||
+          city.city_name === watch("city5")
+        )
+    );
+    console.log(citiesArr);
+    setCopyCities(citiesArr);
+  }, [
+    watch("city1"),
+    watch("city2"),
+    watch("city3"),
+    watch("city4"),
+    watch("city5"),
+  ]);
+  const countryList = Country.getAllCountries();
 
-let err
-  for (const key in errors) {
-    if (Object.hasOwnProperty.call(errors, key)) {
-      const element = errors[key];
-      console.log(element.message);
+  useEffect(() => {
+    let countriesArr = countryList?.filter(
+      (country) =>
+        !(
+          country.name === watch("country1") ||
+          country.name === watch("country2") ||
+          country.name === watch("country3") ||
+          country.name === watch("country4") ||
+          country.name === watch("country5")
+        )
+    );
+    setCopyCountries(countriesArr);
+  }, [
+    watch("country1"),
+    watch("country2"),
+    watch("country3"),
+    watch("country4"),
+    watch("country5"),
+  ]);
 
-      // toastError(element.message)
-      err = true
+  const { id } = useParams();
+  const { data: pageStateData, isLoading: pageStateDataIsLoaidng } =
+    useGetPageStateByIdQuery(id);
+
+  useEffect(() => {
+    let err;
+    for (const key in errors) {
+      if (Object.hasOwnProperty.call(errors, key)) {
+        const element = errors[key];
+        console.log(element.message);
+
+        // toastError(element.message)
+        err = true;
+      }
     }
-
-  }
-  if(err){
-    toastError("Please Fill All The Required Fields")
-  }
-
-  
-},[errors])
-
+    if (err) {
+      toastError("Please Fill All The Required Fields");
+    }
+  }, [errors]);
 
   // let isStatsFor = watch("statsFor");
   // switch (isStatsFor) {
@@ -184,7 +236,7 @@ let err
   };
 
   const handleSubmitForm = (data) => {
-setIsFormSubmitting(true)
+    setIsFormSubmitting(true);
     const formData = new FormData();
     appendIfDefined(formData, "page_master_id", id);
     appendIfDefined(formData, "reach", data?.reach);
@@ -266,7 +318,8 @@ setIsFormSubmitting(true)
         })
         .catch((err) => {
           toastError(`Something Went Wrong ${err.message}`);
-        }).finally(()=>setIsFormSubmitting(false))
+        })
+        .finally(() => setIsFormSubmitting(false));
     } else {
       delete formData.created_by;
       delete formData.page_master_id;
@@ -281,7 +334,8 @@ setIsFormSubmitting(true)
         })
         .catch((err) => {
           toastError(`Something Went Wrong ${err.message}`);
-        }).finally(()=>setIsFormSubmitting())
+        })
+        .finally(() => setIsFormSubmitting());
     }
   };
   const handlePercentageMax = (event) => {
@@ -678,7 +732,7 @@ setIsFormSubmitting(true)
                                 render={({ field }) => (
                                   <Autocomplete
                                     {...field}
-                                    options={cities}
+                                    options={copyCities}
                                     getOptionLabel={(option) =>
                                       option.city_name || ""
                                     }
@@ -788,7 +842,7 @@ setIsFormSubmitting(true)
                             render={({ field }) => (
                               <Autocomplete
                                 {...field}
-                                options={countryList}
+                                options={copyCountries}
                                 getOptionLabel={(option) => option.name}
                                 isOptionEqualToValue={(option, value) =>
                                   option.name === value?.name
@@ -1078,7 +1132,11 @@ setIsFormSubmitting(true)
           <div className="card">
             <div className="card-body">
               <div className="flexCenter colGap16">
-                <button disabled={isFormsubmitting} className="btn cmnbtn btn-primary" type="submit">
+                <button
+                  disabled={isFormsubmitting}
+                  className="btn cmnbtn btn-primary"
+                  type="submit"
+                >
                   Save
                 </button>
                 <button className="btn cmnbtn btn-secondary" type="button">

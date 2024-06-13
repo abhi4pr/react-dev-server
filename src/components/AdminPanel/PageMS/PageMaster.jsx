@@ -22,6 +22,7 @@ import {
   useGetAllPageCategoryQuery,
   useGetAllProfileListQuery,
   useGetMultiplePagePriceQuery,
+  useGetOwnershipTypeQuery,
   useGetPageByIdQuery,
 } from "../../Store/PageBaseURL";
 import PageInfoModal from "./PageInfoModal";
@@ -113,6 +114,8 @@ const PageMaster = () => {
   ]);
 
   const dispatch = useDispatch();
+  
+  const { data: ownerShipData } = useGetOwnershipTypeQuery();
 
   const { data: profileData } = useGetAllProfileListQuery();
 
@@ -138,12 +141,11 @@ const PageMaster = () => {
     // return
 
     if (!singlePageLoading && pageMast_id) {
-
       setPageName(singlePageData?.page_name);
       setLink(singlePageData?.page_link);
       setPlatformId(singlePageData?.platform_id);
       setCategoryId(singlePageData?.page_category_id);
-     
+
       setPageLevel(singlePageData?.preference_level);
       if (singlePageData.status == 1) {
         setPageStatus("Active");
@@ -175,7 +177,7 @@ const PageMaster = () => {
         value: singlePageData?.variable_type,
         label: singlePageData?.variable_type,
       });
-    
+
       setPrimary({
         value: singlePageData?.primary_page,
         label: singlePageData?.primary_page,
@@ -192,9 +194,7 @@ const PageMaster = () => {
     }
   }, [singlePageLoading]);
 
-
-useEffect(() => {
-  
+  useEffect(() => {
     if (!isPriceLoading && pageMast_id) {
       setRowCount(
         priceData?.map((e) => ({
@@ -203,7 +203,7 @@ useEffect(() => {
         }))
       );
     }
-}, [priceData]);
+  }, [priceData]);
 
   const PageLevels = [
     { value: "Level 1 (High)", label: "Level 1 (High)" },
@@ -272,26 +272,10 @@ useEffect(() => {
         setUserData(res.data.data);
       });
   };
-  const [ownerShipData, setOwnerShipData] = useState([]);
-  const getOwnershipData = () => {
-    axios
-      .get(baseUrl + "/accounts/get_all_account_company_type", {
-        headers: {
-          Authorization:
-            "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InRlc3RpbmciLCJpYXQiOjE3MDczMTIwODB9.ytDpwGbG8dc9jjfDasL_PI5IEhKSQ1wXIFAN-2QLrT8",
-        },
-      })
-      .then((res) => {
-        setOwnerShipData(res.data.data);
-      })
-      .catch((error) => {
-        console.error("Error fetching ownership data:", error);
-      });
-  };
+
 
   useEffect(() => {
     getData();
-    getOwnershipData();
   }, []);
 
   const handleRateTypeChange = (selectedOption) => {
@@ -833,7 +817,7 @@ useEffect(() => {
                 </label>
                 <Select
                   className="w-100"
-                  options={ownerShipData.map((option) => ({
+                  options={ownerShipData?.map((option) => ({
                     value: option._id,
                     label: option.company_type_name,
                   }))}
@@ -841,7 +825,7 @@ useEffect(() => {
                   value={{
                     value: ownerType,
                     label:
-                      ownerShipData.find((role) => role._id === ownerType)
+                      ownerShipData?.find((role) => role._id === ownerType)
                         ?.company_type_name || "",
                   }}
                   onChange={(e) => {
