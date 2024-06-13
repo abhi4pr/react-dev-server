@@ -102,6 +102,7 @@ const VendorMaster = () => {
   const [vendorCategory, setVendorCategory] = useState("Theme Page");
   const [whatsappLink, setWhatsappLink] = useState([]);
   const [sameAsPrevious, setSameAsPrevious] = useState(false);
+  const [mobileValid, setMobileValid] = useState(false);
 
   const [getGstDetails, { dd, error, isLoading }] = useGstDetailsMutation();
 
@@ -124,7 +125,6 @@ const VendorMaster = () => {
     platformId: false,
     payId: false,
     cycleId: false,
-    gst: false,
     // type: false,
   });
 
@@ -157,10 +157,10 @@ const VendorMaster = () => {
           if (response?.data && response?.data?.success) {
             const { data } = response?.data;
             setCompName(data?.legal_business_name);
-            setCompAddress(data?.principal_place_of_business);
-            const addressParts = data?.principal_place_of_business?.split(", ");
-            setCompCity(addressParts[0]);
-            setCompPin(addressParts[1]);
+            setCompAddress(data?.principal_place_of_business?.split(",")?.[0]);
+            const addressParts = data?.principal_place_of_business?.split(",");
+            setCompCity(addressParts[2]);
+            setCompPin(addressParts[7]);
             setCompState(addressParts[2]);
             setLimit("");
           } else {
@@ -337,7 +337,6 @@ const VendorMaster = () => {
         })
         .then((res) => {
           const data = res.data.data;
-          console.log(res.data.data,"bankrooooooooow");
           setBankRows(data);
         });
 
@@ -390,17 +389,6 @@ const VendorMaster = () => {
       setWhatsappLink(updatedLinks);
     };
   };
-
-  const [mobileValid, setMobileValid] = useState(false);
-  // const handleMobileNumSet = (e, setState) => {
-  //   const re = /^[0-9\b]+$/;
-  //   if (
-  //     e.target.value === "" ||
-  //     (re.test(e.target.value) && e.target.value.length <= 10)
-  //   ) {
-  //     setState(e.target.value);
-  //   }
-  // };
 
   const handleMobileNumSet = (e) => {
     const newContact = e.target.value;
@@ -473,14 +461,7 @@ const VendorMaster = () => {
   const handlePanChange = (e) => {
     if (e.target.value.length > 13) return;
     const inputValue = e.target.value.toUpperCase();
-    // Validate PAN format
-    // const panRegex = /[A-Z]{5}[0-9]{4}[A-Z]{1}/;
-    // if (!panRegex.test(inputValue)) {
-    //   toastError('Please enter a valid PAN number');
-    // } else{
     setPan(inputValue);
-
-    // }
   };
 
   const handleSubmit = (e) => {
@@ -516,43 +497,8 @@ const VendorMaster = () => {
       toastError("Please enter a valid email");
       return;
     }
-    if (gstApplicable === "Yes" && !gst) {
-      setValidator((prev) => ({ ...prev, gst: true }));
-    }
-    // if (whatsappLink.length > 0) {
-    //   whatsappLink.map((link, i) => {
-    //     if (!link.link) {
-    //       setValidator((prev) => ({ ...prev, whatsappLink: true }));
-    //     }
-    //     if (link.type == "") {
-    //       setValidator((prev) => ({ ...prev, type: true }));
-    //     }
-    //   });
-    // }
-    // if (!vendorName) {
-    //   toastError("Please enter vendor name");
-    //   return;
-    // } else if (!countryCode) {
-    //   toastError("Please enter country code");
-    //   return;
-    // } else if (!mobile) {
-    //   toastError("Please enter mobile number");
-    //   return;
-    // } else if (!email) {
-    //   toastError("Please enter email");
-    //   return;
-    // } else if (!typeId) {
-    //   toastError("Please select vendor type");
-    //   return;
-    // } else if (!platformId) {
-    //   toastError("Please select platform");
-    //   return;
-    // } else if (!payId) {
-    //   toastError("Please select payment method");
-    //   return;
-    // } else if (!cycleId) {
-    //   toastError("Please select pay cycle");
-    //   return;
+    // if (gstApplicable === "Yes" && !gst) {
+    //   setValidator((prev) => ({ ...prev, gst: true }));
     // }
     if (
       !vendorName ||
@@ -562,10 +508,12 @@ const VendorMaster = () => {
       !typeId ||
       !platformId ||
       !payId ||
-      !cycleId ||
-      (gstApplicable === "Yes" && !gst) ||
-      (whatsappLink.length > 0 && !whatsappLink[0].link) ||
-      (whatsappLink.length > 0 && !whatsappLink[0].type)
+      !cycleId
+      // ||
+      // (gstApplicable === "Yes" && !gst)
+      // ||
+      // (whatsappLink.length > 0 && !whatsappLink[0].link) ||
+      // (whatsappLink.length > 0 && !whatsappLink[0].type)
     ) {
       toastError("Please fill all the mandatory fields");
       return;
@@ -576,7 +524,6 @@ const VendorMaster = () => {
     formData.append("mobile", mobile);
     formData.append("alternate_mobile", altMobile);
     formData.append("email", email);
-    // formData.append("personal_address", perAddress);
     formData.append("vendor_type", typeId);
     formData.append("vendor_platform", platformId);
     formData.append("payment_method", payId);
@@ -648,13 +595,11 @@ const VendorMaster = () => {
       // if (countryCode === "91") {
       setCompCity(homeCity);
       setCompState(homeState);
-      // } else {
-      //   setCompCity(otherCountry);
-      //   setCompState(otherCountry);
-      // }
+      setCompPin(homePincode);
     } else {
       setCompAddress("");
       setCompCity("");
+      setCompPin("");
       setCompState("");
     }
   };
@@ -1221,9 +1166,7 @@ const VendorMaster = () => {
             </div>
 
             <div className="form-group col-6">
-              <label className="form-label">
-                GST Applicable<sup style={{ color: "red" }}>*</sup>
-              </label>
+              <label className="form-label">GST Applicable</label>
               <Select
                 options={gstOptions.map((option) => ({
                   value: option.value,
@@ -1240,11 +1183,6 @@ const VendorMaster = () => {
                   setGstApplicable(e.value);
                 }}
               ></Select>
-              {validator.gstApplicable && (
-                <span style={{ color: "red", fontSize: "12px" }}>
-                  Please select GST Applicable
-                </span>
-              )}
             </div>
 
             {gstApplicable == "Yes" && (
@@ -1252,22 +1190,15 @@ const VendorMaster = () => {
                 {" "}
                 <FieldContainer
                   label="GST"
-                  astric
                   value={gst}
                   required={gstApplicable == "Yes" ? true : false}
                   onChange={(e) => setGst(e.target.value.toUpperCase())}
                 />
-                {gstApplicable === "Yes" && validator.gst && (
-                  <span style={{ color: "red", fontSize: "12px" }}>
-                    Please enter GST
-                  </span>
-                )}
                 <div className="col-6 flex-row gap-2">
                   <FieldContainer
                     type="file"
                     label="GST Image"
                     fieldGrid={gstImage ? 10 : ""}
-                    // value={gstImage}
                     required={false}
                     onChange={(e) => setGstImage(e.target.files[0])}
                   />
@@ -1394,8 +1325,15 @@ const VendorMaster = () => {
               <FieldContainer
                 label="PinCode"
                 value={homePincode}
+                maxLength={6}
                 required={false}
-                onChange={(e) => setHomePincode(e.target.value)}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  if (/^\d{0,6}$/.test(value)) {
+                    setHomePincode(value);
+                  }
+                }}
+                // setHomePincode(e.target.value)}
               />
               <FormControlLabel
                 control={
@@ -1406,7 +1344,7 @@ const VendorMaster = () => {
                     color="primary"
                   />
                 }
-                label="Check me out"
+                label="Same as Home Address"
               />
             </div>
 
@@ -1443,12 +1381,19 @@ const VendorMaster = () => {
                   setCompPin(e.target.value);
                 }}
               />
-              <FieldContainer
+              {/* <FieldContainer
                 label="Company State"
                 value={compState}
                 required={false}
                 onChange={(e) => setCompState(e.target.value)}
-              />
+              /> */}
+              <div className="form-group col-6 mt-3">
+                <label htmlFor="">Company State</label>
+                <IndianStatesMui
+                  selectedState={compState}
+                  onChange={(option) => setCompState(option ? option : null)}
+                />
+              </div>
 
               <FieldContainer
                 label="Threshold Limit"
@@ -1466,8 +1411,6 @@ const VendorMaster = () => {
                     fieldGrid={12}
                     label={`Whatsapp Link ${index + 1}`}
                     value={link.link}
-                    ss
-                    astric
                     required={true}
                     onChange={(e) => handleLinkChange(index, e.target.value)}
                   />
@@ -1484,9 +1427,7 @@ const VendorMaster = () => {
                 </div>
                 <div className="col-md-4 mb16">
                   <div className="form-group m0">
-                    <label className="form-label">
-                      Type <sup style={{ color: "red" }}>*</sup>
-                    </label>
+                    <label className="form-label">Type</label>
                     <div className="input-group inputAddGroup">
                       <Select
                         className="w-100"
@@ -1508,11 +1449,6 @@ const VendorMaster = () => {
                           setWhatsappLink(updatedLinks);
                         }}
                       />
-                      {validator.whatsappLinkType && (
-                        <span style={{ color: "red", fontSize: "12px" }}>
-                          Please select whatsappLink Applicable
-                        </span>
-                      )}
                       {index == 0 && (
                         <>
                           {" "}
@@ -1559,7 +1495,7 @@ const VendorMaster = () => {
                   <IconButton variant="contained" color="primary">
                     <AddCircleTwoToneIcon />
                   </IconButton>
-                  Add Link
+                  Add Whatsapp Link
                 </Button>
               </div>
             </div>

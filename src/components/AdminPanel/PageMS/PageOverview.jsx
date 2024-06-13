@@ -669,7 +669,7 @@ const PageOverview = () => {
       width: 200,
       renderCell: (params) => {
         let data = cat
-          .filter((item) => {
+          ?.filter((item) => {
             return params.row?.tags_page_category?.includes(item._id);
           })
           .map((item) => item.page_category);
