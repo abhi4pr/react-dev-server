@@ -58,6 +58,8 @@ import {
 import AddIcon from "@mui/icons-material/Add";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import { setStatsUpdate } from "../../Store/PageMaster";
+import PageDetail from "./PageOverview/PageDetail";
+import { setPageRow, setShowPageInfoModal } from "../../Store/Page-slice";
 
 const PageOverview = () => {
   // const { toastAlert } = useGlobalContext();
@@ -520,11 +522,22 @@ const PageOverview = () => {
     setShowPriceModal(false);
   };
 
+  const handlePageDetailClick = (params) => {
+    return () => {
+      dispatch(setShowPageInfoModal(true));
+      dispatch(setPageRow(params.row));
+    };
+  };
+
   const dataGridcolumns = [
     {
       field: "S.NO",
       headerName: "Count",
-      renderCell: (params) => <div>{filterData.indexOf(params.row) + 1}</div>,
+      renderCell: (params) => (
+        <div onClick={handlePageDetailClick(params)}>
+          {filterData.indexOf(params.row) + 1}
+        </div>
+      ),
 
       width: 80,
     },
@@ -533,15 +546,6 @@ const PageOverview = () => {
       headerName: "User Name",
       width: 200,
       editable: true,
-      // EditTwoTone: (params) => {
-      //   let name = params.row.page_user_name;
-      //   // let hideName = name.slice(1, name.length);
-      //   // let star = name.slice(0, 1);
-      //   // for (let i = 0; i < hideName.length; i++) {
-      //   //   star += "*";
-      //   // }
-      //   return <Link target="__black" to={params.row.link} className="link-primary" >{name}</Link>;
-      // },
       renderCell: (params) => {
         let name = params.row.page_name;
         return (
@@ -568,17 +572,18 @@ const PageOverview = () => {
       width: 200,
       valueGetter: (params) => {
         if (!ownerShipData) {
-          console.log("ownerShipData is not defined");
           return <div>Unknown</div>;
         }
-    
-        const ownership = ownerShipData?.find(item => item._id === params.row.ownership_type)?.company_type_name;
+
+        const ownership = ownerShipData?.find(
+          (item) => item._id === params.row.ownership_type
+        )?.company_type_name;
         const finalName = ownership ? ownership : "NA";
-    
+
         return finalName;
       },
     },
-    
+
     // {
     //   field: "link",
     //   headerNa: "Link",
@@ -1762,6 +1767,7 @@ const PageOverview = () => {
       </Dialog>
       <TagCategoryListModal />
       <VendorNotAssignedModal />
+      <PageDetail row={""} />
     </>
   );
 };

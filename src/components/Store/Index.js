@@ -21,6 +21,7 @@ import GetGstDetailApi from "./API/Sales/GetGstDetailApi";
 import ExecutionApi from "./API/Sales/ExecutionApi";
 import RecordServicesApi from "./API/Sales/RecordServicesApi";
 import CreditApprovalApi from "./API/Sales/CreditApprovalApi";
+import PageSlice from "./Page-slice";
 
 const store = configureStore({
   reducer: {
@@ -29,6 +30,7 @@ const store = configureStore({
     PageOverview,
     vendorMaster,
     pageMaster,
+    PageSlice,
     [SalesAccountApi.reducerPath]: SalesAccountApi.reducer,
     [SalesAccountTypeApi.reducerPath]: SalesAccountTypeApi.reducer,
     [CompanyTypeApi.reducerPath]: CompanyTypeApi.reducer,

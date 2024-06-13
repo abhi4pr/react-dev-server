@@ -11,7 +11,7 @@ import InsertPhotoTwoToneIcon from "@mui/icons-material/InsertPhotoTwoTone";
 import OndemandVideoTwoToneIcon from "@mui/icons-material/OndemandVideoTwoTone";
 import { baseUrl } from "../../utils/config";
 
-export default function ExeHistory() {
+export default function ExeHistory({ pageRow }) {
   const { id } = useParams();
   const [buttonAccess, setButtonAccess] = useState(false);
   const [data, setData] = useState([]);
@@ -28,16 +28,19 @@ export default function ExeHistory() {
   };
 
   const apiCall = () => {
-    axios.get(`${baseUrl}` + `v1/states_history/${id}`,{
-      headers: {
-        Authorization: `Bearer ${sessionStorage.getItem("token")}`,
-      },
-    }).then((res) => {
-      const data = res.data.data;
-      console.log(data, "data");
-      if (!data) return;
-      setData([data]);
-    });
+    // console.log(pageRow.pageRow)
+    axios
+      .get(`${baseUrl}` + `v1/states_history/${id ?? pageRow?.pageRow?._id}`, {
+        headers: {
+          Authorization: `Bearer ${sessionStorage.getItem("token")}`,
+        },
+      })
+      .then((res) => {
+        const data = res.data.data;
+        console.log(data, "data");
+        if (!data) return;
+        setData([data]);
+      });
   };
 
   useEffect(() => {
@@ -45,10 +48,9 @@ export default function ExeHistory() {
     axios.get(baseUrl + "get_all_users").then((res) => {
       setAllUsers(res.data.data);
     });
-  }, []);
+  }, [id, pageRow]);
 
   const handleDeleteRowData = (data) => {
-
     setRowData(data);
     handleClickOpenDeleteHistoryConFirmation();
   };
@@ -414,11 +416,11 @@ export default function ExeHistory() {
       },
     },
     {
-      field:'country1_name',
-      headerName:'Country 1',
-      width:150,
-      renderCell:(params)=>{
-        return(
+      field: "country1_name",
+      headerName: "Country 1",
+      width: 150,
+      renderCell: (params) => {
+        return (
           <div>
             {params.row?.country1_name ? (
               <>
@@ -429,15 +431,15 @@ export default function ExeHistory() {
               "NA"
             )}
           </div>
-        )
-      }
+        );
+      },
     },
     {
-      field:'country2_name',
-      headerName:'Country 2',
-      width:150,
-      renderCell:(params)=>{
-        return(
+      field: "country2_name",
+      headerName: "Country 2",
+      width: 150,
+      renderCell: (params) => {
+        return (
           <div>
             {params.row?.country2_name ? (
               <>
@@ -448,15 +450,15 @@ export default function ExeHistory() {
               "NA"
             )}
           </div>
-        )
-      }
+        );
+      },
     },
     {
-      field:'country3_name',
-      headerName:'Country 3',
-      width:150,
-      renderCell:(params)=>{
-        return(
+      field: "country3_name",
+      headerName: "Country 3",
+      width: 150,
+      renderCell: (params) => {
+        return (
           <div>
             {params.row?.country3_name ? (
               <>
@@ -467,15 +469,15 @@ export default function ExeHistory() {
               "NA"
             )}
           </div>
-        )
-      }
+        );
+      },
     },
     {
-      field:'country4_name',
-      headerName:'Country 4',
-      width:150,
-      renderCell:(params)=>{
-        return(
+      field: "country4_name",
+      headerName: "Country 4",
+      width: 150,
+      renderCell: (params) => {
+        return (
           <div>
             {params.row?.country4_name ? (
               <>
@@ -486,15 +488,15 @@ export default function ExeHistory() {
               "NA"
             )}
           </div>
-        )
-      }
+        );
+      },
     },
     {
-      field:'country5_name',
-      headerName:'Country 5',
-      width:150,
-      renderCell:(params)=>{
-        return(
+      field: "country5_name",
+      headerName: "Country 5",
+      width: 150,
+      renderCell: (params) => {
+        return (
           <div>
             {params.row?.country5_name ? (
               <>
@@ -505,8 +507,8 @@ export default function ExeHistory() {
               "NA"
             )}
           </div>
-        )
-      }
+        );
+      },
     },
     {
       field: "male_percent",
@@ -666,21 +668,29 @@ export default function ExeHistory() {
   ];
 
   return (
-    <div>
-      <FormContainer
-        mainTitle="Stats History"
-        link="/ip-master"
-        buttonAccess={buttonAccess}
-      />
-      <div className="card body-padding fx-head nt-head">
-       {data[0]?._id? <DataGrid
-          rows={data}
-          columns={columns}
-          pageSize={10}
-          rowsPerPageOptions={[10]}
-          checkboxSelection
-          getRowId={(row) => row._id}
-        />: <h3 className="text-center">No Data Found</h3>}
+    <>
+      {id ? (
+        <FormContainer
+          mainTitle={"Stats History"}
+          link="/ip-master"
+          buttonAccess={buttonAccess}
+        />
+      ) : (
+        ""
+      )}
+      <div className={id?"card body-padding fx-head nt-head":""}>
+        {data[0]?._id ? (
+          <DataGrid
+            rows={data}
+            columns={columns}
+            pageSize={10}
+            rowsPerPageOptions={[10]}
+            checkboxSelection
+            getRowId={(row) => row._id}
+          />
+        ) : (
+          <h3 className="text-center">No Data Found</h3>
+        )}
       </div>
 
       <DeleteHistoryConfirmation
@@ -691,6 +701,6 @@ export default function ExeHistory() {
         rowData={rowData}
         apiCall={apiCall}
       />
-    </div>
+    </>
   );
 }

@@ -89,7 +89,6 @@ export default function PageStats() {
           city.city_name === watch("city5")
         )
     );
-    console.log(citiesArr);
     setCopyCities(citiesArr);
   }, [
     watch("city1"),
@@ -320,7 +319,6 @@ export default function PageStats() {
     appendIfDefined(formData, "country_image", data?.countryImage[0]);
 
     if (!pageStateData?._id) {
-      console.log("add");
       addPageState(formData)
         .unwrap()
         .then(() => {
