@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
+import { PiImageSquareDuotone } from "react-icons/pi";
 import {
   useAddPageStateMutation,
   useGetAllCitiesQuery,
@@ -138,6 +139,16 @@ export default function PageStats() {
       toastError("Please Fill All The Required Fields");
     }
   }, [errors]);
+
+  const isImageEmpty = !imagePreview.impressionsImage && !impressionImageURL;
+  const isReachImageEmpty = !imagePreview.reachImage && !reachImageURL;
+  const isEngagementImageEmpty =
+    !imagePreview.engagementImage && !engagementImageURL;
+  const isReachStoryViewEmpty =
+    !imagePreview.storyViewImage && !storyViewImageURL;
+  const isCityEmpty = !imagePreview.cityImage && !cityImageURL;
+  const isCountryEmpty = !imagePreview.countryImage && !countryImageURL;
+  const isAgeEmpty = !imagePreview.ageGroupImage && !ageImageURL;
 
   // let isStatsFor = watch("statsFor");
   // switch (isStatsFor) {
@@ -487,20 +498,26 @@ export default function PageStats() {
                         />
                         <i className="bi bi-cloud-arrow-up-fill"></i>
                       </label>
-                      {imagePreview.reachImage ? (
-                        <img
-                          className="profile-holder-1"
-                          src={imagePreview.reachImage}
-                          alt="Selected"
-                          style={{ maxWidth: "50px", maxHeight: "50px" }}
-                        />
+                      {isReachImageEmpty ? (
+                        <PiImageSquareDuotone size={50} />
                       ) : (
-                        <img
-                          className="profile-holder-1"
-                          src={reachImageURL}
-                          alt="Selected"
-                          style={{ maxWidth: "50px", maxHeight: "50px" }}
-                        />
+                        <>
+                          {imagePreview.reachImage ? (
+                            <img
+                              className="profile-holder-1"
+                              src={imagePreview.reachImage}
+                              alt="Selected"
+                              style={{ maxWidth: "50px", maxHeight: "50px" }}
+                            />
+                          ) : (
+                            <img
+                              className="profile-holder-1"
+                              src={reachImageURL}
+                              alt="Selected"
+                              style={{ maxWidth: "50px", maxHeight: "50px" }}
+                            />
+                          )}
+                        </>
                       )}
                     </div>
                     {errors.reach && (
@@ -541,21 +558,29 @@ export default function PageStats() {
                         />
                         <i className="bi bi-cloud-arrow-up-fill"></i>
                       </label>
-                      {imagePreview.impressionsImage ? (
-                        <img
-                          className="profile-holder-1"
-                          src={imagePreview.impressionsImage}
-                          alt="Selected"
-                          style={{ maxWidth: "50px", maxHeight: "50px" }}
-                        />
-                      ) : (
-                        <img
-                          className="profile-holder-1"
-                          src={impressionImageURL}
-                          alt="Selected"
-                          style={{ maxWidth: "50px", maxHeight: "50px" }}
-                        />
-                      )}
+                      <>
+                        {isImageEmpty ? (
+                          <PiImageSquareDuotone size={50} />
+                        ) : (
+                          <>
+                            {imagePreview.impressionsImage ? (
+                              <img
+                                className="profile-holder-1"
+                                src={imagePreview.impressionsImage}
+                                alt="Selected"
+                                style={{ maxWidth: "50px", maxHeight: "50px" }}
+                              />
+                            ) : (
+                              <img
+                                className="profile-holder-1"
+                                src={impressionImageURL}
+                                alt="Selected"
+                                style={{ maxWidth: "50px", maxHeight: "50px" }}
+                              />
+                            )}
+                          </>
+                        )}
+                      </>
                     </div>
                     {errors.impressions && (
                       <span role="alert" className="text-danger">
@@ -600,20 +625,26 @@ export default function PageStats() {
                         />
                         <i className="bi bi-cloud-arrow-up-fill"></i>
                       </label>
-                      {imagePreview.engagementImage ? (
-                        <img
-                          className="profile-holder-1"
-                          src={imagePreview.engagementImage}
-                          alt="Selected"
-                          style={{ maxWidth: "50px", maxHeight: "50px" }}
-                        />
+                      {isEngagementImageEmpty ? (
+                        <PiImageSquareDuotone size={50} />
                       ) : (
-                        <img
-                          className="profile-holder-1"
-                          src={engagementImageURL}
-                          alt="Selected"
-                          style={{ maxWidth: "50px", maxHeight: "50px" }}
-                        />
+                        <>
+                          {imagePreview.engagementImage ? (
+                            <img
+                              className="profile-holder-1"
+                              src={imagePreview.engagementImage}
+                              alt="Selected"
+                              style={{ maxWidth: "50px", maxHeight: "50px" }}
+                            />
+                          ) : (
+                            <img
+                              className="profile-holder-1"
+                              src={engagementImageURL}
+                              alt="Selected"
+                              style={{ maxWidth: "50px", maxHeight: "50px" }}
+                            />
+                          )}
+                        </>
                       )}
                     </div>
                     {errors.engagement && (
@@ -658,20 +689,26 @@ export default function PageStats() {
                         />
                         <i className="bi bi-cloud-arrow-up-fill"></i>
                       </label>
-                      {imagePreview.storyViewImage ? (
-                        <img
-                          className="profile-holder-1"
-                          src={imagePreview.storyViewImage}
-                          alt="Selected"
-                          style={{ maxWidth: "50px", maxHeight: "50px" }}
-                        />
+                      {isReachStoryViewEmpty ? (
+                        <PiImageSquareDuotone size={50} />
                       ) : (
-                        <img
-                          className="profile-holder-1"
-                          src={storyViewImageURL}
-                          alt="Selected"
-                          style={{ maxWidth: "50px", maxHeight: "50px" }}
-                        />
+                        <>
+                          {imagePreview.storyViewImage ? (
+                            <img
+                              className="profile-holder-1"
+                              src={imagePreview.storyViewImage}
+                              alt="Selected"
+                              style={{ maxWidth: "50px", maxHeight: "50px" }}
+                            />
+                          ) : (
+                            <img
+                              className="profile-holder-1"
+                              src={storyViewImageURL}
+                              alt="Selected"
+                              style={{ maxWidth: "50px", maxHeight: "50px" }}
+                            />
+                          )}
+                        </>
                       )}
                     </div>
                     <div className="h-3">
@@ -797,20 +834,26 @@ export default function PageStats() {
                       >
                         <i className="bi bi-cloud-arrow-up-fill"></i> Image
                       </button>
-                      {imagePreview.cityImage ? (
-                        <img
-                          className="profile-holder-1 mt-4"
-                          src={imagePreview.cityImage}
-                          alt="Selected"
-                          style={{ maxWidth: "50px", maxHeight: "50px" }}
-                        />
+                      {isCityEmpty ? (
+                        <PiImageSquareDuotone size={50} />
                       ) : (
-                        <img
-                          className="profile-holder-1 mt-4"
-                          src={cityImageURL}
-                          alt="Selected"
-                          style={{ maxWidth: "50px", maxHeight: "50px" }}
-                        />
+                        <>
+                          {imagePreview.cityImage ? (
+                            <img
+                              className="profile-holder-1 mt-4"
+                              src={imagePreview.cityImage}
+                              alt="Selected"
+                              style={{ maxWidth: "50px", maxHeight: "50px" }}
+                            />
+                          ) : (
+                            <img
+                              className="profile-holder-1 mt-4"
+                              src={cityImageURL}
+                              alt="Selected"
+                              style={{ maxWidth: "50px", maxHeight: "50px" }}
+                            />
+                          )}
+                        </>
                       )}
                     </div>
                   </div>
@@ -908,20 +951,26 @@ export default function PageStats() {
                     >
                       <i className="bi bi-cloud-arrow-up-fill"></i> Image
                     </button>
-                    {imagePreview.countryImage ? (
-                      <img
-                        className="profile-holder-1 mt-4"
-                        src={imagePreview.countryImage}
-                        alt="Selected"
-                        style={{ maxWidth: "50px", maxHeight: "50px" }}
-                      />
+                    {isCountryEmpty ? (
+                      <PiImageSquareDuotone size={50} />
                     ) : (
-                      <img
-                        className="profile-holder-1 mt-4"
-                        src={countryImageURL}
-                        alt="Selected"
-                        style={{ maxWidth: "50px", maxHeight: "50px" }}
-                      />
+                      <>
+                        {imagePreview.countryImage ? (
+                          <img
+                            className="profile-holder-1 mt-4"
+                            src={imagePreview.countryImage}
+                            alt="Selected"
+                            style={{ maxWidth: "50px", maxHeight: "50px" }}
+                          />
+                        ) : (
+                          <img
+                            className="profile-holder-1 mt-4"
+                            src={countryImageURL}
+                            alt="Selected"
+                            style={{ maxWidth: "50px", maxHeight: "50px" }}
+                          />
+                        )}
+                      </>
                     )}
                   </div>
                 </div>
@@ -1063,20 +1112,26 @@ export default function PageStats() {
                     >
                       <i className="bi bi-cloud-arrow-up-fill"></i> Image
                     </button>
-                    {imagePreview.ageGroupImage ? (
-                      <img
-                        className="profile-holder-1 mt-4"
-                        src={imagePreview.ageGroupImage}
-                        alt="Selected"
-                        style={{ maxWidth: "50px", maxHeight: "50px" }}
-                      />
+                    {isAgeEmpty ? (
+                      <PiImageSquareDuotone size={50} />
                     ) : (
-                      <img
-                        className="profile-holder-1 mt-4"
-                        src={ageImageURL}
-                        alt="Selected"
-                        style={{ maxWidth: "50px", maxHeight: "50px" }}
-                      />
+                      <>
+                        {imagePreview.ageGroupImage ? (
+                          <img
+                            className="profile-holder-1 mt-4"
+                            src={imagePreview.ageGroupImage}
+                            alt="Selected"
+                            style={{ maxWidth: "50px", maxHeight: "50px" }}
+                          />
+                        ) : (
+                          <img
+                            className="profile-holder-1 mt-4"
+                            src={ageImageURL}
+                            alt="Selected"
+                            style={{ maxWidth: "50px", maxHeight: "50px" }}
+                          />
+                        )}
+                      </>
                     )}
                   </div>
                 </div>

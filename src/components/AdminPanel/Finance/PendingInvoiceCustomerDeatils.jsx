@@ -44,6 +44,7 @@ const PendingInvoiceCustomerDeatils = () => {
         }
       )
       .then((res) => {
+        console.log(res, "res------");
         setData(res?.data?.body);
         setLoading(false);
         // setFilterData(res.data.data);
@@ -62,7 +63,8 @@ const PendingInvoiceCustomerDeatils = () => {
 
     const payload = {
       flag: 1,
-      gstNo: "23AAJCC1807B1ZC",
+      // gstNo: "23AAJCC1807B1ZC",
+      gstNo: datas?.gst_no,
     };
 
     axios
@@ -112,7 +114,7 @@ const PendingInvoiceCustomerDeatils = () => {
                 <Typography variant="body2" color="textSecondary">
                   Company Name
                 </Typography>
-                <Typography variant="h6">{datas.company_name}</Typography>
+                <Typography variant="h6">{datas?.company_name}</Typography>
               </Box>
             </Grid>
             <Grid item xs={12} md={4}>

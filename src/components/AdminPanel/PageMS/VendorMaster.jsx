@@ -975,7 +975,10 @@ const VendorMaster = () => {
                       ?.payMethod_name || "",
                 }}
                 onChange={(e) => {
+                  console.log(e.value, "----e.value----");
                   setPayId(e.value);
+                  // setShowBankName(e.value === "specific_payment_method_id"); // Set condition for showing bank name
+
                   if (e.value) {
                     setValidator((prev) => ({ ...prev, payId: false }));
                   }
@@ -1007,102 +1010,106 @@ const VendorMaster = () => {
 
             {bankRows.map((row, i) => (
               <>
-                <div className="form-group col-6">
-                  <label className="form-label">
-                    Bank Name
-                    {/* <sup style={{ color: "red" }}>*</sup> */}
-                  </label>
-                  <Select
-                    options={bankName?.map((option) => ({
-                      value: option._id,
-                      label: option.bank_name,
-                    }))}
-                    required={true}
-                    value={{
-                      value: payId,
-                      label:
-                        bankName?.find((role) => role._id == bankNameId)
-                          ?.bank_name || "",
-                    }}
-                    onChange={(e) => {
-                      setBankNameId(e.value);
-                      if (e.value) {
-                        setValidator((prev) => ({
-                          ...prev,
-                          bankNameId: false,
-                        }));
-                      }
-                    }}
-                  ></Select>
+                {payId == "666856874366007df1dfacde" && (
+                  <>
+                    <div className="form-group col-6">
+                      <label className="form-label">
+                        Bank Name
+                        {/* <sup style={{ color: "red" }}>*</sup> */}
+                      </label>
+                      <Select
+                        options={bankName?.map((option) => ({
+                          value: option._id,
+                          label: option.bank_name,
+                        }))}
+                        required={true}
+                        value={{
+                          value: bankNameId,
+                          label:
+                            bankName?.find((role) => role._id == bankNameId)
+                              ?.bank_name || "",
+                        }}
+                        onChange={(e) => {
+                          setBankNameId(e.value);
+                          if (e.value) {
+                            setValidator((prev) => ({
+                              ...prev,
+                              bankNameId: false,
+                            }));
+                          }
+                        }}
+                      ></Select>
 
-                  <IconButton
-                    onClick={handleAddBankNameClick}
-                    variant="contained"
-                    color="primary"
-                    aria-label="Add Bank Detail.."
-                  >
-                    <AddIcon />
-                  </IconButton>
-                  <IconButton
-                    onClick={handleBankNameInfoClick}
-                    variant="contained"
-                    color="primary"
-                    aria-label="Bank Detail Info.."
-                  >
-                    <RemoveRedEyeIcon />
-                  </IconButton>
-                </div>
-
-                <div className="form-group col-6">
-                  <label className="form-label">Account Type</label>
-                  <Select
-                    options={["Savings", "Current"].map((option) => ({
-                      label: option,
-                      value: option,
-                    }))}
-                    required={true}
-                    value={{
-                      value: bankRows[i].account_type,
-                      label: bankRows[i].account_type,
-                    }}
-                    onChange={(e) => {
-                      handleAccountTypeChange(e, i);
-                    }}
+                      <IconButton
+                        onClick={handleAddBankNameClick}
+                        variant="contained"
+                        color="primary"
+                        aria-label="Add Bank Detail.."
+                      >
+                        <AddIcon />
+                      </IconButton>
+                      <IconButton
+                        onClick={handleBankNameInfoClick}
+                        variant="contained"
+                        color="primary"
+                        aria-label="Bank Detail Info.."
+                      >
+                        <RemoveRedEyeIcon />
+                      </IconButton>
+                    </div>
+                    <div className="form-group col-6">
+                      <label className="form-label">Account Type</label>
+                      <Select
+                        options={["Savings", "Current"].map((option) => ({
+                          label: option,
+                          value: option,
+                        }))}
+                        required={true}
+                        value={{
+                          value: bankRows[i].account_type,
+                          label: bankRows[i].account_type,
+                        }}
+                        onChange={(e) => {
+                          handleAccountTypeChange(e, i);
+                        }}
+                      />
+                    </div>
+                    <FieldContainer
+                      label="Account Number "
+                      type="number"
+                      maxLength={20}
+                      max={20}
+                      required={false}
+                      value={bankRows[i].account_number}
+                      onChange={(e) => handleAccountNoChange(e, i)}
+                    />
+                    <FieldContainer
+                      required={false}
+                      label="IFSC "
+                      value={bankRows[i].ifcs}
+                      onChange={(e) => handleIFSCChange(e, i)}
+                    />
+                  </>
+                )}
+                {payId == "666856754366007df1dfacd2" && (
+                  <FieldContainer
+                    required={false}
+                    label="UPI ID "
+                    value={bankRows[i].upi_id}
+                    onChange={(e) => handleUPIidChange(e, i)}
                   />
-                </div>
+                )}
 
-                <FieldContainer
-                  label="Account Number "
-                  type="number"
-                  maxLength={20}
-                  max={20}
-                  required={false}
-                  value={bankRows[i].account_number}
-                  onChange={(e) => handleAccountNoChange(e, i)}
-                />
-
-                <FieldContainer
-                  required={false}
-                  label="IFSC "
-                  value={bankRows[i].ifcs}
-                  onChange={(e) => handleIFSCChange(e, i)}
-                />
-
-                <FieldContainer
-                  required={false}
-                  label="UPI ID "
-                  value={bankRows[i].upi_id}
-                  onChange={(e) => handleUPIidChange(e, i)}
-                />
-
-                <FieldContainer
-                  label={"Registered Mobile Number"}
-                  value={bankRows[i].registered_number}
-                  required={false}
-                  type="number"
-                  onChange={(e) => handleRegisteredMobileChange(e, i)}
-                />
-
+                {(payId == "66681c3c4366007df1df1481" ||
+                  payId == "666856624366007df1dfacc8") && (
+                  <FieldContainer
+                    label={"Registered Mobile Number"}
+                    value={bankRows[i].registered_number}
+                    required={false}
+                    type="number"
+                    onChange={(e) => handleRegisteredMobileChange(e, i)}
+                  />
+                )}
                 {i > 0 && (
                   <IconButton
                     onClick={handleRemoveBankInfoRow(i)}

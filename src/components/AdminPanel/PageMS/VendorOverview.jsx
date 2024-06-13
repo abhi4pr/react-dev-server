@@ -7,7 +7,15 @@ import { Link } from "react-router-dom";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import RouteIcon from "@mui/icons-material/Route";
 import PriceChangeIcon from "@mui/icons-material/PriceChange";
-import { Autocomplete, Box, Grid, Skeleton, Stack, TextField, Typography } from "@mui/material";
+import {
+  Autocomplete,
+  Box,
+  Grid,
+  Skeleton,
+  Stack,
+  TextField,
+  Typography,
+} from "@mui/material";
 // import ContentCopyOutlinedIcon from "@mui/icons-material/ContentCopyOutlined";
 // import CopyAllOutlinedIcon from "@mui/icons-material/CopyAllOutlined";
 import { useGlobalContext } from "../../../Context/Context";
@@ -43,7 +51,6 @@ const VendorOverview = () => {
   const [search, setSearch] = useState("");
   const [data, setData] = useState([]);
   const [vendorDetails, setVendorDetails] = useState(null);
-
 
   const dispatch = useDispatch();
   const { data: vendor } = useGetAllVendorTypeQuery();
@@ -87,11 +94,9 @@ const VendorOverview = () => {
   // }, [search]);
   useEffect(() => {
     console.log(vendorData?.data);
-    if(vendorData){
-
+    if (vendorData) {
       setFilterData(vendorData?.data);
     }
-    
   }, [vendorData]);
 
   const handleOpenWhatsappModal = (row) => {
@@ -367,92 +372,96 @@ const VendorOverview = () => {
       ),
     },
   ];
-console.log(filterData,"filterData",vendorData);
+  console.log(filterData, "filterData", vendorData);
   return (
     <>
-      {filterData && <div className="card">
-      {vendorDetails && (
-        <VendorDetails
-          vendorDetails={vendorDetails}
-          setVendorDetails={setVendorDetails}
-        />
-      )}
-      <VendorWhatsappLinkModla />
-        <div className="card-header flexCenterBetween">
-          <h5 className="card-title">Vendor : {vendorTypes?.length}</h5>
-          <div className="flexCenter colGap8">
-            <Link
-              to={`/admin/pms-vendor-master`}
-              className="btn cmnbtn btn_sm btn-outline-primary"
-            >
-              Add Vendor <i className="fa fa-plus" />
-            </Link>
-            <Link
-              to={`/admin/pms-page-overview`}
-              className="btn cmnbtn btn_sm btn-outline-primary"
-            >
-              Page <KeyboardArrowRightIcon />
-            </Link>
-          </div>         
-         
-        </div>
-        <VendorFilters filterData={filterData} setFilterData={setFilterData} />
-        <div className="data_tbl thm_table table-responsive card-body p0">
-          {loading ? (
-            <Box mt={2} ml={2} mb={3} sx={{ width: "95%" }}>
-              <Grid
-                container
-                spacing={{ xs: 1, md: 10 }}
-                columns={{ xs: 4, sm: 8, md: 12 }}
-              >
-                {Array.from(Array(5)).map((_, index) => (
-                  <Grid item md={1} key={index}>
-                    <Skeleton
-                      sx={{
-                        width: "100%",
-                      }}
-                    />
-                  </Grid>
-                ))}
-              </Grid>
-              <Grid
-                container
-                spacing={{ xs: 2, md: 3 }}
-                columns={{ xs: 4, sm: 8, md: 12 }}
-              >
-                {Array.from(Array(30)).map((_, index) => (
-                  <Grid item xs={2} sm={2} md={2} key={index}>
-                    <Skeleton
-                      animation="wave"
-                      sx={{
-                        width: "100%",
-                      }}
-                    />
-                  </Grid>
-                ))}
-              </Grid>
-            </Box>
-          ) : (
-            <DataGrid
-              rows={filterData}
-              columns={dataGridcolumns}
-              pageSize={5}
-              rowsPerPageOptions={[5]}
-              disableSelectionOnClick
-              getRowId={(row) => row._id}
-              slots={{ toolbar: GridToolbar }}
-              slotProps={{
-                toolbar: {
-                  showQuickFilter: true,
-                },
-              }}
+      {filterData && (
+        <div className="card">
+          {vendorDetails && (
+            <VendorDetails
+              vendorDetails={vendorDetails}
+              setVendorDetails={setVendorDetails}
             />
           )}
+          <VendorWhatsappLinkModla />
+          <div className="card-header flexCenterBetween">
+            <h5 className="card-title">Vendor : {vendorTypes?.length}</h5>
+            <div className="flexCenter colGap8">
+              <Link
+                to={`/admin/pms-vendor-master`}
+                className="btn cmnbtn btn_sm btn-outline-primary"
+              >
+                Add Vendor <i className="fa fa-plus" />
+              </Link>
+              <Link
+                to={`/admin/pms-page-overview`}
+                className="btn cmnbtn btn_sm btn-outline-primary"
+              >
+                Page <KeyboardArrowRightIcon />
+              </Link>
+            </div>
+          </div>
+          <VendorFilters
+            filterData={filterData}
+            setFilterData={setFilterData}
+          />
+          <div className="data_tbl thm_table table-responsive card-body p0">
+            {loading ? (
+              <Box mt={2} ml={2} mb={3} sx={{ width: "95%" }}>
+                <Grid
+                  container
+                  spacing={{ xs: 1, md: 10 }}
+                  columns={{ xs: 4, sm: 8, md: 12 }}
+                >
+                  {Array.from(Array(5)).map((_, index) => (
+                    <Grid item md={1} key={index}>
+                      <Skeleton
+                        sx={{
+                          width: "100%",
+                        }}
+                      />
+                    </Grid>
+                  ))}
+                </Grid>
+                <Grid
+                  container
+                  spacing={{ xs: 2, md: 3 }}
+                  columns={{ xs: 4, sm: 8, md: 12 }}
+                >
+                  {Array.from(Array(30)).map((_, index) => (
+                    <Grid item xs={2} sm={2} md={2} key={index}>
+                      <Skeleton
+                        animation="wave"
+                        sx={{
+                          width: "100%",
+                        }}
+                      />
+                    </Grid>
+                  ))}
+                </Grid>
+              </Box>
+            ) : (
+              <DataGrid
+                rows={filterData}
+                columns={dataGridcolumns}
+                pageSize={5}
+                rowsPerPageOptions={[5]}
+                disableSelectionOnClick
+                getRowId={(row) => row._id}
+                slots={{ toolbar: GridToolbar }}
+                slotProps={{
+                  toolbar: {
+                    showQuickFilter: true,
+                  },
+                }}
+              />
+            )}
+          </div>
+          <VendorBankDetailModal />
+          <VendorPageModal />
+          <VendorWhatsappLinkModla />
         </div>
-      <VendorBankDetailModal />
-      <VendorPageModal />
-      <VendorWhatsappLinkModla />
-      </div>}
+      )}
     </>
   );
 };
