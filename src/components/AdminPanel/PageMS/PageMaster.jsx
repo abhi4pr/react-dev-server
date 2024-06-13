@@ -1,4 +1,4 @@
-import { useState, useEffect, use } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 import { useGlobalContext } from "../../../Context/Context";
 import FieldContainer from "../FieldContainer";
@@ -114,7 +114,7 @@ const PageMaster = () => {
   ]);
 
   const dispatch = useDispatch();
-  
+
   const { data: ownerShipData } = useGetOwnershipTypeQuery();
 
   const { data: profileData } = useGetAllProfileListQuery();
@@ -272,7 +272,6 @@ const PageMaster = () => {
         setUserData(res.data.data);
       });
   };
-
 
   useEffect(() => {
     getData();
@@ -461,6 +460,27 @@ const PageMaster = () => {
     newRowCount[index].page_price_type_id = e.value;
     setRowCount(newRowCount);
   };
+  //Milion convert format function
+  const formatNumber = (value) => {
+    if (value >= 1000000) {
+      return `${(value / 1000000).toFixed(2)}M`;
+    } else if (value >= 1000) {
+      return `${(value / 1000).toFixed(2)}k`;
+    } else {
+      return value.toString();
+    }
+  };
+  const formatString = (s) => {
+    // Remove leading underscores
+    let formattedString = s.replace(/^_+/, "");
+    // Capitalize the first letter and make the rest lowercase
+    if (formattedString) {
+      formattedString =
+        formattedString.charAt(0).toUpperCase() +
+        formattedString.slice(1).toLowerCase();
+    }
+    return formattedString;
+  };
 
   const handlePriceChange = (e, index) => {
     if (
@@ -472,6 +492,12 @@ const PageMaster = () => {
     const newRowCount = [...rowCount];
     newRowCount[index].price = e.target.value;
     setRowCount(newRowCount);
+  };
+  // const val = variableType.value === "Per Thousand" ? 1000 : 1000000;
+  // const FollowerCountCalcualtion = (followCount / val) * rowCount[0]?.price;
+  const calculateFollowerCount = (index) => {
+    const val = variableType.value === "Per Thousand" ? 1000 : 1000000;
+    return (followCount / val) * rowCount[index]?.price;
   };
 
   const handleFilterPriceType = () => {
@@ -773,6 +799,7 @@ const PageMaster = () => {
                   }
                 }}
               />
+              <small className="ml-3">{formatNumber(followCount)}</small>
               {validateFields.followCount && (
                 <small style={{ color: "red" }}>
                   Please Fill Followers Count
@@ -1212,7 +1239,8 @@ const PageMaster = () => {
                   />
                   {rateType.label == "Variable" && (
                     <p className="ml-3" style={{ color: "blue" }}>
-                      This Page Cost = {FollowerCountCalcualtion}
+                      This Page Cost ={" "}
+                      {calculateFollowerCount(index.toFixed(0))}
                     </p>
                   )}
                 </div>
