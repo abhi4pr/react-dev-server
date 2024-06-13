@@ -20,6 +20,8 @@ import LetterTabPreviewESIC from "./LetterTab/LetterTabPreviewESIC";
 import LetterTabPdf2Max from "./LetterTab/LetterTabPdf2Max";
 import LetterTabPdf3Min from "./LetterTab/LetterTabPdf3Min";
 import LetterTabPdf4ESIC from "./LetterTab/LetterTabPdf4ESIC";
+import { PDFViewer, Text, Document, Page } from "@react-pdf/renderer";
+import OfferLetter from "./OfferLetter";
 
 const LetterTab = ({ allUserData, gettingData }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -133,16 +135,16 @@ const LetterTab = ({ allUserData, gettingData }) => {
       });
   };
 
-  axios
-    .post(baseUrl + "image_to_base64", {
-      imageUrl: allUserData.digital_signature_image_url,
-    })
-    .then((response) => {
-      setImage64(response.data.base64String);
-    })
-    .catch((error) => {
-      console.error("Error fetching data:", error);
-    });
+  // axios
+  //   .post(baseUrl + "image_to_base64", {
+  //     imageUrl: allUserData.digital_signature_image_url,
+  //   })
+  //   .then((response) => {
+  //     setImage64(response.data.base64String);
+  //   })
+  //   .catch((error) => {
+  //     console.error("Error fetching data:", error);
+  //   });
 
   return (
     <>
@@ -1385,7 +1387,11 @@ const LetterTab = ({ allUserData, gettingData }) => {
           </div>
         </div>
       </div>
-      <div className="pdfPreviewWrapper"></div>
+      <div className="pdfPreviewWrapper">
+        <PDFViewer width={1000} height={700}>
+          <OfferLetter />
+        </PDFViewer>
+      </div>
     </>
   );
 };
