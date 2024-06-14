@@ -2420,7 +2420,7 @@ export default function PendingPaymentRequest() {
               //   tableApi="phpvendorpaymentrequest"
               // />
               <DataGrid
-                rows={filterData.filter((d) => d.status === "3")}
+                rows={filterData}
                 columns={columns}
                 pageSize={5}
                 rowsPerPageOptions={[5]}
@@ -2455,7 +2455,7 @@ export default function PendingPaymentRequest() {
 
             {activeAccordionIndex === 1 && (
               <DataGrid
-                rows={filterData}
+                rows={filterData.filter((d) => d.status === "3")}
                 columns={columns}
                 pageSize={5}
                 rowsPerPageOptions={[5]}
@@ -2488,7 +2488,9 @@ export default function PendingPaymentRequest() {
             )}
             {activeAccordionIndex === 2 && (
               <DataGrid
-                rows={filterData.filter((d) => d.status === "0")}
+                rows={filterData.filter(
+                  (d) => d.status === "0" || d.status === "2"
+                )}
                 columns={columns}
                 pageSize={5}
                 rowsPerPageOptions={[5]}
