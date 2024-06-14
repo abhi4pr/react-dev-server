@@ -1110,7 +1110,7 @@ const PageMaster = () => {
             <div className="col-md-6 mb16">
               <div className="form-group m0">
                 <label className="form-label">
-                  Platform ID <sup style={{ color: "red" }}>*</sup>
+                  Platform Name <sup style={{ color: "red" }}>*</sup>
                 </label>
                 <Select
                   options={platformData.map((option) => ({
