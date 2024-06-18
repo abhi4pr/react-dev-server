@@ -554,7 +554,6 @@ export default function PendingPaymentRequest() {
   const handleOpenBankDetail = (row) => {
     let x = [];
     x.push(row);
-    console.log(x, "x data---------------");
     setBankDetailRowData(x);
     setBankDetail(true);
   };
@@ -2108,7 +2107,6 @@ export default function PendingPaymentRequest() {
       },
     },
   ];
-  console.log(filterData, "FD-----------------------");
   return (
     <div>
       <FormContainer
@@ -2438,7 +2436,6 @@ export default function PendingPaymentRequest() {
                 }}
                 onRowSelectionModelChange={(rowIds) => {
                   handleRowSelectionModelChange(rowIds);
-                  console.log(rowIds, "IDS");
                 }}
                 rowSelectionModel={rowSelectionModel}
               />
@@ -2473,7 +2470,6 @@ export default function PendingPaymentRequest() {
                 }}
                 onRowSelectionModelChange={(rowIds) => {
                   handleRowSelectionModelChange(rowIds);
-                  console.log(rowIds, "IDS");
                 }}
                 rowSelectionModel={rowSelectionModel}
               />
@@ -2507,7 +2503,6 @@ export default function PendingPaymentRequest() {
                 }}
                 onRowSelectionModelChange={(rowIds) => {
                   handleRowSelectionModelChange(rowIds);
-                  console.log(rowIds, "IDS");
                 }}
                 rowSelectionModel={rowSelectionModel}
               />
