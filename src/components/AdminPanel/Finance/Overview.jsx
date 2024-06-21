@@ -73,13 +73,14 @@ const Overview = (props) => {
 
   return (
     <div>
-      <div className="card" style={{ height: "600px" }}>
+      <div className="card" style={{ height: "740px" }}>
         <div className="card-body thm_table">
           <table className="table">
             <thead>
               <tr>
                 <th>Data</th>
                 <th>count</th>
+                <th>Balance Amount</th>
                 <th>Total Amount</th>
               </tr>
             </thead>
@@ -89,7 +90,7 @@ const Overview = (props) => {
                 <td
                   onClick={() =>
                     handleOpenUniqueVendorClick(
-                      data.filter((item) => item.balance_amount <= 10000)
+                      data?.filter((item) => item.balance_amount <= 10000)
                     )
                   }
                 >
@@ -110,6 +111,12 @@ const Overview = (props) => {
                   {" "}
                   {calculateTotalAmount(
                     data?.filter((item) => item.balance_amount <= 10000)
+                  )}
+                </td>
+                <td>
+                  {" "}
+                  {calculateTotalAmount(
+                    data?.filter((item) => item.paid_amount <= 10000)
                   )}
                 </td>
               </tr>
@@ -150,6 +157,15 @@ const Overview = (props) => {
                       (item) =>
                         item.balance_amount >= 10000 &&
                         item.balance_amount <= 20000
+                    )
+                  )}
+                </td>
+                <td>
+                  {" "}
+                  {calculateTotalAmount(
+                    data?.filter(
+                      (item) =>
+                        item.paid_amount >= 10000 && item.paid_amount <= 20000
                     )
                   )}
                 </td>
@@ -194,6 +210,15 @@ const Overview = (props) => {
                     )
                   )}
                 </td>
+                <td>
+                  {" "}
+                  {calculateTotalAmount(
+                    data?.filter(
+                      (item) =>
+                        item.paid_amount >= 20000 && item.paid_amount <= 30000
+                    )
+                  )}
+                </td>
               </tr>
               <tr>
                 <td>30k-40k</td>
@@ -231,6 +256,15 @@ const Overview = (props) => {
                       (item) =>
                         item.balance_amount >= 30000 &&
                         item.balance_amount <= 40000
+                    )
+                  )}
+                </td>
+                <td>
+                  {" "}
+                  {calculateTotalAmount(
+                    data?.filter(
+                      (item) =>
+                        item.paid_amount >= 30000 && item.paid_amount <= 40000
                     )
                   )}
                 </td>
@@ -275,6 +309,15 @@ const Overview = (props) => {
                     )
                   )}
                 </td>
+                <td>
+                  {" "}
+                  {calculateTotalAmount(
+                    data?.filter(
+                      (item) =>
+                        item.paid_amount >= 40000 && item.paid_amount <= 50000
+                    )
+                  )}
+                </td>
               </tr>
               <tr>
                 <td>50k-100k</td>
@@ -316,14 +359,26 @@ const Overview = (props) => {
                     )
                   )}
                 </td>
+                <td>
+                  {" "}
+                  {calculateTotalAmount(
+                    data?.filter(
+                      (item) =>
+                        item.paid_amount >= 50000 && item.paid_amount <= 100000
+                    )
+                  )}
+                </td>
               </tr>
-
               <tr>
-                <td>100k-above</td>
+                <td>100k-200k</td>
                 <td
                   onClick={() =>
                     handleOpenUniqueVendorClick(
-                      data?.filter((item) => item.balance_amount >= 100000)
+                      data?.filter(
+                        (item) =>
+                          item.balance_amount >= 100000 &&
+                          item.balance_amount <= 200000
+                      )
                     )
                   }
                 >
@@ -335,7 +390,348 @@ const Overview = (props) => {
                     }}
                   >
                     {
-                      data?.filter((item) => item.balance_amount >= 100000)
+                      data?.filter(
+                        (item) =>
+                          item.balance_amount >= 100000 &&
+                          item.balance_amount <= 200000
+                      ).length
+                    }
+                  </a>
+                </td>
+                <td>
+                  {" "}
+                  {calculateTotalAmount(
+                    data?.filter(
+                      (item) =>
+                        item.balance_amount >= 100000 &&
+                        item.balance_amount <= 200000
+                    )
+                  )}
+                </td>
+                <td>
+                  {" "}
+                  {calculateTotalAmount(
+                    data?.filter(
+                      (item) =>
+                        item.paid_amount >= 100000 && item.paid_amount <= 200000
+                    )
+                  )}
+                </td>
+              </tr>
+              <tr>
+                <td>200k-300k</td>
+                <td
+                  onClick={() =>
+                    handleOpenUniqueVendorClick(
+                      data?.filter(
+                        (item) =>
+                          item.balance_amount >= 200000 &&
+                          item.balance_amount <= 300000
+                      )
+                    )
+                  }
+                >
+                  <a
+                    style={{
+                      cursor: "pointer",
+                      marginRight: "20px",
+                      color: "blue",
+                    }}
+                  >
+                    {
+                      data?.filter(
+                        (item) =>
+                          item.balance_amount >= 200000 &&
+                          item.balance_amount <= 300000
+                      ).length
+                    }
+                  </a>
+                </td>
+                <td>
+                  {" "}
+                  {calculateTotalAmount(
+                    data?.filter(
+                      (item) =>
+                        item.balance_amount >= 200000 &&
+                        item.balance_amount <= 300000
+                    )
+                  )}
+                </td>
+                <td>
+                  {" "}
+                  {calculateTotalAmount(
+                    data?.filter(
+                      (item) =>
+                        item.paid_amount >= 200000 && item.paid_amount <= 300000
+                    )
+                  )}
+                </td>
+              </tr>
+              <tr>
+                <td>300k-400k</td>
+                <td
+                  onClick={() =>
+                    handleOpenUniqueVendorClick(
+                      data?.filter(
+                        (item) =>
+                          item.balance_amount >= 300000 &&
+                          item.balance_amount <= 400000
+                      )
+                    )
+                  }
+                >
+                  <a
+                    style={{
+                      cursor: "pointer",
+                      marginRight: "20px",
+                      color: "blue",
+                    }}
+                  >
+                    {
+                      data?.filter(
+                        (item) =>
+                          item.balance_amount >= 300000 &&
+                          item.balance_amount <= 400000
+                      ).length
+                    }
+                  </a>
+                </td>
+                <td>
+                  {" "}
+                  {calculateTotalAmount(
+                    data?.filter(
+                      (item) =>
+                        item.balance_amount >= 300000 &&
+                        item.balance_amount <= 400000
+                    )
+                  )}
+                </td>
+                <td>
+                  {" "}
+                  {calculateTotalAmount(
+                    data?.filter(
+                      (item) =>
+                        item.paid_amount >= 300000 && item.paid_amount <= 400000
+                    )
+                  )}
+                </td>
+              </tr>
+              <tr>
+                <td>400k-500k</td>
+                <td
+                  onClick={() =>
+                    handleOpenUniqueVendorClick(
+                      data?.filter(
+                        (item) =>
+                          item.balance_amount >= 400000 &&
+                          item.balance_amount <= 500000
+                      )
+                    )
+                  }
+                >
+                  <a
+                    style={{
+                      cursor: "pointer",
+                      marginRight: "20px",
+                      color: "blue",
+                    }}
+                  >
+                    {
+                      data?.filter(
+                        (item) =>
+                          item.balance_amount >= 400000 &&
+                          item.balance_amount <= 500000
+                      ).length
+                    }
+                  </a>
+                </td>
+                <td>
+                  {" "}
+                  {calculateTotalAmount(
+                    data?.filter(
+                      (item) =>
+                        item.balance_amount >= 400000 &&
+                        item.balance_amount <= 500000
+                    )
+                  )}
+                </td>
+                <td>
+                  {" "}
+                  {calculateTotalAmount(
+                    data?.filter(
+                      (item) =>
+                        item.paid_amount >= 400000 && item.paid_amount <= 500000
+                    )
+                  )}
+                </td>
+              </tr>
+              <tr>
+                <td>500k-700k</td>
+                <td
+                  onClick={() =>
+                    handleOpenUniqueVendorClick(
+                      data?.filter(
+                        (item) =>
+                          item.balance_amount >= 500000 &&
+                          item.balance_amount <= 700000
+                      )
+                    )
+                  }
+                >
+                  <a
+                    style={{
+                      cursor: "pointer",
+                      marginRight: "20px",
+                      color: "blue",
+                    }}
+                  >
+                    {
+                      data?.filter(
+                        (item) =>
+                          item.balance_amount >= 500000 &&
+                          item.balance_amount <= 700000
+                      ).length
+                    }
+                  </a>
+                </td>
+                <td>
+                  {" "}
+                  {calculateTotalAmount(
+                    data?.filter(
+                      (item) =>
+                        item.balance_amount >= 500000 &&
+                        item.balance_amount <= 700000
+                    )
+                  )}
+                </td>
+                <td>
+                  {" "}
+                  {calculateTotalAmount(
+                    data?.filter(
+                      (item) =>
+                        item.paid_amount >= 500000 && item.paid_amount <= 700000
+                    )
+                  )}
+                </td>
+              </tr>
+              <tr>
+                <td>700k-10L</td>
+                <td
+                  onClick={() =>
+                    handleOpenUniqueVendorClick(
+                      data?.filter(
+                        (item) =>
+                          item.balance_amount >= 700000 &&
+                          item.balance_amount <= 1000000
+                      )
+                    )
+                  }
+                >
+                  <a
+                    style={{
+                      cursor: "pointer",
+                      marginRight: "20px",
+                      color: "blue",
+                    }}
+                  >
+                    {
+                      data?.filter(
+                        (item) =>
+                          item.balance_amount >= 700000 &&
+                          item.balance_amount <= 1000000
+                      ).length
+                    }
+                  </a>
+                </td>
+                <td>
+                  {" "}
+                  {calculateTotalAmount(
+                    data?.filter(
+                      (item) =>
+                        item.balance_amount >= 700000 &&
+                        item.balance_amount <= 1000000
+                    )
+                  )}
+                </td>
+                <td>
+                  {" "}
+                  {calculateTotalAmount(
+                    data?.filter(
+                      (item) =>
+                        item.paid_amount >= 700000 &&
+                        item.paid_amount <= 1000000
+                    )
+                  )}
+                </td>
+              </tr>
+              <tr>
+                <td>10L-15L</td>
+                <td
+                  onClick={() =>
+                    handleOpenUniqueVendorClick(
+                      data?.filter(
+                        (item) =>
+                          item.balance_amount >= 1000000 &&
+                          item.balance_amount <= 1500000
+                      )
+                    )
+                  }
+                >
+                  <a
+                    style={{
+                      cursor: "pointer",
+                      marginRight: "20px",
+                      color: "blue",
+                    }}
+                  >
+                    {
+                      data?.filter(
+                        (item) =>
+                          item.balance_amount >= 1000000 &&
+                          item.balance_amount <= 1500000
+                      ).length
+                    }
+                  </a>
+                </td>
+                <td>
+                  {" "}
+                  {calculateTotalAmount(
+                    data?.filter(
+                      (item) =>
+                        item.balance_amount >= 1000000 &&
+                        item.balance_amount <= 1500000
+                    )
+                  )}
+                </td>
+                <td>
+                  {" "}
+                  {calculateTotalAmount(
+                    data?.filter(
+                      (item) =>
+                        item.paid_amount >= 1000000 &&
+                        item.paid_amount <= 1500000
+                    )
+                  )}
+                </td>
+              </tr>
+              <tr>
+                <td>15L+</td>
+                <td
+                  onClick={() =>
+                    handleOpenUniqueVendorClick(
+                      data?.filter((item) => item.balance_amount >= 1500000)
+                    )
+                  }
+                >
+                  <a
+                    style={{
+                      cursor: "pointer",
+                      marginRight: "20px",
+                      color: "blue",
+                    }}
+                  >
+                    {
+                      data?.filter((item) => item.balance_amount >= 1500000)
                         .length
                     }
                   </a>
@@ -343,7 +739,13 @@ const Overview = (props) => {
                 <td>
                   {" "}
                   {calculateTotalAmount(
-                    data?.filter((item) => item.balance_amount >= 100000)
+                    data?.filter((item) => item.balance_amount >= 1500000)
+                  )}
+                </td>
+                <td>
+                  {" "}
+                  {calculateTotalAmount(
+                    data?.filter((item) => item.paid_amount >= 1500000)
                   )}
                 </td>
               </tr>
