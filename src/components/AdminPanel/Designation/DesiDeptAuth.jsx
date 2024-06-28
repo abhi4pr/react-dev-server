@@ -17,6 +17,8 @@ const DesiDeptAuth = () => {
   const [filterData, setFilterData] = useState([]);
   const [isSubmitted, setIsSubmitted] = useState(false);
 
+  const [isLoading, setIsLoading] = useState(false);
+
   useEffect(() => {
     getData();
   }, []);
@@ -158,6 +160,7 @@ const DesiDeptAuth = () => {
   ];
   async function postData() {
     try {
+      setIsLoading(true);
       for (const element of filterData) {
         await axios.put(baseUrl + "update_dept_desi_auth", {
           dept_desi_auth_id: element.dept_desi_auth_id,
@@ -174,9 +177,11 @@ const DesiDeptAuth = () => {
       setIsSubmitted(true);
       toastAlert("Updated Successfully");
       getData();
+      setIsLoading(false);
     } catch (error) {
       console.error("Error updating data:", error);
       toastError("Update failed. Please try again later.");
+      setIsLoading(false);
     }
   }
 
@@ -187,11 +192,15 @@ const DesiDeptAuth = () => {
     <>
       <div className="form-heading">
         <div className="form_heading_title">
-          <h2>Desi Dept Authntication</h2>
+          <h2>Designation/Department Authentication</h2>
         </div>
         <div className="form_heading_action d-flex gap-2">
-          <button onClick={postData} className="btn btn-primary">
-            Post
+          <button
+            style={{ width: "90px", borderRadius: "20px" }}
+            onClick={postData}
+            className="btn btn-primary"
+          >
+            {isLoading ? "Loading..." : "Post"}
           </button>
         </div>
       </div>

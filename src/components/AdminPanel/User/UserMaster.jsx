@@ -2903,11 +2903,10 @@ const UserMaster = () => {
                 const inputValue = e.target.value;
                 const onlyNumbers = /^[0-9]+$/;
 
-                // Check if the input is numeric and within the max length
                 if (onlyNumbers.test(inputValue) && inputValue.length <= 17) {
                   setBankAccountNumber(inputValue);
                 } else if (inputValue === "") {
-                  setBankAccountNumber(""); // Clear the input value
+                  setBankAccountNumber("");
                 }
 
                 // onBlur functionality

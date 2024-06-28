@@ -40,6 +40,10 @@ export default function SubDepartmentUpdate() {
   async function handleSubmit(e) {
     e.preventDefault();
 
+    if (!subDepartmentName) {
+      return toastError("Fill Required Field");
+    }
+
     try {
       await axios.put(`${baseUrl}update_sub_department`, {
         id: Number(id),
@@ -78,6 +82,8 @@ export default function SubDepartmentUpdate() {
         >
           <FieldContainer
             label="Sub-Department Name"
+            astric
+            required={false}
             value={subDepartmentName}
             onChange={(e) => setSubDepartmentName(e.target.value)}
           />

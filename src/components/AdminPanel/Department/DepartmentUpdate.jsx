@@ -24,6 +24,10 @@ const DepartmentUpdate = () => {
     e.preventDefault();
     setError("");
 
+    if (!departmentName) {
+      return toastError("Fill Required Field");
+    }
+
     try {
       await axios.put(`${baseUrl}update_department`, {
         dept_id: id,
@@ -68,6 +72,8 @@ const DepartmentUpdate = () => {
       >
         <FieldContainer
           label="Department Name"
+          astric
+          required={false}
           value={departmentName}
           onChange={(e) => setDepartmentName(e.target.value)}
         />
@@ -90,27 +96,12 @@ const DepartmentUpdate = () => {
           value={creationDate}
           onChange={(e) => setCreationDate(e.target.value)}
         />
-        <FieldContainer
+        {/* <FieldContainer
           label="Created By"
           disabled
           value={createdBy}
           onChange={(e) => setCreatedBy(e.target.value)}
-        />
-
-        {/* <FieldContainer
-          label="Last Updated By"
-          disabled
-          value={lastUpdatedBy}
-          onChange={(e) => setLastUpdatedBy(e.target.value)}
-        />
-
-        <FieldContainer
-          label="Last Updated By"
-          disabled
-          value={lastUpdatedDate}
-          onChange={(e) => setLastUpdatedBy(e.target.value)}
-        />
-        {error && <p style={{ color: "red" }}>{error}</p>} */}
+        /> */}
       </FormContainer>
     </>
   );

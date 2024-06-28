@@ -22,6 +22,12 @@ const Designation = () => {
   const [subDepartmentData, setSubDeparmentData] = useState([]);
   const [subDeparmtment, setSubDepartment] = useState("");
 
+  const [isRequired, setIsRequired] = useState({
+    designationName: false,
+    departmentName: false,
+    subDeparmtment: false,
+  });
+
   function subDepartmentDatas() {
     if (departmentName) {
       axios
@@ -38,12 +44,22 @@ const Designation = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    if (designationName == "") {
+      setIsRequired((perv) => ({ ...perv, designationName: true }));
+    }
+    if (departmentName == "") {
+      setIsRequired((perv) => ({ ...perv, departmentName: true }));
+    }
+    if (subDeparmtment == "") {
+      setIsRequired((perv) => ({ ...perv, subDeparmtment: true }));
+    }
+
     if (!designationName || designationName == "") {
-      return toastError("Designation is Required");
+      return toastError("Fill Required Fields");
     } else if (!departmentName || departmentName == "") {
-      return toastError("Department is Required");
+      return toastError("Fill Required Fields");
     } else if (!subDeparmtment || subDeparmtment == "") {
-      return toastError("Sub-Department is Required");
+      return toastError("Fill Required Fields");
     }
     try {
       setIsLoading(true);
@@ -77,13 +93,34 @@ const Designation = () => {
         submitButton={false}
       >
         <div className="mb-3 row">
-          <FieldContainer
-            label="Designation Name"
-            astric
-            required={false}
-            value={designationName}
-            onChange={(e) => setDesignationName(e.target.value)}
-          />
+          <div className="col-6">
+            <FieldContainer
+              label="Designation Name"
+              astric
+              fieldGrid={12}
+              required={false}
+              value={designationName}
+              onChange={(e) => {
+                const desiVal = e.target.value;
+                setDesignationName(desiVal);
+                if (desiVal === "") {
+                  setIsRequired((prev) => ({
+                    ...prev,
+                    designationName: true,
+                  }));
+                } else {
+                  setIsRequired((prev) => ({
+                    ...prev,
+                    designationName: false,
+                  }));
+                }
+              }}
+            />
+            {isRequired.designationName && (
+              <p className="form-error">Please select Designation</p>
+            )}
+          </div>
+
           <div className="form-group col-6">
             <label className="form-label">
               Department Name <sup style={{ color: "red" }}>*</sup>
@@ -102,10 +139,25 @@ const Designation = () => {
                   )?.dept_name || "",
               }}
               onChange={(e) => {
-                setDepartmentName(e.value);
+                const deptvalue = e.value;
+                setDepartmentName(deptvalue);
+                if (deptvalue === "") {
+                  setIsRequired((prev) => ({
+                    ...prev,
+                    departmentName: true,
+                  }));
+                } else {
+                  setIsRequired((prev) => ({
+                    ...prev,
+                    departmentName: false,
+                  }));
+                }
               }}
               required
             />
+            {isRequired.departmentName && (
+              <p className="form-error">Please select Department</p>
+            )}
           </div>
           <div className="form-group col-6">
             <label className="form-label">
@@ -125,10 +177,25 @@ const Designation = () => {
                   )?.sub_dept_name || "",
               }}
               onChange={(e) => {
-                setSubDepartment(e.value);
+                const subDeptVal = e.value;
+                setSubDepartment(subDeptVal);
+                if (subDeptVal === "") {
+                  setIsRequired((prev) => ({
+                    ...prev,
+                    subDeparmtment: true,
+                  }));
+                } else {
+                  setIsRequired((prev) => ({
+                    ...prev,
+                    subDeparmtment: false,
+                  }));
+                }
               }}
               required
             />
+            {isRequired.subDeparmtment && (
+              <p className="form-error">Please select Sub Department</p>
+            )}
           </div>
           <FieldContainer
             label="Remark"

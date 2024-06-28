@@ -606,6 +606,7 @@ const UserUpdate = () => {
       setTempLanguage(modifiedLang);
       setGender(Gender);
       setNationality(Nationality);
+      console.log(Nationality, "nathios");
       setDateOfBirth(DOB.split("T")?.[0]);
 
       function agesCalculate() {
@@ -1853,13 +1854,13 @@ const UserUpdate = () => {
                 value: `${option.value}`,
                 label: `${option.label}`,
               }))}
-              value={{
-                value: isApplicable.value,
-                label: isApplicable.label || "",
-              }}
-              // value={IsApplicableData.find(
-              //   (option) => option.value === isApplicable.value
-              // )}
+              // value={{
+              //   value: isApplicable?.value,
+              //   label: isApplicable?.label || "",
+              // }}
+              value={IsApplicableData.find(
+                (option) => option.value === isApplicable
+              )}
               onChange={(e) => {
                 setIsApplicable(e);
               }}

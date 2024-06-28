@@ -13,6 +13,7 @@ import UploadIcon from "@mui/icons-material/Upload";
 import DetailsIcon from "@mui/icons-material/Details";
 import WhatsappAPI from "../../WhatsappAPI/WhatsappAPI";
 import { useGlobalContext } from "../../../Context/Context";
+import Loader from "../Finance/Loader/Loader";
 
 const WFHDOverview = () => {
   const whatsappApi = WhatsappAPI();
@@ -62,7 +63,7 @@ const WFHDOverview = () => {
   const getData = async () => {
     setLoading(true);
     const response = await axios.get(baseUrl + "get_all_wfh_users");
-    if (RoleIDContext == 1 || RoleIDContext == 5) {
+    if (RoleIDContext == 1 || RoleIDContext == 5 || RoleIDContext == 2) {
       setAllWFHDData(response.data.data);
       const FinalResonse = response.data.data;
       setLoading(false);
@@ -298,10 +299,10 @@ const WFHDOverview = () => {
       // width: "80px",
       sortable: true,
     },
-    {
-      name: "User Image",
-      cell: (row) => <img src={row.image} />,
-    },
+    // {
+    //   name: "User Image",
+    //   cell: (row) => <img src={row.image} />,
+    // },
     {
       name: "User Name",
       cell: (row) => row.user_name,
@@ -493,7 +494,7 @@ const WFHDOverview = () => {
   return (
     <>
       {loading ? (
-        <div className="loader">Loading...</div>
+        <Loader />
       ) : (
         <>
           <Modal
@@ -706,6 +707,7 @@ const WFHDOverview = () => {
                   columns={columns}
                   data={filterDataS}
                   pagination
+                  paginationPerPage={100}
                   //  selectableRows={true}
                   paginationDefaultPage={1}
                   highlightOnHover

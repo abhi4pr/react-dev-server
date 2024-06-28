@@ -186,7 +186,11 @@ const DepartmentOverview = () => {
       />
 
       <Link to="/admin/sub-department-overview">
-        <button type="button" className="btn btn_sm cmnbtn btn-outline-primary btn-sm mb-4">
+        <button
+          onClick={() => getData()}
+          type="button"
+          className="btn btn_sm cmnbtn btn-outline-primary btn-sm mb-4"
+        >
           Sub Department
         </button>
       </Link>
@@ -211,9 +215,9 @@ const DepartmentOverview = () => {
             data={filterData}
             fixedHeader
             pagination
+            paginationPerPage={100}
             fixedHeaderScrollHeight="64vh"
             highlightOnHover
-
           />
         </div>
       </div>
