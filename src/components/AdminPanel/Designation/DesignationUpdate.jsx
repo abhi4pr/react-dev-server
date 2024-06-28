@@ -59,6 +59,7 @@ const DesignationUpdate = () => {
         );
         setDesignationData(response.data.data);
         setSubDepartment(response.data.data.sub_dept_id);
+        console.log(response.data.data, "data>>>>>>>>>>>>>>>>>");
       } catch (error) {
         console.error("Error fetching designation: ", error);
         toastAlert("Failed to fetch designation");
@@ -73,6 +74,10 @@ const DesignationUpdate = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (designationData.desi_name == "") {
+      return toastError("Fill Required Field");
+    }
     try {
       await axios.put(baseUrl + "update_designation", designationData);
       toastAlert("Updated success");
@@ -100,6 +105,8 @@ const DesignationUpdate = () => {
       <FieldContainer
         label="Designation Name"
         fieldGrid={4}
+        astric
+        required={false}
         value={designationData.desi_name}
         onChange={(e) =>
           setDesignationData({ ...designationData, desi_name: e.target.value })
@@ -136,8 +143,9 @@ const DesignationUpdate = () => {
           value={{
             value: subDepartmentData,
             label:
-              subDepartmentData.find((user) => user.id === subDeparmtment)
-                ?.sub_dept_name || "",
+              subDepartmentData.find(
+                (user) => user.sub_dept_id === subDeparmtment
+              )?.sub_dept_name || "",
           }}
           onChange={(e) => {
             setSubDepartment(e.value);

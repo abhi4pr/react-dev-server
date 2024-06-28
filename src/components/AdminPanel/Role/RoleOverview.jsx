@@ -59,7 +59,7 @@ const RoleOverView = () => {
     // },
 
     {
-      name: "remark",
+      name: "Remark",
       selector: (row) => row.Remarks,
     },
     {
@@ -165,7 +165,6 @@ const RoleOverView = () => {
             pagination
             fixedHeaderScrollHeight="62vh"
             highlightOnHover
-
           />
         </div>
       </div>

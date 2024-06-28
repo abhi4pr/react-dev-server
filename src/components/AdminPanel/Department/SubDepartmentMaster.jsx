@@ -21,8 +21,27 @@ export default function SubDepartmentMaster() {
   const decodedToken = jwtDecode(token);
   const loginUserId = decodedToken.id;
 
+  const [isRequired, setIsRequired] = useState({
+    subDepartmentName: false,
+    departmentName: false,
+  });
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (subDepartmentName == "") {
+      setIsRequired((perv) => ({ ...perv, subDepartmentName: true }));
+    }
+    if (departmentName == "") {
+      setIsRequired((perv) => ({ ...perv, departmentName: true }));
+    }
+
+    if (!subDepartmentName) {
+      return toastError("Fill Required Field");
+    } else if (!departmentName || departmentName == "") {
+      return toastError("Fill Required Field");
+    }
+
     try {
       await axios.post(baseUrl + "add_sub_department", {
         sub_dept_name: subDepartmentName,
@@ -38,7 +57,7 @@ export default function SubDepartmentMaster() {
       setIsFormSubmitted(true);
     } catch (error) {
       toastError("Error while adding sub department.");
-      alert(error.response.data.message);
+      // alert(error.response.data.message);
     }
   };
 
@@ -52,11 +71,34 @@ export default function SubDepartmentMaster() {
         title="Sub-Department"
         handleSubmit={handleSubmit}
       >
-        <FieldContainer
-          label="Sub-Department Name"
-          value={subDepartmentName}
-          onChange={(e) => setSubDepartmentName(e.target.value)}
-        />
+        <div className="col-6">
+          <FieldContainer
+            label="Sub-Department Name"
+            value={subDepartmentName}
+            astric
+            fieldGrid={12}
+            required={false}
+            onChange={(e) => {
+              const subDeptVal = e.target.value;
+              setSubDepartmentName(subDeptVal);
+              if (subDeptVal === "") {
+                setIsRequired((prev) => ({
+                  ...prev,
+                  subDepartmentName: true,
+                }));
+              } else {
+                setIsRequired((prev) => ({
+                  ...prev,
+                  subDepartmentName: false,
+                }));
+              }
+            }}
+          />
+          {isRequired.subDepartmentName && (
+            <p className="form-error">Please Enter Sub Department</p>
+          )}
+        </div>
+
         <div className="form-group col-6">
           <label className="form-label">
             Department Name <sup style={{ color: "red" }}>*</sup>
@@ -75,10 +117,25 @@ export default function SubDepartmentMaster() {
                 )?.dept_name || "",
             }}
             onChange={(e) => {
-              setDepartmentName(e.value);
+              const deptVal = e.value;
+              setDepartmentName(deptVal);
+              if (deptVal === "") {
+                setIsRequired((prev) => ({
+                  ...prev,
+                  departmentName: true,
+                }));
+              } else {
+                setIsRequired((prev) => ({
+                  ...prev,
+                  departmentName: false,
+                }));
+              }
             }}
             required
           />
+          {isRequired.departmentName && (
+            <p className="form-error">Please Enter Department</p>
+          )}
         </div>
 
         <FieldContainer

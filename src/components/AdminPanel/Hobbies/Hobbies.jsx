@@ -9,8 +9,12 @@ import { baseUrl } from "../../../utils/config";
 const Hobbies = () => {
   const navigate = useNavigate();
   const { id } = useParams();
-  const { toastAlert } = useGlobalContext();
+  const { toastAlert, toastError } = useGlobalContext();
   const [hobby, setHobby] = useState("");
+
+  const [isRequired, setIsRequired] = useState({
+    hobby: false,
+  });
 
   useEffect(() => {
     if (id !== 0) getData();
@@ -28,6 +32,12 @@ const Hobbies = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (hobby == "") {
+      setIsRequired((perv) => ({ ...perv, hobby: true }));
+    }
+    if (!hobby) {
+      return toastError("Fill Required Fields");
+    }
     try {
       if (id == 0) {
         const response = await axios.post(baseUrl + "add_hobby", {
@@ -55,13 +65,32 @@ const Hobbies = () => {
         handleSubmit={handleSubmit}
       >
         <div className="row mb-4">
-
+          <div className="col-3"></div>
           <FieldContainer
             label="Hobbie"
-            fieldGrid={3}
+            astric
+            fieldGrid={12}
+            required={false}
             value={hobby}
-            onChange={(e) => setHobby(e.target.value)}
+            onChange={(e) => {
+              const hobbieVal = e.target.value;
+              setHobby(hobbieVal);
+              if (hobbieVal === "") {
+                setIsRequired((prev) => ({
+                  ...prev,
+                  hobby: true,
+                }));
+              } else {
+                setIsRequired((prev) => ({
+                  ...prev,
+                  hobby: false,
+                }));
+              }
+            }}
           />
+          {isRequired.hobby && (
+            <p className="form-error">Please select Hobbie</p>
+          )}
         </div>
       </FormContainer>
     </div>

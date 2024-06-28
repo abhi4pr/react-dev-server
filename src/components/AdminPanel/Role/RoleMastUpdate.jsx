@@ -21,6 +21,10 @@ function RoleMastUpdate() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    if (!role_name) {
+      return toastError("Fill Required Fields");
+    }
+
     try {
       await axios.put(`${baseUrl}update_role`, {
         role_id: id,
@@ -61,6 +65,8 @@ function RoleMastUpdate() {
       >
         <FieldContainer
           label="Role Name"
+          astric
+          required={false}
           value={role_name}
           onChange={(e) => setRoleName(e.target.value)}
         />

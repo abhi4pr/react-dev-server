@@ -134,11 +134,11 @@ export default function SubDepartmentOverview() {
             // title="Sub-Department Overview"
             columns={columns}
             data={filterData}
-            // fixedHeader
+            paginationPerPage={100}
+            fixedHeader
             pagination
             fixedHeaderScrollHeight="64vh"
             highlightOnHover
-
           />
         </div>
       </div>
@@ -182,12 +182,12 @@ export default function SubDepartmentOverview() {
                     { name: "Contact", selector: "user_contact_no" },
                   ]}
                   data={selectedUserData.filter((user) =>
-                    user.user_name.toLowerCase().includes(modalSearch.toLowerCase())
+                    user.user_name
+                      .toLowerCase()
+                      .includes(modalSearch.toLowerCase())
                   )}
                   highlightOnHover
-
                   pagination
-
                 />
               </div>
             </div>

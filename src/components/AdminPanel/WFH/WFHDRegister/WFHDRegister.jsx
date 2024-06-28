@@ -11,8 +11,9 @@ import WhatsappAPI from "../../../WhatsappAPI/WhatsappAPI";
 import { baseUrl } from "../../../../utils/config";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { TextField } from "@mui/material";
+import dayjs from "dayjs";
 
 const onBoardStatus = 1;
 
@@ -100,13 +101,25 @@ const WFHDRegister = ({ userUpdateID }) => {
   const [dateOfBirth, setDateOfBirth] = useState("");
   const [gender, setGender] = useState("");
 
-  const [isRequired, setIsRequired] = useState({
-    reportL1: false,
-  });
-
   const [lastUpdated, setLastUpdated] = useState("");
 
   const [attStatus, setAttStatus] = useState("");
+
+  const [isRequired, setIsRequired] = useState({
+    username: false,
+    department: false,
+    reportL1: false,
+    personalEmail: false,
+    city: false,
+    salary: false,
+    personalContact: false,
+    contact: false,
+    loginId: false,
+    password: false,
+    joiningDate: false,
+    gender: false,
+    dateOfBirth: false,
+  });
 
   useEffect(() => {
     if (userUpdateID)
@@ -149,8 +162,8 @@ const WFHDRegister = ({ userUpdateID }) => {
           setReportL1(Report_L1);
           setSalary(salary);
           setLoginId(user_login_id);
-          setJoiningDate(joining_date?.split("T")?.[0]);
-          setDateOfBirth(DOB?.split("T")?.[0]);
+          // setJoiningDate(joining_date?.split("T")?.[0]);
+          // setDateOfBirth(DOB?.split("T")?.[0]);
           setYearlySalary(ctc);
           setGender(Gender);
           setReportL2(Report_L2);
@@ -179,6 +192,19 @@ const WFHDRegister = ({ userUpdateID }) => {
   // Handle change for Monthly Salary
   const handleMonthlySalaryChange = (e) => {
     const monthlySalary = e.target.value;
+
+    if (monthlySalary === "") {
+      setIsRequired((prev) => ({
+        ...prev,
+        salary: true,
+      }));
+    } else {
+      setIsRequired((prev) => ({
+        ...prev,
+        salary: false,
+      }));
+    }
+
     setSalary(monthlySalary);
     setLastUpdated("monthly");
   };
@@ -188,6 +214,18 @@ const WFHDRegister = ({ userUpdateID }) => {
     const yearlySalaryValue = e.target.value;
     setYearlySalary(yearlySalaryValue);
     setLastUpdated("yearly");
+
+    if (yearlySalaryValue === "") {
+      setIsRequired((prev) => ({
+        ...prev,
+        salary: true,
+      }));
+    } else {
+      setIsRequired((prev) => ({
+        ...prev,
+        salary: false,
+      }));
+    }
   };
 
   // Update Yearly Salary when Monthly Salary changes
@@ -258,8 +296,8 @@ const WFHDRegister = ({ userUpdateID }) => {
 
       // Ensure the first letter is uppercase and the rest of the part is lowercase
       return (
-        filteredPart.charAt(0).toUpperCase() +
-        filteredPart.slice(1).toLowerCase()
+        filteredPart.charAt(0)?.toUpperCase() +
+        filteredPart.slice(1)?.toLowerCase()
       );
     });
 
@@ -272,25 +310,103 @@ const WFHDRegister = ({ userUpdateID }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (username == "") {
+      setIsRequired((perv) => ({ ...perv, username: true }));
+    }
+    if (department == "") {
+      setIsRequired((perv) => ({ ...perv, department: true }));
+    }
+    if (reportL1 == "") {
+      setIsRequired((perv) => ({ ...perv, reportL1: true }));
+    }
+    if (personalEmail == "") {
+      setIsRequired((perv) => ({ ...perv, personalEmail: true }));
+    }
+    if (city == "") {
+      setIsRequired((perv) => ({ ...perv, city: true }));
+    }
+    if (salary == "") {
+      setIsRequired((perv) => ({ ...perv, salary: true }));
+    }
+    if (personalContact == "") {
+      setIsRequired((perv) => ({ ...perv, personalContact: true }));
+    }
+    if (contact == "") {
+      setIsRequired((perv) => ({ ...perv, contact: true }));
+    }
+    if (salary == "") {
+      setIsRequired((perv) => ({ ...perv, salary: true }));
+    }
+    if (loginId == "") {
+      setIsRequired((perv) => ({ ...perv, loginId: true }));
+    }
+    if (password == "") {
+      setIsRequired((perv) => ({ ...perv, password: true }));
+    }
+    if (joiningDate == "") {
+      setIsRequired((perv) => ({ ...perv, joiningDate: true }));
+    }
+    if (gender == "") {
+      setIsRequired((perv) => ({ ...perv, gender: true }));
+    }
+    if (dateOfBirth == "") {
+      setIsRequired((perv) => ({ ...perv, dateOfBirth: true }));
+    }
+
     if (!jobType) {
-      return toastError("Job Type is Required");
+      return toastError("Fill Required Field");
     } else if (!designation || designation == "") {
-      return toastError("Designatoin is Required");
+      return toastError("Fill Required Field");
     } else if (!gender || gender == "") {
-      return toastError("Gender is Required");
+      return toastError("Fill Required Field");
     } else if (!reportL1 || reportL1 == "") {
-      return toastError("Report manager Is Required");
+      return toastError("Fill Required Field");
     } else if (!personalContact || personalContact == "") {
       return toastError(
         "Personal Contact Is Required and should be equal to 10"
       );
     } else if (!personalEmail || personalEmail == "") {
-      return toastError("Email is Required");
+      return toastError("Fill Required Field");
     } else if (!contact || contact == "") {
       return toastError(
         "Alternate Contact Is Required and should be equal to 10"
       );
     }
+
+    const payload = {
+      dept_id: department,
+      permanent_city: city,
+      created_by: loginUserId,
+      user_name: validateAndCorrectUserName(username),
+      role_id: 4,
+      image: selectedImage,
+      ctc: Number(yearlySalary),
+      offer_letter_send: sendLetter.value ? Boolean(sendLetter.value) : false,
+      tds_applicable: tdsApplicable,
+      tds_per: tdsPercentage,
+      user_login_id: loginId,
+      user_login_password: password,
+      sitting_id: 183,
+      room_id: 1,
+      Gender: gender,
+      job_type: jobType,
+      DOB: dateOfBirth,
+      alternate_contact: contact,
+      personal_number: personalContact,
+      user_contact_no: personalContact,
+      user_email_id: personalEmail,
+      att_status: attStatus || "registered",
+      year_salary: Number(yearlySalary),
+      salary: Number(salary),
+      report_L1: reportL1,
+      report_L2: reportL2,
+      report_L3: reportL3,
+      user_designation: designation,
+      joining_date: joiningDate,
+      releaving_date: releavingDate,
+      onboard_status: onBoardStatus,
+    };
 
     const formData = new FormData();
 
@@ -386,15 +502,9 @@ const WFHDRegister = ({ userUpdateID }) => {
           return;
         }
       }
-      await axios
-        .post(baseUrl + "add_user", formData, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        })
-        .then(() => {
-          setIsFormSubmitted(true);
-        });
+      await axios.post(baseUrl + "add_user", payload, {}).then(() => {
+        setIsFormSubmitted(true);
+      });
 
       whatsappApi.callWhatsAPI(
         "Preonboarding Register",
@@ -476,6 +586,12 @@ const WFHDRegister = ({ userUpdateID }) => {
     const newEmail = e.target.value;
     setPersonalEmail(newEmail);
 
+    if (personalEmail === "") {
+      setIsRequired((prev) => ({ ...prev, personalEmail: true }));
+    } else {
+      setIsRequired((prev) => ({ ...prev, personalEmail: false }));
+    }
+
     if (newEmail == "") {
       setValidPersonalEmail(false);
     } else {
@@ -489,6 +605,22 @@ const WFHDRegister = ({ userUpdateID }) => {
     if (event.target.value.length <= 10) {
       const newContact1 = event.target.value;
       setContact(newContact1);
+
+      setisContactTouched(true);
+      if (contact?.length < 10) {
+        setValidContact(false);
+      }
+      if (newContact1 === "") {
+        setIsRequired((prev) => ({
+          ...prev,
+          contact: true,
+        }));
+      } else {
+        setIsRequired((prev) => ({
+          ...prev,
+          contact: false,
+        }));
+      }
 
       if (
         newContact1 === "" ||
@@ -509,12 +641,12 @@ const WFHDRegister = ({ userUpdateID }) => {
     }
   }
 
-  function handleContactBlur() {
-    setisContactTouched(true);
-    if (contact?.length < 10) {
-      setValidContact(false);
-    }
-  }
+  // function handleContactBlur() {
+  //   setisContactTouched(true);
+  //   if (contact?.length < 10) {
+  //     setValidContact(false);
+  //   }
+  // }
 
   //personal Contact validation
 
@@ -522,6 +654,22 @@ const WFHDRegister = ({ userUpdateID }) => {
     if (event.target.value.length <= 10) {
       const newContact1 = event.target.value;
       setPersonalContact(newContact1);
+
+      setisContactTouched1(true);
+      if (personalContact.length < 10) {
+        setValidContact1(false);
+      }
+      if (newContact1 === "") {
+        setIsRequired((prev) => ({
+          ...prev,
+          personalContact: true,
+        }));
+      } else {
+        setIsRequired((prev) => ({
+          ...prev,
+          personalContact: false,
+        }));
+      }
 
       if (
         newContact1 === "" ||
@@ -542,12 +690,12 @@ const WFHDRegister = ({ userUpdateID }) => {
     }
   }
 
-  function handlePersonalContactBlur() {
-    setisContactTouched1(true);
-    if (personalContact.length < 10) {
-      setValidContact1(false);
-    }
-  }
+  // function handlePersonalContactBlur() {
+  //   setisContactTouched1(true);
+  //   if (personalContact.length < 10) {
+  //     setValidContact1(false);
+  //   }
+  // }
 
   if (isFormSubmitted) {
     return <Navigate to="/admin/wfhd-overview" />;
@@ -565,10 +713,13 @@ const WFHDRegister = ({ userUpdateID }) => {
       generatePassword += charset[randomIndex];
     }
     setPassword(generatePassword);
+    if (generatePassword.length > 0) {
+      setIsRequired({ ...isRequired, password: false });
+    }
   };
 
   const generateLoginId = async () => {
-    const userName = username.trim().toLowerCase().split(" ");
+    const userName = username.trim()?.toLowerCase().split(" ");
 
     // Extracting last 4 and 6 digits from personal contact
     const personalContactLast4 = personalContact.slice(-4);
@@ -591,24 +742,47 @@ const WFHDRegister = ({ userUpdateID }) => {
 
     const nextIndex = (lastIndexUsed + 1) % loginIdOptions.length;
     setLastIndexUsed(nextIndex);
-    const generatedLoginId = loginIdOptions[nextIndex];
-    setLoginId(generatedLoginId);
+    let generatedLoginId = loginIdOptions[nextIndex];
 
-    await axios
-      .post(baseUrl + `check_login_exist`, {
-        user_login_id: loginId,
-      })
-      .then((res) => {
-        setLoginResponse(res.data.message);
-      });
+    // Check if the generated login ID already exists
+    const response = await axios.post(baseUrl + `check_login_exist`, {
+      user_login_id: generatedLoginId,
+    });
+
+    if (response.data.message === "login id not available") {
+      // If login ID already exists, find the next available one
+      let index = 1;
+      while (true) {
+        const nextGeneratedLoginId = `${generatedLoginId}_${index}`;
+        const checkExistenceResponse = await axios.post(
+          baseUrl + `check_login_exist`,
+          {
+            user_login_id: nextGeneratedLoginId,
+          }
+        );
+        if (checkExistenceResponse.data.message === "login id available") {
+          generatedLoginId = nextGeneratedLoginId;
+          break;
+        }
+        index++;
+      }
+    }
+
+    setLoginId(generatedLoginId);
+    setLoginResponse(response.data.message);
 
     if (generatedLoginId?.length > 0) {
-      setMandatoryFieldsEmpty({ ...mandatoryFieldsEmpty, loginId: false });
+      setIsRequired((prev) => ({ ...prev, loginId: false }));
     }
   };
 
   const handleLoginIdChange = (event) => {
     const selectedLoginId = event.target.value;
+    if (selectedLoginId == "") {
+      setIsRequired((prev) => ({ ...prev, loginId: true }));
+    } else {
+      setIsRequired((prev) => ({ ...prev, loginId: false }));
+    }
     setLoginId(selectedLoginId);
   };
 
@@ -628,6 +802,17 @@ const WFHDRegister = ({ userUpdateID }) => {
   const handleDateChange = (e) => {
     const selectedDate = e;
     const age = calculateAge(selectedDate);
+    if (selectedDate === "") {
+      setIsRequired((prev) => ({
+        ...prev,
+        dateOfBirth: true,
+      }));
+    } else {
+      setIsRequired((prev) => ({
+        ...prev,
+        dateOfBirth: false,
+      }));
+    }
 
     if (age < 15) {
       window.alert("Your age must be greater than 15 years.");
@@ -635,15 +820,19 @@ const WFHDRegister = ({ userUpdateID }) => {
       setDateOfBirth(selectedDate);
     }
   };
+  const disableFutureDates = (date) => {
+    return dayjs(date).isAfter(dayjs(), "day");
+  };
 
   const handleFullNameChange = (event) => {
-    // Extract the value from the event object
     let userName = event.target.value;
 
-    // Remove extra white spaces and trim the userName
-    // userName = userName.replace(/\s{2,}/g, ' ').trim();
+    if (userName === "") {
+      setIsRequired((prev) => ({ ...prev, username: true }));
+    } else {
+      setIsRequired((prev) => ({ ...prev, username: false }));
+    }
 
-    // Define a regular expression to match only letters
     const lettersOnly = /^[A-Za-z]+$/;
 
     // Split the userName into parts, correct each part, and join them back together
@@ -681,14 +870,19 @@ const WFHDRegister = ({ userUpdateID }) => {
         </div>
         <div className="card-body">
           <div className="row">
-            <FieldContainer
-              label="Full Name"
-              astric
-              fieldGrid={3}
-              required
-              value={username}
-              onChange={handleFullNameChange}
-            />
+            <div className="col-md-3">
+              <FieldContainer
+                label="Full Name"
+                astric
+                fieldGrid={3}
+                required
+                value={username}
+                onChange={handleFullNameChange}
+              />
+              {isRequired.username && (
+                <p className="form-error">Please Enter Full Name</p>
+              )}
+            </div>
 
             <div className="form-group col-3">
               <label className="form-label">
@@ -730,10 +924,25 @@ const WFHDRegister = ({ userUpdateID }) => {
                 }}
                 onChange={(e) => {
                   setDepartment(e.value);
+                  const selectedDepartment = e.value;
+                  if (selectedDepartment === "") {
+                    setIsRequired((prev) => ({
+                      ...prev,
+                      department: true,
+                    }));
+                  } else {
+                    setIsRequired((prev) => ({
+                      ...prev,
+                      department: false,
+                    }));
+                  }
                 }}
                 required
                 isDisabled={loginRole == 2}
               />
+              {isRequired.department && (
+                <p className="form-error">Please Enter Department</p>
+              )}
             </div>
 
             <div className="form-group col-3">
@@ -779,20 +988,18 @@ const WFHDRegister = ({ userUpdateID }) => {
                 }}
                 onChange={(e) => {
                   setReportL1(e.value);
-                  e.value &&
-                    setIsRequired((prev) => {
-                      return { ...prev, reportL1: false };
-                    });
-                }}
-                onBlur={(e) => {
-                  !reportL1 &&
-                    setIsRequired((prev) => {
-                      return { ...prev, reportL1: true };
-                    });
-                  reportL1 &&
-                    setIsRequired((prev) => {
-                      return { ...prev, reportL1: false };
-                    });
+                  const selectedReport = e.value;
+                  if (selectedReport === "") {
+                    setIsRequired((prev) => ({
+                      ...prev,
+                      reportL1: true,
+                    }));
+                  } else {
+                    setIsRequired((prev) => ({
+                      ...prev,
+                      reportL1: false,
+                    }));
+                  }
                 }}
               />
               {isRequired.reportL1 && (
@@ -853,18 +1060,23 @@ const WFHDRegister = ({ userUpdateID }) => {
         {!validEmail && (
           <p  className="form-error">*Please enter valid email</p>
         )} */}
-            <FieldContainer
-              label="Personal Email"
-              type="email"
-              astric
-              fieldGrid={3}
-              required={false}
-              value={personalEmail}
-              onChange={handlePersonalEmailChange}
-            />
-            {!validPersonalEmail && (
-              <p className="form-error">*Please enter valid email</p>
-            )}
+            <div className="col-md-3">
+              <FieldContainer
+                label="Personal Email"
+                type="email"
+                astric
+                fieldGrid={3}
+                required={false}
+                value={personalEmail}
+                onChange={handlePersonalEmailChange}
+              />
+              {!validPersonalEmail && (
+                <p className="form-error">*Please enter valid email</p>
+              )}
+              {isRequired.personalEmail && (
+                <p className="form-error">Please select Personal Email</p>
+              )}
+            </div>
             {/* <FieldContainer
           label=" City"
           type="text"
@@ -882,7 +1094,22 @@ const WFHDRegister = ({ userUpdateID }) => {
                   value: city.city_name,
                   label: city.city_name,
                 }))}
-                onChange={(e) => setCity(e ? e.value : "")}
+                onChange={(e) => {
+                  setCity(e ? e.value : "");
+
+                  const selectCity = e.value;
+                  if (selectCity === "") {
+                    setIsRequired((prev) => ({
+                      ...prev,
+                      city: true,
+                    }));
+                  } else {
+                    setIsRequired((prev) => ({
+                      ...prev,
+                      city: false,
+                    }));
+                  }
+                }}
                 required={true}
                 // value={city}
                 value={{
@@ -894,31 +1121,40 @@ const WFHDRegister = ({ userUpdateID }) => {
                 placeholder="Select a city..."
                 isClearable
               />
+              {isRequired.city && (
+                <p className="form-error">Please select City</p>
+              )}
             </div>
 
             {/* {jobType === "WFH" && ( */}
             <>
-              <FieldContainer
-                // label="Salary"
-                label="Monthly Salary"
-                astric
-                type="number"
-                fieldGrid={3}
-                value={salary}
-                // onChange={(e) => setSalary(e.target.value)}
-                onChange={handleMonthlySalaryChange}
-              />
+              <div className="form-group col-3">
+                <FieldContainer
+                  label="Monthly Salary"
+                  astric
+                  type="number"
+                  fieldGrid={3}
+                  value={salary}
+                  onChange={handleMonthlySalaryChange}
+                />
+                {isRequired.salary && (
+                  <p className="form-error">Please Enter Monthly Salary</p>
+                )}
+              </div>
 
-              <FieldContainer
-                // label="Salary"
-                label="CTC"
-                astric
-                type="number"
-                fieldGrid={3}
-                value={yearlySalary}
-                // onChange={(e) => setYearlySalary(e.target.value)}
-                onChange={handleYearlySalaryChange}
-              />
+              <div className="form-group col-3">
+                <FieldContainer
+                  label="CTC"
+                  astric
+                  type="number"
+                  fieldGrid={3}
+                  value={yearlySalary}
+                  onChange={handleYearlySalaryChange}
+                />
+                {isRequired.salary && (
+                  <p className="form-error">Please Enter CTC</p>
+                )}
+              </div>
 
               <div className="form-group col-3">
                 <label className="form-label">
@@ -998,7 +1234,6 @@ const WFHDRegister = ({ userUpdateID }) => {
           />
         )} */}
             <div className="col-md-3">
-
               <FieldContainer
                 label="Personal Contact"
                 astric
@@ -1007,26 +1242,36 @@ const WFHDRegister = ({ userUpdateID }) => {
                 value={personalContact}
                 required={false}
                 onChange={handlePersonalContactChange}
-                onBlur={handlePersonalContactBlur}
+                // onBlur={handlePersonalContactBlur}
               />
               {(isContactTouched1 || personalContact?.length >= 10) &&
                 !isValidcontact1 && (
                   <p className="form-error">*Please enter a valid Number</p>
                 )}
+              {isRequired.personalContact && (
+                <p className="form-error">Please Enter Personal Contact</p>
+              )}
             </div>
-            <FieldContainer
-              label="Alternate Contact "
-              type="number"
-              astric
-              fieldGrid={3}
-              value={contact}
-              required={false}
-              onChange={handleContactChange}
-              onBlur={handleContactBlur}
-            />
-            {/* {(isContactTouched || contact.length >= 10) && !isValidcontact && (
-          <p  className="form-error">*Please enter a valid Number</p>
-        )} */}
+
+            <div className="form-group col-3">
+              <FieldContainer
+                label="Alternate Contact "
+                type="number"
+                astric
+                fieldGrid={3}
+                value={contact}
+                required={false}
+                onChange={handleContactChange}
+                // onBlur={handleContactBlur}
+              />
+              {(isContactTouched || contact?.length >= 10) &&
+                !isValidcontact && (
+                  <p className="form-error">*Please enter a valid Number</p>
+                )}
+              {isRequired.contact && (
+                <p className="form-error">Please Enter Alternate Contact</p>
+              )}
+            </div>
 
             <div className="col-xl-3 col-lg-3 col-md-3 col-sm-12">
               <div className="form-group">
@@ -1045,16 +1290,31 @@ const WFHDRegister = ({ userUpdateID }) => {
                 </label>
                 <div className="input-group">
                   <input
-                    className={`form-control ${loginId
-                      ? loginResponse === "login id available"
-                        ? "login-success-border"
-                        : "login-error-border"
-                      : ""
-                      }`}
+                    className="form-control"
+                    // className={`form-control ${
+                    //   loginId
+                    //     ? loginResponse === "login id available"
+                    //       ? "login-success-border"
+                    //       : "login-error-border"
+                    //     : ""
+                    // }`}
                     value={loginId}
                     disabled
                     required
                     onChange={handleLoginIdChange}
+                    onBlur={() => {
+                      if (loginId === "") {
+                        return setIsRequired((prev) => ({
+                          ...prev,
+                          loginId: true,
+                        }));
+                      } else {
+                        setIsRequired((prev) => ({
+                          ...prev,
+                          loginId: false,
+                        }));
+                      }
+                    }}
                   />
                   <div className="input-group-append">
                     <button
@@ -1066,6 +1326,9 @@ const WFHDRegister = ({ userUpdateID }) => {
                     </button>
                   </div>
                 </div>
+                {isRequired.loginId && (
+                  <p className="form-error">Please select a LoginId</p>
+                )}
               </div>
             </div>
 
@@ -1093,6 +1356,9 @@ const WFHDRegister = ({ userUpdateID }) => {
                   </div>
                 </div>
               </div>
+              {isRequired.password && (
+                <p className="form-error">Please select a Password</p>
+              )}
             </div>
 
             {/* <div className="form-group col-3">
@@ -1131,10 +1397,27 @@ const WFHDRegister = ({ userUpdateID }) => {
               <LocalizationProvider dateAdapter={AdapterDayjs}>
                 <DatePicker
                   value={joiningDate}
-                  onChange={(e) => setJoiningDate(e)}
+                  onChange={(e) => {
+                    setJoiningDate(e);
+                    const selectJoiningDate = e;
+                    if (selectJoiningDate === "") {
+                      setIsRequired((prev) => ({
+                        ...prev,
+                        joiningDate: true,
+                      }));
+                    } else {
+                      setIsRequired((prev) => ({
+                        ...prev,
+                        joiningDate: false,
+                      }));
+                    }
+                  }}
                   renderInput={(params) => <TextField {...params} />}
                 />
               </LocalizationProvider>
+              {isRequired.joiningDate && (
+                <p className="form-error">Please Enter Joining Date</p>
+              )}
             </div>
             <div className="col-md-3">
               <label className="form-label">
@@ -1144,9 +1427,13 @@ const WFHDRegister = ({ userUpdateID }) => {
                 <DatePicker
                   value={dateOfBirth}
                   onChange={handleDateChange}
+                  shouldDisableDate={disableFutureDates}
                   renderInput={(params) => <TextField {...params} />}
                 />
               </LocalizationProvider>
+              {isRequired.dateOfBirth && (
+                <p className="form-error">Please Enter DOB</p>
+              )}
             </div>
 
             {/* <FieldContainer
@@ -1174,9 +1461,24 @@ const WFHDRegister = ({ userUpdateID }) => {
                 }}
                 onChange={(e) => {
                   setGender(e.value);
+                  const selectGender = e.value;
+                  if (selectGender === "") {
+                    setIsRequired((prev) => ({
+                      ...prev,
+                      gender: true,
+                    }));
+                  } else {
+                    setIsRequired((prev) => ({
+                      ...prev,
+                      gender: false,
+                    }));
+                  }
                 }}
                 required
               />
+              {isRequired.gender && (
+                <p className="form-error">Please Enter Gender</p>
+              )}
             </div>
           </div>
         </div>

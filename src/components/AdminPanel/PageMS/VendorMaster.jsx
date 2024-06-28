@@ -101,6 +101,8 @@ const VendorMaster = () => {
   const [gstApplicable, setGstApplicable] = useState("No");
   const [vendorCategory, setVendorCategory] = useState("Theme Page");
   const [whatsappLink, setWhatsappLink] = useState([]);
+
+  const [docDetails, setDocDetails] = useState([]);
   const [sameAsPrevious, setSameAsPrevious] = useState(false);
   const [mobileValid, setMobileValid] = useState(false);
 
@@ -269,9 +271,6 @@ const VendorMaster = () => {
   };
 
   const handleLinkChange = (index, newValue) => {
-    // if (newValue) {
-    //   setValidator((prev) => ({ ...prev, whatsappLink: false }));
-    // }
     let link = [...whatsappLink];
     link[index].link = newValue;
     setWhatsappLink(link);
@@ -288,7 +287,6 @@ const VendorMaster = () => {
   };
 
   useEffect(() => {
-    console.log(_id);
     if (_id) {
       axios.get(baseUrl + `v1/vendor/${_id}`).then((res) => {
         const data = res.data.data;
@@ -362,6 +360,31 @@ const VendorMaster = () => {
         type: "",
       },
     ]);
+  };
+  const addDocDetails = () => {
+    setDocDetails([
+      ...docDetails,
+      {
+        docName: "",
+        docNumber: "",
+      },
+    ]);
+  };
+  const handleDocNameChange = (index, newValue) => {
+    let link = [...docDetails];
+    link[index].link = newValue;
+    setDocDetails(link);
+  };
+  const handleDocNumberChange = (i, value) => {
+    const remark = [...docDetails];
+    remark[i].docDetails = value;
+    setDocDetails(remark);
+  };
+  const removedocLink = (index) => {
+    return () => {
+      const updatedLinks = docDetails?.filter((link, i) => i !== index);
+      setDocDetails(updatedLinks);
+    };
   };
 
   const handleAddBankInfoRow = () => {
@@ -464,7 +487,7 @@ const VendorMaster = () => {
     setPan(inputValue);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!vendorName || vendorName == "" || vendorName == null) {
@@ -518,48 +541,83 @@ const VendorMaster = () => {
       toastError("Please fill all the mandatory fields");
       return;
     }
-    const formData = new FormData();
-    formData.append("vendor_name", vendorName);
-    formData.append("country_code", countryCode);
-    formData.append("mobile", mobile);
-    formData.append("alternate_mobile", altMobile);
-    formData.append("email", email);
-    formData.append("vendor_type", typeId);
-    formData.append("vendor_platform", platformId);
-    formData.append("payment_method", payId);
-    formData.append("pay_cycle", cycleId);
-    formData.append("pan_no", pan);
-    formData.append("pan_image", panImage);
-    formData.append("gst_no", gst);
-    formData.append("gst_image", gstImage);
-    formData.append("company_name", compName);
-    formData.append("company_address", compAddress);
-    formData.append("company_city", compCity);
-    formData.append("company_pincode", compPin);
-    formData.append("company_state", compState);
-    formData.append("threshold_limit", limit);
-    formData.append("home_address", homeAddress);
-    formData.append("home_city", homeCity);
-    formData.append("home_state", homeState);
-    formData.append("home_pincode", homePincode);
-    formData.append("created_by", userID);
-    formData.append("vendor_category", vendorCategory);
-    formData.append("bank_details", JSON.stringify(bankRows));
-    formData.append("vendorLinks", JSON.stringify(whatsappLink));
+    // const formData = new FormData();
+    // formData.append("vendor_name", vendorName);
+    // formData.append("country_code", countryCode);
+    // formData.append("mobile", mobile);
+    // formData.append("alternate_mobile", altMobile);
+    // formData.append("email", email);
+    // formData.append("vendor_type", typeId);
+    // formData.append("vendor_platform", platformId);
+    // formData.append("payment_method", payId);
+    // formData.append("pay_cycle", cycleId);
+    // formData.append("pan_no", pan);
+    // formData.append("pan_image", panImage);
+    // formData.append("gst_no", gst);
+    // formData.append("gst_image", gstImage);
+    // formData.append("company_name", compName);
+    // formData.append("company_address", compAddress);
+    // formData.append("company_city", compCity);
+    // formData.append("company_pincode", compPin);
+    // formData.append("company_state", compState);
+    // formData.append("threshold_limit", limit);
+    // formData.append("home_address", homeAddress);
+    // formData.append("home_city", homeCity);
+    // formData.append("home_state", homeState);
+    // formData.append("home_pincode", homePincode);
+    // formData.append("created_by", userID);
+    // formData.append("vendor_category", vendorCategory);
+    const formData = {
+      vendor_name: vendorName,
+      country_code: countryCode,
+      mobile: mobile,
+      alternate_mobile: altMobile,
+      email: email,
+      vendor_type: typeId,
+      vendor_platform: platformId,
+      payment_method: payId,
+      pay_cycle: cycleId,
+      // pan_no: pan,
+      // pan_image: panImage,
+      // gst_no: gst,
+      // gst_image: gstImage,
+      company_name: compName,
+      company_address: compAddress,
+      company_city: compCity,
+      company_pincode: compPin,
+      company_state: compState,
+      threshold_limit: limit,
+      home_address: homeAddress,
+      home_city: homeCity,
+      home_state: homeState,
+      home_pincode: homePincode,
+      created_by: userID,
+      vendor_category: vendorCategory,
+      bank_details: JSON.stringify(bankRows),
+    };
+    // formData.append("bank_details", JSON.stringify(bankRows));
+    // formData.append("vendorLinks", JSON.stringify(whatsappLink));
 
     if (!_id) {
       setIsFormSubmitting(true);
-      axios
+      await axios
         .post(baseUrl + "v1/vendor", formData, {
           headers: {
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json", // Adjust content type as needed
           },
         })
-        .then(() => {
+        .then((res) => {
           setIsFormSubmitted(true);
           toastAlert("Data Submitted Successfully");
           isFormSubmitting(false);
+          const resID = res.data.data._id;
+          axios.post(baseUrl + `document_detail`, {
+            vendor_id: resID,
+            // document_name: docName,
+            // document_no: docNumber,
+            documnet: JSON.stringify(docDetails),
+          });
         })
         .catch((err) => {
           toastError(err.message);
@@ -567,7 +625,7 @@ const VendorMaster = () => {
         });
     } else {
       setIsFormSubmitting(true);
-      axios
+      const res = axios
         .put(baseUrl + `v1/vendor/${_id}`, formData, {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -615,9 +673,9 @@ const VendorMaster = () => {
     },
   ];
 
-  if (isFormSubmitted) {
-    return <Navigate to="/admin/pms-vendor-overview" />;
-  }
+  // if (isFormSubmitted) {
+  //   return <Navigate to="/admin/pms-vendor-overview" />;
+  // }
   return (
     <>
       <FormContainer
@@ -920,7 +978,6 @@ const VendorMaster = () => {
                       ?.payMethod_name || "",
                 }}
                 onChange={(e) => {
-                  console.log(e.value, "----e.value----");
                   setPayId(e.value);
                   // setShowBankName(e.value === "specific_payment_method_id"); // Set condition for showing bank name
 
@@ -1496,6 +1553,55 @@ const VendorMaster = () => {
                     <AddCircleTwoToneIcon />
                   </IconButton>
                   Add Whatsapp Link
+                </Button>
+              </div>
+            </div>
+          </div>
+
+          {docDetails?.map((link, index) => (
+            <>
+              <div className="col-6">
+                <FieldContainer
+                  key={index}
+                  fieldGrid={6}
+                  label={`Document Name`}
+                  value={link.docName}
+                  // required={true}
+                  onChange={(e) => handleDocNameChange(index, e.target.value)}
+                />
+              </div>
+              <div className="col-md-4 p0 mb16">
+                <FieldContainer
+                  key={index.docNumber}
+                  label={`Document Nubmer`}
+                  fieldGrid={6}
+                  value={link.docNumber}
+                  // required={false}
+                  onChange={(e) => handleDocNumberChange(index, e.target.value)}
+                />
+              </div>
+              <div className="row">
+                <div className="col-12">
+                  <div className="addBankRow">
+                    <Button onClick={removedocLink(index)}>
+                      <IconButton variant="contained" color="error">
+                        <RemoveCircleTwoToneIcon />
+                      </IconButton>
+                    </Button>
+                  </div>
+                </div>
+              </div>
+              <div className="row thm_form"></div>
+            </>
+          ))}
+          <div className="row">
+            <div className="col-12">
+              <div className="addBankRow">
+                <Button onClick={addDocDetails}>
+                  <IconButton variant="contained" color="primary">
+                    <AddCircleTwoToneIcon />
+                  </IconButton>
+                  Add Document
                 </Button>
               </div>
             </div>

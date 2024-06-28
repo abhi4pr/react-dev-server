@@ -1,15 +1,12 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
-import { MdOutlineCategory } from "react-icons/md";
+import { useEffect, useState, lazy, Suspense } from "react";
 import { Link } from "react-router-dom";
 import { baseUrl } from "../../../../utils/config";
 import FormContainer from "../../FormContainer";
-import Modal from "react-modal";
-import DataTable from "react-data-table-component";
 import { PieChart } from "@mui/x-charts/PieChart";
 import { BarChart } from "@mui/x-charts/BarChart";
 import { BuildingOffice, HouseLine, Users } from "@phosphor-icons/react";
-import { HomeMini, HomeOutlined } from "@mui/icons-material";
+const UserDashPieChart = lazy(() => import("./UserDashPieChart"));
 
 const UserDashboard = () => {
   const [userData, setUserData] = useState([]);
@@ -236,121 +233,30 @@ const UserDashboard = () => {
               </div>
             </div>
             <div className="col-md-6">
-              <div className="chart_container body-padding">
-                <h5 style={{ fontWeight: "600", color: "var(--gray-700)" }}>
-                  Total Users - {userData.length}
-                </h5>
-                <PieChart
-                  series={[
-                    {
-                      data: [
-                        {
-                          id: 0,
-                          value: wfhdCount.length,
-                          label: "WFHD",
-                          color: "rgb(184, 0, 216)",
-                        },
-                        {
-                          id: 1,
-                          value: wFhCount.length,
-                          label: "WFH",
-                        },
-                        {
-                          id: 2,
-                          value: wFOCount.length,
-                          label: "WFO",
-                          color: "green",
-                        },
-                      ],
-                      innerRadius: 30,
-                      outerRadius: 100,
-                      cornerRadius: 5,
-                      paddingAngle: 1,
-                      highlightScope: { faded: "global", highlighted: "item" },
-                      faded: {
-                        innerRadius: 30,
-                        additionalRadius: -30,
-                        color: "gray",
-                      },
-                    },
-                  ]}
-                  height={200}
+              <Suspense
+                fallback={
+                  <h3
+                    style={{
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }}
+                  >
+                    Loading....
+                  </h3>
+                }
+              >
+                <UserDashPieChart
+                  userData={userData}
+                  wfhdCount={wfhdCount}
+                  wFhCount={wFhCount}
+                  wFOCount={wFOCount}
                 />
-              </div>
+              </Suspense>
             </div>
           </div>
         </div>
       </div>
-
-      {/* <Modal
-        isOpen={isModalOpen}
-        onRequestClose={handleCloseModal}
-        style={{
-          content: {
-            width: "80%",
-            height: "80%",
-            top: "50%",
-            left: "50%",
-            right: "auto",
-            bottom: "auto",
-            marginRight: "-50%",
-            transform: "translate(-50%, -50%)",
-          },
-        }}
-      >
-        {selectedRow && (
-          <div>
-            <div className="d-flex justify-content-between mb-2">
-              <h2>Overview: {selectedRow.dept_name}</h2>
-
-              <button
-                className="btn btn-success float-left"
-                onClick={handleCloseModal}
-              >
-                X
-              </button>
-            </div>
-            <DataTable
-              columns={[
-                {
-                  name: "S.No",
-                  cell: (row, index) => <div>{index + 1}</div>,
-                  width: "10%",
-                },
-                {
-                  name: "Name",
-                  selector: (row) => (
-                    <Link
-                      to={`/admin/user-single/${row.user_id}`}
-                      style={{ color: "blue" }}
-                    >
-                      {row.user_name}
-                    </Link>
-                  ),
-                },
-                { name: "Employe ID", selector: (row) => row.emp_id },
-                { name: "Email", selector: (row) => row.user_email_id },
-                { name: "Contact", selector: (row) => row.user_contact_no },
-                { name: "Job Type", selector: (row) => row.job_type },
-              ]}
-              data={selectedRow}
-              highlightOnHover
-              fixedHeaderScrollHeight="68vh"
-              fixedHeader
-              subHeader
-              // subHeaderComponent={
-              //   <input
-              //     type="text"
-              //     placeholder="Search..."
-              //     className="w-50 form-control"
-              //     value={modalSearch}
-              //     onChange={(e) => setModalSearch(e.target.value)}
-              //   />
-              // }
-            />
-          </div>
-        )}
-      </Modal> */}
     </div>
   );
 };

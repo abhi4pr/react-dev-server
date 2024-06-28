@@ -21,6 +21,10 @@ const DepartmentMaster = () => {
   const decodedToken = jwtDecode(token);
   const loginUserId = decodedToken.id;
 
+  const [isRequired, setIsRequired] = useState({
+    departmentName: false,
+  });
+
   useEffect(() => {
     axios.get(baseUrl + "get_all_departments").then((res) => {
       setData(res.data);
@@ -29,6 +33,14 @@ const DepartmentMaster = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
+
+    if (departmentName == "") {
+      setIsRequired((perv) => ({ ...perv, departmentName: true }));
+    }
+
+    if (!departmentName) {
+      return toastError("Fill Required Field");
+    }
 
     const isModalExists = data.some((d) => d.dept_name === departmentName);
     if (isModalExists) {
@@ -69,11 +81,34 @@ const DepartmentMaster = () => {
         handleSubmit={handleSubmit}
       >
         <div className="mb-4 row">
-          <FieldContainer
-            label="Department Name"
-            value={departmentName}
-            onChange={(e) => setDepartmentName(e.target.value)}
-          />
+          <div className="col-6">
+            <FieldContainer
+              label="Department Name"
+              astric
+              fieldGrid={12}
+              required={false}
+              value={departmentName}
+              onChange={(e) => {
+                const deptvalue = e.target.value;
+                setDepartmentName(deptvalue);
+                if (deptvalue === "") {
+                  setIsRequired((prev) => ({
+                    ...prev,
+                    departmentName: true,
+                  }));
+                } else {
+                  setIsRequired((prev) => ({
+                    ...prev,
+                    departmentName: false,
+                  }));
+                }
+              }}
+            />
+            {isRequired.departmentName && (
+              <p className="form-error">Please select Department</p>
+            )}
+          </div>
+
           <FieldContainer
             label="Short Name"
             value={shortName}

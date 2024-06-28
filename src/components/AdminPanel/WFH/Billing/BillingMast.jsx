@@ -17,6 +17,11 @@ const BillingMast = () => {
   const [unassignedWFHDepartments, setUnassignedWFHDepartments] = useState([]);
   const [seeMoreButtonActive, setSeeMoreButtonActive] = useState(true);
 
+  const [isRequired, setIsRequired] = useState({
+    bilingName: false,
+    department: false,
+  });
+
   useEffect(() => {
     async function fetchData() {
       try {
@@ -69,6 +74,21 @@ const BillingMast = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    if (bilingName == "") {
+      setIsRequired((perv) => ({ ...perv, bilingName: true }));
+    }
+    if (department == "") {
+      setIsRequired((perv) => ({ ...perv, department: true }));
+    }
+
+    if (!bilingName || bilingName == "") {
+      return toastError("Fill Required Fields");
+    }
+    if (!department || department == "") {
+      return toastError("Fill Required Fields");
+    }
+
     axios
       .post(baseUrl + "add_billingheader", {
         billing_header_name: bilingName,
@@ -95,11 +115,33 @@ const BillingMast = () => {
         title="Billing"
         handleSubmit={handleSubmit}
       >
-        <FieldContainer
-          label="Billing Header Name"
-          value={bilingName}
-          onChange={(e) => setBillingName(e.target.value)}
-        />
+        <div className="col-6">
+          <FieldContainer
+            label="Billing Header Name"
+            astric
+            required={false}
+            fieldGrid={12}
+            value={bilingName}
+            onChange={(e) => {
+              const billingVal = e.target.value;
+              setBillingName(billingVal);
+              if (billingVal === "") {
+                setIsRequired((prev) => ({
+                  ...prev,
+                  bilingName: true,
+                }));
+              } else {
+                setIsRequired((prev) => ({
+                  ...prev,
+                  bilingName: false,
+                }));
+              }
+            }}
+          />
+          {isRequired.bilingName && (
+            <p className="form-error">Please select Billing Header</p>
+          )}
+        </div>
 
         <div className="form-group col-6">
           <label className="form-label">
@@ -117,10 +159,26 @@ const BillingMast = () => {
                 options?.find((opt) => opt.dept_id === department)?.dept_name ||
                 "",
             }}
-            onChange={(selectedOption) => setDepartment(selectedOption.value)}
+            onChange={(selectedOption) => {
+              setDepartment(selectedOption.value);
+              if (selectedOption.value === "") {
+                setIsRequired((prev) => ({
+                  ...prev,
+                  department: true,
+                }));
+              } else {
+                setIsRequired((prev) => ({
+                  ...prev,
+                  department: false,
+                }));
+              }
+            }}
             components={{ MenuList: DepartmentMenuList }}
             required
           />
+          {isRequired.department && (
+            <p className="form-error">Please select Department</p>
+          )}
         </div>
       </FormContainer>
     </>

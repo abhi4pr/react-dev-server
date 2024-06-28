@@ -5,41 +5,43 @@ import Select from "react-select";
 import { useEffect } from "react";
 import axios from "axios";
 import { Navigate, useParams } from "react-router-dom";
-import {baseUrl} from '../../../../utils/config'
+import { baseUrl } from "../../../../utils/config";
+import { useGlobalContext } from "../../../../Context/Context";
 
 const BillingUpdate = () => {
   const { id } = useParams();
+  const { toastError, toastAlert } = useGlobalContext();
   const [bilingName, setBillingName] = useState("");
   const [department, setDepartment] = useState("");
   const [departmentdata, getDepartmentData] = useState([]);
   const [isFormSubmitted, setIsFormSubmitted] = useState(false);
 
   useEffect(() => {
-    axios
-      .get(baseUrl+"get_all_departments")
-      .then((res) => {
-        getDepartmentData(res.data);
-      });
+    axios.get(baseUrl + "get_all_departments").then((res) => {
+      getDepartmentData(res.data);
+    });
 
-    axios
-      .get(`${baseUrl}`+`get_single_billingheader/${id}`)
-      .then((res) => {
-        const fetchData = res.data;
+    axios.get(`${baseUrl}` + `get_single_billingheader/${id}`).then((res) => {
+      const fetchData = res.data;
 
-        const [{ billing_header_name, dept_id }] = fetchData;
-        setBillingName(billing_header_name);
-        setDepartment(dept_id);
-      });
+      const [{ billing_header_name, dept_id }] = fetchData;
+      setBillingName(billing_header_name);
+      setDepartment(dept_id);
+    });
   }, [id]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    await axios.put(baseUrl+"update_billingheader", {
+    if (!bilingName || bilingName == "") {
+      return toastError("Fill Required Fields");
+    }
+    await axios.put(baseUrl + "update_billingheader", {
       billingheader_id: id,
       billing_header_name: bilingName,
       dept_id: department,
     });
     setIsFormSubmitted(true);
+    toastAlert("Successfully Updated");
   };
 
   if (isFormSubmitted) {
@@ -55,6 +57,8 @@ const BillingUpdate = () => {
       >
         <FieldContainer
           label="Billing Header Name"
+          astric
+          required={false}
           value={bilingName}
           onChange={(e) => setBillingName(e.target.value)}
         />

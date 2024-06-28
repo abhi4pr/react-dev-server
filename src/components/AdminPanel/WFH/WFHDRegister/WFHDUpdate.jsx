@@ -208,7 +208,6 @@ const WFHDUpdate = () => {
         className={`documentarea ${normalUserLayout && "documentareaLight"}`}
       >
         <div className="document_box">
-          
           {/* <select
             onChange={(e) => handleFilterChange(e.target.value)}
             className="form-select"
@@ -259,8 +258,16 @@ const WFHDUpdate = () => {
                     {/* <td>1 Day</td> */}
                     <td>
                       <div className="uploadDocBtn">
-                        <span style={{display:"flex",justifyContent:"center",flex:"row",alignItems:"center",gap:"10px"}}>
-                        Upload  <i className="bi bi-cloud-arrow-up" />
+                        <span
+                          style={{
+                            display: "flex",
+                            justifyContent: "center",
+                            flex: "row",
+                            alignItems: "center",
+                            gap: "10px",
+                          }}
+                        >
+                          Upload <i className="bi bi-cloud-arrow-up" />
                         </span>
                         <input
                           type="file"
@@ -326,28 +333,32 @@ const WFHDUpdate = () => {
             submitButton={false}
             mainTitle="Update"
             title=""
-           link="admin/wfhd-overview"
+            link="admin/wfhd-overview"
           />
-            
-
         </div>
         <div className="tab">
-         { accordionButtons.map((button,index)=>(
-            <div className={`named-tab ${activeAccordionIndex === index ? "active-tab":""}`} onClick={()=>{handleAccordionButtonClick(index)}}>{button}</div>
+          {accordionButtons.map((button, index) => (
+            <div
+              className={`named-tab ${
+                activeAccordionIndex === index ? "active-tab" : ""
+              }`}
+              onClick={() => {
+                handleAccordionButtonClick(index);
+              }}
+            >
+              {button}
+            </div>
           ))}
         </div>
         <div className="card">
           <div className="card-header ">
-           
-             <h5>{accordionButtons[activeAccordionIndex]}</h5>
-          
-            
+            <h5>{accordionButtons[activeAccordionIndex]}</h5>
           </div>
           <div className="card-body">
-          {activeAccordionIndex === 0 && tab1}
+            {activeAccordionIndex === 0 && tab1}
             {activeAccordionIndex === 1 && tab2}
+          </div>
         </div>
-      </div>
       </div>
     </>
   );

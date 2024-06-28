@@ -18,8 +18,19 @@ const RoleMaster = () => {
   const decodedToken = jwtDecode(token);
   const loginUserId = decodedToken.id;
 
+  const [isRequired, setIsRequired] = useState({
+    roleName: false,
+  });
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (roleName == "") {
+      setIsRequired((perv) => ({ ...perv, roleName: true }));
+    }
+    if (!roleName || roleName == "") {
+      return toastError("Fill Required Fields");
+    }
     try {
       await axios.post(baseUrl + "add_role", {
         created_by: loginUserId,
@@ -43,12 +54,34 @@ const RoleMaster = () => {
     <>
       <FormContainer mainTitle="Role" title="Role" handleSubmit={handleSubmit}>
         <div className="mb-4 row">
+          <div className="col-12">
+            <FieldContainer
+              label="Role Name"
+              fieldGrid={6}
+              value={roleName}
+              astric
+              required={false}
+              onChange={(e) => {
+                const roleval = e.target.value;
+                setRoleName(roleval);
+                if (roleval === "") {
+                  setIsRequired((prev) => ({
+                    ...prev,
+                    roleName: true,
+                  }));
+                } else {
+                  setIsRequired((prev) => ({
+                    ...prev,
+                    roleName: false,
+                  }));
+                }
+              }}
+            />
+            {isRequired.roleName && (
+              <p className="form-error">Please select Role</p>
+            )}
+          </div>
 
-          <FieldContainer
-            label="Role Name"
-            value={roleName}
-            onChange={(e) => setRoleName(e.target.value)}
-          />
           {/* <FieldContainer
           label="Created By"
           value={createdBy}

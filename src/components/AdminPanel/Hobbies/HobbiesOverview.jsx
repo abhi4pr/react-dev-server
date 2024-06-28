@@ -35,7 +35,7 @@ const HobbiesOverview = () => {
 
   const columns = [
     {
-      name: "S.no",
+      name: "S.No",
       cell: (row, index) => <div>{index + 1}</div>,
       width: "5%",
       sortable: true,

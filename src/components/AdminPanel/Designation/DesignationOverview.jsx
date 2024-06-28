@@ -105,17 +105,17 @@ const DesignationOverview = () => {
         </Link>
       ),
     },
-    {
-      name: "Assigned Auth",
-      cell: (row) => {
-        const match =
-          desiDeptAuthData._id === row.desi_id
-            ? desiDeptAuthData.total_count
-            : 0 + "/" + desiDeptTotalAuth;
-        console.log(desiDeptAuthData._id === row.desi_id);
-      },
-      sortable: true,
-    },
+    // {
+    //   name: "Assigned Auth",
+    //   cell: (row) => {
+    //     const match =
+    //       desiDeptAuthData._id === row.desi_id
+    //         ? desiDeptAuthData.total_count
+    //         : 0 + "/" + desiDeptTotalAuth;
+    //     console.log(desiDeptAuthData._id === row.desi_id);
+    //   },
+    //   sortable: true,
+    // },
     {
       name: "Emp Count",
       width: "15%",
