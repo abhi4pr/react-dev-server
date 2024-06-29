@@ -205,12 +205,12 @@ const WFHDBankUpdate = () => {
                   <span style={{ color: "red" }}>PAN is not valid</span>
                 )}
               </div>
-              {/* <FieldContainer
-              label="Beneficiary"
-              value={beneficiary}
-              fieldGrid={3}
-              onChange={(e) => setBeneficiary(e.target.value)}
-            /> */}
+              <FieldContainer
+                label="Beneficiary"
+                value={beneficiary}
+                fieldGrid={3}
+                onChange={(e) => setBeneficiary(e.target.value)}
+              />
               <FieldContainer
                 label="Address"
                 fieldGrid={3}
