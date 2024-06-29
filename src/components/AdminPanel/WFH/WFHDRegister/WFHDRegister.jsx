@@ -114,6 +114,8 @@ const WFHDRegister = ({ userUpdateID }) => {
     department: false,
     reportL1: false,
     personalEmail: false,
+    subDepartment: false,
+    designation: false,
     city: false,
     salary: false,
     personalContact: false,
@@ -171,8 +173,9 @@ const WFHDRegister = ({ userUpdateID }) => {
           setSalary(salary);
           setLoginId(user_login_id);
           setStatus(status);
-          // setJoiningDate(joining_date?.split("T")?.[0]);
-          // setDateOfBirth(DOB?.split("T")?.[0]);
+          console.log(status, "status is here");
+          setJoiningDate(joining_date?.split("T")?.[0]);
+          setDateOfBirth(DOB?.split("T")?.[0]);
           setYearlySalary(ctc);
           setGender(Gender);
           setReportL2(Report_L2);
@@ -839,7 +842,7 @@ const WFHDRegister = ({ userUpdateID }) => {
   };
 
   const handleDateChange = (e) => {
-    const selectedDate = e;
+    const selectedDate = e.target.value;
     const age = calculateAge(selectedDate);
     if (selectedDate === "") {
       setIsRequired((prev) => ({
@@ -1463,68 +1466,33 @@ const WFHDRegister = ({ userUpdateID }) => {
           ></Select>
         </div> */}
 
-            {/* <FieldContainer
-              type="date"
-              label="Joining Date "
-              astric
-              fieldGrid={3}
-              value={joiningDate}
-              onChange={(e) => setJoiningDate(e.target.value)}
-            /> */}
-            <div className="col-md-3">
-              <label className="form-label">
-                Joining Date <sup style={{ color: "red" }}>*</sup>
-              </label>
-              <LocalizationProvider dateAdapter={AdapterDayjs}>
-                <DatePicker
-                  value={joiningDate}
-                  onChange={(e) => {
-                    setJoiningDate(e);
-                    const selectJoiningDate = e;
-                    if (selectJoiningDate === "") {
-                      setIsRequired((prev) => ({
-                        ...prev,
-                        joiningDate: true,
-                      }));
-                    } else {
-                      setIsRequired((prev) => ({
-                        ...prev,
-                        joiningDate: false,
-                      }));
-                    }
-                  }}
-                  renderInput={(params) => <TextField {...params} />}
-                />
-              </LocalizationProvider>
+            <div className="col-3">
+              <FieldContainer
+                type="date"
+                label="Joining Date "
+                astric
+                fieldGrid={3}
+                value={joiningDate}
+                onChange={(e) => setJoiningDate(e.target.value)}
+              />
               {isRequired.joiningDate && (
                 <p className="form-error">Please Enter Joining Date</p>
               )}
             </div>
-            <div className="col-md-3">
-              <label className="form-label">
-                DOB <sup style={{ color: "red" }}>*</sup>
-              </label>
-              <LocalizationProvider dateAdapter={AdapterDayjs}>
-                <DatePicker
-                  value={dateOfBirth}
-                  onChange={handleDateChange}
-                  shouldDisableDate={disableFutureDates}
-                  renderInput={(params) => <TextField {...params} />}
-                />
-              </LocalizationProvider>
+
+            <div className="col-3">
+              <FieldContainer
+                label="DOB "
+                astric
+                fieldGrid={3}
+                type="date"
+                value={dateOfBirth}
+                onChange={handleDateChange}
+              />
               {isRequired.dateOfBirth && (
                 <p className="form-error">Please Enter DOB</p>
               )}
             </div>
-
-            {/* <FieldContainer
-              label="DOB "
-              astric
-              fieldGrid={3}
-              type="date"
-              value={dateOfBirth}
-              onChange={handleDateChange}
-            /> */}
 
             <div className="form-group col-3">
               <label className="form-label">
@@ -1605,3 +1573,52 @@ const WFHDRegister = ({ userUpdateID }) => {
 };
 
 export default WFHDRegister;
+
+{
+  /* <div className="col-md-3">
+              <label className="form-label">
+                Joining Date <sup style={{ color: "red" }}>*</sup>
+              </label>
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <DatePicker
+                  value={joiningDate}
+                  onChange={(e) => {
+                    setJoiningDate(e);
+                    const selectJoiningDate = e;
+                    if (selectJoiningDate === "") {
+                      setIsRequired((prev) => ({
+                        ...prev,
+                        joiningDate: true,
+                      }));
+                    } else {
+                      setIsRequired((prev) => ({
+                        ...prev,
+                        joiningDate: false,
+                      }));
+                    }
+                  }}
+                  renderInput={(params) => <TextField {...params} />}
+                />
+              </LocalizationProvider>
+              {isRequired.joiningDate && (
+                <p className="form-error">Please Enter Joining Date</p>
+              )}
+            </div>
+
+<div className="col-md-3">
+<label className="form-label">
+  DOB <sup style={{ color: "red" }}>*</sup>
+</label>
+<LocalizationProvider dateAdapter={AdapterDayjs}>
+  <DatePicker
+    value={dateOfBirth}
+    onChange={handleDateChange}
+    shouldDisableDate={disableFutureDates}
+    renderInput={(params) => <TextField {...params} />}
+  />
+</LocalizationProvider>
+{isRequired.dateOfBirth && (
+  <p className="form-error">Please Enter DOB</p>
+)}
+</div> */
+}
