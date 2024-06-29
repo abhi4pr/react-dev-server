@@ -140,7 +140,8 @@ const SaleBookingClose = ({
         setFilterData(dateFilterData);
       });
   }
-
+  console.log(filterData, "filter Data---")
+  
   useEffect(() => {
     getData();
     setButtonaccess(
@@ -875,7 +876,12 @@ const SaleBookingClose = ({
       headerName: "Status",
       renderCell: (params) => params.row.show_fstatus,
     },
-
+    {
+      field: "invoice_mnj_number",
+      headerName: "Invoice Number",
+      renderCell: (params) => params.row.invoice_mnj_number,
+      width: 200,
+    },
     {
       field: "Action",
       headerName: "Action",

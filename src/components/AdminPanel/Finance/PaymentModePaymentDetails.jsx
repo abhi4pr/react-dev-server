@@ -89,6 +89,7 @@ const PaymentModePaymentDetails = () => {
               <option value="UPI">UPI</option>
               <option value="PayPal">PAYPAL</option>
               <option value="Kotak">KOTAK</option>
+              <option value="Credit Note">Credit Note</option>
             </select>
           </div>
           <div className="form-group">
