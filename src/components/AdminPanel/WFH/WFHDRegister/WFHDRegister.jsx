@@ -104,6 +104,10 @@ const WFHDRegister = ({ userUpdateID }) => {
   const [lastUpdated, setLastUpdated] = useState("");
 
   const [attStatus, setAttStatus] = useState("");
+  const [status, setStatus] = useState("Active");
+
+  const [subDepartmentData, setSubDepartmentData] = useState([]);
+  const [subDepartment, setSubDeparment] = useState("");
 
   const [isRequired, setIsRequired] = useState({
     username: false,
@@ -120,6 +124,7 @@ const WFHDRegister = ({ userUpdateID }) => {
     gender: false,
     dateOfBirth: false,
   });
+  const statusData = ["Active", "Exit", "PreOnboard"];
 
   useEffect(() => {
     if (userUpdateID)
@@ -151,17 +156,21 @@ const WFHDRegister = ({ userUpdateID }) => {
             alternate_contact,
             PersonalNumber,
             att_status,
+            sub_dept_id,
+            status,
           } = fetchedData;
 
           // console.log(Report_L2, "come to l2");
 
           setUserName(user_name);
           setDepartment(dept_id);
+          setSubDeparment(sub_dept_id);
           setDesignation(user_designation);
           setCity(permanent_city);
           setReportL1(Report_L1);
           setSalary(salary);
           setLoginId(user_login_id);
+          setStatus(status);
           // setJoiningDate(joining_date?.split("T")?.[0]);
           // setDateOfBirth(DOB?.split("T")?.[0]);
           setYearlySalary(ctc);
@@ -268,16 +277,22 @@ const WFHDRegister = ({ userUpdateID }) => {
   useEffect(() => {
     if (department) {
       axios
-        .get(baseUrl + `get_all_designations_by_deptId/${department}`)
+        .get(`${baseUrl}` + `get_subdept_from_dept/${department}`)
         .then((res) => {
-          setDesignationData(res.data.data);
-          // Set the default designation to the first option
-          if (res.data.data.length > 0) {
-            setDesignation(res.data.data[0].desi_id);
-          }
+          setSubDepartmentData(res.data);
         });
     }
   }, [department]);
+
+  useEffect(() => {
+    if (subDepartment) {
+      axios
+        .get(baseUrl + `get_all_designation/${subDepartment}`)
+        .then((res) => {
+          setDesignationData(res.data.data);
+        });
+    }
+  }, [subDepartment]);
 
   function validateAndCorrectUserName(userName) {
     // Remove extra white spaces and trim the userName
@@ -358,6 +373,26 @@ const WFHDRegister = ({ userUpdateID }) => {
       return toastError("Fill Required Field");
     } else if (!designation || designation == "") {
       return toastError("Fill Required Field");
+    } else if (!username || username == "") {
+      return toastError("Fill Required Field");
+    } else if (!department || department == "") {
+      return toastError("Fill Required Field");
+    } else if (!subDepartment || subDepartment == "") {
+      return toastError("Fill Required Field");
+    } else if (!city || city == "") {
+      return toastError("Fill Required Field");
+    } else if (!salary || salary == "") {
+      return toastError("Fill Required Field");
+    } else if (!yearlySalary || yearlySalary == "") {
+      return toastError("Fill Required Field");
+    } else if (!loginId || loginId == "") {
+      return toastError("Fill Required Field");
+    } else if (!password || password == "") {
+      return toastError("Fill Required Field");
+    } else if (!joiningDate || joiningDate == "") {
+      return toastError("Fill Required Field");
+    } else if (!dateOfBirth || dateOfBirth == "") {
+      return toastError("Fill Required Field");
     } else if (!gender || gender == "") {
       return toastError("Fill Required Field");
     } else if (!reportL1 || reportL1 == "") {
@@ -376,6 +411,7 @@ const WFHDRegister = ({ userUpdateID }) => {
 
     const payload = {
       dept_id: department,
+      sub_dept_id: subDepartment,
       permanent_city: city,
       created_by: loginUserId,
       user_name: validateAndCorrectUserName(username),
@@ -387,6 +423,7 @@ const WFHDRegister = ({ userUpdateID }) => {
       tds_per: tdsPercentage,
       user_login_id: loginId,
       user_login_password: password,
+      user_status: status,
       sitting_id: 183,
       room_id: 1,
       Gender: gender,
@@ -414,6 +451,7 @@ const WFHDRegister = ({ userUpdateID }) => {
       formData.append("user_id", userUpdateID);
     }
     formData.append("dept_id", department);
+    formData.append("sub_dept_id", subDepartment);
     formData.append("permanent_city", city);
     formData.append("created_by", loginUserId);
     formData.append("user_name", validateAndCorrectUserName(username));
@@ -441,6 +479,7 @@ const WFHDRegister = ({ userUpdateID }) => {
     formData.append("alternate_contact", contact); //contact all replace to alternate contact
     formData.append("personal_number", personalContact);
     formData.append("user_contact_no", personalContact);
+    formData.append("user_status", status);
 
     // formData.append("user_email_id", email);
     // formData.append("Personal_email", personalEmail);
@@ -943,6 +982,48 @@ const WFHDRegister = ({ userUpdateID }) => {
               {isRequired.department && (
                 <p className="form-error">Please Enter Department</p>
               )}
+            </div>
+
+            <div className="form-group col-3">
+              <label className="form-label">
+                Sub Department <sup className="form-error">*</sup>
+              </label>
+              <Select
+                className=""
+                options={subDepartmentData.map((option) => ({
+                  value: option.sub_dept_id,
+                  label: `${option.sub_dept_name}`,
+                }))}
+                value={{
+                  value: subDepartmentData,
+                  label:
+                    subDepartmentData.find(
+                      (user) => user.sub_dept_id === subDepartment
+                    )?.sub_dept_name || "",
+                }}
+                onChange={(e) => {
+                  setSubDeparment(e.value);
+
+                  // onBlur functionality
+                  if (e.value === "" || e.value === null) {
+                    setIsRequired((prevState) => ({
+                      ...prevState,
+                      subDepartment: true,
+                    }));
+                  } else {
+                    setIsRequired({
+                      ...prevState,
+                      subDepartment: false,
+                    });
+                  }
+                }}
+                required
+              />
+              <div className="">
+                {setIsRequired.subDepartment && (
+                  <p className="form-error">Please Enter Sub Department</p>
+                )}
+              </div>
             </div>
 
             <div className="form-group col-3">
@@ -1479,6 +1560,27 @@ const WFHDRegister = ({ userUpdateID }) => {
               {isRequired.gender && (
                 <p className="form-error">Please Enter Gender</p>
               )}
+            </div>
+
+            <div className="form-group col-3">
+              <label className="form-label">
+                Status <sup className="form-error">*</sup>
+              </label>
+              <Select
+                className=""
+                options={statusData.map((option) => ({
+                  value: `${option}`,
+                  label: `${option}`,
+                }))}
+                value={{
+                  value: status,
+                  label: `${status}`,
+                }}
+                onChange={(e) => {
+                  setStatus(e.value);
+                }}
+                required
+              />
             </div>
           </div>
         </div>
