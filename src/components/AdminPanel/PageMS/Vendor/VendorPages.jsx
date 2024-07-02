@@ -6,20 +6,27 @@ import { baseUrl } from "../../../../utils/config";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { Link } from "react-router-dom";
 import {
+  useGetAllVendorQuery,
   useGetPmsPlatformQuery,
 } from "../../../Store/reduxBaseURL";
 import PriceCheckIcon from "@mui/icons-material/PriceCheck";
 import {
-    useGetAllPageCategoryQuery,   
+    useGetAllPageCategoryQuery,
+    useGetOwnershipTypeQuery,   
   } from "../../../Store/PageBaseURL";
 
 function VendorPages({ vendorDetails }) {
   const { data: platData } = useGetPmsPlatformQuery();
   const { data: pageCate } = useGetAllPageCategoryQuery();
+  const {data:ownership}=useGetOwnershipTypeQuery();
   const token = sessionStorage.getItem("token");
   const cat = pageCate?.data;
   const platformData = platData?.data;
   const [vendorPages, setVendorPages] = useState([]);
+  const [user, setUser] = useState();
+
+  const { data: vendor } = useGetAllVendorQuery();
+  const vendorData = vendor?.data;
 
   useEffect(() => {
     axios
@@ -32,7 +39,6 @@ function VendorPages({ vendorDetails }) {
       .then((res) => {
         // const data = res.data.data;
         // setBankRows(data);
-        // console.log(res.data.data, res.status);
         setVendorPages(res.data.data);
       });
     // axios
@@ -40,9 +46,18 @@ function VendorPages({ vendorDetails }) {
     //   .then((res) => {
     //     // const data = res.data.data;
     //     // setBankRows(data);
-    //     console.log(res.data.data, res.status);
     //     // setVendorPages(res.data.data);
     //   });
+
+
+
+      axios.get(baseUrl + "get_all_users").then((res) => {
+        setUser(res.data.data);
+
+      });
+
+
+
   }, []);
 
   const dataGridcolumns = [
@@ -75,7 +90,9 @@ function VendorPages({ vendorDetails }) {
       width: 200,
       valueGetter: (params) => (params.row.status == 1 ? "Active" : "Inactive"),
     },
-    { field: "ownership_type", headerName: "Ownership", width: 200 },
+    { field: "ownership_type", headerName: "Ownership", width: 200,
+      valueGetter:({row})=>(row.ownership_type?ownership?.find(item=>item._id==row.ownership_type)?.company_type_name:"")
+     },
 
     {
       field: "platform_id",
@@ -95,7 +112,7 @@ function VendorPages({ vendorDetails }) {
         renderCell: (params) => {
           let name = cat?.find(
             (item) => item?._id == params.row?.page_category_id
-          )?.page_category;
+          )?.category_name;
           return <div>{name}</div>;
         },
     },
@@ -107,13 +124,14 @@ function VendorPages({ vendorDetails }) {
     {
       field: "vendor_id",
       headerName: "Vendor",
-      //   renderCell: (params) => {
-      //     let name = vendorData?.find(
-      //       (item) => item?._id == params.row?.vendor_id
-      //     )?.vendor_name;
+      renderCell: (params) => {
+        let name = vendorData?.find(
+          (item) => item?._id == params.row?.vendor_id
+        )?.vendor_name;
 
-      //     return <div>{name}</div>;
-      //   },
+        return <div>{name}</div>;
+      },
+      width: 200,
       width: 200,
     },
 
@@ -133,52 +151,52 @@ function VendorPages({ vendorDetails }) {
       field: "tags_page_category",
       headerName: "Tag Category",
       width: 200,
-      //   renderCell: (params) => {
-      //     let data = cat
-      //       .filter((item) => {
-      //         return params.row?.tags_page_category?.includes(item._id);
-      //       })
-      //       .map((item) => item.page_category);
-      //     return (
-      //       <div
-      //         style={{
-      //           width: "200px",
-      //           whiteSpace: "nowrap",
-      //           overflow: "hidden",
-      //           textOverflow: "ellipsis",
-      //         }}
-      //       >
-      //         {data?.map((item, i) => {
-      //           return (
-      //             <p
-      //               key={i}
-      //               onClick={handleTagCategory(data)}
-      //               style={{ display: "inline", cursor: "pointer" }}
-      //             >
-      //               {item}
-      //               {i !== data.length - 1 && ","}
-      //             </p>
-      //           );
-      //         })}
-      //       </div>
-      //     );
-      //   },
+      renderCell: (params) => {
+        let data = cat
+          ?.filter((item) => {
+            return params.row?.tags_page_category?.includes(item._id);
+          })
+          .map((item) => item.category_name);
+        return (
+          <div
+            style={{
+              width: "200px",
+              whiteSpace: "nowrap",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+            }}
+          >
+            {data?.map((item, i) => {
+              return (
+                <p
+                  key={i}
+                  // onClick={handleTagCategory(data)}
+                  style={{ display: "inline", cursor: "pointer" }}
+                >
+                  {item}
+                  {i !== data?.length - 1 && ","}
+                </p>
+              );
+            })}
+          </div>
+        );
+      },
     },
-    {
-      field: "engagment_rate",
-      headerName: "ER",
-      width: 200,
-    },
+    // {
+    //   field: "engagment_rate",
+    //   headerName: "ER",
+    //   width: 200,
+    // },
     {
       field: "page_closed_by",
       headerName: "Closed By",
       width: 200,
-      //   renderCell: (params) => {
-      //     let name = user?.find(
-      //       (item) => item?.user_id == params?.row?.page_closed_by
-      //     )?.user_name;
-      //     return <div>{name ?? "NA"}</div>;
-      //   },
+      renderCell: (params) => {
+        let name = user?.find(
+          (item) => item?.user_id == params?.row?.page_closed_by
+        )?.user_name;
+        return <div>{name ?? "NA"}</div>;
+      },
     },
     {
       field: "page_name_type",

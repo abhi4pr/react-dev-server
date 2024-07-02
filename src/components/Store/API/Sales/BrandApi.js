@@ -3,7 +3,7 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 const BrandApi = createApi({
   reducerPath: "brandApi",
   baseQuery: fetchBaseQuery({
-    baseUrl: "http://35.200.154.203:8080/api/insta_brand",
+    baseUrl: "https://insights.ist:8080/api/insta_brand",
   }),
   endpoints: (builder) => ({
     getAllBrand: builder.query({

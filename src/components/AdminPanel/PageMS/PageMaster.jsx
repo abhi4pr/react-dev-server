@@ -20,6 +20,7 @@ import {
 import PageAddMasterModal from "./PageAddMasterModal";
 import {
   useGetAllPageCategoryQuery,
+  useGetAllPageListQuery,
   useGetAllProfileListQuery,
   useGetMultiplePagePriceQuery,
   useGetOwnershipTypeQuery,
@@ -113,6 +114,15 @@ const PageMaster = () => {
     { page_price_type_id: "", price: "" },
   ]);
 
+  useEffect(() => {
+    if (rowCount.length > 0) {
+      let data = priceTypeList.filter(
+        (e) => !rowCount.map((e) => e.page_price_type_id).includes(e._id)
+      );
+      return setFilterPriceTypeList(data);
+    }
+  }, [rowCount]);
+
   const dispatch = useDispatch();
 
   const { data: ownerShipData } = useGetOwnershipTypeQuery();
@@ -128,11 +138,9 @@ const PageMaster = () => {
   const { data: vendor } = useGetAllVendorQuery();
 
   const vendorData = vendor?.data || [];
-  const {
-    data: singlePageData,
-    isLoading: singlePageLoading,
-    refetch: refetchSiglePageData,
-  } = useGetPageByIdQuery(pageMast_id ? pageMast_id : null);
+  const { data: singlePageData, isLoading: singlePageLoading } =
+    useGetPageByIdQuery(pageMast_id ? pageMast_id : null);
+  const { refetch: refetchPageList } = useGetAllPageListQuery();
 
   const { data: priceData, isLoading: isPriceLoading } =
     useGetMultiplePagePriceQuery(pageMast_id ? pageMast_id : null);
@@ -191,24 +199,44 @@ const PageMaster = () => {
         label: e?.category_name,
       }));
       setTag(tagData);
+
+      let story = singlePageData?.story;
+      let post = singlePageData?.post;
+      let both_ = singlePageData?.both_;
+
+      setRowCount(
+[          {
+            page_price_type_id: "667e6c7412fbbf002179f6d6",
+            price: post,
+
+          },
+          {
+            page_price_type_id: "667e6c9112fbbf002179f72c",
+            price: story,
+          },
+          {
+            page_price_type_id: "667e6c9c12fbbf002179f72f",
+            price: both_,
+          },]
+      )
     }
   }, [singlePageLoading]);
 
-  useEffect(() => {
-    if (!isPriceLoading && pageMast_id) {
-      setRowCount(
-        priceData?.map((e) => ({
-          page_price_type_id: e.page_price_type_id,
-          price: e.price,
-        }))
-      );
-    }
-  }, [priceData]);
+  // useEffect(() => {
+  //   if (!isPriceLoading && pageMast_id && priceData.length > 0) {
+  //     setRowCount(
+  //       priceData?.map((e) => ({
+  //         page_price_type_id: e.page_price_type_id,
+  //         price: e.price,
+  //       }))
+  //     );
+  //   }
+  // }, [priceData]);
 
   const PageLevels = [
     { value: "Level 1 (High)", label: "Level 1 (High)" },
     { value: "Level 2 (Medium)", label: "Level 2 (Medium)" },
-    { value: "Level 3 Level 3 (Low)", label: "Level 3 Level 3 (Low)" },
+    { value: "Level 3 (Low)", label: "Level 3 (Low)" },
   ];
 
   const PageStatus = [
@@ -285,22 +313,34 @@ const PageMaster = () => {
     setPrimary(selectedOption);
   };
   useEffect(() => {
-    if (platformId) {
-      setPriceTypeList([]);
-      let priceData = platformData.find((role) => role._id == platformId)?._id;
-      axios
-        .get(baseUrl + `v1/pagePriceTypesForPlatformId/${priceData}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json", // Adjust content type as needed
-          },
-        })
-        .then((res) => {
-          setPriceTypeList(res.data.data);
-          setFilterPriceTypeList(res.data.data);
-        });
-    }
-  }, [platformId]);
+    // if (platformId) {
+    //   setPriceTypeList([]);
+    //   let priceData = platformData.find((role) => role._id == platformId)?._id;
+    //   axios
+    //     .get(baseUrl + `v1/pagePriceTypesForPlatformId/${priceData}`, {
+    //       headers: {
+    //         Authorization: `Bearer ${token}`,
+    //         "Content-Type": "application/json", // Adjust content type as needed
+    //       },
+    //     })
+    //     .then((res) => {
+    //       setPriceTypeList(res.data.data);
+    //       setFilterPriceTypeList(res.data.data);
+    //     });
+    // }
+
+    axios
+      .get(baseUrl + `v1/pagePriceType`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json", // Adjust content type as needed
+        },
+      })
+      .then((res) => {
+        setPriceTypeList(res.data.data);
+        setFilterPriceTypeList(res.data.data);
+      });
+  }, []);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -406,7 +446,18 @@ const PageMaster = () => {
       rate_type: rateType.value,
       variable_type: rateType.value == "Variable" ? variableType.value : null,
       page_price_multiple: rowCount,
+
       primary_page: primary.value,
+      post: rowCount.find(
+        (e) => e.page_price_type_id == "667e6c7412fbbf002179f6d6"
+      ).price??0,
+      story: rowCount.find(
+        (e) => e.page_price_type_id == "667e6c9112fbbf002179f72c"
+      ).price??0,
+      "both_": rowCount.find(
+        (e) => e.page_price_type_id == "667e6c9c12fbbf002179f72f"
+      ).price??0,
+
     };
     if (pageMast_id) {
       payload.last_updated_by = userID;
@@ -419,9 +470,9 @@ const PageMaster = () => {
           },
         })
         .then(() => {
-          setIsFormSubmitted(true);
-          refetchSiglePageData();
+          refetchPageList();
           toastAlert(" Data Updated Successfully");
+          setIsFormSubmitted(true);
         })
         .catch((error) => {
           toastError(error.response.data.message);
@@ -435,6 +486,7 @@ const PageMaster = () => {
           },
         })
         .then(() => {
+          refetchPageList();
           setIsFormSubmitted(true);
           toastAlert(" Data Submitted Successfully");
         })
@@ -467,7 +519,7 @@ const PageMaster = () => {
     } else if (value >= 1000) {
       return `${(value / 1000).toFixed(2)}k`;
     } else {
-      return value.toString();
+      return value?.toString();
     }
   };
   const formatString = (s) => {
@@ -497,17 +549,17 @@ const PageMaster = () => {
   // const FollowerCountCalcualtion = (followCount / val) * rowCount[0]?.price;
   const calculateFollowerCount = (index) => {
     const val = variableType.value === "Per Thousand" ? 1000 : 1000000;
-    return (followCount / val) * rowCount[index]?.price;
+    return ((followCount / val) * (rowCount[index]?.price || 0)).toFixed(2);
   };
 
   const handleFilterPriceType = () => {
     let filteredData = priceTypeList.filter((row) => {
       // Check if row's page_price_type_id exists in priceTypeList
-      return !rowCount.some(
-        (e) => e.page_price_type_id == row.page_price_type_id
+      let data = filterPriceTypeList.filter(
+        (e) => !rowCount.map((e) => e.page_price_type_id).includes(e._id)
       );
     });
-    setFilterPriceTypeList(filteredData);
+    // setFilterPriceTypeList(filteredData);
   };
 
   const val = variableType.value === "Per Thousand" ? 1000 : 1000000;
@@ -860,7 +912,7 @@ const PageMaster = () => {
                     if (e.value) {
                       setValidateFields((prev) => ({
                         ...prev,
-                        categoryId: false,
+                        ownerType: false,
                       }));
                     }
                   }}
@@ -1110,7 +1162,7 @@ const PageMaster = () => {
             <div className="col-md-6 mb16">
               <div className="form-group m0">
                 <label className="form-label">
-                  Platform Name <sup style={{ color: "red" }}>*</sup>
+                  Platform ID <sup style={{ color: "red" }}>*</sup>
                 </label>
                 <Select
                   options={platformData.map((option) => ({
@@ -1208,7 +1260,7 @@ const PageMaster = () => {
                         }}
                         onChange={(e) => handlePriceTypeChange(e, index)}
                       />
-                      <IconButton
+                      {/* <IconButton
                         onClick={handleOpenPageModal("Price Type")}
                         variant="contained"
                         color="primary"
@@ -1223,7 +1275,7 @@ const PageMaster = () => {
                         aria-label="Price Type Info.."
                       >
                         <InfoIcon />
-                      </IconButton>
+                      </IconButton> */}
                     </div>
                   </div>
                 </div>
@@ -1240,7 +1292,7 @@ const PageMaster = () => {
                   {rateType.label == "Variable" && (
                     <p className="ml-3" style={{ color: "blue" }}>
                       This Page Cost ={" "}
-                      {calculateFollowerCount(index.toFixed(0))}
+                      {calculateFollowerCount(index.toFixed(0))} {"  RS "}
                     </p>
                   )}
                 </div>
@@ -1252,8 +1304,8 @@ const PageMaster = () => {
                       type="button"
                       onClick={() => {
                         setRowCount(
-                          (prev) => prev.filter((e, i) => i !== index),
-                          handleFilterPriceType()
+                          (prev) => prev.filter((e, i) => i !== index)
+                          // handleFilterPriceType()
                         );
                       }}
                     >

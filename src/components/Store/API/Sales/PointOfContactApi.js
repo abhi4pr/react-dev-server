@@ -8,7 +8,7 @@ const PointOfContactApi = createApi({
     getSinglePOC: builder.query({
       query: (id) => `accounts/get_account_poc/${id}`,
       transformResponse: (response) => response.data,
-      keepUnusedDataFor: 3600,
+      keepUnusedDataFor: 0,
     }),
 
     editPOC: builder.mutation({
@@ -17,7 +17,7 @@ const PointOfContactApi = createApi({
         method: "PUT",
         body: updatedPOC,
       }),
-      keepUnusedDataFor: 3600,
+      keepUnusedDataFor: 0,
     }),
   }),
 });

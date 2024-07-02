@@ -3,7 +3,7 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 const GetGstDetailApi = createApi({
   reducerPath: "GetGstDetailApi",
   baseQuery: fetchBaseQuery({
-    baseUrl: "http://35.200.154.203:8080", // Set your actual base URL here
+    baseUrl: "https://insights.ist:8080", // Set your actual base URL here
     prepareHeaders: (headers) => {
       headers.set(
         "Authorization",
