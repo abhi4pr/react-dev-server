@@ -7,25 +7,16 @@ import { baseUrl } from "../../../utils/config";
 import jwtDecode from "jwt-decode";
 import { Navigate } from "react-router";
 import Select from "react-select";
-import authBaseQuery from "../../../utils/authBaseQuery";
 import {
   Autocomplete,
   Box,
   Button,
   Checkbox,
-  FormControl,
   FormControlLabel,
-  FormLabel,
-  Grid,
   IconButton,
-  InputLabel,
-  MenuItem,
-  Radio,
-  RadioGroup,
   Stack,
   TextField,
 } from "@mui/material";
-import CloseIcon from "@mui/icons-material/Close";
 import AddIcon from "@mui/icons-material/Add";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -35,13 +26,18 @@ import {
 } from "./../../Store/VendorMaster";
 import AddVendorModal from "./AddVendorModal";
 import {
+  useAddCompanyDataMutation,
+  useAddVendorDocumentMutation,
+  useAddVendorMutation,
   useGetAllVendorTypeQuery,
   useGetBankNameDetailQuery,
   useGetCountryCodeQuery,
   useGetPmsPayCycleQuery,
   useGetPmsPaymentMethodQuery,
   useGetPmsPlatformQuery,
+  useGetVendorDocumentByVendorDetailQuery,
   useGetVendorWhatsappLinkTypeQuery,
+  useUpdateVenodrMutation,
 } from "../../Store/reduxBaseURL";
 
 import VendorTypeInfoModal from "./VendorTypeInfoModal";
@@ -52,11 +48,11 @@ import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
 import IndianStatesMui from "../../ReusableComponents/IndianStatesMui";
 import IndianCitiesMui from "../../ReusableComponents/IndianCitiesMui";
 import { useGstDetailsMutation } from "../../Store/API/Sales/GetGstDetailApi";
+import formatString from "../Operation/CampaignMaster/WordCapital";
 
 const VendorMaster = () => {
-  const { data: countryCodeData } = useGetCountryCodeQuery();
-
-  const countries = countryCodeData?.data;
+  const { data: countries, isLoading: isCountriesLoading } =
+    useGetCountryCodeQuery();
 
   const token = sessionStorage.getItem("token");
   const decodedToken = jwtDecode(token);
@@ -76,10 +72,6 @@ const VendorMaster = () => {
   const [mobile, setMobile] = useState("");
   const [altMobile, setAltMobile] = useState("");
   const [email, setEmail] = useState("");
-  // const [perAddress, setPerAddress] = useState("");
-  const [pan, setPan] = useState("");
-  const [panImage, setPanImage] = useState("");
-  const [gstImage, setGstImage] = useState("");
   const [gst, setGst] = useState("");
   const [compName, setCompName] = useState("");
   const [compAddress, setCompAddress] = useState("");
@@ -94,22 +86,22 @@ const VendorMaster = () => {
   const [homeState, setHomeState] = useState("");
   const [typeId, setTypeId] = useState("");
   const [platformId, setPlatformId] = useState("");
-  const [payId, setPayId] = useState("");
-  const [bankNameId, setBankNameId] = useState("");
   const [cycleId, setCycleId] = useState("");
   const [emailIsInvalid, setEmailIsInvalid] = useState(false);
-  const [gstApplicable, setGstApplicable] = useState("No");
   const [vendorCategory, setVendorCategory] = useState("Theme Page");
   const [whatsappLink, setWhatsappLink] = useState([]);
-
   const [docDetails, setDocDetails] = useState([]);
   const [sameAsPrevious, setSameAsPrevious] = useState(false);
   const [mobileValid, setMobileValid] = useState(false);
+  const [userData, setUserData] = useState([]);
+  const [userId, setUserId] = useState("");
+  const [company_id, setCompany_id] = useState("");
 
-  const [getGstDetails, { dd, error, isLoading }] = useGstDetailsMutation();
+  const [getGstDetails] = useGstDetailsMutation();
 
   const [bankRows, setBankRows] = useState([
     {
+      payment_method: "",
       bank_name: "",
       account_type: "",
       account_number: "",
@@ -141,8 +133,7 @@ const VendorMaster = () => {
 
   const { data: platformData } = useGetPmsPlatformQuery();
 
-  const { data } = useGetPmsPaymentMethodQuery();
-  const payData = data?.data;
+  const { data: payData } = useGetPmsPaymentMethodQuery();
 
   const { data: cycleQueryData } = useGetPmsPayCycleQuery();
 
@@ -151,6 +142,11 @@ const VendorMaster = () => {
 
   const { data: bankNameData } = useGetBankNameDetailQuery();
   const bankName = bankNameData?.data;
+
+  const [addVendor]=useAddVendorMutation();
+  const [addCompanyData]=useAddCompanyDataMutation();
+  const[addVendorDocument]=useAddVendorDocumentMutation();
+  const [updateVendor]=useUpdateVenodrMutation();
 
   useEffect(() => {
     if (gst?.length === 15) {
@@ -286,45 +282,46 @@ const VendorMaster = () => {
     dispatch(setModalType("WhatsappLinkType"));
   };
 
+  const { data: venodrDocuments, isLoading: isVendorDocumentsLoading } =
+    useGetVendorDocumentByVendorDetailQuery(_id);
+
   useEffect(() => {
+    axios.get(baseUrl + "get_all_users").then((res) => {
+      setUserData(res.data.data);
+    });
+
     if (_id) {
-      axios.get(baseUrl + `v1/vendor/${_id}`).then((res) => {
-        const data = res.data.data;
-        setVendorName(data.vendor_name);
-        setCountryCode(data.country_code);
-        setMobile(data.mobile);
-        setAltMobile(data.alternate_mobile);
-        setEmail(data.email);
-        // setPerAddress(data.personal_address);
-        setPan(data.pan_no);
-        setPanImage(data?.pan_image_url);
-        setGstImage(data?.gst_image_url);
-        setGst(data.gst_no);
-        setCompName(data.company_name);
-        setCompAddress(data.company_address);
-        setCompCity(data.company_city);
-        setCompPin(data.company_pincode);
-        setCompState(data.company_state);
-        setLimit(data.threshold_limit);
-        setHomeAddress(data.home_address);
-        setHomeCity(data.home_city);
-        setHomeState(data.home_state);
-        setTypeId(data.vendor_type);
-        setPlatformId(data.vendor_platform);
-        setPayId(data.payment_method);
-        setCycleId(data.pay_cycle);
-        setBankNameId(data.bank_name);
-        setHomePincode(data.home_pincode);
-        // setPanImglink(data.upload_pan_image);
-        // setGstImage(data.upload_gst_image);
-        // setBankName(data.bank_name);
-        // setAccountType(data.account_type);
-        // setAccountNo(data.account_no);
-        // setIfscCode(data.ifsc_code);
-        // setUpiId(data.upi_id);
-        // setWhatsappLink(data.whatsapp_link);
-        setVendorCategory(data.vendor_category);
-      });
+      axios
+        .get(baseUrl + `v1/vendor/${_id}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        })
+        .then((res) => {
+          const data = res.data.data;
+          setUserId(data?.closed_by);
+          setVendorName(data?.vendor_name);
+          setCountryCode(data?.country_code);
+          setMobile(data?.mobile);
+          setAltMobile(data?.alternate_mobile);
+          setEmail(data?.email);
+          setGst(data?.gst_no);
+          setCompName(data?.company_name);
+          setCompAddress(data?.company_address);
+          setCompCity(data?.company_city);
+          setCompPin(data?.company_pincode);
+          setCompState(data?.company_state);
+          setLimit(data?.threshold_limit);
+          setHomeAddress(data?.home_address);
+          setHomeCity(data?.home_city);
+          setHomeState(data?.home_state);
+          setTypeId(data?.vendor_type);
+          setPlatformId(data?.vendor_platform);
+          setCycleId(data?.pay_cycle);
+          setHomePincode(data?.home_pincode);
+          setVendorCategory(data?.vendor_category??"Theme Page");
+        });
 
       axios
         .get(baseUrl + `v1/bank_details_by_vendor_id/${_id}`, {
@@ -349,8 +346,41 @@ const VendorMaster = () => {
           const data = res.data?.data;
           setWhatsappLink(data);
         });
+
+      axios
+        .get(baseUrl + `v1/company_name_wise_vendor/${_id}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json", // Adjust content type as needed
+          },
+        })
+        .then((res) => {
+          const data = res.data.data;
+          setCompany_id(data?._id);
+          console.log(data, "data");
+          setCompName(data?.company_name);
+          setCompAddress(data?.address);
+          setCompCity(data?.city);
+          setCompPin(data?.pincode);
+          setCompState(data?.state);
+          setLimit(data?.threshold_limit);
+        });
     }
   }, [_id]);
+
+  useEffect(() => {
+    if (venodrDocuments?.length > 0 && !isVendorDocumentsLoading) {
+      let doc = venodrDocuments?.map((doc) => {
+        return {
+          docName: doc.document_name,
+          docNumber: doc.document_no,
+          docImage: doc.document_image_upload,
+        };
+      });
+      console.log(doc, "doc");
+      setDocDetails(doc);
+    }
+  }, [venodrDocuments]);
   const addLink = () => {
     setWhatsappLink([
       ...whatsappLink,
@@ -367,19 +397,35 @@ const VendorMaster = () => {
       {
         docName: "",
         docNumber: "",
+        document_image_upload: "",
       },
     ]);
   };
+
   const handleDocNameChange = (index, newValue) => {
-    let link = [...docDetails];
-    link[index].link = newValue;
-    setDocDetails(link);
+    let doc = [...docDetails];
+    doc[index].docName = newValue;
+    setDocDetails(doc);
   };
+
   const handleDocNumberChange = (i, value) => {
-    const remark = [...docDetails];
-    remark[i].docDetails = value;
-    setDocDetails(remark);
+    if (value.length > 12) {
+      alert("Document Number cannot exceed 12 digits");
+      return;
+    }
+
+    let doc = [...docDetails];
+    doc[i].docNumber = value;
+    setDocDetails(doc);
   };
+  const handleDocImageChange = (i, e) => {
+    const file = e.target.files[0];
+
+    let doc = [...docDetails];
+    doc[i].docImage = file;
+    setDocDetails(doc);
+  };
+
   const removedocLink = (index) => {
     return () => {
       const updatedLinks = docDetails?.filter((link, i) => i !== index);
@@ -391,6 +437,7 @@ const VendorMaster = () => {
     setBankRows([
       ...bankRows,
       {
+        payment_method: "",
         bank_name: "",
         account_type: "",
         account_number: "",
@@ -481,21 +528,15 @@ const VendorMaster = () => {
     return setEmailIsInvalid(true);
   };
 
-  const handlePanChange = (e) => {
-    if (e.target.value.length > 13) return;
-    const inputValue = e.target.value.toUpperCase();
-    setPan(inputValue);
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!vendorName || vendorName == "" || vendorName == null) {
       setValidator((prev) => ({ ...prev, vendorName: true }));
     }
-    if (!countryCode) {
-      setValidator((prev) => ({ ...prev, countryCode: true }));
-    }
+    // if (!countryCode) {
+    //   setValidator((prev) => ({ ...prev, countryCode: true }));
+    // }
     if (!mobile) {
       setValidator((prev) => ({ ...prev, mobile: true }));
     }
@@ -509,9 +550,6 @@ const VendorMaster = () => {
     if (!platformId) {
       setValidator((prev) => ({ ...prev, platformId: true }));
     }
-    if (!payId) {
-      setValidator((prev) => ({ ...prev, payId: true }));
-    }
     if (!cycleId) {
       setValidator((prev) => ({ ...prev, cycleId: true }));
     }
@@ -520,67 +558,27 @@ const VendorMaster = () => {
       toastError("Please enter a valid email");
       return;
     }
-    // if (gstApplicable === "Yes" && !gst) {
-    //   setValidator((prev) => ({ ...prev, gst: true }));
-    // }
     if (
       !vendorName ||
-      !countryCode ||
+      // !countryCode ||
       !mobile ||
       !email ||
       !typeId ||
       !platformId ||
-      !payId ||
       !cycleId
-      // ||
-      // (gstApplicable === "Yes" && !gst)
-      // ||
-      // (whatsappLink.length > 0 && !whatsappLink[0].link) ||
-      // (whatsappLink.length > 0 && !whatsappLink[0].type)
     ) {
       toastError("Please fill all the mandatory fields");
       return;
     }
-    // const formData = new FormData();
-    // formData.append("vendor_name", vendorName);
-    // formData.append("country_code", countryCode);
-    // formData.append("mobile", mobile);
-    // formData.append("alternate_mobile", altMobile);
-    // formData.append("email", email);
-    // formData.append("vendor_type", typeId);
-    // formData.append("vendor_platform", platformId);
-    // formData.append("payment_method", payId);
-    // formData.append("pay_cycle", cycleId);
-    // formData.append("pan_no", pan);
-    // formData.append("pan_image", panImage);
-    // formData.append("gst_no", gst);
-    // formData.append("gst_image", gstImage);
-    // formData.append("company_name", compName);
-    // formData.append("company_address", compAddress);
-    // formData.append("company_city", compCity);
-    // formData.append("company_pincode", compPin);
-    // formData.append("company_state", compState);
-    // formData.append("threshold_limit", limit);
-    // formData.append("home_address", homeAddress);
-    // formData.append("home_city", homeCity);
-    // formData.append("home_state", homeState);
-    // formData.append("home_pincode", homePincode);
-    // formData.append("created_by", userID);
-    // formData.append("vendor_category", vendorCategory);
     const formData = {
-      vendor_name: vendorName,
+      vendor_name: vendorName.toLowerCase().trim(),
       country_code: countryCode,
       mobile: mobile,
       alternate_mobile: altMobile,
       email: email,
       vendor_type: typeId,
       vendor_platform: platformId,
-      payment_method: payId,
       pay_cycle: cycleId,
-      // pan_no: pan,
-      // pan_image: panImage,
-      // gst_no: gst,
-      // gst_image: gstImage,
       company_name: compName,
       company_address: compAddress,
       company_city: compCity,
@@ -593,31 +591,84 @@ const VendorMaster = () => {
       home_pincode: homePincode,
       created_by: userID,
       vendor_category: vendorCategory,
-      bank_details: JSON.stringify(bankRows),
+      bank_details: bankRows,
+      vendorLinks: whatsappLink,
+      closed_by: userId,
     };
-    // formData.append("bank_details", JSON.stringify(bankRows));
-    // formData.append("vendorLinks", JSON.stringify(whatsappLink));
 
     if (!_id) {
       setIsFormSubmitting(true);
-      await axios
-        .post(baseUrl + "v1/vendor", formData, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json", // Adjust content type as needed
-          },
-        })
+      // await axios
+      //   .post(baseUrl + "v1/vendor", formData, {
+      //     headers: {
+      //       Authorization: `Bearer ${token}`,
+      //       "Content-Type": "application/json", 
+      //     },
+      //   })
+      addVendor(formData)
         .then((res) => {
           setIsFormSubmitted(true);
           toastAlert("Data Submitted Successfully");
-          isFormSubmitting(false);
+          setIsFormSubmitting(false);
           const resID = res.data.data._id;
-          axios.post(baseUrl + `document_detail`, {
-            vendor_id: resID,
-            // document_name: docName,
-            // document_no: docNumber,
-            documnet: JSON.stringify(docDetails),
+          // axios.post(
+          //   baseUrl + "v1/company_name",
+          //   {
+          //     vendor_id: resID,
+          //     company_name: compName,
+          //     address: compAddress,
+          //     city: compCity,
+          //     pincode: compPin,
+          //     state: compState,
+          //     threshold_limit: limit,
+          //     created_by: userID,
+          //   },
+          //   {
+          //     headers: {
+          //       Authorization: `Bearer ${token}`,
+          //     },
+          //   }
+          // );
+          addCompanyData(  {   vendor_id: resID,
+            company_name: compName,
+            address: compAddress,
+            city: compCity,
+            pincode: compPin,
+            state: compState,
+            threshold_limit: limit,
+            created_by: userID,
+          }).then((res) => {  
+            // console.log(res.data, "res");
+            toastAlert("company name added successfully")
+          }).catch((err) => {
+            toastError(err.message);
           });
+
+          for (let i = 0; i < docDetails.length; i++) {
+            const formData = new FormData();
+            formData.append("vendor_id", resID);
+            formData.append("document_name", docDetails[i].docName);
+            formData.append("document_no", docDetails[i].docNumber);
+            formData.append("document_image_upload", docDetails[i].docImage);
+            // axios
+            //   .post(baseUrl + "v1/document_detail", formData, {
+            //     headers: {
+            //       "Content-Type": "multipart/form-data",
+            //       Authorization: `Bearer ${token}`,
+            //     },
+            //   })
+            //   .catch((err) => {
+            //     console.log(err.message, "err")
+            //     toastError(err.message);
+            //   });
+            addVendorDocument(formData).then((res) => {
+              toastAlert("Document added successfully")
+            }
+            ).catch((err) => {
+              toastError(err.message);
+            }
+            );
+          }
         })
         .catch((err) => {
           toastError(err.message);
@@ -625,22 +676,72 @@ const VendorMaster = () => {
         });
     } else {
       setIsFormSubmitting(true);
-      const res = axios
-        .put(baseUrl + `v1/vendor/${_id}`, formData, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json", // Adjust content type as needed
-          },
-        })
+      // axios
+      //   .put(baseUrl + `v1/vendor/${_id}`, formData, {
+      //     headers: {
+      //       Authorization: `Bearer ${token}`,
+      //       "Content-Type": "application/json", 
+      //     },
+      //   })
+      formData._id=_id
+      updateVendor(formData).unwrap()
         .then(() => {
+
           toastAlert("Data Updated Successfully");
+          console.log("Vendor updated")
+          for (let i = 0; i < docDetails?.length; i++) {
+            const formData = new FormData();
+
+            formData.append("document_name", docDetails[i].docName);
+            formData.append("document_no", docDetails[i].docNumber);
+            formData.append("document_image_upload", docDetails[i].docImage);
+            axios
+              .put(
+                baseUrl + `v1/document_detail/${venodrDocuments[i]?._id}`,
+                formData,
+                {
+                  headers: {
+                    "Content-Type": "multipart/form-data",
+                    Authorization: `Bearer ${token}`,
+                  },
+                }
+              )
+              .catch((err) => {
+                toastError(err.message);
+              });
+          }
+          if (company_id) {
+          axios
+            .put(
+              baseUrl + `v1/company_name/${company_id}`,
+              {
+                company_name: compName,
+                address: compAddress,
+                city: compCity,
+                pincode: compPin,
+                state: compState,
+                threshold_limit: limit,
+                created_by: userID,
+              },
+              {
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                },
+              }
+            )
+            .then((res) => {
+            })
+            .catch((err) => {
+              toastError(err.message);
+            });
+          }
           setIsFormSubmitted(true);
           setIsFormSubmitting(false);
         })
         .catch((err) => {
-          console.log(err);
           toastError(err.message);
           setIsFormSubmitting(false);
+          console.log(err, "err");
         });
     }
   };
@@ -662,20 +763,20 @@ const VendorMaster = () => {
     }
   };
 
-  const gstOptions = [
-    {
-      label: "Yes",
-      value: "Yes",
-    },
-    {
-      label: "No",
-      value: "No",
-    },
-  ];
+  const docOptions = ["Pan card", "GST"];
+  // const copyOptions= docOptions;
+  const [copyOptions, setCopyOptions] = useState(docOptions);
 
-  // if (isFormSubmitted) {
-  //   return <Navigate to="/admin/pms-vendor-overview" />;
-  // }
+  useEffect(() => {
+    let data = docOptions.filter((e) => {
+      return !docDetails.map((e) => e.docName).includes(e);
+    });
+    setCopyOptions(data);
+  }, [docDetails.map((e) => e.docName)]);
+
+  if (isFormSubmitted) {
+    return <Navigate to="/admin/pms-vendor-overview" />;
+  }
   return (
     <>
       <FormContainer
@@ -695,7 +796,7 @@ const VendorMaster = () => {
               <FieldContainer
                 label="Vendor Name "
                 fieldGrid={12}
-                value={vendorName}
+                value={formatString(vendorName)}
                 astric={true}
                 required={true}
                 onChange={(e) => {
@@ -961,7 +1062,7 @@ const VendorMaster = () => {
               )}
             </div>
 
-            <div className="form-group col-6">
+            {/* <div className="form-group col-6">
               <label className="form-label">
                 Payment Method <sup style={{ color: "red" }}>*</sup>
               </label>
@@ -1003,16 +1104,72 @@ const VendorMaster = () => {
               >
                 <RemoveRedEyeIcon />
               </IconButton>
-              {validator.payId && (
+              {validator.payment_method && (
                 <span style={{ color: "red", fontSize: "12px" }}>
                   Please select payment method
                 </span>
               )}
-            </div>
+            </div> */}
 
-            {bankRows.map((row, i) => (
+            {bankRows?.map((row, i) => (
               <>
-                {payId == "666856874366007df1dfacde" && (
+                <div className="form-group col-6">
+                  <label className="form-label">
+                    Payment Method <sup style={{ color: "red" }}>*</sup>
+                  </label>
+                  <Select
+                    options={payData?.map((option) => ({
+                      value: option._id,
+                      label: option.payMethod_name,
+                    }))}
+                    required={true}
+                    value={{
+                      // value: payId,
+                      // label:
+                      //   payData?.find((role) => role._id == payId)
+                      //     ?.payMethod_name || "",
+                      value: bankRows[i].payment_method,
+                      label:
+                        payData?.find(
+                          (role) => role._id == bankRows[i].payment_method
+                        )?.payMethod_name || "",
+                    }}
+                    onChange={(e) => {
+                      // setPayId(e.value);
+                      // setShowBankName(e.value === "specific_payment_method_id"); // Set condition for showing bank name
+                      let updatedRows = [...bankRows];
+                      updatedRows[i].payment_method = e.value;
+                      setBankRows(updatedRows);
+
+                      if (e.value) {
+                        setValidator((prev) => ({ ...prev, payId: false }));
+                      }
+                    }}
+                  ></Select>
+                  <IconButton
+                    onClick={handleAddPaymentMethodClick}
+                    variant="contained"
+                    color="primary"
+                    aria-label="Add Payment Method.."
+                  >
+                    <AddIcon />
+                  </IconButton>
+                  <IconButton
+                    onClick={handlePaymentMethodInfoClick}
+                    variant="contained"
+                    color="primary"
+                    aria-label="Payment Method Info.."
+                  >
+                    <RemoveRedEyeIcon />
+                  </IconButton>
+                  {validator.payment_method && (
+                    <span style={{ color: "red", fontSize: "12px" }}>
+                      Please select payment method
+                    </span>
+                  )}
+                </div>
+
+                {bankRows[i].payment_method == "666856874366007df1dfacde" && (
                   <>
                     <div className="form-group col-6">
                       <label className="form-label">
@@ -1026,13 +1183,17 @@ const VendorMaster = () => {
                         }))}
                         required={true}
                         value={{
-                          value: bankNameId,
+                          // value: bankNameId,
+                          value: bankRows[i].bank_name,
                           label:
-                            bankName?.find((role) => role._id == bankNameId)
-                              ?.bank_name || "",
+                            // bankName?.find((role) => role._id == bankNameId)
+                            bankName?.find(
+                              (role) => role._id == bankRows[i].bank_name
+                            )?.bank_name || "",
                         }}
                         onChange={(e) => {
-                          setBankNameId(e.value);
+                          // setBankNameId(e.value);
+                          bankRows[i].bank_name = e.value;
                           if (e.value) {
                             setValidator((prev) => ({
                               ...prev,
@@ -1093,7 +1254,7 @@ const VendorMaster = () => {
                     />
                   </>
                 )}
-                {payId == "666856754366007df1dfacd2" && (
+                {bankRows[i].payment_method == "666856754366007df1dfacd2" && (
                   <FieldContainer
                     required={false}
                     label="UPI ID "
@@ -1102,8 +1263,8 @@ const VendorMaster = () => {
                   />
                 )}
 
-                {(payId == "66681c3c4366007df1df1481" ||
-                  payId == "666856624366007df1dfacc8") && (
+                {(bankRows[i].payment_method == "66681c3c4366007df1df1481" ||
+                  bankRows[i].payment_method == "666856624366007df1dfacc8") && (
                   <FieldContainer
                     label={"Registered Mobile Number"}
                     value={bankRows[i].registered_number}
@@ -1188,7 +1349,29 @@ const VendorMaster = () => {
               )}
             </div>
 
-            <FieldContainer
+            <div className="col-md-6">
+              <label className="form-label">Closed By</label>
+              <Select
+                className=""
+                options={userData?.map((option) => ({
+                  value: option.user_id,
+                  label: `${option.user_name}`,
+                }))}
+                value={{
+                  value: userId,
+                  label:
+                    userData.find((user) => user.user_id === userId)
+                      ?.user_name || "",
+                }}
+                onChange={(e) => {
+                  setUserId(e.value);
+                  console.log(e.value, "e.value");
+                }}
+                required={false}
+              />
+            </div>
+
+            {/* <FieldContainer
               label="PAN"
               value={pan}
               cols={12}
@@ -1220,9 +1403,9 @@ const VendorMaster = () => {
                   style={{ width: "50px", height: "50px" }}
                 />
               )}
-            </div>
+            </div> */}
 
-            <div className="form-group col-6">
+            {/* <div className="form-group col-6">
               <label className="form-label">GST Applicable</label>
               <Select
                 options={gstOptions.map((option) => ({
@@ -1277,7 +1460,7 @@ const VendorMaster = () => {
                   )}
                 </div>
               </>
-            )}
+            )} */}
 
             <div className="card-header">Personal Details</div>
             <div className="card-body row">
@@ -1297,9 +1480,13 @@ const VendorMaster = () => {
                   sx={{ width: 300 }}
                   options={countries}
                   required={true}
-                  value={countries?.find(
-                    (option) => option.phone === countryCode || null
-                  )}
+                  value={
+                    (!isCountriesLoading &&
+                      countries?.find(
+                        (option) => option?.phone == countryCode
+                      )) ||
+                    null
+                  }
                   onChange={(e, val) => {
                     setCountryCode(val ? val.phone : null);
                     if (val ? val.phone : null) {
@@ -1351,7 +1538,7 @@ const VendorMaster = () => {
                   </span>
                 )} */}
               </div>
-              {countryCode === "91" ? (
+              {countryCode == "91" ? (
                 <div className=" row">
                   <div className="form-group col-6">
                     <label className="form-label">Home State</label>
@@ -1367,7 +1554,11 @@ const VendorMaster = () => {
                     <IndianCitiesMui
                       selectedState={homeState}
                       selectedCity={homeCity}
-                      onChange={(option) => setHomeCity(option ? option : null)}
+                      value={homeCity}
+                      onChange={(option) => {
+                        setHomeCity(option ? option : null);
+                        console.log(option);
+                      }}
                     />
                   </div>
                 </div>
@@ -1559,27 +1750,58 @@ const VendorMaster = () => {
           </div>
 
           {docDetails?.map((link, index) => (
-            <>
-              <div className="col-6">
-                <FieldContainer
-                  key={index}
-                  fieldGrid={6}
-                  label={`Document Name`}
-                  value={link.docName}
-                  // required={true}
-                  onChange={(e) => handleDocNameChange(index, e.target.value)}
+            <div className="row" key={index}>
+              {/* <FieldContainer
+                key={index}
+                fieldGrid={4}
+                label={`Document Name`}
+                value={link.docName}
+                // required={true}
+                onChange={(e) => handleDocNameChange(index, e.target.value)}
+              /> */}
+              <div className="col-md-3">
+                <label className="form-label">Document Name</label>
+                <Select
+                  className=""
+                  options={copyOptions.map((option) => ({
+                    value: option,
+                    label: option,
+                  }))}
+                  value={{
+                    value: link.docName,
+                    label: link.docName,
+                  }}
+                  onChange={(selectedOption) => {
+                    handleDocNameChange(index, selectedOption.value);
+                  }}
+                  required
                 />
               </div>
-              <div className="col-md-4 p0 mb16">
-                <FieldContainer
-                  key={index.docNumber}
-                  label={`Document Nubmer`}
-                  fieldGrid={6}
-                  value={link.docNumber}
-                  // required={false}
-                  onChange={(e) => handleDocNumberChange(index, e.target.value)}
+              <FieldContainer
+                key={index.docNumber}
+                label={`Document Number`}
+                fieldGrid={4}
+                value={link.docNumber}
+                // required={false}
+                onChange={(e) => handleDocNumberChange(index, e.target.value)}
+              />
+              <FieldContainer
+                key={index.docImage}
+                label={`Document Image`}
+                type="file"
+                accept={"image/*"}
+                fieldGrid={4}
+                // value={link.docImage}
+                onChange={(e) => handleDocImageChange(index, e)}
+              />
+              {/* {docDetails[index]?.docImage && (
+                <img
+                  className="profile-holder-1 mt-4"
+                  src={URL?.createObjectURL(docDetails[index]?.docImage)}
+                  alt="Selected"
+                  style={{ maxWidth: "50px", maxHeight: "50px" }}
                 />
-              </div>
+              )} */}
               <div className="row">
                 <div className="col-12">
                   <div className="addBankRow">
@@ -1592,7 +1814,7 @@ const VendorMaster = () => {
                 </div>
               </div>
               <div className="row thm_form"></div>
-            </>
+            </div>
           ))}
           <div className="row">
             <div className="col-12">

@@ -20,6 +20,7 @@ const RecordServicesApi = createApi({
     getSingleRecordService: builder.query({
       query: (id) => `sales/record_service/${id}`,
       transformResponse: (response, args) => response.data,
+      keepUnusedDataFor: 0,
     }),
 
     addRecordService: builder.mutation({

@@ -123,8 +123,10 @@ export default function PageStats() {
   const { data: pageStateData, isLoading: pageStateDataIsLoaidng } =
     useGetPageStateByIdQuery(id);
 
-  useEffect(() => {
+  // useEffect(() => {
+  function CheckValidation() {
     let err;
+    console.log("come to error");
     for (const key in errors) {
       if (Object.hasOwnProperty.call(errors, key)) {
         const element = errors[key];
@@ -137,7 +139,8 @@ export default function PageStats() {
     if (err) {
       toastError("Please Fill All The Required Fields");
     }
-  }, [errors]);
+  }
+  // }, [errors]);
 
   const isImageEmpty = !imagePreview.impressionsImage && !impressionImageURL;
   const isReachImageEmpty = !imagePreview.reachImage && !reachImageURL;
@@ -177,6 +180,7 @@ export default function PageStats() {
   const [updatePageState] = useUpdatePageStateMutation();
 
   useEffect(() => {
+    console.log("come here");
     if (pageStateData) {
       setReachImageURL(pageStateData?.reach_image_url);
       setImpressionImageURL(pageStateData?.impression_image_url);
@@ -370,7 +374,7 @@ export default function PageStats() {
       <div className="stateHistoryWrapper">
         <FormControl
           component={"form"}
-          onSubmit={handleSubmit(handleSubmitForm)}
+          onSubmit={handleSubmit(handleSubmitForm, CheckValidation)}
         >
           <div className="card">
             <div className="card-body flexCenterBetween">

@@ -9,6 +9,7 @@ import VendorDetailAccordion from './VendorDetailAccordion';
 import { useEffect,useState } from 'react';
 import axios from 'axios';
 import { baseUrl } from "../../../../utils/config";
+import { useGetVendorCompanyDetailQuery } from '../../../Store/PageBaseURL';
 
 
 export default function VendorDetails({vendorDetails,setVendorDetails}) {
@@ -16,8 +17,6 @@ export default function VendorDetails({vendorDetails,setVendorDetails}) {
   const [scroll, setScroll] = React.useState('paper');
   const [bankRows, setBankRows] = useState([]);
   const token = sessionStorage.getItem("token");
-
-
   const handleClickOpen = (scrollType) => () => {
     setOpen(true);
     // setScroll(scrollType);
@@ -38,18 +37,6 @@ export default function VendorDetails({vendorDetails,setVendorDetails}) {
     }
   }, [open]);
 
-  useEffect(()=>{
-    axios.get(baseUrl + `v1/bank_details_by_vendor_id/${vendorDetails?._id}`,{headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json", // Adjust content type as needed
-          },}).then((res) => {
-        const data = res.data.data;
-        // setBankRows(data);
-        console.log(data);
-      });
-  
-  },[])
-console.log(vendorDetails,"vendorDetails");
   return (
     <React.Fragment>
       <Button onClick={handleClickOpen('paper')}>scroll=paper</Button>
@@ -62,7 +49,7 @@ console.log(vendorDetails,"vendorDetails");
         aria-labelledby="scroll-dialog-title"
         aria-describedby="scroll-dialog-description"
       >
-        <DialogTitle id="scroll-dialog-title">Vendor Details {vendorDetails?.vendor_name} Details</DialogTitle>
+        <DialogTitle id="scroll-dialog-title">Vendor Details </DialogTitle>
         <DialogContent dividers={scroll === 'paper'} >
           <DialogContentText
             id="scroll-dialog-description"

@@ -26,7 +26,9 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
 
 export default function VendorWhatsappLinkModla() {
   const row = useSelector((state) => state.PageOverview.rowData);
-  const { data } = useGetVendorWhatsappLinkQuery(row._id);
+  const { data } = useGetVendorWhatsappLinkQuery(row?._id, {
+    skip: !row._id,
+  });
   const links = data?.data;
 
   const { data: linkType } = useGetVendorWhatsappLinkTypeQuery();

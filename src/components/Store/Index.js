@@ -22,6 +22,15 @@ import ExecutionApi from "./API/Sales/ExecutionApi";
 import RecordServicesApi from "./API/Sales/RecordServicesApi";
 import CreditApprovalApi from "./API/Sales/CreditApprovalApi";
 import PageSlice from "./Page-slice";
+import PaymentUpdateApi from "./API/Sales/PaymentUpdateApi";
+import PaymentModeApi from "./API/Sales/PaymentModeApi";
+import PaymentDetailsApi from "./API/Sales/PaymentDetailsApi";
+import SaleStatusApi from "./API/Sales/SalesStatusApi";
+import FinancePaymentModeApi from "./API/Finance/FinancePaymentModeApi";
+import AgencyApi from "./API/Sales/AgencyApi";
+import ExecutionCampaignApi from "./API/Sales/ExecutionCampaignApi";
+import IncentivePlanApi from "./API/Sales/IncentivePlanApi";
+import InvoiceParticularApi from "./API/Sales/InvoiceParticularApi";
 
 const store = configureStore({
   reducer: {
@@ -47,6 +56,15 @@ const store = configureStore({
     [ExecutionApi.reducerPath]: ExecutionApi.reducer,
     [RecordServicesApi.reducerPath]: RecordServicesApi.reducer,
     [CreditApprovalApi.reducerPath]: CreditApprovalApi.reducer,
+    [PaymentUpdateApi.reducerPath]: PaymentUpdateApi.reducer,
+    [PaymentModeApi.reducerPath]: PaymentModeApi.reducer,
+    [PaymentDetailsApi.reducerPath]: PaymentDetailsApi.reducer,
+    [SaleStatusApi.reducerPath]: SaleStatusApi.reducer,
+    [FinancePaymentModeApi.reducerPath]: FinancePaymentModeApi.reducer,
+    [AgencyApi.reducerPath]: AgencyApi.reducer,
+    [ExecutionCampaignApi.reducerPath]: ExecutionCampaignApi.reducer,
+    [IncentivePlanApi.reducerPath]: IncentivePlanApi.reducer,
+    [InvoiceParticularApi.reducerPath]: InvoiceParticularApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware()
@@ -66,7 +84,16 @@ const store = configureStore({
       .concat(GetGstDetailApi.middleware)
       .concat(ExecutionApi.middleware)
       .concat(RecordServicesApi.middleware)
-      .concat(CreditApprovalApi.middleware),
+      .concat(CreditApprovalApi.middleware)
+      .concat(PaymentUpdateApi.middleware)
+      .concat(PaymentModeApi.middleware)
+      .concat(PaymentDetailsApi.middleware)
+      .concat(SaleStatusApi.middleware)
+      .concat(FinancePaymentModeApi.middleware)
+      .concat(AgencyApi.middleware)
+      .concat(ExecutionCampaignApi.middleware)
+      .concat(IncentivePlanApi.middleware)
+      .concat(InvoiceParticularApi.middleware),
 });
 setupListeners(store.dispatch);
 

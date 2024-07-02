@@ -13,19 +13,14 @@ import InfoCards from "./InfoCards";
 import StatsHistory from "./StatsHistory";
 
 export default function PageDetail() {
-  // const [open, setOpen] = React.useState(false);
   const open = useSelector((state) => state.PageSlice.showPageInfoModal);
   const pageRow = useSelector((state) => state.PageSlice.pageRow);
   let dispatch = useDispatch();
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
 
-  // const handleClickOpen = () => {
-  //   setOpen(true);
-  // };
-  console.log(pageRow, "pageRow");
+
   const handleClose = () => {
-    //   setOpen(false);
     dispatch(setShowPageInfoModal(false));
   };
   return (

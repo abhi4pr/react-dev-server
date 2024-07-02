@@ -13,7 +13,8 @@ const SalesAccountApi = createApi({
 
     getSingleAccount: builder.query({
       query: (id) => `accounts/get_single_account/${id}`,
-      transformResponse: (response, args) => response.data,
+      transformResponse: (response) => response.data,
+      keepUnusedDataFor: 0,
     }),
     getSingleAccountSalesBooking: builder.query({
       query: (id) => `accounts/get_single_account_billing/${id}`,
@@ -64,10 +65,10 @@ const SalesAccountApi = createApi({
               undefined,
               (draft) => {
                 const accountIndex = draft.findIndex(
-                  (account) => account.id === id
+                  (account) => account._id === id
                 );
                 if (accountIndex !== -1) {
-                  draft[accountIndex] = returnedAccount.data; // Update the object in its current position
+                  draft[accountIndex] = returnedAccount.data.accountMaster; // Update the object in its current position
                 }
               }
             )

@@ -1,8 +1,9 @@
 import { createApi } from "@reduxjs/toolkit/query/react";
 import authBaseQuery from "../../utils/authBaseQuery";
+import { add } from "date-fns";
 
 export const reduxBaseURL = createApi({
-baseQuery: authBaseQuery,
+  baseQuery: authBaseQuery,
   tagTypes: [
     "addVendor",
     "addPaycycle",
@@ -10,6 +11,7 @@ baseQuery: authBaseQuery,
     "addPayMethod",
     "whatsappLinkType",
     "addBankName",
+    "addVendorMaster"
   ],
   endpoints: (builder) => ({
     getnotAssignedVendors: builder.query({
@@ -73,6 +75,7 @@ baseQuery: authBaseQuery,
     getPmsPaymentMethod: builder.query({
       query: () => `v1/payment_method`,
       providesTags: ["addPayMethod"],
+      transformResponse:res=>res.data
     }),
 
     updatePmsPaymentMethod: builder.mutation({
@@ -131,6 +134,7 @@ baseQuery: authBaseQuery,
     }),
     getSingleBankDetail: builder.query({
       query: (data) => `v1/bank_details_by_vendor_id/${data}`,
+      transformResponse: (res) => res.data,
     }),
 
     //venodr whatsapp group link
@@ -141,6 +145,7 @@ baseQuery: authBaseQuery,
     //Country Code
     getCountryCode: builder.query({
       query: () => `v1/country_code`,
+      transformResponse: (response) => response.data,
     }),
     addCountryCode: builder.mutation({
       query: (data) => ({
@@ -159,7 +164,28 @@ baseQuery: authBaseQuery,
 
     //Vendor
     getAllVendor: builder.query({
-      query: () => `v1/vendor?page=1&limit=50`,
+      query: () => `v1/vendor`,
+      // query: () => `v1/vendor?page=1&limit=50`,
+      providesTags: ["addVendorMaster"],
+    }),
+    addVendor: builder.mutation({
+      query: (data) => ({
+        url: `v1/vendor`,
+        method: "POST",
+        body: data,
+      }),
+      invalidatesTags: ["addVendorMaster"],
+    }),
+    updateVenodr: builder.mutation({
+      query: (data) => ({
+        url: `v1/vendor/${data._id}`,
+        method: "PUT",
+        body: data,
+      }),
+      invalidatesTags: ["addVendorMaster"],
+      transformErrorResponse: (error) => {
+        return error.data;
+      },
     }),
 
     // Bank Detail Api's:-
@@ -187,6 +213,30 @@ baseQuery: authBaseQuery,
       }),
       invalidatesTags: ["addBankName"],
     }),
+    getVendorDocumentByVendorDetail: builder.query({
+      query: (data) => ({
+        url: `v1/vendor_wise_document_detail/${data}`,
+      }),
+      transformResponse: (response) => response.data,
+    }),
+
+    //vendor document
+    addVendorDocument: builder.mutation({
+      query: (data) => ({
+        url: `v1/document_detail`,
+        method: "POST",
+        body: data,
+      }),
+    }),
+
+    //company name and details
+    addCompanyData: builder.mutation({
+      query: (data) => ({
+        url: `v1/company_name`,
+        method: "POST",
+        body: data,
+      }),
+    }),
   }),
 });
 
@@ -213,7 +263,12 @@ export const {
   useAddCountryCodeMutation,
   useUpdateCountryCodeMutation,
   useGetAllVendorQuery,
+  useAddVendorMutation,
+  useUpdateVenodrMutation,
   useGetBankNameDetailQuery,
   useAddBankNameDetailMutation,
   useUpdateBankNameDetailMutation,
+  useGetVendorDocumentByVendorDetailQuery,
+  useAddVendorDocumentMutation,
+  useAddCompanyDataMutation,  
 } = reduxBaseURL;

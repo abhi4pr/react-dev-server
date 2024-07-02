@@ -372,7 +372,7 @@ export default function VendorTypeInfoModal() {
       platformRefetch();
       setColumns(platformColumns);
       setTitle("Platform Overview");
-      setData(platformData);
+      setData(platformData?.data);
       setLoading(platformIsLoading);
     } else if (modalType == "PaymentMethod") {
       paymentRefetch();
@@ -416,9 +416,9 @@ export default function VendorTypeInfoModal() {
             <div className="data_tbl table-responsive">
               {!isLoading ? (
                 <DataTable
-                  title="Vendor type Overview"
+                  // title="Vendor type Overview"
                   columns={columns}
-                  data={data.data}
+                  data={data}
                   fixedHeader
                   fixedHeaderScrollHeight="64vh"
                   highlightOnHover

@@ -2,7 +2,7 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 const BrandCategoryTypeApi = createApi({
   reducerPath: "brandCategoryTypeApi",
-  baseQuery: fetchBaseQuery({ baseUrl: "http://35.200.154.203:8080/api/" }),
+  baseQuery: fetchBaseQuery({ baseUrl: "https://insights.ist:8080/api/" }),
   endpoints: (builder) => ({
     getAllBrandCategoryType: builder.query({
       query: () => "brandCategory",

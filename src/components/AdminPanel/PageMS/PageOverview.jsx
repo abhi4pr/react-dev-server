@@ -359,6 +359,8 @@ const PageOverview = () => {
   const [showPriceModal, setShowPriceModal] = useState(false);
   // const [priceData, setPriceData] = useState([]);
   const [contextData, setContextData] = useState(false);
+  const [pageUpdateAuth, setPageUpdateAuth] = useState(false);
+  const [pageStatsAuth, setPageStatsAuth] = useState(false);
   const [selectedRow, setSelectedRow] = useState(null);
   const storedToken = sessionStorage.getItem("token");
   const decodedToken = jwtDecode(storedToken);
@@ -439,6 +441,12 @@ const PageOverview = () => {
         .then((res) => {
           if (res.data[33].view_value === 1) {
             setContextData(true);
+          }
+          if (res.data[57].view_value === 1) {
+            setPageUpdateAuth(true);
+          }
+          if (res.data[56].view_value === 1) {
+            setPageStatsAuth(true);
           }
         });
     }
@@ -549,16 +557,20 @@ const PageOverview = () => {
       renderCell: (params) => {
         let name = params.row.page_name;
         return (
-          <Link
-            target="__black"
-            to={params.row.page_link}
+          <a
+            target="_blank"
+            rel="noreferrer"
+            href={params.row.page_link}
             className="link-primary"
           >
             {name}
-          </Link>
+          </a>
         );
       },
     },
+  ];
+
+  const pageDetailColumn = [
     { field: "preference_level", headerName: "Level", width: 200 },
     {
       field: "status",
@@ -672,7 +684,7 @@ const PageOverview = () => {
           ?.filter((item) => {
             return params.row?.tags_page_category?.includes(item._id);
           })
-          .map((item) => item.page_category);
+          .map((item) => item.category_name);
         return (
           <div
             style={{
@@ -734,6 +746,36 @@ const PageOverview = () => {
     { field: "rate_type", headerName: "Rate Type", width: 200 },
     { field: "variable_type", headerName: "Variable Type", width: 200 },
     {
+      field: "m_post_price",
+      headerName: "Post Price",
+      width: 200,
+      valueGetter: ({ row }) => {
+        let mPostPrice = row.m_post_price;
+        let postPrice = row.post;
+        return postPrice ?? mPostPrice;
+      },
+    },
+    {
+      field: "m_story_price",
+      headerName: "Story Price",
+      width: 200,
+      valueGetter: ({ row }) => {
+        let mStoryPrice = row.m_story_price;
+        let storyPrice = row.story;
+        return storyPrice ?? mStoryPrice;
+      },
+    },
+    {
+      field: "m_both_price",
+      headerName: "Both Price",
+      width: 200,
+      valueGetter: ({ row }) => {
+        let mBothPrice = row.m_both_price;
+        let bothPrice = row.both_;
+        return bothPrice ?? mBothPrice;
+      },
+    },
+    {
       field: "page_price_multiple",
       headerName: "Price",
       width: 200,
@@ -753,9 +795,6 @@ const PageOverview = () => {
         );
       },
     },
-    { field: "Reel", headerName: "Reel", width: 200 },
-    { field: "Post", headerName: "Post", width: 200 },
-    { field: "Both", headerName: "Both", width: 200 },
     {
       field: "Action",
       headerName: "Action",
@@ -772,20 +811,27 @@ const PageOverview = () => {
             >
               <RequestPageIcon />{" "}
             </button>
-          </Link>
-          <Link className="mt-2" to={`/admin/pms-page-edit/${params.row._id}`}>
-            <button
-              title="Edit"
-              className="btn btn-outline-primary btn-sm user-button"
-            >
-              <FaEdit />{" "}
-            </button>
           </Link> */}
-          <DeleteButton
-            endpoint="v1/pageMaster"
-            id={params.row._id}
-            getData={refetchPageList}
-          />
+          {pageUpdateAuth && (
+            <Link
+              className="mt-2"
+              to={`/admin/pms-page-edit/${params.row._id}`}
+            >
+              <button
+                title="Edit"
+                className="btn btn-outline-primary btn-sm user-button"
+              >
+                <FaEdit />{" "}
+              </button>
+            </Link>
+          )}
+          {decodedToken.role_id ==1 && (
+            <DeleteButton
+              endpoint="v1/pageMaster"
+              id={params.row._id}
+              getData={refetchPageList}
+            />
+          )}
         </div>
       ),
     },
@@ -908,27 +954,27 @@ const PageOverview = () => {
         );
       },
     },
-    {
-      field: "totalPercentage",
-      width: 150,
-      headerName: "Stats Update %",
-      renderCell: (params) => {
-        return params.row.totalPercentage > 0
-          ? Math.round(+params.row?.totalPercentage) + "%"
-          : params.row.totalPercentageForExeHistory + "%";
-      },
-    },
-    {
-      field: "stats_update_flag ",
-      width: 150,
-      headerName: "Stats Update Flag",
-      renderCell: (params) => {
-        const num = params?.row?.latestEntry?.stats_update_flag
-          ? params?.row?.latestEntry.stats_update_flag
-          : false;
-        return num ? "Yes" : "No";
-      },
-    },
+    // {
+    //   field: "totalPercentage",
+    //   width: 150,
+    //   headerName: "Stats Update %",
+    //   renderCell: (params) => {
+    //     return params.row.totalPercentage > 0
+    //       ? Math.round(+params.row?.totalPercentage) + "%"
+    //       : params.row.totalPercentageForExeHistory + "%";
+    //   },
+    // },
+    // {
+    //   field: "stats_update_flag ",
+    //   width: 150,
+    //   headerName: "Stats Update Flag",
+    //   renderCell: (params) => {
+    //     const num = params?.row?.latestEntry?.stats_update_flag
+    //       ? params?.row?.latestEntry.stats_update_flag
+    //       : false;
+    //     return num ? "Yes" : "No";
+    //   },
+    // },
     {
       field: "Age_13_17_percent",
       width: 150,
@@ -992,23 +1038,23 @@ const PageOverview = () => {
         return +data ? data + "%" : "NA";
       },
     },
-    {
-      field: "Age_upload",
-      width: 150,
-      headerName: "Age Upload",
-      renderCell: (params) => {
-        let url = params.row?.Age_upload;
-        return url ? (
-          <img src={url} style={{ width: "50px", height: "50px" }} />
-        ) : (
-          "NA"
-        );
-      },
-    },
+    // {
+    //   field: "Age_upload",
+    //   width: 150,
+    //   headerName: "Age Upload",
+    //   renderCell: (params) => {
+    //     let url = params.row?.Age_upload;
+    //     return url ? (
+    //       <img src={url} style={{ width: "50px", height: "50px" }} />
+    //     ) : (
+    //       "NA"
+    //     );
+    //   },
+    // },
     {
       field: "city1_name",
       width: 150,
-      headerName: "City 1",
+      headerName: "City 1 and %",
       // renderCell: (params) => {
       //   let data = params.row?.city1_name;
       //   return data ? data : "NA";
@@ -1022,7 +1068,7 @@ const PageOverview = () => {
     {
       field: "city2_name",
       width: 150,
-      headerName: "City 2",
+      headerName: "City 2 and %",
       valueGetter: (params) => {
         let data = params.row?.city2_name;
         let percentage = params.row?.percentage_city2_name;
@@ -1032,7 +1078,7 @@ const PageOverview = () => {
     {
       field: "city3_name",
       width: 150,
-      headerName: "City 3",
+      headerName: "City 3 and %",
       valueGetter: (params) => {
         let data = params.row?.city3_name;
         let percentage = params.row?.percentage_city3_name;
@@ -1042,7 +1088,7 @@ const PageOverview = () => {
     {
       field: "city4_name",
       width: 150,
-      headerName: "City 4",
+      headerName: "City 4 and %",
       renderCell: (params) => {
         let data = params.row?.city4_name;
         let percentage = params.row?.percentage_city4_name;
@@ -1052,7 +1098,7 @@ const PageOverview = () => {
     {
       field: "city5_name",
       width: 150,
-      headerName: "City 5",
+      headerName: "City 5 and %",
       renderCell: (params) => {
         let data = params.row?.city5_name;
         let percentage = params.row?.percentage_city5_name;
@@ -1060,11 +1106,11 @@ const PageOverview = () => {
       },
     },
     {
-      field: "city_image_upload",
+      field: "city_image_url",
       width: 150,
       headerName: "City Image",
       renderCell: (params) => {
-        let data = params.row?.city_image_upload;
+        let data = params.row?.city_image_url;
         return data ? (
           <img src={data} style={{ width: "50px", height: "50px" }} />
         ) : (
@@ -1075,17 +1121,17 @@ const PageOverview = () => {
     {
       field: "country1_name",
       width: 150,
-      headerName: "Country 1",
+      headerName: "Country 1  and %",
       renderCell: (params) => {
         let data = params.row?.country1_name;
         let percentage = params.row?.percentage_country1_name;
-        return data ? data + `(${percentage})%` : "NA";
+        return data ? data + `(${percentage}%)` : "NA";
       },
     },
     {
       field: "country2_name",
       width: 150,
-      headerName: "Country 2",
+      headerName: "Country 2 and %",
       renderCell: (params) => {
         let data = params.row?.country2_name;
         let percentage = params.row?.percentage_country2_name;
@@ -1095,7 +1141,7 @@ const PageOverview = () => {
     {
       field: "country3_name",
       width: 150,
-      headerName: "Country 3",
+      headerName: "Country 3 and %",
       renderCell: (params) => {
         let data = params.row?.country3_name;
         let percentage = params.row?.percentage_country3_name;
@@ -1105,7 +1151,7 @@ const PageOverview = () => {
     {
       field: "country4_name",
       width: 150,
-      headerName: "Country 4",
+      headerName: "Country 4 and %",
       renderCell: (params) => {
         let data = params.row?.country4_name;
         let percentage = params.row?.percentage_country4_name;
@@ -1115,7 +1161,7 @@ const PageOverview = () => {
     {
       field: "country5_name",
       width: 150,
-      headerName: "Country 5",
+      headerName: "Country 5 and %",
       renderCell: (params) => {
         let data = params.row?.country5_name;
         let percentage = params.row?.percentage_country5_name;
@@ -1123,11 +1169,11 @@ const PageOverview = () => {
       },
     },
     {
-      field: "country_image_upload",
+      field: "country_image_url",
       width: 150,
       headerName: "Country Image",
       renderCell: (params) => {
-        let data = params.row?.country_image_upload;
+        let data = params.row?.country_image_url;
         return data ? (
           <img src={data} style={{ width: "50px", height: "50px" }} />
         ) : (
@@ -1136,23 +1182,17 @@ const PageOverview = () => {
       },
     },
     {
-      field: "creation_date",
+      field: "createdAt",
       width: 150,
       headerName: "Creation Date",
       renderCell: (params) => {
-        let data = params.row?.creation_date;
-        return data ? <DateFormattingComponent date={data} /> : "NA";
+        let data = params.row?.createdAt;
+        return data
+          ? Intl.DateTimeFormat("en-GB").format(new Date(data))
+          : "NA";
       },
     },
-    {
-      field: "end_date",
-      width: 150,
-      headerName: "End Date",
-      renderCell: (params) => {
-        let data = params.row?.end_date;
-        return data ? <DateFormattingComponent date={data} /> : "NA";
-      },
-    },
+
     {
       field: "engagement",
       width: 150,
@@ -1163,11 +1203,11 @@ const PageOverview = () => {
       },
     },
     {
-      field: "engagement_upload_image",
+      field: "engagement_image_url",
       width: 150,
       headerName: "Engagement Image",
       renderCell: (params) => {
-        let data = params.row?.engagement_upload_image;
+        let data = params.row?.engagement_image_url;
         return data ? (
           <img src={data} style={{ width: "50px", height: "50px" }} />
         ) : (
@@ -1186,11 +1226,11 @@ const PageOverview = () => {
       },
     },
     {
-      field: "impression_upload_image",
+      field: "impression_image_url",
       width: 150,
       headerName: "Impression Image",
       renderCell: (params) => {
-        let data = params.row?.impression_upload_image;
+        let data = params.row?.impression_image_url;
         return data ? (
           <img src={data} style={{ width: "50px", height: "50px" }} />
         ) : (
@@ -1201,7 +1241,7 @@ const PageOverview = () => {
     {
       field: "female_percent",
       width: 150,
-      headerName: "Female Percantage",
+      headerName: "Female Percentage",
       renderCell: (params) => {
         let data = params.row?.female_percent;
         return data ? data + "%" : "NA";
@@ -1315,15 +1355,15 @@ const PageOverview = () => {
         return data ? data : "NA";
       },
     },
-    {
-      field: "quater",
-      width: 150,
-      headerName: "Quater",
-      renderCell: (params) => {
-        let data = params.row?.quater;
-        return data ? data : "NA";
-      },
-    },
+    // {
+    //   field: "quater",
+    //   width: 150,
+    //   headerName: "Quater",
+    //   renderCell: (params) => {
+    //     let data = params.row?.quater;
+    //     return data ? data : "NA";
+    //   },
+    // },
     {
       field: "reach",
       width: 150,
@@ -1334,11 +1374,11 @@ const PageOverview = () => {
       },
     },
     {
-      field: "reach_upload_image",
+      field: "reach_image_url",
       width: 150,
       headerName: "Reach Image",
       renderCell: (params) => {
-        let data = params.row?.reach_upload_image;
+        let data = params.row?.reach_image_url;
         return data ? (
           <img src={data} style={{ width: "50px", height: "50px" }} />
         ) : (
@@ -1351,7 +1391,16 @@ const PageOverview = () => {
       width: 150,
       headerName: "Start Date",
       renderCell: (params) => {
-        let data = params.row?.story_click;
+        let data = params.row?.start_date;
+        return data ? <DateFormattingComponent date={data} /> : "NA";
+      },
+    },
+    {
+      field: "endDate",
+      width: 150,
+      headerName: "End Date",
+      renderCell: (params) => {
+        let data = params.row?.end_date;
         return data ? <DateFormattingComponent date={data} /> : "NA";
       },
     },
@@ -1374,11 +1423,11 @@ const PageOverview = () => {
       },
     },
     {
-      field: "story_view_upload_image",
+      field: "story_view_image_url",
       width: 150,
       headerName: "Story View Image",
       renderCell: (params) => {
-        let data = params.row?.story_view_upload_image;
+        let data = params.row?.story_view_image_url;
         return data ? (
           <img src={data} style={{ width: "50px", height: "50px" }} />
         ) : (
@@ -1388,6 +1437,28 @@ const PageOverview = () => {
     },
   ];
 
+  // if(pageStatsAuth){
+  //       dispatch(setShowPageHealthColumn(true));
+
+  //     }else{
+  //       dispatch(setShowPageHealthColumn(false));
+  //       dataGridcolumns.push(...pageDetailColumn)
+
+  //     }
+
+  //   useEffect(() => {
+  //     // Directly dispatch the value of pageStatsAuth
+  //     console.log(...pageDetailColumn)
+  //   console.log('pageStatsAuth', pageStatsAuth);
+  // }, [pageStatsAuth]);
+
+  if (!pageStatsAuth || decodedToken?.role_id === 1) {
+    dataGridcolumns.push(...pageDetailColumn);
+  }
+  !decodedToken?.role_id === 1 &&
+    dispatch(setShowPageHealthColumn(pageStatsAuth));
+  // !decodedToken?.role_id === 1&&  dispatch(setShowPageHealthColumn(pageStatsAuth));
+
   if (showPageHealthColumn) {
     dataGridcolumns.push(...pageHealthColumn);
   }
@@ -1396,15 +1467,17 @@ const PageOverview = () => {
       <div className="card">
         <div className="card-header flexCenterBetween">
           <h5 className="card-title flexCenterBetween">
-            <Switch
-              checked={showPageHealthColumn}
-              value={showPageHealthColumn}
-              onChange={() =>
-                dispatch(setShowPageHealthColumn(!showPageHealthColumn))
-              }
-              name="Page Health"
-              color="primary"
-            />
+            {pageStatsAuth && (
+              <Switch
+                checked={showPageHealthColumn}
+                value={showPageHealthColumn}
+                onChange={() =>
+                  dispatch(setShowPageHealthColumn(!showPageHealthColumn))
+                }
+                name="Page Health"
+                color="primary"
+              />
+            )}
             <Typography>Page Health</Typography>
             <Typography>: {filterData?.length}</Typography>
           </h5>
@@ -1466,13 +1539,15 @@ const PageOverview = () => {
                   const count = vendorTypes.filter(
                     (d) => d.ownership_type == option
                   )?.length;
-                  return `${option} (${count})`;
+                  let item = ownerShipData?.find((item) => item._id == option);
+                  let name = item ? item.company_type_name : "NA"; // Access the name property of the item
+                  return `${name} (${count})`;
                 }}
                 style={{ width: 270 }}
                 renderInput={(params) => (
                   <TextField
                     {...params}
-                    label="Ownership Type"
+                    label="Ownership "
                     variant="outlined"
                   />
                 )}
@@ -1494,15 +1569,16 @@ const PageOverview = () => {
                 options={[
                   ...new Set(
                     vendorTypes?.map((item) => {
-                      return item?.page_status;
+                      return item?.status;
                     })
                   ),
                 ]}
                 getOptionLabel={(option) => {
                   const count = vendorTypes.filter(
-                    (d) => d.page_status == option
+                    (d) => d.status == option
                   )?.length;
-                  return `${option} (${count})`;
+                  let name = option == 1 ? "Active" : "Inactive";
+                  return `${name} (${count})`;
                 }}
                 style={{ width: 270 }}
                 renderInput={(params) => (
@@ -1517,7 +1593,7 @@ const PageOverview = () => {
                     setFilterData(vendorTypes);
                   } else {
                     let result = vendorTypes.filter(
-                      (d) => d.page_status == newValue
+                      (d) => d.status == newValue
                     );
                     setFilterData(result);
                   }
@@ -1599,16 +1675,16 @@ const PageOverview = () => {
                 options={[
                   ...new Set(
                     vendorTypes?.map((item) => {
-                      return item?.page_catg_id;
+                      return item?.page_category_id;
                     })
                   ),
                 ]}
                 getOptionLabel={(option) => {
                   const category = cat?.find((e) => e._id == option);
                   const count = vendorTypes.filter(
-                    (d) => d.page_catg_id == option
+                    (d) => d.page_category_id == option
                   )?.length;
-                  return `${category?.page_category} (${count})`;
+                  return `${category?.category_name} (${count})`;
                 }}
                 style={{ width: 270 }}
                 renderInput={(params) => (
@@ -1619,14 +1695,14 @@ const PageOverview = () => {
                     setFilterData(vendorTypes);
                   } else {
                     let result = vendorTypes.filter(
-                      (d) => d.page_catg_id == newValue
+                      (d) => d.page_category_id == newValue
                     );
                     setFilterData(result);
                   }
                 }}
               />
             </div>
-            <div className="col-md-3 mb4">
+            {/* <div className="col-md-3 mb4">
               <Autocomplete
                 id="ownership-autocomplete"
                 options={[
@@ -1657,7 +1733,7 @@ const PageOverview = () => {
                   }
                 }}
               />
-            </div>
+            </div> */}
           </div>
         </div>
         <div className="card-body p0">
@@ -1767,7 +1843,7 @@ const PageOverview = () => {
       </Dialog>
       <TagCategoryListModal />
       <VendorNotAssignedModal />
-      <PageDetail row={""} />
+      <PageDetail />
     </>
   );
 };

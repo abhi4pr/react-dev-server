@@ -65,13 +65,17 @@ export const PageBaseURL = createApi({
     }),
     getPlatformPrice: builder.query({
       query: () => `v1/pagePriceType`,
+      transformResponse:(response)=>response.data
     }),
     updatePlatformPrice: builder.mutation({
-      query: (data) => ({
-        url: `v1/pagePriceType/${data._id}`,
-        method: "PUT",
-        body: data,
-      }),
+      query: (data) => {
+        const { _id, ...bodyWithoutId } = data;
+        return {
+          url: `v1/pagePriceType/${_id}`,
+          method: "PUT",
+          body: bodyWithoutId,
+        };
+      },
     }),
 
     //Page
@@ -132,6 +136,14 @@ export const PageBaseURL = createApi({
       query: () => `accounts/get_all_account_company_type`,
       transformResponse: (response) => response.data,
     }),
+
+    //Vendor company detail by vendor id
+    getVendorCompanyDetail: builder.query({
+      // query: (data) => `v1/company_name/${data}`,
+      query: (data) => `v1/company_name_wise_vendor/${data}`,
+      transformResponse: (response) => response.data,
+    }),
+
   }),
 });
 
@@ -156,4 +168,5 @@ export const {
   useUpdatePageStateMutation,
   useGetAllCitiesQuery,
   useGetOwnershipTypeQuery,
+  useGetVendorCompanyDetailQuery,
 } = PageBaseURL;

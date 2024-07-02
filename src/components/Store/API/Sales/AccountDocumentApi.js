@@ -8,6 +8,7 @@ const AccountDocumentApi = createApi({
     getDocumentById: builder.query({
       query: (id) => `accounts/get_document_overview/${id}`,
       transformResponse: (response) => response.data,
+      keepUnusedDataFor: 0,
     }),
 
     editDocument: builder.mutation({
@@ -16,12 +17,22 @@ const AccountDocumentApi = createApi({
         method: "PUT",
         body: updatedDocument,
       }),
-      keepUnusedDataFor: 3600,
+      keepUnusedDataFor: 0,
+    }),
+
+    deleteDocument: builder.mutation({
+      query: (id) => ({
+        url: `accounts/delete_document_overview_list/${id}`,
+        method: "DELETE",
+      }),
     }),
   }),
 });
 
-export const { useGetDocumentByIdQuery, useEditDocumentMutation } =
-  AccountDocumentApi;
+export const {
+  useGetDocumentByIdQuery,
+  useEditDocumentMutation,
+  useDeleteDocumentMutation,
+} = AccountDocumentApi;
 
 export default AccountDocumentApi;

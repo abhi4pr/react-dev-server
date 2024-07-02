@@ -222,7 +222,7 @@ export default function PageInfoModal() {
     } else if (modalType === "Price Type Info") {
       setTitle("Price Type");
       setLoading(priceListIsloading);
-      setData(priceList?.data);
+      setData(priceList);
       setColumns(priceTypeColumn);
     }
   }, [modalType]);
@@ -240,7 +240,7 @@ export default function PageInfoModal() {
         <DialogTitle id="responsive-dialog-title">{title}</DialogTitle>
         <DialogContent>
           <DataTable
-            title="Profile Overview"
+            // title="Profile Overview"
             columns={columns}
             data={data}
             fixedHeader

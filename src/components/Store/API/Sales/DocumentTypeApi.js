@@ -14,7 +14,7 @@ const DocumentTypeApi = createApi({
     getSingleDocumentType: builder.query({
       query: (id) => `accounts/get_document_overview/${id}`,
       transformResponse: (response) => response.data,
-      keepUnusedDataFor: 60 * 60 * 24,
+      keepUnusedDataFor: 0,
     }),
 
     addDocumentType: builder.mutation({
@@ -60,7 +60,8 @@ const DocumentTypeApi = createApi({
               "getAllDocumentType",
               undefined,
               (draft) => {
-                const DocumentIndex = draft.findIndex((Doc) => Doc.id === id);
+                const DocumentIndex = draft.findIndex((Doc) => Doc._id === id);
+
                 if (DocumentIndex !== -1) {
                   draft[DocumentIndex] = returnedDocument.data; // Update the object in its current position
                 }

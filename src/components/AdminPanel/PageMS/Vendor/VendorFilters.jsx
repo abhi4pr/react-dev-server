@@ -4,13 +4,11 @@ import { useGetAllPageCategoryQuery,   } from "../../../Store/PageBaseURL";
 import {
     useGetAllVendorQuery,
     useGetAllVendorTypeQuery,
-    useGetPmsPayCycleQuery,
-    useGetPmsPaymentMethodQuery,
-    useGetPmsPlatformQuery,
   } from "../../../Store/reduxBaseURL";
   
 
 function VendorFilters({filterData,setFilterData}) {
+  const { isLoading: typeLoading, data: typeData } = useGetAllVendorTypeQuery();
     const { data: pageCate } = useGetAllPageCategoryQuery();
     const {
         data: vendorData,
@@ -20,12 +18,19 @@ function VendorFilters({filterData,setFilterData}) {
 
 
     const category = pageCate?.data;
-    console.log(filterData,"category");
+    console.log(vendorData,"vendorData");
     let vendorGlobalData = vendorData?.data;
 
 
 
     const handleCategoryfilter = (e,newValue) => {
+        if(newValue && newValue != ""){
+            console.log(newValue);
+
+            setFilterData ( vendorGlobalData?.filter((ele)=> ele.vendor_category?.toLowerCase() == newValue?.toLowerCase() ))
+        }
+    }
+    const handleVendorTypefilter = (e,newValue) => {
         if(newValue && newValue != ""){
             console.log(newValue);
 
@@ -46,7 +51,14 @@ function VendorFilters({filterData,setFilterData}) {
         <Autocomplete
               disablePortal
               id="combo-box-demo"
-              options={["1","2","3"]}
+              options={
+                  !typeLoading &&
+                  typeData.data?.map((option) => ({
+                    value: option._id,
+                    label: option.type_name,
+                  }))
+                }
+                onInputChange={(e,value)=>handleVendorTypefilter(e,value)}
               sx={{ width: 300 }}
               renderInput={(params) => <TextField {...params} label="Vendor-Type" variant="standard" />}
             />

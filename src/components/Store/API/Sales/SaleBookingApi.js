@@ -20,16 +20,22 @@ const SaleBookingApi = createApi({
     getIndividualSaleBooking: builder.query({
       query: (id) => `sales/sales_booking/${id}`,
       transformResponse: (response) => response.data,
+      keepUnusedDataFor: 0,
+    }),
 
+    getListOfIndividualSaleBooking: builder.query({
+      query: (id) => `sales/account_sale_booking/${id}`,
+      transformResponse: (response) => response.data,
       keepUnusedDataFor: 60 * 60,
     }),
+
     addSaleBooking: builder.mutation({
       query: (newSaleBooking) => ({
         url: "sales/sales_booking",
         method: "POST",
         body: newSaleBooking,
       }),
-      onQueryStarted: async ({ dispatch, queryFulfilled }) => {
+      onQueryStarted: async (newSaleBooking, { dispatch, queryFulfilled }) => {
         try {
           const { data: addedSaleBooking } = await queryFulfilled;
 
@@ -38,7 +44,7 @@ const SaleBookingApi = createApi({
               "getAllSaleBooking",
               undefined,
               (draft) => {
-                draft.unshift(addedSaleBooking);
+                draft.unshift(addedSaleBooking.data);
               }
             )
           );
@@ -54,7 +60,10 @@ const SaleBookingApi = createApi({
         method: "PUT",
         body: updatedSaleBooking,
       }),
-      onQueryStarted: async ({ id }, { dispatch, queryFulfilled }) => {
+      onQueryStarted: async (
+        { id, ...updatedSaleBooking },
+        { dispatch, queryFulfilled }
+      ) => {
         try {
           const { data: returnedSaleBooking } = await queryFulfilled;
 
@@ -64,10 +73,10 @@ const SaleBookingApi = createApi({
               undefined,
               (draft) => {
                 const saleBookingIndex = draft.findIndex(
-                  (saleBooking) => saleBooking.id === id
+                  (saleBooking) => saleBooking._id === id
                 );
                 if (saleBookingIndex !== -1) {
-                  draft[saleBookingIndex] = returnedSaleBooking;
+                  draft[saleBookingIndex] = returnedSaleBooking.data;
                 }
               }
             )
@@ -117,6 +126,7 @@ export const {
   useGetAllSaleBookingQuery,
   useGetAllDeletedSaleBookingQuery,
   useGetIndividualSaleBookingQuery,
+  useGetListOfIndividualSaleBookingQuery,
   useAddSaleBookingMutation,
   useEditSaleBookingMutation,
   useDeleteSaleBookingMutation,
