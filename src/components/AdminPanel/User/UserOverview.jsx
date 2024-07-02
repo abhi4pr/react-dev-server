@@ -379,12 +379,12 @@ const UserOverview = () => {
       width: 190,
       sortable: true,
     },
-    {
-      field: "percentage_filled",
-      headerName: "Profile Status",
-      width: 110,
-      sortable: true,
-    },
+    // {
+    //   field: "percentage_filled",
+    //   headerName: "Profile Status",
+    //   width: 110,
+    //   sortable: true,
+    // },
     {
       field: "department_name",
       headerName: "Department",
@@ -457,25 +457,25 @@ const UserOverview = () => {
         </>
       ),
     },
-    {
-      field: "kra",
-      headerName: "KRA",
-      width: 90,
-      renderCell: (params) => (
-        <>
-          {contextData &&
-            contextData[0] &&
-            contextData[3].update_value === 1 && (
-              <button
-                className="btn cmnbtn btn_sm btn-outline-primary"
-                onClick={() => handleKRA(params.row.user_id)}
-              >
-                KRA
-              </button>
-            )}
-        </>
-      ),
-    },
+    // {
+    //   field: "kra",
+    //   headerName: "KRA",
+    //   width: 90,
+    //   renderCell: (params) => (
+    //     <>
+    //       {contextData &&
+    //         contextData[0] &&
+    //         contextData[3].update_value === 1 && (
+    //           <button
+    //             className="btn cmnbtn btn_sm btn-outline-primary"
+    //             onClick={() => handleKRA(params.row.user_id)}
+    //           >
+    //             KRA
+    //           </button>
+    //         )}
+    //     </>
+    //   ),
+    // },
     {
       field: "log",
       headerName: "Log",
@@ -495,19 +495,19 @@ const UserOverview = () => {
         ></Button>
       ),
     },
-    {
-      field: "transfer_res",
-      headerName: "Transfer Res",
-      width: 110,
-      renderCell: (params) => (
-        <button
-          className="btn cmnbtn btn_sm btn-outline-danger"
-          onClick={() => handleTransfer(params.row.user_id)}
-        >
-          Transfer
-        </button>
-      ),
-    },
+    // {
+    //   field: "transfer_res",
+    //   headerName: "Transfer Res",
+    //   width: 110,
+    //   renderCell: (params) => (
+    //     <button
+    //       className="btn cmnbtn btn_sm btn-outline-danger"
+    //       onClick={() => handleTransfer(params.row.user_id)}
+    //     >
+    //       Transfer
+    //     </button>
+    //   ),
+    // },
     {
       field: "separation",
       headerName: "Separation",

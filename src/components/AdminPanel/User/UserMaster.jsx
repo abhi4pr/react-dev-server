@@ -135,6 +135,10 @@ const UserMaster = () => {
   const [dateOfMarraige, setDateOfMarraige] = useState("");
   const [spouseName, setSpouseName] = useState("");
 
+  const [monthlyGrossSalary, setMonthlyGrossSalary] = useState("");
+  const [ctc, setCTC] = useState(0);
+  const [lastUpdated, setLastUpdated] = useState("");
+
   //---------------------Personal Info State End
 
   //--------------------Official Info State Start
@@ -330,10 +334,6 @@ const UserMaster = () => {
     axios.get(baseUrl + "get_all_departments").then((res) => {
       getDepartmentData(res.data);
     });
-
-    // axios.get(baseUrl + "not_alloc_sitting").then((res) => {
-    //   getRefrenceData(res.data.data);
-    // });
 
     axios.get(baseUrl + "get_all_users").then((res) => {
       getUsersData(res.data.data);
@@ -650,6 +650,9 @@ const UserMaster = () => {
     formData.append("room_id", 1);
     formData.append("joining_date", joiningDate);
     formData.append("user_credit_limit", creditLimit);
+
+    formData.append("salary", monthlyGrossSalary);
+    formData.append("ctc", ctc);
     //offcial info payload End
 
     try {
@@ -1026,27 +1029,65 @@ const UserMaster = () => {
     }
   }
 
-  // function handleContentBlur(e, type) {
-  //   setisContactTouched(true);
-  //   setisContactTouched1(true);
-  //   if (type == "personalContact") {
-  //     if (personalContact == "" || personalContact == null) {
-  //       setMandatoryFieldsEmpty({
-  //         ...mandatoryFieldsEmpty,
-  //         personalContact: true,
-  //       });
-  //     } else {
-  //       setMandatoryFieldsEmpty({
-  //         ...mandatoryFieldsEmpty,
-  //         personalContact: false,
-  //       });
-  //     }
-  //   }
-  //   if (contact.length < 10) {
-  //     setValidContact(false);
-  //     setValidContact1(false);
-  //   }
-  // }
+  // Update Yearly Salary when Monthly Salary changes
+  useEffect(() => {
+    if (lastUpdated === "monthly") {
+      const yearly = monthlyGrossSalary * 12;
+      setCTC(yearly.toString());
+    }
+  }, [monthlyGrossSalary, lastUpdated]);
+
+  // Update Monthly Salary when Yearly Salary changes
+  useEffect(() => {
+    if (lastUpdated === "yearly") {
+      const monthly = ctc / 12;
+      setMonthlyGrossSalary(monthly.toString());
+    }
+  }, [ctc, lastUpdated]);
+
+  useEffect(() => {
+    if (lastUpdated === "yearly") {
+      const monthly = Math.round(ctc / 12);
+      setMonthlyGrossSalary(monthly.toString()); // Now sets the salary to a rounded figure
+    }
+  }, [ctc, lastUpdated]);
+
+  const handleMonthlySalaryChange = (e) => {
+    const monthlySalary = e.target.value;
+
+    // if (monthlySalary === "") {
+    //   setIsRequired((prev) => ({
+    //     ...prev,
+    //     salary: true,
+    //   }));
+    // } else {
+    //   setIsRequired((prev) => ({
+    //     ...prev,
+    //     salary: false,
+    //   }));
+    // }
+
+    setMonthlyGrossSalary(monthlySalary);
+    setLastUpdated("monthly");
+  };
+
+  const handleYearlySalaryChange = (e) => {
+    const yearlySalaryValue = e.target.value;
+    setCTC(yearlySalaryValue);
+    setLastUpdated("yearly");
+
+    // if (yearlySalaryValue === "") {
+    //   setIsRequired((prev) => ({
+    //     ...prev,
+    //     salary: true,
+    //   }));
+    // } else {
+    //   setIsRequired((prev) => ({
+    //     ...prev,
+    //     salary: false,
+    //   }));
+    // }
+  };
 
   function handleAlternateBlur(e, type) {
     if (type == "alternateContact") {
@@ -2341,6 +2382,46 @@ const UserMaster = () => {
             {mandatoryFieldsEmpty.joiningDate && (
               <p className="form-error">Please Enter Joining Date</p>
             )}
+          </div>
+
+          <div className="col-3">
+            <FieldContainer
+              label="Monthly Gross Salary"
+              type="number"
+              fieldGrid={3}
+              required={false}
+              value={monthlyGrossSalary}
+              // onChange={(e) => {
+              //   const value = e.target.value;
+              //   if (/^\d{0,7}$/.test(value)) {
+              //     setMonthlyGrossSalary(value);
+              //   }
+              // }}
+              onChange={handleMonthlySalaryChange}
+            />
+            {/* {isRequired.salary && (
+                  <p className="form-error">Please Enter Monthly Salary</p>
+                )} */}
+          </div>
+          <div className="col-3">
+            <FieldContainer
+              label="CTC"
+              type="number"
+              fieldGrid={3}
+              required={false}
+              value={ctc}
+              onChange={handleYearlySalaryChange}
+              // onChange={(e) => {
+              //   const value = e.target.value;
+              //   // Limit input to 6 digits
+              //   if (/^\d{0,7}$/.test(value)) {
+              //     setCTC(value);
+              //   }
+              // }}
+            />
+            {/* {isRequired.salary && (
+                  <p className="form-error">Please Enter CTC</p>
+                )} */}
           </div>
 
           {department == constant.CONST_SALES_DEPT_ID && (

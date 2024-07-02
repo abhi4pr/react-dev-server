@@ -159,7 +159,7 @@ const WFHDRegister = ({ userUpdateID }) => {
             PersonalNumber,
             att_status,
             sub_dept_id,
-            status,
+            user_status,
           } = fetchedData;
 
           // console.log(Report_L2, "come to l2");
@@ -172,7 +172,7 @@ const WFHDRegister = ({ userUpdateID }) => {
           setReportL1(Report_L1);
           setSalary(salary);
           setLoginId(user_login_id);
-          setStatus(status);
+          setStatus(user_status);
           console.log(status, "status is here");
           setJoiningDate(joining_date?.split("T")?.[0]);
           setDateOfBirth(DOB?.split("T")?.[0]);
@@ -421,6 +421,7 @@ const WFHDRegister = ({ userUpdateID }) => {
       role_id: 4,
       image: selectedImage,
       ctc: Number(yearlySalary),
+      salary: Number(salary),
       offer_letter_send: sendLetter.value ? Boolean(sendLetter.value) : false,
       tds_applicable: tdsApplicable,
       tds_per: tdsPercentage,
@@ -437,8 +438,7 @@ const WFHDRegister = ({ userUpdateID }) => {
       user_contact_no: personalContact,
       user_email_id: personalEmail,
       att_status: attStatus || "registered",
-      year_salary: Number(yearlySalary),
-      salary: Number(salary),
+      // year_salary: Number(yearlySalary),
       report_L1: reportL1,
       report_L2: reportL2,
       report_L3: reportL3,
@@ -490,7 +490,7 @@ const WFHDRegister = ({ userUpdateID }) => {
 
     formData.append("att_status", attStatus || "registered");
 
-    formData.append("year_salary", Number(yearlySalary));
+    // formData.append("year_salary", Number(yearlySalary));
     formData.append("salary", Number(salary));
 
     formData.append("report_L1", reportL1);
