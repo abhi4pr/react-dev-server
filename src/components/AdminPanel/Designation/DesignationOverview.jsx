@@ -220,6 +220,7 @@ const DesignationOverview = () => {
               columns={columns}
               data={filterdata}
               fixedHeader
+              paginationPerPage={100}
               fixedHeaderScrollHeight="64vh"
               highlightOnHover
               pagination

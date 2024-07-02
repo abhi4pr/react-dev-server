@@ -8,6 +8,12 @@ const UserSingleTab2 = ({ user, hobbiesData }) => {
         <div className="row profileInfo_row pt-0">
           <div className="col-xl-4 col-lg-4 col-md-6 col-sm-12">
             <div className="profileInfo_box">
+              <h3>Employe ID</h3>
+              <h4>{user.user_id ? user.user_id : "NA"}</h4>
+            </div>
+          </div>
+          <div className="col-xl-4 col-lg-4 col-md-6 col-sm-12">
+            <div className="profileInfo_box">
               <h3>Report L1N Name</h3>
               <h4>{user.Report_L1N ? user.Report_L1N : "NA"}</h4>
             </div>
@@ -16,12 +22,6 @@ const UserSingleTab2 = ({ user, hobbiesData }) => {
             <div className="profileInfo_box">
               <h3>Report L2N Name</h3>
               <h4>{user.Report_L2N ? user.Report_L2N : "NA"}</h4>
-            </div>
-          </div>
-          <div className="col-xl-4 col-lg-4 col-md-6 col-sm-12">
-            <div className="profileInfo_box">
-              <h3>Report L3N Name</h3>
-              <h4>{user.Report_L3N ? user.Report_L3N : "NA"}</h4>
             </div>
           </div>
         </div>
@@ -50,7 +50,7 @@ const UserSingleTab2 = ({ user, hobbiesData }) => {
           </div>
         </div>
         <div className="row profileInfo_row">
-          <div className="col-xl-4 col-lg-4 col-md-6 col-sm-12">
+          {/* <div className="col-xl-4 col-lg-4 col-md-6 col-sm-12">
             <div className="profileInfo_box">
               <h3>Hobbies</h3>
               <h4>
@@ -63,6 +63,18 @@ const UserSingleTab2 = ({ user, hobbiesData }) => {
                       .join(" | ")
                   : "NA"}
               </h4>
+            </div>
+          </div> */}
+          <div className="col-xl-4 col-lg-4 col-md-6 col-sm-12">
+            <div className="profileInfo_box">
+              <h3>Monthly Salary</h3>
+              <h4>{user.salary}</h4>
+            </div>
+          </div>
+          <div className="col-xl-4 col-lg-4 col-md-6 col-sm-12">
+            <div className="profileInfo_box">
+              <h3>CTC</h3>
+              <h4>{user.ctc}</h4>
             </div>
           </div>
           <div className="col-xl-4 col-lg-4 col-md-6 col-sm-12">

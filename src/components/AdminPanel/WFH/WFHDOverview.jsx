@@ -8,12 +8,10 @@ import { Link } from "react-router-dom";
 import FieldContainer from "../FieldContainer";
 import jwtDecode from "jwt-decode";
 import Modal from "react-modal";
-import EditIcon from "@mui/icons-material/Edit";
-import UploadIcon from "@mui/icons-material/Upload";
-import DetailsIcon from "@mui/icons-material/Details";
 import WhatsappAPI from "../../WhatsappAPI/WhatsappAPI";
 import { useGlobalContext } from "../../../Context/Context";
 import Loader from "../Finance/Loader/Loader";
+import ReportL1Component from "./ReportL1Component";
 
 const WFHDOverview = () => {
   const whatsappApi = WhatsappAPI();
@@ -53,12 +51,17 @@ const WFHDOverview = () => {
   const decodedToken = jwtDecode(storedToken);
   const userID = decodedToken.id;
   const roleID = decodedToken.role_id;
-  // useEffect(() => {
 
-  //   const lab=document.querySelector(".hkULGy");
-  //     lab.innerText="Showing Entries";
-
-  // }, [])
+  const [ReportL1ModalOpen, setReportModalOpen] = useState(false);
+  const [currentRow, setCurrentRow] = useState(null);
+  //Scrap Asset section Start
+  const handleScrap = (row) => {
+    setCurrentRow(row);
+    setReportModalOpen(true);
+  };
+  const handleReportL1Close = () => {
+    return setReportModalOpen(!ReportL1ModalOpen);
+  };
 
   const getData = async () => {
     setLoading(true);
@@ -305,18 +308,25 @@ const WFHDOverview = () => {
     // },
     {
       name: "User Name",
-      cell: (row) => row.user_name,
+      cell: (row) => (
+        <Link
+          to={`/admin/user-single/${row.user_id}`}
+          style={{ color: "blue" }}
+        >
+          {row.user_name}
+        </Link>
+      ),
     },
     {
       name: "Employee ID",
-      cell: (row) => row.emp_id,
+      cell: (row) => row.user_id,
       width: "120px",
     },
-    {
-      name: "Profile Status",
-      cell: (row) => row.profile_status + " %",
-      width: "120px",
-    },
+    // {
+    //   name: "Profile Status",
+    //   cell: (row) => row.profile_status + " %",
+    //   width: "120px",
+    // },
     {
       name: "Status",
       cell: (row) => (
@@ -352,7 +362,7 @@ const WFHDOverview = () => {
       cell: (row) => row.user_login_id,
     },
     {
-      name: "Personal Contact Number",
+      name: "Personal Contact ",
       cell: (row) => row.PersonalNumber,
       width: "200px",
     },
@@ -421,8 +431,12 @@ const WFHDOverview = () => {
                 className="btn btn-success"
               >
               </button> */}
-              <Link to={`/admin/wfh-update-document/${row.user_id}`}>
-                {/* <UploadIcon /> */}
+              {/* <Link to={`/admin/wfh-update-document/${row.user_id}`}>
+                <div className="icon-1" title="Document upload">
+                  <i className="bi bi-upload"></i>
+                </div>
+              </Link> */}
+              <Link to={`/admin/wfhd-new-documentcom/${row.user_id}`}>
                 <div className="icon-1" title="Document upload">
                   <i className="bi bi-upload"></i>
                 </div>
@@ -576,53 +590,7 @@ const WFHDOverview = () => {
             style={{ display: "flex", flexDirection: "column", gap: "16px" }}
           >
             <FormContainer mainTitle="My Team" link={"/admin/"} />
-            {/* <ul
-              className="nav nav-pills nav-fill navtop"
-              style={{ marginBottom: "20px" }}
-            >
-              <li className="nav-item">
-                <a
-                  className="nav-link active"
-                  href="#menu1"
-                  data-toggle="tab"
-                  onClick={() => getFilterData("registered")}
-                >
-                  Registered ({statusCounts.registered})
-                </a>
-              </li>
-              <li className="nav-item">
-                <a
-                  className="nav-link"
-                  href="#menu2"
-                  data-toggle="tab"
-                  onClick={() => getFilterData("document_upload")}
-                >
-                  Upload Document ({statusCounts.document_upload})
-                </a>
-              </li>
-              <li className="nav-item">
-                <a
-                  className="nav-link"
-                  href="#menu3"
-                  data-toggle="tab"
-                  id="training_tab"
-                  onClick={() => getFilterData("training")}
-                >
-                  Training ({statusCounts?.training ? statusCounts.training : 0})
-                </a>
-              </li>
-              <li className="nav-item">
-                <a
-                  className="nav-link"
-                  href="#menu4"
-                  id="onboarded_tab"
-                  data-toggle="tab"
-                  onClick={() => getFilterData("onboarded")}
-                >
-                  Onboarded ({statusCounts.onboarded})
-                </a>
-              </li>
-            </ul> */}
+
             <div className="tab">
               <div
                 className={` named-tab  ${activeTab == 3 ? "active-tab" : ""}`}
@@ -664,30 +632,17 @@ const WFHDOverview = () => {
                 Onboarded (
                 {statusCounts?.onboarded ? statusCounts?.onboarded : 0})
               </div>
+              <div className="Tab">
+                <button
+                  onClick={handleScrap}
+                  className="ml-2 btn btn-warning btn-sm rounded-pill"
+                >
+                  Change Report L1
+                </button>
+              </div>
             </div>
+
             <div className="card">
-              {/* <div className="data_tbl table-responsive" >
-                
-                <DataTable
-                  title="Payout Users"
-                  columns={columns}
-                  data={filterDataS}
-                  fixedHeader
-                  fixedHeaderScrollHeight="64vh"
-                  highlightOnHover
-                  subHeader
-                  striped="true"
-                    subHeaderComponent={
-                      <input
-                        type="text"
-                        placeholder="Search Here"
-                        className="w-50 form-control"
-                        value={search}
-                        onChange={(e) => setSearch(e.target.value)}
-                      />
-                    }
-                />
-              </div> */}
               <div
                 className="card-header"
                 style={{ justifyContent: "space-between" }}
@@ -780,60 +735,6 @@ const WFHDOverview = () => {
                   </div>
                 </div>
               </div>
-
-              {/* <div
-                className="modal fade"
-                id="exampleModal2"
-                tabIndex={-1}
-                role="dialog"
-                aria-labelledby="exampleModalLabel2"
-                aria-hidden="true"
-              >
-                <div className="modal-dialog" role="document">
-                  <div className="modal-content">
-                    <div className="modal-header">
-                      <h5 className="modal-title" id="exampleModalLabel2">
-                        Onboard user
-                      </h5>
-                      <button
-                        type="button"
-                        className="close"
-                        data-dismiss="modal"
-                        aria-label="Close"
-                      >
-                        <span aria-hidden="true">×</span>
-                      </button>
-                    </div>
-                    <div className="modal-body">
-                      <FieldContainer
-                        label="Remark"
-                        fieldGrid={12}
-                        value={remark}
-                        onChange={(e) => setRemark(e.target.value)}
-                        required={true}
-                      ></FieldContainer>
-                    </div>
-                    <div className="modal-footer">
-                      <button
-                        type="button"
-                        className="btn btn-secondary"
-                        data-dismiss="modal"
-                      >
-                        Close
-                      </button>
-                      <button
-                        type="button"
-                        className="btn btn-primary"
-                        onClick={onboardingFunc}
-                        data-dismiss="modal"
-                        disabled={!remark}
-                      >
-                        Save changes
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div> */}
             </div>
           </div>
 
@@ -949,6 +850,12 @@ const WFHDOverview = () => {
               </div>
             </div>
           </div>
+          <ReportL1Component
+            getData={getData}
+            isModalOpenSend={ReportL1ModalOpen}
+            onClose={handleReportL1Close}
+            rowData={currentRow}
+          />
         </>
       )}
     </>

@@ -245,14 +245,14 @@ const UserSingleTab1 = ({ user, roomId }) => {
   const getInitialFields = (user) => [
     { id: user.user_id, label: "Name", value: user.user_name },
     { id: user.user_id, label: "Gender", value: user.Gender },
-    { id: user.user_id, label: "Father Name", value: user.fatherName || "NA" },
+    // { id: user.user_id, label: "Father Name", value: user.fatherName || "NA" },
     { id: user.user_id, label: "Email Id", value: user.user_email_id },
     {
       id: user.user_id,
       label: "Personal Email",
       value: user.PersonalEmail || "NA",
     },
-    { id: user.user_id, label: "Mother Name", value: user.motherName || "NA" },
+    // { id: user.user_id, label: "Mother Name", value: user.motherName || "NA" },
     { id: user.user_id, label: "Personal Number", value: user.PersonalNumber },
     { id: user.user_id, label: "User Contact No", value: user.user_contact_no },
     {
@@ -273,7 +273,7 @@ const UserSingleTab1 = ({ user, roomId }) => {
       label: "Date Of Birth",
       value: <DateFormattingComponent date={user.DOB} />,
     },
-    { id: user.user_id, label: "Age", value: user.Age || "NA" },
+    // { id: user.user_id, label: "Age", value: user.Age || "NA" },
     {
       id: user.user_id,
       label: "Permanent Address",
