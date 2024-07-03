@@ -344,6 +344,7 @@ import DocumentTypeOverview from "./Sales/Account/DocumentTypeOverview";
 import PlanOverView from "./Operation/Plan/CampPlanOverview";
 import CampPlanOverview from "./Operation/Plan/CampPlanOverview";
 import EditPage from "./PageMS/EditPage/EditPage";
+import PageStats from "./PageMS/PageStats";
 
 const Admin = () => {
   const [contextData, setData] = useState([]);
@@ -500,7 +501,7 @@ const Admin = () => {
                   />
                   <Route path="/attendence-mast" element={<Attendence />} />
                   <Route path="/stats" element={<Stats />} />
-                  {/* { <Route path="/pageStats/:id" element={<PageStats />} />} */}
+                  { <Route path="/pageStats/:id" element={<PageStats />} />}
                   {/* Salary */}
                   <Route path="/salaryWFH" element={<SalaryWFH />} />
 

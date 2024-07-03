@@ -485,7 +485,6 @@ const PageEdit = () => {
         let data = res.data.data.filter((e) => {
           return e.isDeleted !== true;
         });
-        console.log(p_id, data, "data");
         data = data[data.length - 1];
         navigate(`/admin/exe-update/${data._id}`, { state: p_id });
       });
@@ -600,8 +599,10 @@ const PageEdit = () => {
     ]);
   };
 
-  const { data: priceData, isLoading: isPriceLoading } =
-  useGetMultiplePagePriceQuery(pageMast_id);
+  const { data: priceData,  } =
+  useGetMultiplePagePriceQuery(pageMast_id,{
+    skip:!pageMast_id
+  });
 
   useEffect(() => {
     if (priceData) {
@@ -613,7 +614,6 @@ const PageEdit = () => {
     axios.get(baseUrl + `v1/pageMaster/${pageMast_id}`).then((res) => {
       const data = [res.data.data];
       setData(data);
-      console.log(data, "data");
       setLatestEntry(res.data.latestEntry);
       setStateUpdate(data[0].stats_update_flag);
       setTotalPercentage(res.data.totalPercentage);
@@ -647,7 +647,6 @@ const PageEdit = () => {
           return { value: e._id, label: e.platform_name };
         })
       );
-      console.log(data[0].platform_active_on, "data[0].platform_active_on");
       setRate(data[0].engagment_rate);
       setDescription(data[0].description);
       setP_id(data[0].pageMast_id);

@@ -22,9 +22,9 @@ import {
   useGetAllPageCategoryQuery,
   useGetAllPageListQuery,
   useGetAllProfileListQuery,
-  useGetMultiplePagePriceQuery,
   useGetOwnershipTypeQuery,
   useGetPageByIdQuery,
+  useGetPlatformPriceQuery,
 } from "../../Store/PageBaseURL";
 import PageInfoModal from "./PageInfoModal";
 import {
@@ -78,6 +78,7 @@ const PageMaster = () => {
   const [description, setDescription] = useState("");
   const [priceTypeList, setPriceTypeList] = useState([]);
   const [filterPriceTypeList, setFilterPriceTypeList] = useState([]);
+
   const [rateType, setRateType] = useState({ value: "Fixed", label: "Fixed" });
   const [variableType, setVariableType] = useState({
     value: "Per Thousand",
@@ -114,15 +115,7 @@ const PageMaster = () => {
     { page_price_type_id: "", price: "" },
   ]);
 
-  useEffect(() => {
-    if (rowCount.length > 0) {
-      let data = priceTypeList.filter(
-        (e) => !rowCount.map((e) => e.page_price_type_id).includes(e._id)
-      );
-      return setFilterPriceTypeList(data);
-    }
-  }, [rowCount]);
-
+  
   const dispatch = useDispatch();
 
   const { data: ownerShipData } = useGetOwnershipTypeQuery();
@@ -139,15 +132,13 @@ const PageMaster = () => {
 
   const vendorData = vendor?.data || [];
   const { data: singlePageData, isLoading: singlePageLoading } =
-    useGetPageByIdQuery(pageMast_id ? pageMast_id : null);
+    useGetPageByIdQuery(pageMast_id, { skip: !pageMast_id });
   const { refetch: refetchPageList } = useGetAllPageListQuery();
 
-  const { data: priceData, isLoading: isPriceLoading } =
-    useGetMultiplePagePriceQuery(pageMast_id ? pageMast_id : null);
+  const { data: platformPriceData, isLoading: isPriceLoading } =
+    useGetPlatformPriceQuery();
 
   useEffect(() => {
-    // return
-
     if (!singlePageLoading && pageMast_id) {
       setPageName(singlePageData?.page_name);
       setLink(singlePageData?.page_link);
@@ -204,23 +195,42 @@ const PageMaster = () => {
       let post = singlePageData?.post;
       let both_ = singlePageData?.both_;
 
-      setRowCount(
-[          {
-            page_price_type_id: "667e6c7412fbbf002179f6d6",
-            price: post,
-
-          },
-          {
-            page_price_type_id: "667e6c9112fbbf002179f72c",
-            price: story,
-          },
-          {
-            page_price_type_id: "667e6c9c12fbbf002179f72f",
-            price: both_,
-          },]
-      )
+      setRowCount([
+        {
+          page_price_type_id: "667e6c7412fbbf002179f6d6",
+          price: post,
+        },
+        {
+          page_price_type_id: "667e6c9112fbbf002179f72c",
+          price: story,
+        },
+        {
+          page_price_type_id: "667e6c9c12fbbf002179f72f",
+          price: both_,
+        },
+      ]);
     }
   }, [singlePageLoading]);
+ 
+
+  useEffect(() => {
+    if (rowCount.length > 0) {
+      let data = priceTypeList?.filter(
+        (e) => !rowCount.map((row) => row.page_price_type_id).includes(e._id)
+      );
+      setFilterPriceTypeList(data);
+    }
+  }, [rowCount, priceTypeList]); // Added priceTypeList as a dependency
+  
+  useEffect(() => {
+  
+    if (platformPriceData?.length > 0) {
+      setPriceTypeList(platformPriceData);
+      setFilterPriceTypeList(platformPriceData);
+    } else {
+      console.log('Condition not met. platformPriceData:', platformPriceData);
+    }
+  }, [platformPriceData, isPriceLoading]);
 
   // useEffect(() => {
   //   if (!isPriceLoading && pageMast_id && priceData.length > 0) {
@@ -312,35 +322,35 @@ const PageMaster = () => {
   const handlePrimaryChange = (selectedOption) => {
     setPrimary(selectedOption);
   };
-  useEffect(() => {
-    // if (platformId) {
-    //   setPriceTypeList([]);
-    //   let priceData = platformData.find((role) => role._id == platformId)?._id;
-    //   axios
-    //     .get(baseUrl + `v1/pagePriceTypesForPlatformId/${priceData}`, {
-    //       headers: {
-    //         Authorization: `Bearer ${token}`,
-    //         "Content-Type": "application/json", // Adjust content type as needed
-    //       },
-    //     })
-    //     .then((res) => {
-    //       setPriceTypeList(res.data.data);
-    //       setFilterPriceTypeList(res.data.data);
-    //     });
-    // }
+  // useEffect(() => {
+  // if (platformId) {
+  //   setPriceTypeList([]);
+  //   let priceData = platformData.find((role) => role._id == platformId)?._id;
+  //   axios
+  //     .get(baseUrl + `v1/pagePriceTypesForPlatformId/${priceData}`, {
+  //       headers: {
+  //         Authorization: `Bearer ${token}`,
+  //         "Content-Type": "application/json", // Adjust content type as needed
+  //       },
+  //     })
+  //     .then((res) => {
+  //       setPriceTypeList(res.data.data);
+  //       setFilterPriceTypeList(res.data.data);
+  //     });
+  // }
 
-    axios
-      .get(baseUrl + `v1/pagePriceType`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json", // Adjust content type as needed
-        },
-      })
-      .then((res) => {
-        setPriceTypeList(res.data.data);
-        setFilterPriceTypeList(res.data.data);
-      });
-  }, []);
+  //   axios
+  //     .get(baseUrl + `v1/pagePriceType`, {
+  //       headers: {
+  //         Authorization: `Bearer ${token}`,
+  //         "Content-Type": "application/json", // Adjust content type as needed
+  //       },
+  //     })
+  //     .then((res) => {
+  //       setPriceTypeList(res.data.data);
+  //       setFilterPriceTypeList(res?.data?.data);
+  //     });
+  // }, []);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -448,16 +458,15 @@ const PageMaster = () => {
       page_price_multiple: rowCount,
 
       primary_page: primary.value,
-      post: rowCount.find(
-        (e) => e.page_price_type_id == "667e6c7412fbbf002179f6d6"
-      ).price??0,
-      story: rowCount.find(
-        (e) => e.page_price_type_id == "667e6c9112fbbf002179f72c"
-      ).price??0,
-      "both_": rowCount.find(
-        (e) => e.page_price_type_id == "667e6c9c12fbbf002179f72f"
-      ).price??0,
-
+      post:
+        rowCount.find((e) => e.page_price_type_id == "667e6c7412fbbf002179f6d6")
+          .price ?? 0,
+      story:
+        rowCount.find((e) => e.page_price_type_id == "667e6c9112fbbf002179f72c")
+          .price ?? 0,
+      both_:
+        rowCount.find((e) => e.page_price_type_id == "667e6c9c12fbbf002179f72f")
+          .price ?? 0,
     };
     if (pageMast_id) {
       payload.last_updated_by = userID;
@@ -522,17 +531,8 @@ const PageMaster = () => {
       return value?.toString();
     }
   };
-  const formatString = (s) => {
-    // Remove leading underscores
-    let formattedString = s.replace(/^_+/, "");
-    // Capitalize the first letter and make the rest lowercase
-    if (formattedString) {
-      formattedString =
-        formattedString.charAt(0).toUpperCase() +
-        formattedString.slice(1).toLowerCase();
-    }
-    return formattedString;
-  };
+
+  
 
   const handlePriceChange = (e, index) => {
     if (
@@ -545,25 +545,13 @@ const PageMaster = () => {
     newRowCount[index].price = e.target.value;
     setRowCount(newRowCount);
   };
-  // const val = variableType.value === "Per Thousand" ? 1000 : 1000000;
-  // const FollowerCountCalcualtion = (followCount / val) * rowCount[0]?.price;
   const calculateFollowerCount = (index) => {
     const val = variableType.value === "Per Thousand" ? 1000 : 1000000;
     return ((followCount / val) * (rowCount[index]?.price || 0)).toFixed(2);
   };
 
-  const handleFilterPriceType = () => {
-    let filteredData = priceTypeList.filter((row) => {
-      // Check if row's page_price_type_id exists in priceTypeList
-      let data = filterPriceTypeList.filter(
-        (e) => !rowCount.map((e) => e.page_price_type_id).includes(e._id)
-      );
-    });
-    // setFilterPriceTypeList(filteredData);
-  };
 
-  const val = variableType.value === "Per Thousand" ? 1000 : 1000000;
-  const FollowerCountCalcualtion = (followCount / val) * rowCount[0]?.price;
+
   return (
     <>
       <FormContainer
@@ -1247,8 +1235,8 @@ const PageMaster = () => {
                       <Select
                         className="w-100"
                         options={filterPriceTypeList?.map((option) => ({
-                          value: option._id,
-                          label: option.name,
+                          value: option?._id,
+                          label: option?.name,
                         }))}
                         required={true}
                         value={{
@@ -1292,7 +1280,7 @@ const PageMaster = () => {
                   {rateType.label == "Variable" && (
                     <p className="ml-3" style={{ color: "blue" }}>
                       This Page Cost ={" "}
-                      {calculateFollowerCount(index.toFixed(0))} {"  RS "}
+                      {"  Rs "} {calculateFollowerCount(index.toFixed(0))} 
                     </p>
                   )}
                 </div>

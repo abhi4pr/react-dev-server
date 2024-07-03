@@ -15,7 +15,6 @@ export default function EditPage() {
        <FormContainer
         mainTitle="Page Edit"
         title="Page Edit"
-        // handleSubmit={handleSubmit}
         accordionButtons={accordionButtons}
         activeAccordionIndex={activeAccordionIndex}
         onAccordionButtonClick={handleAccordionButtonClick}

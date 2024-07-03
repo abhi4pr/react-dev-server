@@ -77,7 +77,7 @@ export default function PageAddMasterModal() {
       setTitle("Add Category");
     } else if (modalType === "Category Update") {
       setTitle("Update Category");
-      setValue("name", rowData.page_category);
+      setValue("name", rowData.category_name);
       setValue("description", rowData.description);
     } else if (modalType === "Price Type") {
       setTitle("Add Price Type");
