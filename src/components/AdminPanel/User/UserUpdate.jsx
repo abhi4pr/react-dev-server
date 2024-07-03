@@ -174,8 +174,12 @@ const UserUpdate = () => {
   const [roomId, setRoomId] = useState("");
   const [refrenceData, setRefrenceData] = useState([]);
 
-  const [userCtc, setUserCtc] = useState("");
+  const [monthlyGrossSalary, setMonthlyGrossSalary] = useState("");
+  const [ctc, setCTC] = useState(0);
+  const [lastUpdated, setLastUpdated] = useState("");
+
   const [isApplicable, setIsApplicable] = useState("");
+  console.log(isApplicable, "Is Applicable");
   const IsApplicableData = [
     // { label: "PF", value: "pf" },
     { label: "PF & ESIC", value: "pf_and_esic" },
@@ -243,7 +247,7 @@ const UserUpdate = () => {
   const [incomingPassword, setIncomingPassword] = useState("");
   const [uid, setUID] = useState({ name: "sumit.jpg" });
   const [releavingDate, setReleavingDate] = useState("");
-  const [salary, setSalary] = useState(0);
+
   const [incomingUserStatus, setIncomingUserStatus] = useState("");
 
   const [otherDocuments, setOtherDocuments] = useState();
@@ -517,6 +521,66 @@ const UserUpdate = () => {
   };
   // -----------------------------------------------------------------------------hobby logic END------------------------------------------------------------
 
+  // Update Yearly Salary when Monthly Salary changes
+  useEffect(() => {
+    if (lastUpdated === "monthly") {
+      const yearly = monthlyGrossSalary * 12;
+      setCTC(yearly.toString());
+    }
+  }, [monthlyGrossSalary, lastUpdated]);
+
+  // Update Monthly Salary when Yearly Salary changes
+  useEffect(() => {
+    if (lastUpdated === "yearly") {
+      const monthly = ctc / 12;
+      setMonthlyGrossSalary(monthly.toString());
+    }
+  }, [ctc, lastUpdated]);
+
+  useEffect(() => {
+    if (lastUpdated === "yearly") {
+      const monthly = Math.round(ctc / 12);
+      setMonthlyGrossSalary(monthly.toString()); // Now sets the salary to a rounded figure
+    }
+  }, [ctc, lastUpdated]);
+
+  const handleMonthlySalaryChange = (e) => {
+    const monthlySalary = e.target.value;
+
+    // if (monthlySalary === "") {
+    //   setIsRequired((prev) => ({
+    //     ...prev,
+    //     salary: true,
+    //   }));
+    // } else {
+    //   setIsRequired((prev) => ({
+    //     ...prev,
+    //     salary: false,
+    //   }));
+    // }
+
+    setMonthlyGrossSalary(monthlySalary);
+    setLastUpdated("monthly");
+  };
+
+  const handleYearlySalaryChange = (e) => {
+    const yearlySalaryValue = e.target.value;
+    setCTC(yearlySalaryValue);
+    setLastUpdated("yearly");
+
+    // if (yearlySalaryValue === "") {
+    //   setIsRequired((prev) => ({
+    //     ...prev,
+    //     salary: true,
+    //   }));
+    // } else {
+    //   setIsRequired((prev) => ({
+    //     ...prev,
+    //     salary: false,
+    //   }));
+    // }
+  };
+
   useEffect(() => {
     axios.get(`${baseUrl}` + `get_single_user/${id}`).then((res) => {
       const fetchedData = res.data;
@@ -593,12 +657,12 @@ const UserUpdate = () => {
       setDesignation(user_designation);
       setUID(UID);
 
-      setUserCtc(ctc);
+      setMonthlyGrossSalary(salary);
       setIsApplicable(emergency_contact_person_name2);
 
       setJoiningDate(joining_date?.split("T")?.[0]);
       setReleavingDate(releaving_date?.split("T")?.[0]);
-      setSalary(salary);
+      setCTC(ctc);
       let lang = SpokenLanguages.split(",");
       let modifiedLang = lang
         ?.filter((item) => item.trim() !== "")
@@ -760,8 +824,12 @@ const UserUpdate = () => {
     formData.append("user_login_password", password);
     formData.append("user_status", userStatus);
 
-    formData.append("emergency_contact_person_name2", isApplicable.value);
-    formData.append("ctc", userCtc);
+    formData.append(
+      "emergency_contact_person_name2",
+      isApplicable?.value || isApplicable
+    );
+    formData.append("salary", monthlyGrossSalary);
+    formData.append("ctc", ctc);
 
     formData.append("sitting_id", jobType === "WFH" ? 0 : Number(sitting));
     formData.append(
@@ -1829,23 +1897,24 @@ const UserUpdate = () => {
 
           <div className="col-3">
             <FieldContainer
-              label="Gross Salary"
+              label="Monthly Gross Salary"
               type="number"
               fieldGrid={3}
               required={false}
-              value={userCtc}
-              onChange={(e) => {
-                // setUserCtc(e.target.value);
-                const value = e.target.value;
-                // Limit input to 6 digits
-                if (/^\d{0,7}$/.test(value)) {
-                  setUserCtc(value);
-                }
-              }}
+              value={monthlyGrossSalary}
+              onChange={handleMonthlySalaryChange}
             />
           </div>
-
-          {/* )} */}
+          <div className="col-3">
+            <FieldContainer
+              label="CTC"
+              type="number"
+              fieldGrid={3}
+              required={false}
+              value={ctc}
+              onChange={handleYearlySalaryChange}
+            />
+          </div>
 
           <div className="form-group col-3">
             <label className="form-label">Custom Rang</label>
@@ -2166,11 +2235,11 @@ const UserUpdate = () => {
               setIFSC(inputValue.slice(0, 11)); // Limiting the input to 11 characters
             }}
           />
-          {/* <FieldContainer
+          <FieldContainer
             label="Beneficiary"
             value={beneficiary}
             onChange={(e) => setBeneficiary(e.target.value)}
-          /> */}
+          />
 
           {/* <FieldContainer
         label="Upload Proof *"
