@@ -29,7 +29,8 @@ export const PageBaseURL = createApi({
     }),
     addPageCategory: builder.mutation({
       query: (data) => ({
-        url: `v1/page_category`,
+        url: `projectxpagecategory`,
+        // url: `v1/page_category`,
         method: "POST",
         body: data,
       }),
@@ -42,11 +43,17 @@ export const PageBaseURL = createApi({
       providesTags: ["categoryList"],
     }),
     updatePageCategory: builder.mutation({
-      query: (data) => ({
-        url: `v1/page_category/${data._id}`,
-        method: "PUT",
-        body: data,
-      }),
+      query: (data) => {
+        const { _id, category_name } = data;
+        return {
+          url: `projectxpagecategory`, // or use the commented out URL if needed: `v1/page_category/${_id}`,
+          method: "PUT",
+          body: {
+            id: _id,
+            category_name: category_name
+          },
+        };
+      },
       invalidatesTags: ["categoryList"],
     }),
 

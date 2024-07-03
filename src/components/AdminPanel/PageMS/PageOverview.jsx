@@ -516,7 +516,9 @@ const PageOverview = () => {
   }, [pageList]);
 
   const { data: priceData, isLoading: isPriceLoading } =
-    useGetMultiplePagePriceQuery(selectedRow);
+    useGetMultiplePagePriceQuery(selectedRow,{
+      skip:!selectedRow
+    });
 
   const handlePriceClick = (row) => {
     return function () {

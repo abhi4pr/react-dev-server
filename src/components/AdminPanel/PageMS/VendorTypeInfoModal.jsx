@@ -191,6 +191,7 @@ export default function VendorTypeInfoModal() {
 
     {
       name: "Action",
+      width: "10%",
       cell: (row) => (
         <>
           <button
@@ -366,7 +367,7 @@ export default function VendorTypeInfoModal() {
       vendorRefetch();
       setColumns(vendorColumns);
       setTitle("Vendor Type Overview");
-      setData(vendorData);
+      setData(vendorData?.data);
       setLoading(vendorIsLoading);
     } else if (modalType == "Platform") {
       platformRefetch();
@@ -383,14 +384,14 @@ export default function VendorTypeInfoModal() {
     } else if (modalType == "PayCycle") {
       payCycleRefetch();
       setColumns(payCycleColumns);
-      setTitle("Pay Cycle Overview");
-      setData(payCycle);
+      setTitle("Pay Cycle Overview")
+      setData(payCycle?.data);
       setLoading(payCycleIsLoading);
     } else if (modalType == "WhatsappLinkType") {
       whatsappLinkRefetch();
       setColumns(whatsappGrouplinkType);
       setTitle("Whatsapp Link Type Overview");
-      setData(whatsappLinkData);
+      setData(whatsappLinkData.data);
       setLoading(whatsappLinkIsLoading);
     } else if (modalType == "BankName") {
       bankNameRefetch();
