@@ -460,13 +460,13 @@ const PageMaster = () => {
       primary_page: primary.value,
       post:
         rowCount.find((e) => e.page_price_type_id == "667e6c7412fbbf002179f6d6")
-          .price ?? 0,
+          ?.price ?? 0,
       story:
         rowCount.find((e) => e.page_price_type_id == "667e6c9112fbbf002179f72c")
-          .price ?? 0,
+          ?.price ?? 0,
       both_:
         rowCount.find((e) => e.page_price_type_id == "667e6c9c12fbbf002179f72f")
-          .price ?? 0,
+          ?.price ?? 0,
     };
     if (pageMast_id) {
       payload.last_updated_by = userID;
