@@ -22,8 +22,11 @@ import {
 import DeleteButton from "../DeleteButton";
 import { FaEdit } from "react-icons/fa";
 import { useGetPmsPlatformQuery } from "../../Store/reduxBaseURL";
+import jwtDecode from "jwt-decode";
 
 export default function PageInfoModal() {
+  const token = sessionStorage.getItem("token");
+  const decodedToken = jwtDecode(token);
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
   const open = useSelector((state) => state.pageMaster.showInfoModal);
@@ -140,29 +143,30 @@ export default function PageInfoModal() {
     },
     {
       name: "Page Category Name",
-      selector: (row) => row.category_name,
+      selector: (row) => row.page_category,
+      // selector: (row) => row.category_name,
     },
-    // {
-    //   name: "Description",
-    //   selector: (row) => row.description,
-    // },
-      // {
-      //   name: "Action",
-      //   cell: (row) => (
-      //     <>
-      //       <button
-      //         title="Edit"
-      //         className="btn btn-outline-primary btn-sm user-button"
-      //         onClick={() => handlRowClick(row, "Category Update")}
-      //         data-toggle="modal"
-      //         data-target="#myModal"
-      //       >
-      //         <FaEdit />{" "}
-      //       </button>
-      //       <DeleteButton endpoint="deletePage" id={row._id} getData={getData} />
-      //     </>
-      //   ),
-      // },
+    {
+      name: "Description",
+      selector: (row) => row.description,
+    },
+      {
+        name: "Action",
+        cell: (row) => (
+          <>
+          {decodedToken.role_id==1 &&  <button
+              title="Edit"
+              className="btn btn-outline-primary btn-sm user-button"
+              onClick={() => handlRowClick(row, "Category Update")}
+              data-toggle="modal"
+              data-target="#myModal"
+            >
+              <FaEdit />{" "}
+            </button>}
+            {/* <DeleteButton endpoint="deletePage" id={row._id} getData={getData} /> */}
+          </>
+        ),
+      },
   ];
 
   const priceTypeColumn = [

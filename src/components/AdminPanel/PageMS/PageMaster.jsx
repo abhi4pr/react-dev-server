@@ -100,7 +100,7 @@ const PageMaster = () => {
     followCount: false,
     profileId: false,
     platformActive: false,
-    rate: false,
+    // rate: false,
     description: false,
     rateType: false,
     variableType: false,
@@ -115,7 +115,6 @@ const PageMaster = () => {
     { page_price_type_id: "", price: "" },
   ]);
 
-  
   const dispatch = useDispatch();
 
   const { data: ownerShipData } = useGetOwnershipTypeQuery();
@@ -187,7 +186,8 @@ const PageMaster = () => {
       );
       let tagData = tags?.map((e) => ({
         value: e?._id,
-        label: e?.category_name,
+        label: e?.page_category,
+        // label: e?.category_name,
       }));
       setTag(tagData);
 
@@ -211,7 +211,6 @@ const PageMaster = () => {
       ]);
     }
   }, [singlePageLoading]);
- 
 
   useEffect(() => {
     if (rowCount.length > 0) {
@@ -221,14 +220,13 @@ const PageMaster = () => {
       setFilterPriceTypeList(data);
     }
   }, [rowCount, priceTypeList]); // Added priceTypeList as a dependency
-  
+
   useEffect(() => {
-  
     if (platformPriceData?.length > 0) {
       setPriceTypeList(platformPriceData);
       setFilterPriceTypeList(platformPriceData);
     } else {
-      console.log('Condition not met. platformPriceData:', platformPriceData);
+      console.log("Condition not met. platformPriceData:", platformPriceData);
     }
   }, [platformPriceData, isPriceLoading]);
 
@@ -397,9 +395,9 @@ const PageMaster = () => {
     if (platformActive?.length == 0 || platformActive == null) {
       setValidateFields((prev) => ({ ...prev, platformActive: true }));
     }
-    if (rate === "") {
-      setValidateFields((prev) => ({ ...prev, rate: true }));
-    }
+    // if (rate === "") {
+    //   setValidateFields((prev) => ({ ...prev, rate: true }));
+    // }
     if (description === "") {
       setValidateFields((prev) => ({ ...prev, description: true }));
     }
@@ -425,15 +423,20 @@ const PageMaster = () => {
       followCount === "" ||
       profileId === "" ||
       platformActive?.length == 0 ||
-      rate === "" ||
+      // rate === "" ||
       rateType === "" ||
       tag.length == 0 ||
-      (rateType.value == "Variable" && variableType === "") ||
-      rowCount.some((e) => e.page_price_type_id == "" || e.price == "")
+      (rateType.value == "Variable" && variableType === "") 
+      ||
+      // rowCount.some((e) => e.page_price_type_id == "" || e.price == "")
+      // Corrected condition to check if any row has an empty page_price_type_id or price
+rowCount.some((e) => e.page_price_type_id === "" || e.price === "")
     ) {
-      return toastError("Please Fill All Required Fields");
+      console.log(link, "---link",pageName,"--pagename",platformId,"--platformId",categoryId,"--categoryId",pageLevel,"--pageLevel",pageStatus,"--pageStatus",closeBy,"---closeBy",pageType,"---pageType",content,"---content",ownerType,"--ownerType",vendorId,"--vendorId",followCount,"--followCount",profileId,"--profileId",platformActive,"--platformActive",description,"--description",rateType,"--rateType",tag,"--tag",rowCount,"--rowCount",variableType,"--variableType");
+      return toastError("Please Fill All Required Fieldsaa");
     }
-
+    console.warn('NO ERROR')
+// return
     const payload = {
       page_name: pageName,
       page_link: link,
@@ -532,8 +535,6 @@ const PageMaster = () => {
     }
   };
 
-  
-
   const handlePriceChange = (e, index) => {
     if (
       e.target.value !== "" &&
@@ -549,8 +550,6 @@ const PageMaster = () => {
     const val = variableType.value === "Per Thousand" ? 1000 : 1000000;
     return ((followCount / val) * (rowCount[index]?.price || 0)).toFixed(2);
   };
-
-
 
   return (
     <>
@@ -713,14 +712,15 @@ const PageMaster = () => {
                     className="w-100"
                     options={categoryData.map((option) => ({
                       value: option._id,
-                      label: option.category_name,
+                      label: option.page_category,
+                      // label: option.category_name,
                     }))}
                     required={true}
                     value={{
                       value: categoryId,
                       label:
                         categoryData.find((role) => role._id === categoryId)
-                          ?.category_name || "",
+                          ?.page_category || "",
                     }}
                     onChange={(e) => {
                       setCategoryId(e.value);
@@ -763,7 +763,8 @@ const PageMaster = () => {
                   isMulti
                   options={categoryData.map((option) => ({
                     value: option._id,
-                    label: option.category_name,
+                    label: option.page_category ,
+                    // label: option.category_name,
                   }))}
                   required={true}
                   value={tag}
@@ -788,7 +789,11 @@ const PageMaster = () => {
                 required={true}
                 onChange={(e) => {
                   setPageName(e.target.value);
+
                   if (e.target.value) {
+                    if (platformData.some(e => e.platform_name.toLowerCase() === 'instagram' && e._id === platformId)) {
+                      setLink(`https://www.instagram.com/${e.target.value}/`);
+                    }
                     setValidateFields((prev) => ({ ...prev, pageName: false }));
                   }
                 }}
@@ -801,6 +806,7 @@ const PageMaster = () => {
               <FieldContainer
                 fieldGrid={12}
                 label="Link"
+                // disabled
                 astric={true}
                 value={link}
                 required={true}
@@ -1114,7 +1120,7 @@ const PageMaster = () => {
             <div className="col-md-6 p0 mb16">
               <FieldContainer
                 label="Engagement Rate"
-                astric={true}
+                // astric={true}
                 type="text"
                 fieldGrid={12}
                 value={rate}
@@ -1127,16 +1133,16 @@ const PageMaster = () => {
                     return;
                   }
                   setRate(e.target.value);
-                  if (e.target.value) {
-                    setValidateFields((prev) => ({ ...prev, rate: false }));
-                  }
+                  // if (e.target.value) {
+                  //   setValidateFields((prev) => ({ ...prev, rate: false }));
+                  // }
                 }}
               />
-              {validateFields.rate && (
+              {/* {validateFields.rate && (
                 <small style={{ color: "red" }}>
                   Please Fill Engagement Rate
                 </small>
-              )}
+              )} */}
             </div>
             <div className="col-md-6 p0 mb16">
               <FieldContainer
@@ -1279,8 +1285,8 @@ const PageMaster = () => {
                   />
                   {rateType.label == "Variable" && (
                     <p className="ml-3" style={{ color: "blue" }}>
-                      This Page Cost ={" "}
-                      {"  Rs "} {calculateFollowerCount(index.toFixed(0))} 
+                      This Page Cost = {"  Rs "}{" "}
+                      {calculateFollowerCount(index.toFixed(0))}
                     </p>
                   )}
                 </div>

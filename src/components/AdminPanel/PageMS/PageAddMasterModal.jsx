@@ -77,7 +77,8 @@ export default function PageAddMasterModal() {
       setTitle("Add Category");
     } else if (modalType === "Category Update") {
       setTitle("Update Category");
-      setValue("name", rowData.category_name);
+      setValue("name", rowData.page_category);
+      // setValue("name", rowData.category_name);
       setValue("description", rowData.description);
     } else if (modalType === "Price Type") {
       setTitle("Add Price Type");
@@ -125,7 +126,8 @@ export default function PageAddMasterModal() {
     } else if (modalType === "Category") {
       delete obj.updated_by;
       delete obj.profile_type;
-      obj.category_name = data.name;
+      // obj.category_name = data.name;
+      obj.page_category = data.name;
       addCategory(obj)
         .unwrap()
         .then(() => {
@@ -139,6 +141,7 @@ export default function PageAddMasterModal() {
       delete obj.updated_by;
       delete obj.profile_type;
       obj.category_name = data.name;
+      obj.last_updated_by=userID
       updateCategory(obj)
         .unwrap()
         .then(() => {
@@ -289,9 +292,9 @@ export default function PageAddMasterModal() {
               helperText={errors.name?.message}
               error={Boolean(errors.name)}
             />
-            {!modalType == "category" ||
+            {/* {!modalType == "category" ||
               !modalType == "Add Category" ||
-              (!modalType == "Category" && (
+              (!modalType == "Category" && ( */}
                 <TextField
                   autoFocus
                   margin="dense"
@@ -301,7 +304,7 @@ export default function PageAddMasterModal() {
                   fullWidth
                   {...register("description")}
                 />
-              ))}
+              {/* ))} */}
             <DialogActions>
               <Button autoFocus type="submit">
                 submit

@@ -626,7 +626,8 @@ const PageOverview = () => {
       renderCell: (params) => {
         let name = cat?.find(
           (item) => item?._id == params.row?.page_category_id
-        )?.category_name;
+        )?.page_category;
+        // )?.category_name;
 
         return <div>{name}</div>;
       },
