@@ -1738,7 +1738,7 @@ const SidebarLinks = () => {
             aria-labelledby="headingTwo"
             data-parent="#accordionSidebar"
           >
-            <div className="internal collapse-inner">
+          <div className="internal collapse-inner">
               {/* {contextData &&
                 contextData[0] &&
                 contextData[0].view_value === 1 && (
@@ -1746,27 +1746,27 @@ const SidebarLinks = () => {
                     <i className="bi bi-dot"></i>Master
                   </NavLink>
                 )} */}
-             
-              {contextData &&
+
+              {/* {contextData &&
                 contextData[0] &&
-                contextData[0].view_value === 1 && (
+                contextData[0].view_value === 1 && ( */}
                   <NavLink
                     className="collapse-item"
                     to="/admin/pms-vendor-overview"
                   >
                     <i className="bi bi-dot"></i>Vendor
                   </NavLink>
-                )}
-                 {contextData &&
+                {/* )} */}
+              {/* {contextData &&
                 contextData[0] &&
-                contextData[0].view_value === 1 && (
+                contextData[0].view_value === 1 && ( */}
                   <NavLink
                     className="collapse-item"
                     to="/admin/pms-page-overview"
                   >
                     <i className="bi bi-dot"></i>Page
                   </NavLink>
-                )}
+                {/* )} */}
               {/* {contextData &&
               contextData[0] &&
               contextData[0].view_value === 1 && (

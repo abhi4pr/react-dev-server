@@ -1,6 +1,5 @@
 import { createApi } from "@reduxjs/toolkit/query/react";
 import authBaseQuery from "../../utils/authBaseQuery";
-import { get } from "jquery";
 
 export const PageBaseURL = createApi({
   baseQuery: authBaseQuery,
@@ -29,8 +28,8 @@ export const PageBaseURL = createApi({
     }),
     addPageCategory: builder.mutation({
       query: (data) => ({
-        url: `projectxpagecategory`,
-        // url: `v1/page_category`,
+        // url: `projectxpagecategory`,
+        url: `v1/page_category`,
         method: "POST",
         body: data,
       }),
@@ -38,23 +37,43 @@ export const PageBaseURL = createApi({
     }),
     getAllPageCategory: builder.query({
       // query: () => `getPageCatgList`,
-      // query: () => `v1/page_category`,
-      query: () => `projectxpagecategory`,
+      query: () => `v1/page_category`,
+      // query: () => `projectxpagecategory`,
       providesTags: ["categoryList"],
     }),
+    // updatePageCategory: builder.mutation({
+    //   query: (data) => {
+    //     const { _id, category_name } = data;
+    //     return {
+    //       url:()=>`v1/page_category/${_id}`,
+    //       // url: `projectxpagecategory`, // or use the commented out URL if needed: `v1/page_category/${_id}`,
+    //       method: "PUT",
+    //       body: {
+    //         // id: _id,
+    //         page_category: category_name,
+    //         description: data.description,
+    //         last_updated_by:data.last_updated_by
+    //         // category_name: category_name
+    //       },
+    //     };
+    //   },
+    //   invalidatesTags: ["categoryList"],
+    // }),
+
     updatePageCategory: builder.mutation({
       query: (data) => {
         const { _id, category_name } = data;
         return {
-          url: `projectxpagecategory`, // or use the commented out URL if needed: `v1/page_category/${_id}`,
+          url: `v1/page_category/${_id}`, // Directly assign the URL string
           method: "PUT",
           body: {
-            id: _id,
-            category_name: category_name
+            page_category: category_name,
+            description: data.description,
+            last_updated_by: data.last_updated_by
           },
         };
       },
-      invalidatesTags: ["categoryList"],
+      invalidatesTags: ["categoryList"], // Assuming you might want to invalidate cache after update
     }),
 
     //price List
