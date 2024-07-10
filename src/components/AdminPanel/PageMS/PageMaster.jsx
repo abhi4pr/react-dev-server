@@ -426,17 +426,13 @@ const PageMaster = () => {
       // rate === "" ||
       rateType === "" ||
       tag.length == 0 ||
-      (rateType.value == "Variable" && variableType === "") 
-      ||
-      // rowCount.some((e) => e.page_price_type_id == "" || e.price == "")
-      // Corrected condition to check if any row has an empty page_price_type_id or price
-rowCount.some((e) => e.page_price_type_id === "" || e.price === "")
+      (rateType.value == "Variable" && variableType === "") ||
+      rowCount.some((e) => e.page_price_type_id === "" || e.price === "")
     ) {
-      console.log(link, "---link",pageName,"--pagename",platformId,"--platformId",categoryId,"--categoryId",pageLevel,"--pageLevel",pageStatus,"--pageStatus",closeBy,"---closeBy",pageType,"---pageType",content,"---content",ownerType,"--ownerType",vendorId,"--vendorId",followCount,"--followCount",profileId,"--profileId",platformActive,"--platformActive",description,"--description",rateType,"--rateType",tag,"--tag",rowCount,"--rowCount",variableType,"--variableType");
-      return toastError("Please Fill All Required Fieldsaa");
+      return toastError("Please Fill All Required Fields");
     }
-    console.warn('NO ERROR')
-// return
+    console.warn("NO ERROR");
+    // return
     const payload = {
       page_name: pageName,
       page_link: link,
@@ -763,7 +759,7 @@ rowCount.some((e) => e.page_price_type_id === "" || e.price === "")
                   isMulti
                   options={categoryData.map((option) => ({
                     value: option._id,
-                    label: option.page_category ,
+                    label: option.page_category,
                     // label: option.category_name,
                   }))}
                   required={true}
@@ -791,8 +787,17 @@ rowCount.some((e) => e.page_price_type_id === "" || e.price === "")
                   setPageName(e.target.value);
 
                   if (e.target.value) {
-                    if (platformData.some(e => e.platform_name.toLowerCase() === 'instagram' && e._id === platformId)) {
-                      setLink(`https://www.instagram.com/${e.target.value}/`);
+                    if (
+                      platformData.some(
+                        (e) =>
+                          e.platform_name.toLowerCase() === "instagram" &&
+                          e._id === platformId
+                      )
+                    ) {
+                      setLink(()=>`https://www.instagram.com/${e.target.value}/`);
+                      if(link){
+                        setValidateFields((prev) => ({ ...prev, link: false }));
+                      }
                     }
                     setValidateFields((prev) => ({ ...prev, pageName: false }));
                   }
@@ -855,7 +860,7 @@ rowCount.some((e) => e.page_price_type_id === "" || e.price === "")
             <div className="col-md-6 mb16">
               <div className="form-group m0">
                 <label className="form-label">
-                  Preference level <sup style={{ color: "red" }}>*</sup>
+                  Preference Level <sup style={{ color: "red" }}>*</sup>
                 </label>
                 <Select
                   name="page level"
@@ -886,7 +891,7 @@ rowCount.some((e) => e.page_price_type_id === "" || e.price === "")
             <div className="col-md-6 p0 mb16">
               <div className="form-group m0">
                 <label className="form-label">
-                  Ownership type<sup style={{ color: "red" }}>*</sup>
+                  Ownership Type<sup style={{ color: "red" }}>*</sup>
                 </label>
                 <Select
                   className="w-100"
@@ -914,7 +919,7 @@ rowCount.some((e) => e.page_price_type_id === "" || e.price === "")
               </div>
               {validateFields.ownerType && (
                 <small style={{ color: "red" }}>
-                  Please Fill Ownership Type
+                  Please Select Ownership Type
                 </small>
               )}
             </div>
@@ -966,7 +971,7 @@ rowCount.some((e) => e.page_price_type_id === "" || e.price === "")
             <div className="col-md-6 mb16">
               <div className="form-group m0">
                 <label className="form-label">
-                  Close by <sup style={{ color: "red" }}>*</sup>
+                  Close By <sup style={{ color: "red" }}>*</sup>
                 </label>
                 <Select
                   options={userData.map((option) => ({
