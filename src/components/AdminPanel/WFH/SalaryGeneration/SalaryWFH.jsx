@@ -98,6 +98,8 @@ const SalaryWFH = () => {
   const [activeTab, setActiveTab] = useState(0);
 
   const [selectedRows, setSelectedRows] = useState([]);
+  const [workDaysLastDate , setWorkDaysLastDate] = useState(0)
+
   var settings = {
     dots: false,
     arrows: true,
@@ -349,6 +351,8 @@ const SalaryWFH = () => {
     setSelectedCardIndex(index);
     setYear(data.year);
     setMonth(data.month);
+    setSelectedYear(data.year);
+    setSelectedMonth(data.month);
   };
 
   const handleMonthYearData = async () => {
@@ -839,6 +843,21 @@ const SalaryWFH = () => {
     );
   }
 
+  function getLastDateOfMonth(month, year) {
+    const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+    const monthIndex = monthNames.indexOf(month);
+    if (monthIndex === -1) {
+      throw new Error('Invalid month name');
+    }
+    let nextMonth = new Date(year, monthIndex + 1, 1);
+    let lastDateOfMonth = new Date(nextMonth - 1);
+    return setWorkDaysLastDate(lastDateOfMonth.getDate())
+  }
+
+  useEffect(()=>{
+    getLastDateOfMonth(selectedMonth,selectedYear)
+  },[selectedMonth,selectedYear])
+
   const columns = [
     {
       name: "S.No",
@@ -873,7 +892,7 @@ const SalaryWFH = () => {
     },
     {
       name: "Work Days",
-      cell: () => 30,
+      cell: () => workDaysLastDate ,
     },
     {
       name: "Month",
@@ -939,85 +958,85 @@ const SalaryWFH = () => {
       name: "Status",
       cell: (row) => row.attendence_status_flow,
     },
-    {
-      name: "Action",
-      width: "200px",
-      cell: (row) => (
-        <>
-          {!row?.invoice_template_no ? (
-            <button
-              type="button"
-              title="Select Invoice"
-              className=" icon-1"
-              data-toggle="modal"
-              data-target="#exampleModalCenter"
-              onClick={() => handleInvoice(row)}
-            >
-              <FileOpenIcon />
-            </button>
-          ) : (
-            !row?.sendToFinance && (
-              <button
-                title="Send to Finance"
-                className="icon-1"
-                onClick={(e) => handleSendToFinance(e, row)}
-              >
-                <i className="bi bi-cloud-arrow-up" />
-              </button>
-            )
-          )}
+    // {
+    //   name: "Action",
+    //   width: "200px",
+    //   cell: (row) => (
+    //     <>
+    //       {!row?.invoice_template_no ? (
+    //         <button
+    //           type="button"
+    //           title="Select Invoice"
+    //           className=" icon-1"
+    //           data-toggle="modal"
+    //           data-target="#exampleModalCenter"
+    //           onClick={() => handleInvoice(row)}
+    //         >
+    //           <FileOpenIcon />
+    //         </button>
+    //       ) : (
+    //         !row?.sendToFinance && (
+    //           <button
+    //             title="Send to Finance"
+    //             className="icon-1"
+    //             onClick={(e) => handleSendToFinance(e, row)}
+    //           >
+    //             <i className="bi bi-cloud-arrow-up" />
+    //           </button>
+    //         )
+    //       )}
 
-          {row.sendToFinance == 1 && row.status_ == 1 && (
-            <button
-              className="btn cmnbtn btn_sm btn-outline-primary ml-2 "
-              data-toggle="modal"
-              data-target="#exampleModal"
-              onClick={() => setRowDataModal(row)}
-            >
-              Paid
-            </button>
-          )}
-          {row.sendToFinance == 1 && row.status_ == 0 && (
-            <button className="btn cmnbtn btn_sm btn-danger ml-2 ">
-              Pending
-            </button>
-          )}
+    //       {row.sendToFinance == 1 && row.status_ == 1 && (
+    //         <button
+    //           className="btn cmnbtn btn_sm btn-outline-primary ml-2 "
+    //           data-toggle="modal"
+    //           data-target="#exampleModal"
+    //           onClick={() => setRowDataModal(row)}
+    //         >
+    //           Paid
+    //         </button>
+    //       )}
+    //       {row.sendToFinance == 1 && row.status_ == 0 && (
+    //         <button className="btn cmnbtn btn_sm btn-danger ml-2 ">
+    //           Pending
+    //         </button>
+    //       )}
 
-          {row?.invoice_template_no !== "0" && row?.digital_signature_image && (
-            <button
-              className="icon-1"
-              title="Download Invoice"
-              type="button"
-              onClick={() => generatePDF(row)}
-            >
-              <i className="bi bi-cloud-arrow-down" />
-            </button>
-          )}
-        </>
-      ),
-    },
-    roleID == 2 && {
-      name: "separation",
-      cell: (row) => (
-        <Button
-          className="btn  cmnbtn btn_sm btn-primary"
-          data-toggle="modal"
-          data-target="#exampleModalSepration"
-          size="small"
-          variant="contained"
-          color="primary"
-          onClick={() =>
-            handleSeprationReason(
-              row.user_id,
-              row.user_name,
-              row.user_contact_no
-            )
-          }
-        >
-          Sep
-        </Button>
-      ),
-    },
+    //       {row?.invoice_template_no !== "0" && row?.digital_signature_image && (
+    //         <button
+    //           className="icon-1"
+    //           title="Download Invoice"
+    //           type="button"
+    //           onClick={() => generatePDF(row)}
+    //         >
+    //           <i className="bi bi-cloud-arrow-down" />
+    //         </button>
+    //       )}
+    //     </>
+    //   ),
+    // },
+    // roleID == 2 && {
+    //   name: "separation",
+    //   cell: (row) => (
+    //     <Button
+    //       className="btn  cmnbtn btn_sm btn-primary"
+    //       data-toggle="modal"
+    //       data-target="#exampleModalSepration"
+    //       size="small"
+    //       variant="contained"
+    //       color="primary"
+    //       onClick={() =>
+    //         handleSeprationReason(
+    //           row.user_id,
+    //           row.user_name,
+    //           row.user_contact_no
+    //         )
+    //       }
+    //     >
+    //       Sep
+    //     </Button>
+    //   ),
+    // },
   ];
 
   const handleExport = () => {

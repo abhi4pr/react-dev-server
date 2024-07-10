@@ -4,6 +4,7 @@ import axios from "axios";
 import "./OrgTree.css"; // Import your CSS file
 import FormContainer from "../../FormContainer";
 import { useAPIGlobalContext } from "../../APIContext/APIContext";
+import { baseUrl } from "../../../../utils/config";
 
 const OrgTree = () => {
   const { userID } = useAPIGlobalContext();
@@ -13,7 +14,7 @@ const OrgTree = () => {
     const fetchData = async () => {
       try {
         const response = await axios.get(
-          `http://34.173.148.74:8080/api/report_l1_users_data/${userID}`
+          baseUrl+`report_l1_users_data/${userID}`
         );
         setOrgData(response.data.data);
       } catch (error) {}

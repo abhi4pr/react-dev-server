@@ -23,6 +23,7 @@ const DepartmentMaster = () => {
 
   const [isRequired, setIsRequired] = useState({
     departmentName: false,
+    shortName: false,
   });
 
   useEffect(() => {
@@ -37,8 +38,15 @@ const DepartmentMaster = () => {
     if (departmentName == "") {
       setIsRequired((perv) => ({ ...perv, departmentName: true }));
     }
+    if (shortName == "") {
+      setIsRequired((perv) => ({ ...perv, shortName: true }));
+    }
 
     if (!departmentName) {
+      return toastError("Fill Required Field");
+    }
+
+    if (!shortName) {
       return toastError("Fill Required Field");
     }
 
@@ -63,8 +71,9 @@ const DepartmentMaster = () => {
         });
       setDepartmentName("");
       setRemark("");
+      setShortName('')
 
-      toastAlert("Submitted success");
+      toastAlert("Added Successfully");
       setIsFormSubmitted(true);
     }
   };
@@ -105,16 +114,34 @@ const DepartmentMaster = () => {
               }}
             />
             {isRequired.departmentName && (
-              <p className="form-error">Please select Department</p>
+              <p className="form-error">Please Enter Department</p>
             )}
           </div>
-
-          <FieldContainer
-            label="Short Name"
-            value={shortName}
-            onChange={(e) => setShortName(e.target.value)}
-            required={false}
-          />
+          <div className="col-6">
+            <FieldContainer
+              label="Short Name"
+              value={shortName}
+              onChange={(e) => {
+                setShortName(e.target.value)
+                if (e.target.value === "") {
+                  setIsRequired((prev) => ({
+                    ...prev,
+                    shortName: true,
+                  }));
+                } else {
+                  setIsRequired((prev) => ({
+                    ...prev,
+                    shortName: false,
+                  }));
+                }
+              }}
+              required={false}
+              astric
+            />
+            {isRequired.shortName && (
+              <p className="form-error">Please Enter Short Name</p>
+            )}
+          </div>
           {/* <FieldContainer
           label="Created By"
           value={createdBy}

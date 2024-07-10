@@ -32,15 +32,17 @@ const Attendence = () => {
   const [completedYearsMonths, setCompletedYearsMonths] = useState([]);
   const [selectedCardIndex, setSelectedCardIndex] = useState(null);
   const [deptSalary, setDeptSalary] = useState([]);
-
+  
   const [rowUpdateError, setRowUpdateError] = useState(null);
 
   let isInEditMode = false;
-
+  
   const storedToken = sessionStorage.getItem("token");
   const decodedToken = jwtDecode(storedToken);
   const userID = decodedToken.id;
-
+  
+  const [workDaysLastDate , setWorkDaysLastDate] = useState()
+  
   var settings = {
     dots: false,
     arrows: true,
@@ -263,6 +265,7 @@ const Attendence = () => {
       });
   };
 
+
   useEffect(() => {
     if (department || selectedMonth || selectedYear !== "") {
       getAttendanceData();
@@ -319,6 +322,20 @@ const Attendence = () => {
       return updatedRow;
     }
   };
+
+  function getLastDateOfMonth(month, year) {
+    const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+    const monthIndex = monthNames.indexOf(month);
+    if (monthIndex === -1) {
+      throw new Error('Invalid month name');
+    }
+    let nextMonth = new Date(year, monthIndex + 1, 1);
+    let lastDateOfMonth = new Date(nextMonth - 1);
+    return setWorkDaysLastDate(lastDateOfMonth.getDate())
+  }
+  useEffect(()=>{
+    getLastDateOfMonth(selectedMonth,selectedYear)
+  },[selectedMonth,selectedYear])
 
   const columns = [
     {
@@ -380,7 +397,7 @@ const Attendence = () => {
       field: "workdays",
       headerName: "Work Days",
       type: "number",
-      valueGetter: () => 30,
+      valueGetter: () => workDaysLastDate,
     },
     {
       field: "noOfabsent",
@@ -556,17 +573,25 @@ const Attendence = () => {
                 Array.isArray(deptSalary) &&
                 deptSalary.some((d) => d.dept === option.dept_id);
 
-              const className = `btn ${
-                department === option.dept_id
-                  ? "btn-primary"
-                  : isDeptInSalary
-                  ? "btn-outline-primary"
-                  : "btn-outline-primary"
-              }`;
+              // const 
+              // className = `btn ${
+              //   department === option.dept_id
+              //     ? "btn-primary"
+              //     : isDeptInSalary
+              //     ? "btn-outline-primary"  
+              //     : "btn-outline-primary"
+              // }`;
 
               return (
                 <div
-                  className="card hover body-padding"
+                  // className="card hover body-padding"
+                  className={`card hover body-padding ${
+                    department === option.dept_id
+                      ? "btn-primary"
+                      : isDeptInSalary
+                      ? "btn-success"
+                      : "btn-outline-primary"
+                  }`}
                   style={{
                     height: "100px",
                     minWidth: "300px",

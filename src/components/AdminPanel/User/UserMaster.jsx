@@ -291,7 +291,7 @@ const UserMaster = () => {
     "Other",
   ];
   const bankTypeData = ["Saving A/C", "Current A/C", "Salary A/C"];
-  const statusData = ["Active", "Exit", "PreOnboard"];
+  const statusData = ["Active", "Exit", "PreOnboard" , ];
   const genderData = ["Male", "Female", "Other"];
   const nationalityData = ["Indian", "USA", "Uk"];
   const bloodGroupData = [

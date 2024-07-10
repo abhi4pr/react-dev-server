@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import FieldContainer from "../FieldContainer";
 import FormContainer from "../FormContainer";
 import { Navigate } from "react-router-dom";
@@ -10,8 +10,9 @@ import Select from "react-select";
 import { baseUrl } from "../../../utils/config";
 
 export default function SubDepartmentMaster() {
-  const { DepartmentContext } = useAPIGlobalContext();
+  // const { DepartmentContext } = useAPIGlobalContext();
   const { toastAlert, toastError } = useGlobalContext();
+  const [DepartmentContext , getDepartmentData] = useState([])
   const [subDepartmentName, setSubDepartmentName] = useState("");
   const [departmentName, setDepartmentName] = useState("");
   const [remark, setRemark] = useState("");
@@ -25,6 +26,12 @@ export default function SubDepartmentMaster() {
     subDepartmentName: false,
     departmentName: false,
   });
+
+  useEffect(()=>{
+    axios.get(baseUrl + "get_all_departments").then((res) => {
+      getDepartmentData(res.data);
+    });
+  })
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -134,7 +141,7 @@ export default function SubDepartmentMaster() {
             required
           />
           {isRequired.departmentName && (
-            <p className="form-error">Please Enter Department</p>
+            <p className="form-error">Please Select Department</p>
           )}
         </div>
 

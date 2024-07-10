@@ -66,9 +66,14 @@ const WFHDOverview = () => {
   const getData = async () => {
     setLoading(true);
     const response = await axios.get(baseUrl + "get_all_wfh_users");
-    if (RoleIDContext == 1 || RoleIDContext == 5 || RoleIDContext == 2) {
-      setAllWFHDData(response.data.data);
-      const FinalResonse = response.data.data;
+    // if (RoleIDContext == 1 || RoleIDContext == 5 || RoleIDContext == 2) {
+    if (RoleIDContext == 1 || RoleIDContext == 5 ) {
+      setAllWFHDData(
+        response.data.data.filter((item) => item.user_status === "Active")
+      );
+      const FinalResonse = response.data.data.filter(
+        (item) => item.user_status === "Active"
+      );
       setLoading(false);
 
       let filterTabWise = [];
@@ -105,11 +110,13 @@ const WFHDOverview = () => {
 
       setFilteredDatas(filterTabWise);
       setSearchFilter(filterTabWise);
-    } else {
+    // } else {
+    } else if(RoleIDContext == 2){
       const deptWiseData = response.data.data?.filter(
         (d) => d.dept_id == ContextDept
       );
       setAllWFHDData(deptWiseData);
+      setLoading(false)
 
       let filterTabWise = [];
       switch (activeTab) {
@@ -148,16 +155,18 @@ const WFHDOverview = () => {
 
       setSavedData(response.data.data?.filter((d) => d.dept_id == ContextDept));
     }
-    const counts = response.data.data.reduce((acc, curr) => {
-      if (
-        RoleIDContext == 1 ||
-        RoleIDContext == 5 ||
-        curr.dept_id == ContextDept
-      ) {
-        acc[curr.att_status] = (acc[curr.att_status] || 0) + 1;
-      }
-      return acc;
-    }, {});
+    const counts = response.data.data
+      .filter((item) => item.user_status === "Active")
+      .reduce((acc, curr) => {
+        if (
+          RoleIDContext == 1 ||
+          RoleIDContext == 5 ||
+          curr.dept_id == ContextDept
+        ) {
+          acc[curr.att_status] = (acc[curr.att_status] || 0) + 1;
+        }
+        return acc;
+      }, {});
     setStatusCounts(counts);
   };
 
@@ -219,23 +228,34 @@ const WFHDOverview = () => {
   }
 
   function handleSeparationDataPost() {
-    axios.post(baseUrl + "add_separation", {
-      user_id: separationUserID,
-      status: separationStatus,
-      created_by: userID,
-      resignation_date: separationResignationDate,
-      last_working_day: separationLWD,
-      remark: separationRemark,
-      reason: separationReason,
-    });
-    getData();
-    toastAlert("Separation Added Success");
-    whatsappApi.callWhatsAPI(
-      "CF_Separation",
-      JSON.stringify(usercontact),
-      username,
-      [username, separationStatus]
-    );
+    axios
+      .post(baseUrl + "add_separation", {
+        user_id: separationUserID,
+        status: separationStatus,
+        created_by: userID,
+        resignation_date: separationResignationDate,
+        last_working_day: separationLWD,
+        remark: separationRemark,
+        reason: separationReason,
+      })
+      .then(() => {
+        getData();
+        setSeparationReason("");
+        setSeparationStatus("");
+        setSeparationResignationDate("");
+        setSeparationLWD("");
+        setSeparationRemark("");
+        toastAlert("Separation Added Success");
+        whatsappApi.callWhatsAPI(
+          "CF_Separation",
+          JSON.stringify(usercontact),
+          username,
+          [username, separationStatus]
+        );
+      })
+      .catch((error) => {
+        console.error("There was an error adding the separation!", error);
+      });
   }
 
   useEffect(() => {
@@ -559,6 +579,7 @@ const WFHDOverview = () => {
                   <FieldContainer
                     label="Remark"
                     fieldGrid={12}
+                    astric
                     value={remark}
                     onChange={(e) => setRemark(e.target.value)}
                     required={true}
@@ -580,7 +601,7 @@ const WFHDOverview = () => {
                     // data-dismiss="modal"
                     disabled={!remark}
                   >
-                    Save changes
+                    Save
                   </button>
                 </div>
               </div>
@@ -697,15 +718,9 @@ const WFHDOverview = () => {
                   </div>
                   <div className="modal-body">
                     <FieldContainer
-                      label="Remark"
-                      fieldGrid={12}
-                      value={remark}
-                      onChange={(e) => setRemark(e.target.value)}
-                      required={true}
-                    ></FieldContainer>
-                    <FieldContainer
                       type="date"
-                      label="Training Date"
+                      label="Training Date "
+                      astric
                       fieldGrid={12}
                       min={
                         rowData?.joining_date &&
@@ -714,6 +729,14 @@ const WFHDOverview = () => {
                       value={trainingDate}
                       onChange={(e) => setTrainingDate(e.target.value)}
                     />
+                    <FieldContainer
+                      label="Remark"
+                      fieldGrid={12}
+                      astric
+                      value={remark}
+                      onChange={(e) => setRemark(e.target.value)}
+                      required={true}
+                    ></FieldContainer>
                   </div>
                   <div className="modal-footer">
                     <button
@@ -767,6 +790,7 @@ const WFHDOverview = () => {
                     label="Status"
                     Tag="select"
                     value={separationStatus}
+                    astric
                     onChange={(e) => setSeparationStatus(e.target.value)}
                   >
                     <option value="" disabled>
@@ -782,6 +806,7 @@ const WFHDOverview = () => {
                     label="Reason"
                     Tag="select"
                     value={separationReason}
+                    astric
                     onChange={(e) => setSeparationReason(e.target.value)}
                   >
                     {separationReasonGet.map((option) => (
@@ -794,6 +819,7 @@ const WFHDOverview = () => {
                   <FieldContainer
                     label="Remark"
                     value={separationRemark}
+                    astric
                     onChange={(e) => setSeparationRemark(e.target.value)}
                   />
                   {(separationStatus === "On Long Leave" ||
@@ -824,6 +850,7 @@ const WFHDOverview = () => {
                       label="Resignation Date"
                       type="date"
                       value={separationResignationDate}
+                      astric
                       onChange={(e) =>
                         setSeparationResignationDate(e.target.value)
                       }
@@ -843,6 +870,12 @@ const WFHDOverview = () => {
                     className="btn btn-primary"
                     onClick={() => handleSeparationDataPost()}
                     data-dismiss="modal"
+                    disabled={
+                      !separationRemark ||
+                      !separationStatus ||
+                      !separationReason ||
+                      !separationResignationDate
+                    }
                   >
                     Save changes
                   </button>

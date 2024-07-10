@@ -10,6 +10,8 @@ import IndianBankList from "../../../assets/js/IndianBankList";
 import IndianStates from "../../ReusableComponents/IndianStates";
 import { useLocation } from "react-router-dom";
 import titleimg from "/bg-img.png";
+import IndianCitiesMui from "../../ReusableComponents/IndianCitiesMui";
+import IndianStatesMui from "../../ReusableComponents/IndianStatesMui";
 const WFHDBankUpdate = () => {
   const { user_id } = useParams();
   const { toastAlert, toastError } = useGlobalContext();
@@ -32,6 +34,19 @@ const WFHDBankUpdate = () => {
   const [pincode, setPincode] = useState("");
   const [upi, setUpi] = useState("");
   //--------------------Address Info State End
+
+  const [isRequired, setIsRequired] = useState({
+    bankName: false,
+    bankAccountNumber: false,
+    IFSC: false,
+    panNo: false,
+    beneficiary: false,
+    address: false,
+    state: false,
+    city: false,
+    pincode: false,
+    upi: false,
+  });
 
   useEffect(() => {
     axios.get(baseUrl + "get_all_cities").then((res) => {
@@ -69,20 +84,51 @@ const WFHDBankUpdate = () => {
   }, []);
 
   const handleSubmit = async () => {
+    if (bankName == "") {
+      setIsRequired((perv) => ({ ...perv, bankName: true }));
+    }
+    if (bankAccountNumber == "") {
+      setIsRequired((perv) => ({ ...perv, bankAccountNumber: true }));
+    }
+    if (IFSC == "") {
+      setIsRequired((perv) => ({ ...perv, IFSC: true }));
+    }
+    if (panNo == "") {
+      setIsRequired((perv) => ({ ...perv, panNo: true }));
+    }
+    if (beneficiary == "") {
+      setIsRequired((perv) => ({ ...perv, beneficiary: true }));
+    }
+    if (address == "") {
+      setIsRequired((perv) => ({ ...perv, address: true }));
+    }
+    if (state == "") {
+      setIsRequired((perv) => ({ ...perv, state: true }));
+    }
+    if (city == "") {
+      setIsRequired((perv) => ({ ...perv, city: true }));
+    }
+    if (pincode == "") {
+      setIsRequired((perv) => ({ ...perv, pincode: true }));
+    }
+    if (upi == "") {
+      setIsRequired((perv) => ({ ...perv, upi: true }));
+    }
+
     if (!bankName || bankName == "") {
-      return toastError("Bank Name is required");
+      return toastError("Please fill all Required field");
     } else if (!bankAccountNumber || bankAccountNumber == "") {
-      return toastError("Account Number is required");
+      return toastError("Please fill all Required field");
     } else if (!IFSC || IFSC == "") {
-      return toastError("IFSC is required");
+      return toastError("Please fill all Required field");
     } else if (!city || city == "") {
-      return toastError("City is required");
+      return toastError("Please fill all Required field");
     } else if (!address || address == "") {
-      return toastError("Address is required");
+      return toastError("Please fill all Required field");
     } else if (!state || state == "") {
-      return toastError("State is required");
+      return toastError("Please fill all Required field");
     } else if (!pincode || pincode == "") {
-      return toastError("Pincode is required");
+      return toastError("Please fill all Required field");
     }
     try {
       const response = axios.put(baseUrl + "update_user", {
@@ -110,6 +156,18 @@ const WFHDBankUpdate = () => {
   const handlePANChange = (e) => {
     const inputPAN = e.target.value.toUpperCase();
     setPanNo(inputPAN.slice(0, 10));
+
+    if (inputPAN === "") {
+      setIsRequired((prev) => ({
+        ...prev,
+        panNo: true,
+      }));
+    } else {
+      setIsRequired((prev) => ({
+        ...prev,
+        panNo: false,
+      }));
+    }
 
     // Validate PAN when input changes
     const isValid = validatePAN(inputPAN);
@@ -151,7 +209,12 @@ const WFHDBankUpdate = () => {
                 <Select
                   options={IndianBankList}
                   onChange={(selectedOption) => {
-                    setBankName(selectedOption ? selectedOption.value : null);
+                    const value = selectedOption ? selectedOption.value : null;
+                    setBankName(value);
+                    setIsRequired((prev) => ({
+                      ...prev,
+                      bankName: value === null || value === "",
+                    }));
                   }}
                   isClearable
                   isSearchable
@@ -162,38 +225,74 @@ const WFHDBankUpdate = () => {
                   }
                   getOptionLabel={(option) => option.label}
                   getOptionValue={(option) => option.value}
-                  required
                 />
+                {isRequired.bankName && (
+                  <p className="form-error">Please Enter Bank Name</p>
+                )}
               </div>
-              <FieldContainer
-                label="Bank Account Number"
-                astric={true}
-                fieldGrid={3}
-                maxLength={17}
-                value={bankAccountNumber}
-                // onChange={(e) => setBankAccountNumber(e.target.value)}
-                onChange={(e) => {
-                  const inputValue = e.target.value;
-                  const onlyNumbers = /^[0-9]+$/;
+              <div className="col-3">
+                <FieldContainer
+                  label="Bank Account Number"
+                  astric={true}
+                  fieldGrid={3}
+                  maxLength={17}
+                  value={bankAccountNumber}
+                  // onChange={(e) => setBankAccountNumber(e.target.value)}
+                  onChange={(e) => {
+                    const inputValue = e.target.value;
+                    const onlyNumbers = /^[0-9]+$/;
 
-                  if (onlyNumbers.test(inputValue) && inputValue.length <= 17) {
-                    setBankAccountNumber(inputValue);
-                  } else if (inputValue === "") {
-                    setBankAccountNumber("");
-                  }
-                }}
-              />
-              <FieldContainer
-                astric={true}
-                label="IFSC"
-                fieldGrid={3}
-                value={IFSC}
-                onChange={(e) => {
-                  const inputValue = e.target.value.toUpperCase();
-                  setIFSC(inputValue.slice(0, 11));
-                }}
-              />
-
+                    if (
+                      onlyNumbers.test(inputValue) &&
+                      inputValue.length <= 17
+                    ) {
+                      setBankAccountNumber(inputValue);
+                    } else if (inputValue === "") {
+                      setBankAccountNumber("");
+                    }
+                    if (inputValue === "") {
+                      setIsRequired((prev) => ({
+                        ...prev,
+                        bankAccountNumber: true,
+                      }));
+                    } else {
+                      setIsRequired((prev) => ({
+                        ...prev,
+                        bankAccountNumber: false,
+                      }));
+                    }
+                  }}
+                />
+                {isRequired.bankAccountNumber && (
+                  <p className="form-error">Please Enter Bank Account Number</p>
+                )}
+              </div>
+              <div className="col-3">
+                <FieldContainer
+                  astric={true}
+                  label="IFSC"
+                  fieldGrid={3}
+                  value={IFSC}
+                  onChange={(e) => {
+                    const inputValue = e.target.value.toUpperCase();
+                    setIFSC(inputValue.slice(0, 11));
+                    if (inputValue === "") {
+                      setIsRequired((prev) => ({
+                        ...prev,
+                        IFSC: true,
+                      }));
+                    } else {
+                      setIsRequired((prev) => ({
+                        ...prev,
+                        IFSC: false,
+                      }));
+                    }
+                  }}
+                />
+                {isRequired.IFSC && (
+                  <p className="form-error">Please Enter IFSC</p>
+                )}
+              </div>
               <div className="col-3">
                 <FieldContainer
                   label="PAN No"
@@ -204,6 +303,9 @@ const WFHDBankUpdate = () => {
                 {!isValidPAN && (
                   <span style={{ color: "red" }}>PAN is not valid</span>
                 )}
+                {isRequired.panNo && (
+                  <p className="form-error">Please Enter PAN No.</p>
+                )}
               </div>
               <FieldContainer
                 label="Beneficiary"
@@ -211,68 +313,98 @@ const WFHDBankUpdate = () => {
                 fieldGrid={3}
                 onChange={(e) => setBeneficiary(e.target.value)}
               />
-              <FieldContainer
-                label="Address"
-                fieldGrid={3}
-                value={address}
-                onChange={(e) => setAddress(e.target.value)}
-              />
-              <div className="form-group col-3">
-                <IndianStates
-                  newValue={state}
-                  onChange={(option) => setState(option ? option.value : null)}
+              <div className="col-3">
+                <FieldContainer
+                  label="Address"
+                  astric
+                  fieldGrid={3}
+                  value={address}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    setAddress(value);
+
+                    if (value === "") {
+                      setIsRequired((prev) => ({
+                        ...prev,
+                        address: true,
+                      }));
+                    } else {
+                      setIsRequired((prev) => ({
+                        ...prev,
+                        address: false,
+                      }));
+                    }
+                  }}
                 />
+                {isRequired.address && (
+                  <p className="form-error">Please Enter Address</p>
+                )}
+              </div>
+              <div className="form-group col-3">
+                <label className="form-label">State</label>
+                <IndianStatesMui
+                  selectedState={state}
+                  onChange={(option) => {
+                    const value = option;
+                    setState(option ? option : null);
+                    setIsRequired((prev) => ({
+                      ...prev,
+                      state: value === null || value === "",
+                    }));
+                  }}
+                />
+                {isRequired.state && (
+                  <p className="form-error">Please Enter State</p>
+                )}
               </div>
               <div className="form-group col-3">
                 <label className="form-label">City</label>
-                {/* <Select
-                options={cityData.map((city) => ({
-                  value: city.city_name,
-                  label: city.city_name,
-                }))}
-                onChange={setCity}
-                required={true}
-                value={{
-                  value: city,
-                  label:
-                  cityData.find((gotCity) => gotCity.city_name == city)
-                  ?.city_name || "",
-                }}
-                placeholder="Select a city..."
-                isClearable
-              /> */}
-                <Select
-                  options={cityData?.map((city) => ({
-                    value: city.city_name,
-                    label: city.city_name,
-                  }))}
-                  onChange={(e) => setCity(e ? e.value : "")}
-                  required={true}
-                  value={{
-                    value: city,
-                    label:
-                      cityData.find((gotCity) => gotCity.city_name == city)
-                        ?.city_name || "",
+                <IndianCitiesMui
+                  selectedState={state}
+                  selectedCity={city}
+                  onChange={(option) => {
+                    const value = option;
+                    setCity(option ? option : null);
+                    setIsRequired((prev) => ({
+                      ...prev,
+                      city: value === null || value === "",
+                    }));
                   }}
-                  placeholder="Select a city..."
-                  isClearable
                 />
+                {isRequired.city && (
+                  <p className="form-error">Please Enter City</p>
+                )}
               </div>
-
-              <FieldContainer
-                label="Current Pincode"
-                type="number"
-                astric={true}
-                fieldGrid={3}
-                maxLength={6}
-                value={pincode}
-                onChange={(e) => {
-                  const value = e.target.value;
-                  if (/^\d{0,6}$/.test(value)) {
-                    setPincode(value);
-                  }
-                }}
-              />
+              <div className="col-3">
+                <FieldContainer
+                  label="Current Pincode"
+                  type="number"
+                  astric={true}
+                  fieldGrid={3}
+                  maxLength={6}
+                  value={pincode}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    if (/^\d{0,6}$/.test(value)) {
+                      setPincode(value);
+                    }
+                    if (value === "") {
+                      setIsRequired((prev) => ({
+                        ...prev,
+                        pincode: true,
+                      }));
+                    } else {
+                      setIsRequired((prev) => ({
+                        ...prev,
+                        pincode: false,
+                      }));
+                    }
+                  }}
+                />
+                {isRequired.pincode && (
+                  <p className="form-error">Please Enter Pincode</p>
+                )}
+              </div>
               <FieldContainer
                 label="Upi Id"
                 type="text"

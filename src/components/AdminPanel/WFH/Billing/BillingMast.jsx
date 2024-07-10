@@ -139,7 +139,7 @@ const BillingMast = () => {
             }}
           />
           {isRequired.bilingName && (
-            <p className="form-error">Please select Billing Header</p>
+            <p className="form-error">Please Enter Billing Header</p>
           )}
         </div>
 

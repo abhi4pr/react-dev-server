@@ -117,7 +117,7 @@ const Designation = () => {
               }}
             />
             {isRequired.designationName && (
-              <p className="form-error">Please select Designation</p>
+              <p className="form-error">Please Enter Designation</p>
             )}
           </div>
 

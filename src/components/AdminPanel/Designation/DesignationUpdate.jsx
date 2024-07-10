@@ -48,7 +48,6 @@ const DesignationUpdate = () => {
         setDepartmentOptions(departmentOptions);
       } catch (error) {
         console.error("Error fetching departments: ", error);
-        toastError("Failed to fetch departments");
       }
     };
 
@@ -80,11 +79,10 @@ const DesignationUpdate = () => {
     }
     try {
       await axios.put(baseUrl + "update_designation", designationData);
-      toastAlert("Updated success");
+      toastAlert("Updated successfully");
       setIsFormSubmitted(true);
     } catch (error) {
       alert(error.response.data.message);
-      toastError("Update failed");
     }
   };
 

@@ -379,6 +379,12 @@ const UserOverview = () => {
       width: 190,
       sortable: true,
     },
+    {
+      field: "Role_name",
+      headerName: "Role",
+      width: 190,
+      sortable: true,
+    },
     // {
     //   field: "percentage_filled",
     //   headerName: "Profile Status",
@@ -533,21 +539,21 @@ const UserOverview = () => {
       ),
     },
 
-    {
-      field: "Summary",
-      headerName: "Summary",
-      width: 100,
-      renderCell: (params) => (
-        <button
-          className="btn cmnbtn btn_sm btn-outline-secondary"
-          variant="contained"
-          color="warning"
-          onClick={() => handleUpdateSummary(params.row.user_id)}
-        >
-          Summary
-        </button>
-      ),
-    },
+    // {
+    //   field: "Summary",
+    //   headerName: "Summary",
+    //   width: 100,
+    //   renderCell: (params) => (
+    //     <button
+    //       className="btn cmnbtn btn_sm btn-outline-secondary"
+    //       variant="contained"
+    //       color="warning"
+    //       onClick={() => handleUpdateSummary(params.row.user_id)}
+    //     >
+    //       Summary
+    //     </button>
+    //   ),
+    // },
 
     {
       field: "actions",
@@ -564,7 +570,7 @@ const UserOverview = () => {
                 </div>
               </Link>
             )}
-          {contextData &&
+          {/* {contextData &&
             contextData[0] &&
             contextData[0].delete_flag_value === 1 && (
               <div
@@ -573,7 +579,7 @@ const UserOverview = () => {
               >
                 <i className="bi bi-trash" />
               </div>
-            )}
+            )} */}
         </>
       ),
     },
