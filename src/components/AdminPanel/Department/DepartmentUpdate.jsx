@@ -27,6 +27,9 @@ const DepartmentUpdate = () => {
     if (!departmentName) {
       return toastError("Fill Required Field");
     }
+    if (!shortName) {
+      return toastError("Fill Required Field");
+    }
 
     try {
       await axios.put(`${baseUrl}update_department`, {
@@ -38,17 +41,18 @@ const DepartmentUpdate = () => {
       });
       setDepartmentName("");
       setRemark("");
-      toastAlert("Submit Success");
+      toastAlert("Updated Successfully");
       setIsFormSubmitted(true);
     } catch (error) {
-      toastError("An error occurred while submitting the form.");
       alert(error.response.data.message);
     }
   };
 
   useEffect(() => {
+    console.log(localStorage.getItem("short_name"),"kkk");
     setId(localStorage.getItem("dept_id"));
     setDepartmentName(localStorage.getItem("dept_name"));
+    setShortName(localStorage.getItem("short_name"));
     setRemark(localStorage.getItem("Remarks"));
     setCreationDate(localStorage.getItem("Creation_date").substring(0, 10));
     // setCreatedBy(localStorage.getItem("Created_by"));
@@ -57,7 +61,6 @@ const DepartmentUpdate = () => {
     setLastUpdatedDate(
       localStorage.getItem("Last_updated_date").substring(0, 10)
     );
-    setShortName(localStorage.getItem("short_name"));
   }, []);
 
   if (isFormSubmitted) {
@@ -79,6 +82,7 @@ const DepartmentUpdate = () => {
         />
         <FieldContainer
           label="Short Name"
+          astric
           value={shortName}
           onChange={(e) => setShortName(e.target.value)}
           required={false}

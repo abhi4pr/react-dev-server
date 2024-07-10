@@ -55,7 +55,6 @@ export default function SubDepartmentUpdate() {
       setIsFormSubmitted(true);
       toastAlert("Submitted success");
     } catch (error) {
-      toastError("Submission failed. Please try again.");
       alert(error.response.data.message);
     }
   }
@@ -103,6 +102,7 @@ export default function SubDepartmentUpdate() {
           <FieldContainer
             label="Remark"
             // disabled
+            required={false}
             value={remark}
             onChange={(e) => setRemark(e.target.value)}
           />

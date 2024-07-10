@@ -106,13 +106,13 @@ const DepartmentOverview = () => {
                     setToLocalStorage(
                       row.dept_id,
                       row.dept_name,
+                      row.short_name,
                       row.Remarks,
                       row.Creation_date,
                       row.created_by,
                       row.created_by_name,
                       row.Last_updated_by,
                       row.Last_updated_date,
-                      row.short_name
                     )
                   }
                 >
@@ -139,23 +139,23 @@ const DepartmentOverview = () => {
   const setToLocalStorage = (
     dept_id,
     dept_name,
+    short_name,
     Remarks,
     Creation_date,
     created_by,
     Last_updated_by,
     Last_updated_date,
-    short_name,
     created_by_name
   ) => {
     localStorage.setItem("dept_id", dept_id);
     localStorage.setItem("dept_name", dept_name);
+    localStorage.setItem("short_name",short_name);
     localStorage.setItem("Remarks", Remarks);
     localStorage.setItem("Creation_date", Creation_date);
     localStorage.setItem("Created_by", created_by);
     localStorage.setItem("created_by_name", created_by_name);
     localStorage.setItem("Last_updated_by", Last_updated_by);
     localStorage.setItem("Last_updated_date", Last_updated_date);
-    localStorage.setItem("short_name");
   };
 
   const handleRowClick = (row) => {

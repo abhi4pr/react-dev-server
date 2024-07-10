@@ -19,6 +19,11 @@ const JobTypeMaster = () => {
   const [jobTypeNameUpdate, setJobTypeNameUpdate] = useState("");
   const [jobTypeDescriptionUpdate, setJobTypeDescriptionUpdate] = useState("");
 
+
+  const [isRequired, setIsRequired] = useState({
+    jobTypeName: false,
+  });
+
   const columns = [
     {
       name: "S.No",
@@ -69,6 +74,15 @@ const JobTypeMaster = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (jobTypeName == "") {
+      setIsRequired((perv) => ({ ...perv, jobTypeName: true }));
+    }
+
+    if (!jobTypeName || jobTypeName == "") {
+      return toastError("Fill Required Fields");
+    }
+
     try {
       const isBrandExist = jobTypeData.some(
         (d) => d.asset_brand_name === jobTypeName
@@ -138,16 +152,38 @@ const JobTypeMaster = () => {
       >
         <div className="row mb-4">
 
+<div className="col-6">
           <FieldContainer
             label="Job Type"
             value={jobTypeName}
-            onChange={(e) => setJobTypeName(e.target.value)}
+            fieldGrid={12}
+            required={false}
+            onChange={(e) =>{
+              const jobType = e.target.value
+               setJobTypeName(e.target.value)
+               if (jobType === "") {
+                setIsRequired((prev) => ({
+                  ...prev,
+                  jobTypeName: true,
+                }));
+              } else {
+                setIsRequired((prev) => ({
+                  ...prev,
+                  jobTypeName: false,
+                }));
+              }
+              }}
           />
+          {isRequired.jobTypeName && (
+            <p className="form-error">Please Enter Job Type</p>
+          )}
+          </div>
+
           <FieldContainer
             label="Description"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
-            required="false"
+            required={false}
           />
         </div>
       </FormContainer>

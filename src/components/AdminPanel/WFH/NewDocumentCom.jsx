@@ -70,7 +70,7 @@ const NewDocumentCom = () => {
         await axios.put(baseUrl + "update_user", {
           user_id: id,
           att_status: "document_upload",
-        });
+        }); 
       }
 
       navigate("/admin/wfhd-overview");
