@@ -233,7 +233,7 @@ const Attendence = () => {
           }
         );
 
-        const ActiveUsersCount = ActiveUsers?.data?.message[0]?.count;
+        const ActiveUsersCount = ActiveUsers?.data?.message?.count;
 
         setActiveUsers(ActiveUsersCount);
       } catch (error) {
@@ -243,6 +243,8 @@ const Attendence = () => {
 
     fetchData();
   }, [department, selectedMonth, selectedYear]);
+
+  
 
   const getAttendanceData = () => {
     const payload = {
@@ -480,7 +482,7 @@ const Attendence = () => {
   return (
     <>
       {/* Cards */}
-      <FormContainer mainTitle="Create Attendence" link="true"></FormContainer>
+      <FormContainer mainTitle="Create Attendance" link="true"></FormContainer>
       <div className="timeline_wrapper mb24">
         <Slider {...settings} className="timeline_slider">
           {completedYearsMonths.map((data, index) => (
