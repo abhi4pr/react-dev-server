@@ -14,6 +14,7 @@ import gifone from "../../../../assets/img/finance/gifone.gif";
 import giftwo from "../../../../assets/img/finance/giftwo.gif";
 import gifthree from "../../../../assets/img/finance/gifthree.gif";
 import { PieChart } from "@mui/x-charts";
+import FormattedNumberWithTooltip from "../FormateNumWithTooltip/FormattedNumberWithTooltip";
 
 const filterOptions = [
   "Today",
@@ -560,9 +561,12 @@ export default function SalesDashboard() {
                             Balance
                             <span>
                               <span>&#8377; </span>
-                              {incentiveData
-                                .map((item) => +item.balance_release_amount)
-                                .reduce((prev, next) => prev + next, 0)}
+
+                              <FormattedNumberWithTooltip
+                                value={incentiveData
+                                  .map((item) => +item.balance_release_amount)
+                                  .reduce((prev, next) => prev + next, 0)}
+                              />
                             </span>
                           </li>
                         </ul>
@@ -622,7 +626,7 @@ export default function SalesDashboard() {
                           <div className="financeCardBoxImg">
                             <img src={gifthree} alt="" />
                           </div>
-                          <h2>Customer Balance Payment Count</h2>
+                          <h2>Outstanding</h2>
                         </div>
                         <div className="scroll-con">
                           <div className="scroller">
@@ -642,14 +646,16 @@ export default function SalesDashboard() {
                               Total Refund Request Amount Pending
                               <span>
                                 <span>&#8377; </span>
-                                {cstPaymentData
-                                  .map(
-                                    (item) =>
-                                      item.campaign_amount -
-                                      item.total_paid_amount
-                                  )
-                                  .reduce((prev, next) => prev + next, 0)
-                                  .toLocaleString("en-IN")}
+                                <FormattedNumberWithTooltip
+                                  value={cstPaymentData
+                                    .map(
+                                      (item) =>
+                                        item.campaign_amount -
+                                        item.total_paid_amount
+                                    )
+                                    .reduce((prev, next) => prev + next, 0)
+                                    .toLocaleString("en-IN")}
+                                />
                               </span>
                             </li>
                             {/* <li>
@@ -687,10 +693,12 @@ export default function SalesDashboard() {
                     <h2>Total Refund Request Amount Pending</h2>
                     <h3>
                       <span>&#8377;</span>
-                      {refundReqData
-                        .map((item) => item.refund_amount)
-                        .reduce((prev, next) => prev + next, 0)
-                        .toLocaleString("en-IN")}
+                      <FormattedNumberWithTooltip
+                        value={refundReqData
+                          .map((item) => item.refund_amount)
+                          .reduce((prev, next) => prev + next, 0)
+                          .toLocaleString("en-IN")}
+                      />
                     </h3>
                   </div>
                 </Link>
@@ -709,14 +717,18 @@ export default function SalesDashboard() {
                     <h2>Total Payout Pending</h2>
                     <h3>
                       <span>&#8377; </span>
-                      {payoutData
-                        .map((e) => e.toPay)
-                        .reduce((prev, next) => prev + next, 0)
-                        ? payoutData
+                      <FormattedNumberWithTooltip
+                        value={
+                          payoutData
                             .map((e) => e.toPay)
                             .reduce((prev, next) => prev + next, 0)
-                            .toLocaleString("en-IN")
-                        : 0}
+                            ? payoutData
+                                .map((e) => e.toPay)
+                                .reduce((prev, next) => prev + next, 0)
+                                .toLocaleString("en-IN")
+                            : 0
+                        }
+                      />
                     </h3>
                   </div>
                 </Link>
@@ -780,9 +792,11 @@ export default function SalesDashboard() {
                   <h6 style={{ color: "#672700" }}>
                     {" "}
                     ₹{" "}
-                    {incentiveData
-                      .map((item) => +item.request_amount)
-                      .reduce((prev, next) => prev + next, 0)}{" "}
+                    <FormattedNumberWithTooltip
+                      value={incentiveData
+                        .map((item) => +item.request_amount)
+                        .reduce((prev, next) => prev + next, 0)}
+                    />
                   </h6>
                 </div>
                 <div
@@ -798,9 +812,11 @@ export default function SalesDashboard() {
                   <h6>Released Amount </h6>
                   <h6 style={{ color: "#672700" }}>
                     ₹
-                    {incentiveData
-                      .map((item) => +item.released_amount)
-                      .reduce((prev, next) => prev + next, 0)}
+                    <FormattedNumberWithTooltip
+                      value={incentiveData
+                        .map((item) => +item.released_amount)
+                        .reduce((prev, next) => prev + next, 0)}
+                    />
                   </h6>
                 </div>
                 <div
@@ -816,9 +832,11 @@ export default function SalesDashboard() {
                   <h6>Balance Released</h6>
                   <h6 style={{ color: "#672700" }}>
                     ₹{" "}
-                    {incentiveData
-                      .map((item) => +item.balance_release_amount)
-                      .reduce((prev, next) => prev + next, 0)}
+                    <FormattedNumberWithTooltip
+                      value={incentiveData
+                        .map((item) => +item.balance_release_amount)
+                        .reduce((prev, next) => prev + next, 0)}
+                    />
                   </h6>
                 </div>
               </div>
@@ -940,12 +958,15 @@ export default function SalesDashboard() {
                   <h6>Total Refund Request Amount Pending </h6>
                   <h6>
                     ₹{" "}
-                    {cstPaymentData
-                      .map(
-                        (item) => item.campaign_amount - item.total_paid_amount
-                      )
-                      .reduce((prev, next) => prev + next, 0)
-                      .toLocaleString("en-IN")}
+                    <FormattedNumberWithTooltip
+                      value={cstPaymentData
+                        .map(
+                          (item) =>
+                            item.campaign_amount - item.total_paid_amount
+                        )
+                        .reduce((prev, next) => prev + next, 0)
+                        .toLocaleString("en-IN")}
+                    />
                   </h6>
                 </div>
               </div>
@@ -953,380 +974,6 @@ export default function SalesDashboard() {
           </div>
         </div>
       )}
-
-      <div className="card mt-4">
-        <div className="row gx-3 justify-content-around">
-          {/* last card */}
-          {/* <div
-            className={`${classes.customCard} ${classes.cardSolidPrimary} ${classes.invertedColors} m-2 mt-3 col-3`}
-          >
-            <div className={`${classes.cardContent} ${classes.horizontal}`}>
-              <div className={classes.circularProgress}>
-                <PointOfSaleIcon
-                  className={classes.progressValue}
-                  style={{ marginTop: "-91px" }}
-                />
-              </div>
-              <div className={classes.content}>
-                <p className={classes.bodyMd}>
-                  Pending for Approval of Sales Payment:
-                </p>
-                <span className={classes.h1}>
-                  {pendingForApprovalData.length}
-                </span>
-                <h5 className={classes.bodyMd}>
-                  Pending Amount:{" "}
-                  <span className={classes.currencySymbol}>&#8377;</span>
-                  {pendingForApprovalData
-                    .map((item) => +item.payment_amount)
-                    .reduce((prev, next) => prev + next, 0)}
-                </h5>
-                <h5 className={classes.bodyMd}>
-                  Campign Amount Without GST:{" "}
-                  <span className={classes.currencySymbol}>&#8377;</span>
-                  {pendingForApprovalData
-                    .map((item) => +item.campaign_amount_without_gst)
-                    .reduce((prev, next) => prev + next, 0)}
-                </h5>
-                <h5 className={classes.bodyMd}>
-                  Campign Amount :
-                  <span className={classes.currencySymbol}>&#8377;</span>
-                  {pendingForApprovalData
-                    .map((item) => +item.campaign_amount)
-                    .reduce((prev, next) => prev + next, 0)}
-                </h5>
-                <Link
-                  to="/admin/finance-pendingapproveupdate"
-                  className={classes.detailsLink}
-                  style={{ marginLeft: "-1px" }}
-                >
-                  View Details
-                </Link>
-              </div>
-            </div>
-            <div className={classes.cardActions}>
-              <Link to="/admin/finance-pendingapproveupdate">
-                <InfoIcon className="fs-3  pb-1" />
-              </Link>
-            </div>
-          </div>
-          {/* <div
-            className={`${classes.customCard} ${classes.cardSolidPrimary} ${classes.invertedColors} m-2 mt-3 col-3`}
-          >
-            <div className={`${classes.cardContent} ${classes.horizontal}`}>
-              <div className={classes.circularProgress}>
-                <PointOfSaleIcon
-                  className={classes.progressValue}
-                  style={{ marginTop: "-130px" }}
-                />
-              </div>
-              <div className={classes.content}>
-                <h5 className={classes.bodyMd} style={{ marginTop: "4px" }}>
-                  Total Invoice pending count :
-                </h5>
-                <span className={classes.h1}>{invoicePending.length}</span>
-                <h5 className={classes.bodyMd}>
-                  Net Amount:{" "}
-                  <span className={classes.currencySymbol}>&#8377;</span>
-                  {invoicePending
-                    .map((item) => +item.net_amount)
-                    .reduce((prev, next) => prev + next, 0)}
-                </h5>
-                <h5 className={classes.bodyMd}>
-                  GST Amount:{" "}
-                  <span className={classes.currencySymbol}>&#8377;</span>
-                  {invoicePending
-                    .map((item) => +item.gst_amount)
-                    .reduce((prev, next) => prev + next, 0)}
-                </h5>
-                <h5 className={classes.bodyMd}>
-                  Base Amount:{" "}
-                  <span className={classes.currencySymbol}>&#8377;</span>
-                  {invoicePending
-                    .map((item) => +item.base_amount)
-                    .reduce((prev, next) => prev + next, 0)}
-                </h5>
-                <h5 className={classes.bodyMd}>
-                  Campaign Amount:{" "}
-                  <span className={classes.currencySymbol}>&#8377;</span>
-                  {invoicePending
-                    .map((item) => +item.campaign_amount)
-                    .reduce((prev, next) => prev + next, 0)}
-                </h5>{" "}
-                <h5 className={classes.bodyMd}>
-                  Campaign Amount Without GST:{" "}
-                  <span className={classes.campaign_amount_without_gst}>
-                    &#8377;
-                  </span>
-                  {invoicePending
-                    .map((item) => +item.campaign_amount)
-                    .reduce((prev, next) => prev + next, 0)}
-                </h5>
-                <Link
-                  to="/admin/finance-pendinginvoice"
-                  className={classes.detailsLink}
-                  style={{ marginLeft: "-2px" }}
-                >
-                  View Details
-                </Link>
-              </div>
-            </div>
-            <div className={classes.cardActions}>
-              <Link to="/admin/finance-pendinginvoice">
-                <InfoIcon className="fs-3  pb-1 " />
-              </Link>
-            </div>
-          </div> */}
-        </div>
-
-        {/* <div
-          className={`${classes.customCard} ${classes.cardSolidPrimary} ${classes.invertedColors} m-2 mt-3 col-3`}
-        >
-          <div className={`${classes.cardContent} ${classes.horizontal}`}>
-            <div className={classes.circularProgress}>
-              <PointOfSaleIcon
-                className={classes.progressValue}
-                style={{ marginTop: "-450px" }}
-              />
-            </div>
-            <div className={classes.content}>
-              <h5 className={classes.bodyMd} style={{ marginTop: "4px" }}>
-                Total TDS Verification Open:
-              </h5>
-              <span className={classes.h1}>{salesBookingOpenData.length}</span>
-              <h5 className={classes.bodyMd}>
-                Net Amount:{" "}
-                <span className={classes.currencySymbol}>&#8377;</span>
-                {salesBookingOpenData
-                  .map((item) => +item.net_amount)
-                  .reduce((prev, next) => prev + next, 0)}
-              </h5>
-              <h5 className={classes.bodyMd}>
-                Total Paid Amount:{" "}
-                <span className={classes.currencySymbol}>&#8377;</span>
-                {salesBookingOpenData
-                  .map((item) => +item.total_paid_amount)
-                  .reduce((prev, next) => prev + next, 0)}
-              </h5>
-              <h5 className={classes.bodyMd}>
-                GST Amount:{" "}
-                <span className={classes.currencySymbol}>&#8377;</span>
-                {salesBookingOpenData
-                  .map((item) => +item.gst_amount)
-                  .reduce((prev, next) => prev + next, 0)}
-              </h5>
-              <h5 className={classes.bodyMd}>
-                Base Amount:{" "}
-                <span className={classes.currencySymbol}>&#8377;</span>
-                {salesBookingOpenData
-                  .map((item) => +item.base_amount)
-                  .reduce((prev, next) => prev + next, 0)}
-              </h5>
-
-              <h5 className={classes.bodyMd}>
-                Campaign Amount:{" "}
-                <span className={classes.currencySymbol}>&#8377;</span>
-                {salesBookingOpenData
-                  .map((item) => +item.campaign_amount)
-                  .reduce((prev, next) => prev + next, 0)}
-              </h5>
-
-              <h5 className={classes.bodyMd + " " + "mt-2 "}>
-                Total TDS Verification About to Close:
-              </h5>
-              <span className={classes.h1}>
-                {salesBookingAboutToCloseData.length}
-              </span>
-
-              <h5 className={classes.bodyMd}>
-                Net Amount:{" "}
-                <span className={classes.currencySymbol}>&#8377;</span>
-                {salesBookingAboutToCloseData
-                  .map((item) => +item.net_amount)
-                  .reduce((prev, next) => prev + next, 0)}
-              </h5>
-              <h5 className={classes.bodyMd}>
-                Total Paid Amount:{" "}
-                <span className={classes.currencySymbol}>&#8377;</span>
-                {salesBookingAboutToCloseData
-                  .map((item) => +item.total_paid_amount)
-                  .reduce((prev, next) => prev + next, 0)}
-              </h5>
-              <h5 className={classes.bodyMd}>
-                GST Amount:{" "}
-                <span className={classes.currencySymbol}>&#8377;</span>
-                {salesBookingAboutToCloseData
-                  .map((item) => +item.gst_amount)
-                  .reduce((prev, next) => prev + next, 0)}
-              </h5>
-              <h5 className={classes.bodyMd}>
-                Base Amount:{" "}
-                <span className={classes.currencySymbol}>&#8377;</span>
-                {salesBookingAboutToCloseData
-                  .map((item) => +item.base_amount)
-                  .reduce((prev, next) => prev + next, 0)}
-              </h5>
-
-              <h5 className={classes.bodyMd}>
-                Campaign Amount:{" "}
-                <span className={classes.currencySymbol}>&#8377;</span>
-                {salesBookingAboutToCloseData
-                  .map((item) => +item.campaign_amount)
-                  .reduce((prev, next) => prev + next, 0)}
-              </h5>
-
-              <h5 className={classes.bodyMd}>Total TDS Verification Close:</h5>
-              <span className={classes.h1}>{salesBookingCloseData.length}</span>
-
-              <h5 className={classes.bodyMd}>
-                Net Amount:{" "}
-                <span className={classes.currencySymbol}>&#8377;</span>
-                {salesBookingCloseData
-                  .map((item) => +item.net_amount)
-                  .reduce((prev, next) => prev + next, 0)}
-              </h5>
-              <h5 className={classes.bodyMd}>
-                Total Paid Amount:{" "}
-                <span className={classes.currencySymbol}>&#8377;</span>
-                {salesBookingCloseData
-                  .map((item) => +item.total_paid_amount)
-                  .reduce((prev, next) => prev + next, 0)}
-              </h5>
-              <h5 className={classes.bodyMd}>
-                GST Amount:{" "}
-                <span className={classes.currencySymbol}>&#8377;</span>
-                {salesBookingCloseData
-                  .map((item) => +item.gst_amount)
-                  .reduce((prev, next) => prev + next, 0)}
-              </h5>
-              <h5 className={classes.bodyMd}>
-                Base Amount:{" "}
-                <span className={classes.currencySymbol}>&#8377;</span>
-                {salesBookingCloseData
-                  .map((item) => +item.base_amount)
-                  .reduce((prev, next) => prev + next, 0)}
-              </h5>
-
-              <h5 className={classes.bodyMd}>
-                Campaign Amount:{" "}
-                <span className={classes.currencySymbol}>&#8377;</span>
-                {salesBookingCloseData
-                  .map((item) => +item.campaign_amount)
-                  .reduce((prev, next) => prev + next, 0)}
-              </h5>
-
-              <Link
-                to="/admin/finance-salebookingclose"
-                className={classes.detailsLink}
-              >
-                View Details
-              </Link>
-            </div>
-          </div>
-          <div className={classes.cardActions}>
-            <Link to="/admin/finance-salebookingclose">
-              <InfoIcon className="fs-3  pb-1  mt-3" />
-            </Link>
-          </div>
-        </div> */}
-      </div>
-      {/* <div className="boarder-2 px-3 px-2">
-        <h4>Purchase</h4>
-        <div
-          className={`${classes.customCard} ${classes.cardSolidPrimary} ${classes.invertedColors} m-2 mt-3 col-3`}
-        >
-          <div className={`${classes.cardContent} ${classes.horizontal}`}>
-            <div className={classes.circularProgress}>
-              <PointOfSaleIcon
-                className={classes.progressValue}
-                style={{ marginTop: "-50px" }}
-              />
-            </div>
-            <div className={classes.content}>
-              <h5 className={classes.bodyMd} style={{ marginTop: "4px" }}>
-                Pending for Vendor Payment:
-              </h5>
-              <span className={classes.h1}>{vendorCardData.length}</span>
-
-              <h5 className={classes.bodyMd}>
-                Request Amount:{" "}
-                <span className={classes.currencySymbol}>&#8377;</span>
-                {vendorCardData
-                  .map((item) => +item.request_amount)
-                  .reduce((prev, next) => prev + next, 0)}
-              </h5>
-              <h5 className={classes.bodyMd}>
-                Outstandings Amt:{" "}
-                <span className={classes.currencySymbol}>&#8377;</span>
-                {vendorCardData
-                  .map((item) => +item.outstandings)
-                  .reduce((prev, next) => prev + next, 0)}
-              </h5>
-
-              <Link
-                to="/admin/finance-pruchasemanagement-pendingpaymentrequest"
-                className={classes.detailsLink}
-                style={{ marginLeft: "-1px" }}
-              >
-                View Details
-              </Link>
-            </div>
-          </div>
-          <div className={classes.cardActions}>
-            <Link to="/admin/finance-pruchasemanagement-pendingpaymentrequest">
-              <InfoIcon className="fs-3  pb-1  mt-3" />
-            </Link>
-          </div>
-        </div>
-
-        <div className="boarder 3 ">
-          <h4>Pay Out</h4>
-          <div
-            className={`${classes.customCard} ${classes.cardSolidPrimary} ${classes.invertedColors} m-2 mt-3 col-3`}
-          >
-            <div className={`${classes.cardContent} ${classes.horizontal}`}>
-              <div className={classes.circularProgress}>
-                <PointOfSaleIcon
-                  className={classes.progressValue}
-                  style={{ marginTop: "-15px" }}
-                />
-              </div>
-              <div
-                className={`${classes.content} ${classes.buttonAlignIncentive2}`}
-              >
-                <h5 className={classes.bodyMd} style={{ marginTop: "4px" }}>
-                  Total WFHD Pending:
-                </h5>
-                <span className={classes.h1}>{payoutData.length}</span>
-                <br />
-                <span className={classes.h1}>
-                  &#8377;
-                  {payoutData
-                    .map((e) => +e.toPay)
-                    .reduce((prev, next) => prev + next, 0)
-                    ? payoutData
-                        .map((e) => e.toPay)
-                        .reduce((prev, next) => prev + next, 0)
-                        .toLocaleString("en-IN")
-                    : 0}
-                </span>
-                <Link
-                  to="/admin/accounts-finance-dashboard"
-                  className={classes.detailsLink}
-                  style={{ whiteSpace: "nowrap" }}
-                >
-                  View Details
-                </Link>
-              </div>
-            </div>
-            <div className={classes.cardActions}>
-              <Link to="/admin/accounts-finance-dashboard">
-                <InfoIcon className="fs-3  pb-1  mt-3" />
-              </Link>
-            </div>
-          </div>
-        </div>
-      </div> */}
     </div>
   );
 }

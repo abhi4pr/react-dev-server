@@ -302,7 +302,6 @@ const BalancePaymentList = () => {
       setTotalCount(pedingAppData?.length);
     });
   }
-  console.log(totalCount, "totalCount>>>-------------");
   useEffect(() => {
     getData();
     pendingApprovalApi();
@@ -1746,7 +1745,7 @@ const BalancePaymentList = () => {
       setCustomerList(uniqueCustomersNames);
       setSalesExecutiveList(uniqueSalesExeNames);
     }
-  }, [activeAccordionIndex]);
+  }, [datas, activeAccordionIndex]);
 
   // gst counts :-
   const gstCounts = filterData.filter((count) => count.gst_status === "1");
