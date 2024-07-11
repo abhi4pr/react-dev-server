@@ -655,7 +655,7 @@ const PurchaseDashboard = () => {
                     />
                   </h6>
                 </div>
-                <div className="pack sb">
+                {/* <div className="pack sb">
                   <h6>Base Amount</h6>
                   <h6>
                     {" "}
@@ -689,7 +689,7 @@ const PurchaseDashboard = () => {
                       )}
                     />
                   </h6>
-                </div>
+                </div> */}
               </div>
             </div>
           </div>{" "}

@@ -19,6 +19,7 @@ import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
 import moment from "moment";
 import { set } from "date-fns";
+import { Link } from "react-router-dom";
 
 const SaleBookingClose = ({
   onHandleOpenUniqueSalesExecutiveChange,
@@ -140,8 +141,8 @@ const SaleBookingClose = ({
         setFilterData(dateFilterData);
       });
   }
-  console.log(filterData, "filter Data---")
-  
+  console.log(filterData, "filter Data---");
+
   useEffect(() => {
     getData();
     setButtonaccess(
@@ -881,6 +882,29 @@ const SaleBookingClose = ({
       headerName: "Invoice Number",
       renderCell: (params) => params.row.invoice_mnj_number,
       width: 200,
+    },
+    {
+      field: "Transaction History",
+      headerName: "Transaction History",
+      width: 190,
+      renderCell: (params) => (
+        <div className="flex-row">
+          {params.row.show_fstatus === "Closed" && (
+            <Link
+              to={`/admin/finance-transaction-list/${params.row.sale_booking_id}`}
+              className="link-primary"
+            >
+              {params.row.total_paid_amount > 0 ? (
+                <button className="icon-1" title="Transaction History">
+                  <i className="bi bi-file-earmark-text-fill"></i>
+                </button>
+              ) : (
+                ""
+              )}
+            </Link>
+          )}
+        </div>
+      ),
     },
     {
       field: "Action",

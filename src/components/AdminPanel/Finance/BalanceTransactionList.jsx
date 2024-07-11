@@ -122,6 +122,16 @@ const BalanceTransactionList = () => {
       renderCell: (params) =>
         params.row.gst_status === "1" ? "GST" : "Non GST",
     },
+    {
+      field: "payment_mode",
+      headerName: "Payment Mode",
+      renderCell: (params) => params.row.payment_mode,
+    },
+    {
+      field: "payment_ref_no",
+      headerName: "Reference Number",
+      renderCell: (params) => params.row.payment_ref_no,
+    },
     // {
     //   field: "status",
     //   headerName: "Status",
@@ -136,6 +146,7 @@ const BalanceTransactionList = () => {
     //   ),
     // },
   ];
+  console.log("HII-----");
   return (
     <div>
       <FormContainer

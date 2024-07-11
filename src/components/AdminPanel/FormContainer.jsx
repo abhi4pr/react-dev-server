@@ -19,6 +19,7 @@ const FormContainer = ({
   uniqueSalesExecutiveInvoiceCount,
   nonInvcbalanceAmountTotal,
   totalBalanceAmount,
+  incentiveReleasedAmtTotal,
   link,
   uniqueNonInvoiceCustomerCount,
   uniqueNonInvoiceSalesExecutiveCount,
@@ -477,7 +478,20 @@ const FormContainer = ({
               <h2>
                 Requested Amount :{" "}
                 <a href="#">
+                  {console.log(
+                    requestedAmountTotal,
+                    "requestedAmountTotal----"
+                  )}
                   <FormattedNumberWithTooltip value={requestedAmountTotal} />
+                  {/* {requestedAmountTotal} */}
+                </a>
+              </h2>
+              <h2>
+                Released Amount :{" "}
+                <a href="#">
+                  <FormattedNumberWithTooltip
+                    value={incentiveReleasedAmtTotal}
+                  />
                   {/* {requestedAmountTotal} */}
                 </a>
               </h2>

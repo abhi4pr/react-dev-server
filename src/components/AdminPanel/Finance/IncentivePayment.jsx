@@ -317,7 +317,13 @@ const IncentivePayment = () => {
     (total, item) => total + parseFloat(item.request_amount),
     0
   );
-
+  
+  const incentiveReleasedAmtTotal = filterData?.reduce((total, item) => {
+    // Ensure released_amount is a number
+    const amount = parseFloat(item.released_amount) || 0;
+    return total + amount;
+  }, 0);
+  
   const sameSalesExecutivecolumn = [
     {
       field: "s._no",
@@ -580,12 +586,13 @@ const IncentivePayment = () => {
       width: 70,
       headerName: "S.No",
       field: "s_no",
+      valueGetter: (params) => filterData?.indexOf(params.row) + 1,
       renderCell: (params, index) =>
         // <div style={{ whiteSpace: "normal" }}>{index + 1} </div>
-        filterData.indexOf(params.row) + 1 === filterData.length ? (
+        filterData?.indexOf(params.row) + 1 === filterData?.length ? (
           ""
         ) : (
-          <div>{filterData.indexOf(params.row) + 1}</div>
+          <div>{filterData?.indexOf(params.row) + 1}</div>
         ),
       sortable: true,
     },
@@ -720,7 +727,6 @@ const IncentivePayment = () => {
       ),
     },
   ];
-  console.log(filterData, "filterData>>>");
   const handlePendingFilterData = () => {
     const result = datas.filter((d) => {
       return d.action == "Complete Release Button";
@@ -867,7 +873,6 @@ const IncentivePayment = () => {
         return apiData;
     }
   };
-
   return (
     <div>
       <FormContainer
@@ -882,6 +887,7 @@ const IncentivePayment = () => {
         handleOpenUniqueSalesExecutive={handleOpenUniqueSalesExecutive}
         uniqueSalesExecutiveCount={uniqueSalesExecutiveCount}
         requestedAmountTotal={requestedAmountTotal.toFixed(2)}
+        incentiveReleasedAmtTotal={incentiveReleasedAmtTotal}
         incentivePaymentAdditionalTitles={true}
       />
       {/* Same Sales Executive Dialog Box */}

@@ -1,19 +1,21 @@
-import React, { useState } from "react";
-import "../FormateNumWithTooltip/FormateNumWithTooltip.css"; // Ensure the path is correct
+import React, { useState, useRef, useEffect } from "react";
+import "./FormateNumWithTooltip.css";
 
+// Number formatting function
 const formatNumber = (value) => {
-  if (value >= 1000000) {
-    return `${(value / 1000000).toFixed(2)}M`;
-  } else if (value >= 1000) {
-    return `${(value / 1000).toFixed(2)}k`;
+  if (value >= 10000000) {
+    return `${(value / 10000000).toFixed(2)} Cr`;
+  } else if (value >= 100000) {
+    return `${(value / 100000).toFixed(2)} L`;
   } else {
     return value.toString();
   }
 };
 
+// Number to words conversion function
 const numberToWords = (num) => {
   const a = [
-    "",
+    "zero",
     "one",
     "two",
     "three",
@@ -46,48 +48,52 @@ const numberToWords = (num) => {
     "eighty",
     "ninety",
   ];
+  const g = ["", "thousand", "lakh", "crore"];
 
-  const g = [
-    "",
-    "thousand",
-    "million",
-    "billion",
-    "trillion",
-    "quadrillion",
-    "quintillion",
-    "sextillion",
-    "septillion",
-    "octillion",
-    "nonillion",
-  ];
-
-  const makeGroup = ([ones, tens, huns]) => {
-    return [
-      huns === 0 ? "" : a[huns] + " hundred ",
-      tens === 0
-        ? a[ones]
-        : (b[tens] && b[tens] + (ones ? "-" + a[ones] : "")) || "",
-    ].join("");
+  const convertHundreds = (num) => {
+    if (num === "000") return "";
+    const [h, t, o] = num.padStart(3, "0").split("").map(Number);
+    let str = "";
+    if (h) str += `${a[h]} hundred `;
+    if (t > 1) str += b[t] + (o ? " " + a[o] : "");
+    else if (t === 1) str += a[t * 10 + o];
+    else str += a[o];
+    return str.trim();
   };
 
-  const thousand = (group, i) => (group === "" ? group : `${group} ${g[i]}`);
+  const convertGroup = (group, index) => {
+    if (group === "000") return "";
+    const groupWords = convertHundreds(group);
+    return `${groupWords} ${g[index]}`.trim();
+  };
 
-  if (typeof num === "number") return num === 0 ? "zero" : num.toLocaleString();
   if (typeof num !== "string") return "";
 
-  let start = num.length;
+  const [integerPart, fractionalPart] = num.split(".");
+
   const chunks = [];
-  while (start > 0) {
-    const end = start;
-    chunks.push(num.slice((start = Math.max(0, start - 3)), end));
+  for (let i = integerPart.length; i > 0; i -= 2) {
+    chunks.unshift(integerPart.slice(Math.max(i - 2, 0), i));
   }
 
-  return chunks
-    .map(makeGroup)
-    .map(thousand)
+  const integerWords = chunks
+    .map((chunk, index) => convertGroup(chunk, chunks.length - 1 - index))
     .filter((group) => group !== "")
-    .reverse()
     .join(" ");
+
+  const fractionalWords = fractionalPart
+    ? fractionalPart
+        .split("")
+        .map((digit) => a[parseInt(digit)])
+        .join(" ")
+    : "";
+
+  let words = integerWords;
+  if (fractionalPart) {
+    words += ` point ${fractionalWords}`;
+  }
+
+  return words.charAt(0).toUpperCase() + words.slice(1);
 };
 
 const FormattedNumberWithTooltip = ({ value }) => {
@@ -98,18 +104,38 @@ const FormattedNumberWithTooltip = ({ value }) => {
     text: "",
   });
 
+  const tooltipRef = useRef(null);
+
   const showTooltip = (event) => {
-    setTooltip({
+    setTooltip((prevTooltip) => ({
       visible: true,
       x: event.clientX + 10,
       y: event.clientY + 10,
-      text: numberToWords(value),
-    });
+      // text: numberToWords(value.toString()),
+    }));
   };
 
   const hideTooltip = () => {
-    setTooltip({ visible: false, x: 0, y: 0, text: "" });
+    setTooltip((prevTooltip) => ({
+      ...prevTooltip,
+      visible: false,
+    }));
   };
+
+  useEffect(() => {
+    if (tooltip.visible) {
+      const handleMouseMove = (event) => {
+        if (tooltipRef.current) {
+          tooltipRef.current.style.left = `${event.clientX + 10}px`;
+          tooltipRef.current.style.top = `${event.clientY + 10}px`;
+        }
+      };
+      window.addEventListener("mousemove", handleMouseMove);
+      return () => {
+        window.removeEventListener("mousemove", handleMouseMove);
+      };
+    }
+  }, [tooltip.visible]);
 
   return (
     <span
@@ -119,14 +145,11 @@ const FormattedNumberWithTooltip = ({ value }) => {
       onMouseLeave={hideTooltip}
     >
       {formatNumber(value)}
-      {tooltip.visible && (
-        <div
-          className="tooltip_data"
-          style={{ left: tooltip.x, top: tooltip.y }}
-        >
+      {/* {tooltip.visible && (
+        <div ref={tooltipRef} className="tooltip_data">
           {tooltip.text}
         </div>
-      )}
+      )} */}
     </span>
   );
 };
