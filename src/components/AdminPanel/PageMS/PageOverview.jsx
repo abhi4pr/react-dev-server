@@ -625,7 +625,7 @@ const PageOverview = () => {
       width: 200,
       renderCell: (params) => {
         let name = cat?.find(
-          (item) => item?._id == params.row?.page_category_id
+          (item) => item?.page_category_id == params.row?.temp_page_cat_id
         )?.page_category;
         // )?.category_name;
 
@@ -642,7 +642,7 @@ const PageOverview = () => {
       headerName: "Vendor",
       renderCell: (params) => {
         let name = vendorData?.find(
-          (item) => item?._id == params.row?.vendor_id
+          (item) => item?.vendor_id == params.row?.temp_vendor_id
         )?.vendor_name;
 
         return <div>{name}</div>;

@@ -239,6 +239,15 @@ const WFHDOverview = () => {
         reason: separationReason,
       })
       .then(() => {
+        const formData = new FormData();
+        formData.append("user_id", separationUserID);
+        formData.append("user_status", "Exit");
+        axios
+          .put(baseUrl + "update_user", formData, {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          })
         getData();
         setSeparationReason("");
         setSeparationStatus("");
@@ -793,7 +802,7 @@ const WFHDOverview = () => {
                     astric
                     onChange={(e) => setSeparationStatus(e.target.value)}
                   >
-                    <option value="" disabled>
+                    <option value="" >
                       Choose...
                     </option>
                     <option value="Resigned">Resigned</option>
@@ -808,7 +817,9 @@ const WFHDOverview = () => {
                     value={separationReason}
                     astric
                     onChange={(e) => setSeparationReason(e.target.value)}
-                  >
+                  ><option value="" >
+                  Choose...
+                </option>
                     {separationReasonGet.map((option) => (
                       <option value={option.id} key={option.id}>
                         {" "}

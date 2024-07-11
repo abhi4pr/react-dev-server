@@ -1526,12 +1526,12 @@ const SalaryWFH = () => {
                     >
                       Send to Finance
                     </button>
-                    <button
+                    {/* <button
                       className="btn  cmnbtn btn_sm btn-primary mr-2"
                       onClick={handleInvoiceDownload}
                     >
                       Download Invoices
-                    </button>
+                    </button> */}
                   </>
                 )}
                 {/* <button

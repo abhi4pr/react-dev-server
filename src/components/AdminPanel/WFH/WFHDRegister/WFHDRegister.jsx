@@ -151,7 +151,7 @@ const WFHDRegister = ({ userUpdateID }) => {
             Report_L1,
             Report_L2,
             Report_L3,
-            PersonalEmail,
+            
             joining_date,
             salary,
             Gender,
@@ -163,6 +163,8 @@ const WFHDRegister = ({ userUpdateID }) => {
             att_status,
             sub_dept_id,
             user_status,
+            PersonalEmail,
+            permanent_state
           } = fetchedData;
 
           setUserName(user_name);
@@ -613,7 +615,7 @@ const WFHDRegister = ({ userUpdateID }) => {
       setReportL2("");
       setReportL3("");
       setDesignation("");
-      toastAlert("User Registerd");
+      toastAlert("User Registered");
       setIsFormSubmitted(true);
     } catch (error) {
       console.log("Failed to submit form", error);

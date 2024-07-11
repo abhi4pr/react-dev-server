@@ -93,9 +93,7 @@ const WFHDBankUpdate = () => {
     if (IFSC == "") {
       setIsRequired((perv) => ({ ...perv, IFSC: true }));
     }
-    if (panNo == "") {
-      setIsRequired((perv) => ({ ...perv, panNo: true }));
-    }
+    
     if (beneficiary == "") {
       setIsRequired((perv) => ({ ...perv, beneficiary: true }));
     }
@@ -303,9 +301,9 @@ const WFHDBankUpdate = () => {
                 {!isValidPAN && (
                   <span style={{ color: "red" }}>PAN is not valid</span>
                 )}
-                {isRequired.panNo && (
+                {/* {isRequired.panNo && (
                   <p className="form-error">Please Enter PAN No.</p>
-                )}
+                )} */}
               </div>
               <FieldContainer
                 label="Beneficiary"
@@ -377,7 +375,7 @@ const WFHDBankUpdate = () => {
               </div>
               <div className="col-3">
                 <FieldContainer
-                  label="Current Pincode"
+                  label="Pincode"
                   type="number"
                   astric={true}
                   fieldGrid={3}
@@ -388,7 +386,7 @@ const WFHDBankUpdate = () => {
                     if (/^\d{0,6}$/.test(value)) {
                       setPincode(value);
                     }
-                    if (value === "") {
+                    if (e.target.value === "") {
                       setIsRequired((prev) => ({
                         ...prev,
                         pincode: true,

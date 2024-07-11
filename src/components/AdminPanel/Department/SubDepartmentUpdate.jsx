@@ -11,7 +11,7 @@ import { baseUrl } from "../../../utils/config";
 
 export default function SubDepartmentUpdate() {
   const { toastAlert, toastError } = useGlobalContext();
-  const { DepartmentContext } = useAPIGlobalContext();
+  // const { DepartmentContext } = useAPIGlobalContext();
 
   const [isFormSubmitted, setIsFormSubmitted] = useState(false);
   const [subDepartmentName, setSubDepartmentName] = useState("");
@@ -19,6 +19,7 @@ export default function SubDepartmentUpdate() {
   // const [departmentData, setDepartmentData] = useState([]);
   const [deptId, setDeptId] = useState(null);
   const { id } = useParams();
+  const [DepartmentContext , getDepartmentData] = useState([])
 
   function getData() {
     // axios
@@ -33,6 +34,13 @@ export default function SubDepartmentUpdate() {
       setSubDepartmentName(res.data.sub_dept_name);
     });
   }
+  useEffect(()=>{
+    axios.get(baseUrl + "get_all_departments").then((res) => {
+      getDepartmentData(res.data);
+    });
+  })
+
+
   useEffect(() => {
     getData();
   }, []);
@@ -53,7 +61,7 @@ export default function SubDepartmentUpdate() {
       });
 
       setIsFormSubmitted(true);
-      toastAlert("Submitted success");
+      toastAlert("Submitted Successfully");
     } catch (error) {
       alert(error.response.data.message);
     }

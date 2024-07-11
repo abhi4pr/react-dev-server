@@ -10,7 +10,7 @@ import { baseUrl } from "../../../utils/config";
 
 const Designation = () => {
   const { toastAlert, toastError } = useGlobalContext();
-  const { DepartmentContext } = useAPIGlobalContext();
+  // const { DepartmentContext } = useAPIGlobalContext();
 
   const [isLoading, setIsLoading] = useState(false);
 
@@ -22,11 +22,19 @@ const Designation = () => {
   const [subDepartmentData, setSubDeparmentData] = useState([]);
   const [subDeparmtment, setSubDepartment] = useState("");
 
+  const [DepartmentContext , getDepartmentData] = useState([])
+
   const [isRequired, setIsRequired] = useState({
     designationName: false,
     departmentName: false,
     subDeparmtment: false,
   });
+
+  useEffect(()=>{
+    axios.get(baseUrl + "get_all_departments").then((res) => {
+      getDepartmentData(res.data);
+    });
+  })
 
   function subDepartmentDatas() {
     if (departmentName) {
