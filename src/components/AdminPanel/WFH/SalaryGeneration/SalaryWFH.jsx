@@ -1307,7 +1307,8 @@ const SalaryWFH = () => {
           </div>
 
           <h6 style={{ color: "green", paddingTop: "10px" }}>
-            <span>Active : {activeusers}</span>
+            {/* <span>Active : {activeusers}</span> */}
+            <span>Active : {filterData?.length}</span>
           </h6>
         </div>
       </div>
