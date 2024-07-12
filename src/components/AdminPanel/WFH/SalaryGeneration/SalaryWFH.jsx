@@ -1331,6 +1331,10 @@ const SalaryWFH = () => {
                       {showAlldeptMonthWiseData[0]?.totalSalary}
                     </li>
                     <li>
+                      <span>Net Salary</span>
+                      {showAlldeptMonthWiseData[0]?.netSalary?.toFixed(0)}
+                    </li>
+                    <li>
                       <span>Total Bonus</span>
                       {showAlldeptMonthWiseData[0]?.totalBonus}
                     </li>
