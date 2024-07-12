@@ -116,7 +116,6 @@ const PendingApprovalUpdate = () => {
   function getData() {
     setLoading(true);
     axios.post(baseUrl + "add_php_finance_data_in_node").then((res) => {
-      console.log(res, "response----pending approval");
       const custData = res.data.data.filter(
         (status) => status.payment_approval_status === "0"
       );
