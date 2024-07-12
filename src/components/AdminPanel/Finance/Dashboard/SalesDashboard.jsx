@@ -99,9 +99,10 @@ export default function SalesDashboard() {
     });
 
     axios.post(baseUrl + "add_php_finance_data_in_node").then((res) => {
-      const pendingApproval = res.data.data.filter(
+      const pendingApproval = res?.data?.data.filter(
         (status) => status.payment_approval_status === "0"
       );
+      console.log(pendingApproval, "pendingApproval---PROD---pendingApproval");
       setFilterPendingForApprovalData(pendingApproval);
       setPendingForApprovalData(pendingApproval);
     });
@@ -271,6 +272,7 @@ export default function SalesDashboard() {
         }
       )
       .then((res) => {
+        console.log(res, "response incentive prod------");
         setIncentiveFilterData(res.data.body);
         setIncentiveData(res.data.body);
       });
@@ -417,12 +419,10 @@ export default function SalesDashboard() {
     });
     setPaymentModeData(filterData10);
   };
-  console.log(filterPaymentModeData, "filterPaymentModeData>>>");
 
   const incentiveCount = incentiveData?.filter(
     (data) => data?.action === "Complete Release Button"
   );
-  console.log(incentiveCount?.length, "count--------------");
 
   return (
     <div>
@@ -675,7 +675,7 @@ export default function SalesDashboard() {
                 <Link to="/admin/finance-pendingapproveupdate">
                   <div className="card-body cardGrdnt blueGrdnt financeCardSmall">
                     <h2>Pending Approval of Sales Payment</h2>
-                    <h3>{pendingForApprovalData.length}</h3>
+                    <h3>{pendingForApprovalData?.length}</h3>
                   </div>
                 </Link>
               </div>

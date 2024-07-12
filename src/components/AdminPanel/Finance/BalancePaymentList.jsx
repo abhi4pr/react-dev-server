@@ -298,8 +298,10 @@ const BalancePaymentList = () => {
 
   function pendingApprovalApi() {
     axios.post(baseUrl + "add_php_finance_data_in_node").then((res) => {
-      const pedingAppData = res.data.data;
-      setTotalCount(pedingAppData?.length);
+      const pendingAppData = res?.data?.data?.filter(
+        (status) => status.payment_approval_status === "0"
+      );
+      setTotalCount(pendingAppData?.length);
     });
   }
   useEffect(() => {
@@ -1858,7 +1860,6 @@ const BalancePaymentList = () => {
       />
     );
   }
-
   return (
     <div>
       {activeAccordionIndex === 2 ? (

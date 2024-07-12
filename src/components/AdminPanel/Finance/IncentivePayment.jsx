@@ -88,7 +88,7 @@ const IncentivePayment = () => {
         ),
         paid_amount: balanceReleaseAmount,
       })
-      .then((res) => { });
+      .then((res) => {});
 
     const formData = new FormData();
     formData.append("loggedin_user_id", 36);
@@ -125,7 +125,7 @@ const IncentivePayment = () => {
   function getData() {
     axios
       .post(baseUrl + "add_php_payment_incentive_data_in_node")
-      .then(() => { });
+      .then(() => {});
     const formData = new FormData();
     formData.append("loggedin_user_id", 36);
     axios
@@ -317,13 +317,13 @@ const IncentivePayment = () => {
     (total, item) => total + parseFloat(item.request_amount),
     0
   );
-  
+
   const incentiveReleasedAmtTotal = filterData?.reduce((total, item) => {
     // Ensure released_amount is a number
     const amount = parseFloat(item.released_amount) || 0;
     return total + amount;
   }, 0);
-  
+
   const sameSalesExecutivecolumn = [
     {
       field: "s._no",
@@ -355,12 +355,12 @@ const IncentivePayment = () => {
       renderCell: (params) =>
         params.row.sales_executive_name !== "Total"
           ? new Date(params.row.request_creation_date).toLocaleDateString(
-            "en-IN"
-          ) +
-          " " +
-          new Date(params.row.request_creation_datee).toLocaleTimeString(
-            "en-IN"
-          )
+              "en-IN"
+            ) +
+            " " +
+            new Date(params.row.request_creation_datee).toLocaleTimeString(
+              "en-IN"
+            )
           : null,
     },
     {
@@ -484,12 +484,12 @@ const IncentivePayment = () => {
       renderCell: (params) =>
         params.row.sales_executive_name !== "Total"
           ? new Date(params.row.request_creation_date).toLocaleDateString(
-            "en-IN"
-          ) +
-          " " +
-          new Date(params.row.request_creation_datee).toLocaleTimeString(
-            "en-IN"
-          )
+              "en-IN"
+            ) +
+            " " +
+            new Date(params.row.request_creation_datee).toLocaleTimeString(
+              "en-IN"
+            )
           : null,
     },
     {
@@ -622,12 +622,12 @@ const IncentivePayment = () => {
       renderCell: (params) =>
         params.row.sales_executive_name !== "Total"
           ? new Date(params.row.request_creation_date).toLocaleDateString(
-            "en-IN"
-          ) +
-          " " +
-          new Date(params.row.request_creation_date).toLocaleTimeString(
-            "en-IN"
-          )
+              "en-IN"
+            ) +
+            " " +
+            new Date(params.row.request_creation_date).toLocaleTimeString(
+              "en-IN"
+            )
           : null,
     },
     {
@@ -727,10 +727,59 @@ const IncentivePayment = () => {
       ),
     },
   ];
-  const handlePendingFilterData = () => {
-    const result = datas.filter((d) => {
-      return d.action == "Complete Release Button";
-    });
+  // const handlePendingFilterData = () => {
+  //   const result = datas.filter((d) => {
+  //     return d.action == "Complete Release Button";
+  //   });
+
+  //   let totalRequestAmount = 0;
+  //   let totalReleasedAmount = 0;
+  //   let totalBalanceReleaseAmount = 0;
+
+  //   result.forEach((row) => {
+  //     totalRequestAmount += +row.request_amount;
+  //     totalReleasedAmount += +row.released_amount || 0;
+  //     totalBalanceReleaseAmount += +row.balance_release_amount;
+  //   });
+
+  //   // Create total row
+  //   const totalRow = {
+  //     request_amount: totalRequestAmount,
+  //     released_amount: totalReleasedAmount,
+  //     balance_release_amount: totalBalanceReleaseAmount,
+  //     sales_executive_name: "Total",
+  //   };
+
+  //   setFilterData([...result, totalRow]);
+  // };
+
+  // const handleCompleteFilterData = () => {
+  //   const result = datas.filter((d) => {
+  //     return d.action == "Released";
+  //   });
+
+  //   let totalRequestAmount = 0;
+  //   let totalReleasedAmount = 0;
+  //   let totalBalanceReleaseAmount = 0;
+
+  //   result.forEach((row) => {
+  //     totalRequestAmount += +row.request_amount;
+  //     totalReleasedAmount += +row.released_amount || 0;
+  //     totalBalanceReleaseAmount += +row.balance_release_amount;
+  //   });
+
+  //   // Create total row
+  //   const totalRow = {
+  //     request_amount: totalRequestAmount,
+  //     released_amount: totalReleasedAmount,
+  //     balance_release_amount: totalBalanceReleaseAmount,
+  //     sales_executive_name: "Total",
+  //   };
+  //   setFilterData([...result, totalRow]);
+  // };
+
+  const handleFilterData = (filterAction) => {
+    const result = datas.filter((d) => d.action === filterAction);
 
     let totalRequestAmount = 0;
     let totalReleasedAmount = 0;
@@ -753,34 +802,18 @@ const IncentivePayment = () => {
     setFilterData([...result, totalRow]);
   };
 
-  const handleCompleteFilterData = () => {
-    const result = datas.filter((d) => {
-      return d.action == "Released";
-    });
+  const handlePendingFilterData = () =>
+    handleFilterData("Complete Release Button");
+  const handleCompleteFilterData = () => handleFilterData("Released");
 
-    let totalRequestAmount = 0;
-    let totalReleasedAmount = 0;
-    let totalBalanceReleaseAmount = 0;
-
-    result.forEach((row) => {
-      totalRequestAmount += +row.request_amount;
-      totalReleasedAmount += +row.released_amount || 0;
-      totalBalanceReleaseAmount += +row.balance_release_amount;
-    });
-
-    // Create total row
-    const totalRow = {
-      request_amount: totalRequestAmount,
-      released_amount: totalReleasedAmount,
-      balance_release_amount: totalBalanceReleaseAmount,
-      sales_executive_name: "Total",
-    };
-    setFilterData([...result, totalRow]);
-  };
+  // Set pending by default while initially rendering data
+  useEffect(() => {
+    handlePendingFilterData();
+  }, [datas]);
 
   useEffect(() => {
     balanceReleaseAmount * 1 + selectedData.released_amount * 1 ==
-      selectedData.request_amount
+    selectedData.request_amount
       ? setPaymentType("Full Payment")
       : setPaymentType("Partial Payment");
     setPartialPaymentReason("");
@@ -1460,6 +1493,7 @@ const IncentivePayment = () => {
                     showQuickFilter: true,
                   },
                 }}
+                rowCount={filterData?.length - 1}
                 getRowId={(row) => filterData.indexOf(row)}
               />
             </div>
