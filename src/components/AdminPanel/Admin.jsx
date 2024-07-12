@@ -345,6 +345,7 @@ import PlanOverView from "./Operation/Plan/CampPlanOverview";
 import CampPlanOverview from "./Operation/Plan/CampPlanOverview";
 import EditPage from "./PageMS/EditPage/EditPage";
 import PageStats from "./PageMS/PageStats";
+import NewDocumentCom from "./WFH/NewDocumentCom";
 
 const Admin = () => {
   const [contextData, setData] = useState([]);
@@ -481,6 +482,10 @@ const Admin = () => {
                   <Route path="/wfhd-register" element={<WFHDRegister />} />
                   <Route path="/total-NDG" element={<TotalNDG />} />
                   <Route path="/wfhd-update/:id" element={<WFHDUpdate />} />
+                  <Route
+                    path="/wfhd-new-documentcom/:id"
+                    element={<NewDocumentCom/>}
+                  />
 
                   <Route
                     path="/salary-dashboard/:id"
