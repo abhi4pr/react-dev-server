@@ -127,7 +127,9 @@ const UserOverview = () => {
         joining_date: reJoinDate,
       });
       reJoinClose();
+      setReJoinDate("")
       getData();
+      toastAlert("Re-Join Successfully")
     } catch {}
   };
 
@@ -1376,6 +1378,7 @@ const UserOverview = () => {
           </div>
           <button
             className="btn btn-success ml-3 mt-3"
+            disabled={!reJoinDate}
             onClick={handleSubmitReJoin}
           >
             Submit
