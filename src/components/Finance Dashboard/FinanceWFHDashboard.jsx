@@ -722,7 +722,7 @@ export default function FinanceWFHDashboard() {
     // },
   ];
 
-  if (activeAccordionIndex === 1) {
+  if (activeAccordionIndex === 1 || activeAccordionIndex === 2 ) {
     pendingColumns.push({
       headerName: "UTR",
       width: 350,
@@ -983,7 +983,7 @@ export default function FinanceWFHDashboard() {
               size="lg"
               onClick={() => BankExcelConverter(rowForPayment)}
             >
-              Export Bank Excel
+              Download Excel
             </button>
             <button
               variant="contained"
@@ -992,7 +992,8 @@ export default function FinanceWFHDashboard() {
               className="btn cmnbtn btn_sm btn-outline-primary ml-3 \"
               onClick={handleDownloadExcel}
             >
-              Download Excel
+              
+              Export Bank Excel
             </button>
             <button
               variant="contained"
@@ -1132,7 +1133,8 @@ export default function FinanceWFHDashboard() {
         {/* <h1>Payout Released</h1> */}
         <div className="card-body thm_table">
           <DataGrid
-            rows={filterData?.filter((item) => item.status_ === 1)}
+            // rows={filterData?.filter((item) => item.status_ === 1 || item.attendence_status_flow == "Payment Released")}
+            rows={filterData?.filter((item) =>  item.attendence_status_flow == "Payment Released")}
             columns={pendingColumns}
             getRowId={(row) => row.id}
             initialState={{
