@@ -882,13 +882,10 @@ const SalaryWFH = () => {
     },
     {
       name: "DOJ",
-      cell: (row) => {
-        const date = new Date(row.joining_date);
-        const dd = String(date.getDate()).padStart(2, "0");
-        const mm = String(date.getMonth() + 1).padStart(2, "0");
-        const yy = String(date.getFullYear()).slice(2);
-        return `${dd}/${mm}/${yy}`;
-      },
+      cell: (row) => 
+        DateISOtoNormal(
+          row.joining_date),
+          width:"130px",
     },
     {
       name: "Work Days",

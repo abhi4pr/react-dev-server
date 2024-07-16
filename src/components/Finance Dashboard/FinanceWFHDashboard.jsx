@@ -1134,7 +1134,7 @@ export default function FinanceWFHDashboard() {
         <div className="card-body thm_table">
           <DataGrid
             // rows={filterData?.filter((item) => item.status_ === 1 || item.attendence_status_flow == "Payment Released")}
-            rows={filterData?.filter((item) =>  item.attendence_status_flow == "Payment Released")}
+            rows={filterData?.filter((item) => item.attendence_status_flow == "Proceeded to bank")}
             columns={pendingColumns}
             getRowId={(row) => row.id}
             initialState={{

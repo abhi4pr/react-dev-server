@@ -1,6 +1,6 @@
-export const baseUrl = "http://34.70.225.161:8080/api/"; // for development
+// export const baseUrl = "http://34.70.225.161:8080/api/"; // for development
 // export const baseUrl = "http://34.69.14.1:8080/api/"; // for production
-// export const baseUrl = "https://jarvis.work:8080/api/"; // for production
+export const baseUrl = "https://jarvis.work:8080/api/"; // for production
 // export const baseUrl = "http://jarvis.work:8080/api/"; // for production
 // export const baseUrl = "https://jarvis.work:8080/api/"; // for production
 // export const baseUrl = "http://192.168.29.94:8080/api/"; //Bhaiyu Dada
