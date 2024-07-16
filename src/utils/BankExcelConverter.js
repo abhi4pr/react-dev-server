@@ -14,6 +14,8 @@ export default function BankExcelConverter(BankData) {
     "Email ID (Optional)": row.user_email_id,
     "Contact Reference ID (Optional) Eg: Employee ID or Customer ID":
       row?.emp_id,
+      "Attandance ID": row?.attendence_id,
+      "utr":""
   }));
 
   const fileName = "BankExcel.xlsx";
