@@ -2856,18 +2856,18 @@ table.invo-payment-table.invo-payment-table {
 	margin-left: calc(-.5 * var(--bs-gutter-x));
 }
 
-.col {
+/* .col {
 	flex: 1 0 0%;
-}
+} */
 
-.row>* {
+/* .row>* {
 	flex-shrink: 0;
 	width: 100%;
 	max-width: 100%;
 	padding-right: calc(var(--bs-gutter-x) * .5);
 	padding-left: calc(var(--bs-gutter-x) * .5);
 	margin-top: var(--bs-gutter-y);
-}
+} */
 
 .alignFlexEnd {
 	align-items: flex-end;

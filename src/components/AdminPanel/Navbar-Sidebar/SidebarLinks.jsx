@@ -16,6 +16,7 @@ import {
   Files,
 } from "@phosphor-icons/react";
 import { constant } from "../../../utils/constants";
+import CommunityHome from "../../SuperTracker/CommunityManagement/CommunityHome";
 
 const SidebarLinks = () => {
   const [contextData, setData] = useState([]);
@@ -123,8 +124,9 @@ const SidebarLinks = () => {
     <>
       <li className="nav-item nav-item-single">
         <Link
-          className={`nav-btn nav-link ${activelink === "/admin" ? "active" : ""
-            }`}
+          className={`nav-btn nav-link ${
+            activelink === "/admin" ? "active" : ""
+          }`}
           to="/admin"
         >
           <i className="ph">
@@ -778,7 +780,7 @@ const SidebarLinks = () => {
                     id="collapsInnerOne"
                     className="collapse"
                     aria-labelledby="headingTwo"
-                  // data-parent="#accordionSidebar"
+                    // data-parent="#accordionSidebar"
                   >
                     <div className="internal collapse-inner">
                       <NavLink className="collapse-item" to="/admin/execution">
@@ -1224,7 +1226,7 @@ const SidebarLinks = () => {
                   id="collapsInnerEightFinanceEdit"
                   className="collapse"
                   aria-labelledby="headingTwo"
-                // data-parent="#accordionSidebar"
+                  // data-parent="#accordionSidebar"
                 >
                   <div className="collapse-inner">
                     <>
@@ -1470,7 +1472,7 @@ const SidebarLinks = () => {
                   id="collapsInnerEightFinance"
                   className="collapse"
                   aria-labelledby="headingTwo"
-                // data-parent="#accordionSidebar"
+                  // data-parent="#accordionSidebar"
                 >
                   <div className="internal collapse-inner">
                     <>
@@ -1538,7 +1540,7 @@ const SidebarLinks = () => {
                   id="collapsInnerEightFinancePayout"
                   className="collapse"
                   aria-labelledby="headingTwo"
-                // data-parent="#accordionSidebar"
+                  // data-parent="#accordionSidebar"
                 >
                   <div className="internal collapse-inner">
                     <>
@@ -1576,7 +1578,7 @@ const SidebarLinks = () => {
                   id="collapsInnerEightFinanceTask"
                   className="collapse"
                   aria-labelledby="headingTwo"
-                // data-parent="#accordionSidebar"
+                  // data-parent="#accordionSidebar"
                 >
                   <div className="internal collapse-inner">
                     <>
@@ -1651,7 +1653,7 @@ const SidebarLinks = () => {
         </li>
       )} */}
 
-      {isCustomer && (
+      {/* {isCustomer && (
         <li className="nav-item">
           <Link
             className="nav-btn nav-link collapsed"
@@ -1669,13 +1671,11 @@ const SidebarLinks = () => {
             id="customer"
             className="collapse"
             aria-labelledby="headingTwo"
-          // data-parent="#accordionSidebar"
+            // data-parent="#accordionSidebar"
           >
             <div className="internal collapse-inner">
               <>
-                {/* <NavLink className="collapse-item" to="/admin/account-type">
-                  <i className="bi bi-dot"></i> Account Type
-                </NavLink> */}
+              
 
                 <NavLink className="collapse-item" to="/admin/account-master">
                   <i className="bi bi-dot"></i> Brand Name Type
@@ -1690,10 +1690,7 @@ const SidebarLinks = () => {
                 >
                   <i className="bi bi-dot"></i> Account Overview
                 </NavLink>
-                {/* <NavLink className="collapse-item" to="/admin/ops-customer-update">
-                <i className="bi bi-dot"></i> Ops Customer Update
-              </NavLink> */}
-
+               
                 <NavLink
                   className="collapse-item"
                   to="/admin/customer-cont-overview"
@@ -1709,14 +1706,13 @@ const SidebarLinks = () => {
                 >
                   <i class="bi bi-dot"></i> Document Overview
                 </NavLink>
-                {/* <NavLink className="collapse-item" to="/admin/customer-doc-master">
-                <i class="bi bi-dot"></i> Customer Document
-              </NavLink> */}
+              
               </>
             </div>
           </div>
         </li>
-      )}
+      )} */}
+<>
 
       {isPageManagement && (
         <li className="nav-item">
@@ -1738,35 +1734,19 @@ const SidebarLinks = () => {
             aria-labelledby="headingTwo"
             data-parent="#accordionSidebar"
           >
-          <div className="internal collapse-inner">
-              {/* {contextData &&
-                contextData[0] &&
-                contextData[0].view_value === 1 && (
-                  <NavLink className="collapse-item" to="/admin/pms-master">
-                    <i className="bi bi-dot"></i>Master
-                  </NavLink>
-                )} */}
-
-              {/* {contextData &&
-                contextData[0] &&
-                contextData[0].view_value === 1 && ( */}
-                  <NavLink
-                    className="collapse-item"
-                    to="/admin/pms-vendor-overview"
-                  >
-                    <i className="bi bi-dot"></i>Vendor
-                  </NavLink>
-                {/* )} */}
-              {/* {contextData &&
-                contextData[0] &&
-                contextData[0].view_value === 1 && ( */}
-                  <NavLink
-                    className="collapse-item"
-                    to="/admin/pms-page-overview"
-                  >
-                    <i className="bi bi-dot"></i>Page
-                  </NavLink>
-                {/* )} */}
+            <div className="internal collapse-inner">
+             
+              <NavLink
+                className="collapse-item"
+                to="/admin/pms-vendor-overview"
+              >
+                <i className="bi bi-dot"></i>Vendor
+              </NavLink>
+             
+              <NavLink className="collapse-item" to="/admin/pms-page-overview">
+                <i className="bi bi-dot"></i>Page
+              </NavLink>
+              {/* )}
               {/* {contextData &&
               contextData[0] &&
               contextData[0].view_value === 1 && (
@@ -1869,10 +1849,59 @@ const SidebarLinks = () => {
             </div>
           </div>
         </li>
-      )}
+      )} 
+</>
 
       {isSales && <SalesSidebarLinks />}
-      {isPageAssignment && <PageAssignmentSidebarLinks />}
+      {/* {isPageAssignment && <PageAssignmentSidebarLinks />} */}
+
+      {isInstaApiVisible && (
+        
+        <li className="nav-item">
+          <Link
+            className="nav-btn nav-link collapsed"
+            data-toggle="collapse"
+            data-target="#cummunity"
+            aria-expanded="true"
+            aria-controls="cummunity"
+          >
+            <i className="ph">
+              <UserRectangle weight="duotone" />
+            </i>
+            <span>Community</span>
+          </Link>
+          <div
+            id="cummunity"
+            className="collapse"
+            aria-labelledby="headingFive"
+            // data-parent="#accordionSidebar"
+          >
+            <div className="internal collapse-inner">
+            {contextData &&
+                contextData[0] &&
+                contextData[0].view_value === 1 && (
+
+              <>
+                <NavLink
+                  className="collapse-item"
+                  to="/admin/instaapi/community"
+                >
+                  <i className="bi bi-dot"></i> Community-Overview
+                </NavLink>
+              </>
+                )}
+                <NavLink
+                  className="collapse-item"
+                  to="/admin/instaapi/community/manager"
+                >
+                  <i className="bi bi-dot"></i> Community-Manager
+                </NavLink>
+            </div>
+          </div>
+        </li>
+      )}
+
+
     </>
   );
 };
