@@ -1093,7 +1093,7 @@ export default function FinanceWFHDashboard() {
     <>
       <div>
         {rowForPayment.length > 0 && (
-          <>
+          <> 
             <button
               variant="contained"
               color="primary"
@@ -1135,6 +1135,7 @@ export default function FinanceWFHDashboard() {
           <DataGrid
             // rows={filterData?.filter((item) => item.status_ === 1 || item.attendence_status_flow == "Payment Released")}
             rows={filterData?.filter((item) => item.attendence_status_flow == "Proceeded to bank")}
+
             columns={pendingColumns}
             getRowId={(row) => row.id}
             initialState={{
