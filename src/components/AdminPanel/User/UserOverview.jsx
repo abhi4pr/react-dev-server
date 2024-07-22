@@ -156,6 +156,7 @@ const UserOverview = () => {
   const today = new Date().toISOString().split("T")[0];
 
   function handleSeparationDataPost() {
+    console.log(separationUserID , 'sepration user id')
     axios.post(baseUrl + "add_separation", {
       user_id: separationUserID,
       status: separationStatus,
@@ -165,12 +166,22 @@ const UserOverview = () => {
       remark: separationRemark,
       reason: separationReason,
     });
+    const formData = new FormData();
+    formData.append("user_id", separationUserID);
+    formData.append("user_status", "Exit");
+    axios
+      .put(baseUrl + "update_user", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      })
     whatsappApi.callWhatsAPI(
       "CF_Separation",
       JSON.stringify(usercontact),
       username,
       [username, separationStatus]
     );
+    getData()
   }
 
   useEffect(() => {
@@ -772,6 +783,33 @@ const UserOverview = () => {
                 </button>
               </Link>
             )}
+
+
+
+          {contextData &&
+            contextData[18] &&
+            contextData[18].insert_value === 1 && (
+              <Link to="/admin/pre-onboarding">
+                <button
+                  type="button"
+                  className="btn btn-warning btn-sm"
+                >
+                  Add Pre Onboarding
+                </button>
+              </Link>
+            )}
+          {contextData &&
+            contextData[0] &&
+            contextData[0].insert_value === 1 && (
+              <Link to="/admin/wfhd-register">
+                <button
+                  type="button"
+                  className="btn btn-warning btn-sm"
+                >
+                  Add Buddy
+                </button>
+              </Link>
+            )}
           {contextData &&
             contextData[0] &&
             contextData[0].insert_value === 1 && (
@@ -1171,6 +1209,7 @@ const UserOverview = () => {
                 value={separationReason}
                 onChange={(e) => setSeparationReason(e.target.value)}
               >
+                <option value="" disabled selected hidden>Choose...</option>
                 {separationReasonGet.map((option) => (
                   <option value={option.id} key={option.id}>
                     {" "}
@@ -1225,6 +1264,7 @@ const UserOverview = () => {
                 type="button"
                 className="btn btn-primary"
                 onClick={() => handleSeparationDataPost()}
+                disabled={!separationRemark || !separationStatus || !separationReason || !separationResignationDate}
                 data-dismiss="modal"
               >
                 Save changes
