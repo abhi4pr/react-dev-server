@@ -158,6 +158,7 @@ function CommunityHome() {
     items: [{ id: 1, field: "creatorName", operator: "contains" }],
   });
   const [pagecategory, setPageCategory] = useState([]);
+  const [reloadpagecategory, setReloadpagecategory] = useState(false);
   const [projectxpages, setProjectxpages] = useState([]);
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
@@ -205,7 +206,7 @@ function CommunityHome() {
   useEffect(() => {
     handleOverViewChange("e",2)
     fetchCategory();
-  }, [reload]);
+  }, [reloadpagecategory]);
 
   
 
@@ -523,7 +524,8 @@ function CommunityHome() {
             pagecategory={pagecategory}
             rowSelectionModel={rowSelectionModel}
             projectxpages={projectxpages}
-           
+            setReloadpagecategory={setReloadpagecategory}
+            reloadpagecategory={reloadpagecategory}
           />
            <div >
         <TabContext value={overViewvalue}>

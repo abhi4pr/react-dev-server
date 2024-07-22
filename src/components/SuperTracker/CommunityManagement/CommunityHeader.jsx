@@ -13,6 +13,7 @@ import { useState } from "react";
 import { useEffect } from "react";
 import { formatNumber } from "../../../utils/formatNumber";
 import axios from "axios";
+import AddProjectxpageCategory from "./AddProjectxpageCategory";
 
 function CommunityHeader({
   rows,
@@ -21,8 +22,8 @@ function CommunityHeader({
   pagecategory,
   rowSelectionModel,
   projectxpages,
-  reload,setReload
- 
+  reload,setReload,
+  reloadpagecategory,setReloadpagecategory
 }) {
   const [teamCreated, setTeamCreated] = useState({ totalCor: 0, teamCount: 0 });
   const [selectedCategory, setSelectedCategory] = useState(null);
@@ -107,7 +108,7 @@ function CommunityHeader({
     if (selectedCategory == null) {
       alert("Please select category first");
     }
-    console.log(projectxpages, "projectxpages", selectedCategory);
+    // console.log(projectxpages, "projectxpages", selectedCategory);
     // return;
     // Assuming rowSelectionModel contains the selected page names
     const selectedPageNames = rowSelectionModel; // Replace with your actual rowSelectionModel array
@@ -116,7 +117,7 @@ function CommunityHeader({
     const pagesToUpdate = projectxpages.filter((page) =>
       selectedPageNames.includes(page.page_name)
     );
-    console.log(pagesToUpdate, "pagesToUpdate");
+    // console.log(pagesToUpdate, "pagesToUpdate");
     // Loop through the filtered pages and make API calls to update them
     for (const page of pagesToUpdate) {
       try {
@@ -172,17 +173,25 @@ function CommunityHeader({
           <TextField size="small" {...params} label="Category" />
         )}
       />
+       {/* <Button  variant="outlined">
+        +
+        </Button> */}
+        <AddProjectxpageCategory
+        setReloadpagecategory={setReloadpagecategory}
+        reloadpagecategory={reloadpagecategory}
+       />
       {teamCreated?.totalCor > 0 && (
-        <Chip label={`COR : ${formatNumber(teamCreated?.totalCor)}`} />
+        <Chip sx={{mt:1}} label={`COR : ${formatNumber(teamCreated?.totalCor)}`} />
       )}
       {teamCreated?.totalPaidPost > 0 && (
-        <Chip label={`Paid-Post : ${formatNumber(teamCreated?.totalPaidPost)}`} />
+        <Chip sx={{mt:1}} label={`Paid-Post : ${formatNumber(teamCreated?.totalPaidPost)}`} />
       )}
       {rowSelectionModel.length > 0 && (
         <Button onClick={handleUpdateCategory} variant="outlined">
           Update-Category
         </Button>
       )}
+     
     </Stack>
   );
 }
