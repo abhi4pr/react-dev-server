@@ -1,6 +1,12 @@
 const IndianBankList = [
   { label: "Allahabad Bank", value: "Allahabad Bank" },
   { label: "Andhra Bank", value: "Andhra Bank" },
+  { label: "DBS Bank", value: "DBS Bank" },
+  { label: "Uttarakhand Gramin Bank", value: "Uttarakhand Gramin Bank" },
+  { label: "Equitas Small Finance Bank", value: "Equitas Small Finance Bank" },
+  { label: "Indian Bank", value: "Indian Bank" },
+  { label: " Nainital Bank", value: " Nainital Bank" },
+  { label: "Airtel Bank", value: "Airtel Bank" },
   { label: "Axis Bank", value: "Axis Bank" },
   { label: "Bank of Bahrain and Kuwait", value: "Bank of Bahrain and Kuwait" },
   {

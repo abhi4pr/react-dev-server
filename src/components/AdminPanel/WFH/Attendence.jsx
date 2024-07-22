@@ -156,6 +156,16 @@ const Attendence = () => {
 
   const handleAttendence = async () => {
     try {
+      // const monthNames = ["January", "February", "March", "April", "May", "June","July", "August", "September", "October", "November", "December"];
+  
+      // let selectedMonth = monthNames.indexOf(month);
+      // let selectedYear = Number(year);
+      // let date = new Date(selectedYear, selectedMonth);
+      // date.setMonth(date.getMonth() + 1);
+
+      // let newMonth = monthNames[date.getMonth()];
+      // let newYear = date.getFullYear();
+
       await axios.post(baseUrl + "add_attendance", {
         dept: department,
         user_id: userName.user_id,

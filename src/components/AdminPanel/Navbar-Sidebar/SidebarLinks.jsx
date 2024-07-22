@@ -161,16 +161,6 @@ const SidebarLinks = () => {
                 contextData[0].view_value === 1 && (
                   <NavLink
                     className="collapse-item"
-                    to="/admin/users-dashboard"
-                  >
-                    <i className="bi bi-dot"></i> User Dashboard
-                  </NavLink>
-                )}
-              {contextData &&
-                contextData[0] &&
-                contextData[0].view_value === 1 && (
-                  <NavLink
-                    className="collapse-item"
                     to={`/admin/user-overview/${"Active"}`}
                   >
                     <i className="bi bi-dot"></i> User
@@ -442,9 +432,9 @@ const SidebarLinks = () => {
                 data-parent="#accordionSidebar"
               >
                 <div className="internal collapse-inner">
-                  <NavLink className="collapse-item" to="/admin/wfhd-register">
-                    <i className="bi bi-dot"></i> Add Buddy
-                  </NavLink>
+                  {/* //<NavLink className="collapse-item" to="/admin/wfhd-register">
+                    //<i className="bi bi-dot"></i> Add Buddy
+                  //</NavLink> */}
                   {/* <NavLink className="collapse-item" to="/admin/billing-overview">
                     Billing Header Overview
                   </NavLink> */}
@@ -597,7 +587,7 @@ const SidebarLinks = () => {
                   data-parent="#accordionSidebar"
                 >
                   <div className="internal collapse-inner">
-                    {contextData &&
+                    {/* {contextData &&
                       contextData[18] &&
                       contextData[18].view_value === 1 && (
                         <NavLink
@@ -606,7 +596,7 @@ const SidebarLinks = () => {
                         >
                           <i className="bi bi-dot"></i> Add Pre Onboarding
                         </NavLink>
-                      )}
+                      )} */}
 
                     {contextData && contextData[18]?.view_value == 1 && (
                       <NavLink
