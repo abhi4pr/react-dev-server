@@ -38,7 +38,7 @@ const UserSingleWFHDSalaryTab = ({ id }) => {
     {
       name: "Work Days",
       width: "8%",
-      cell: () => 30,
+      cell: (row) => row.presentDays,
     },
     {
       name: "Month",
@@ -50,7 +50,7 @@ const UserSingleWFHDSalaryTab = ({ id }) => {
     },
     {
       name: "Presents",
-      cell: (row) => 30 - Number(row.noOfabsent),
+      cell: (row) => row.presentDays - Number(row.noOfabsent),
     },
     {
       name: "Total Payout",

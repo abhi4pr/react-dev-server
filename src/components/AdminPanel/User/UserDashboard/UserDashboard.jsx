@@ -36,7 +36,7 @@ const UserDashboard = () => {
         data.filter((d) => d.job_type === "WFO" && d.user_status === "Active")
       );
       setWfhdCount(
-        data.filter((d) => d.job_type === "WFHD" && d.user_status === "Active")
+        data.filter((d) => d.job_type === "WFHD" && d.user_status === "Active" && d.att_status === "onboarded")
       );
       setWFhCount(
         data.filter((d) => d.job_type === "WFH" && d.user_status === "Active")

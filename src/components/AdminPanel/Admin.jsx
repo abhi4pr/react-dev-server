@@ -346,6 +346,7 @@ import CampPlanOverview from "./Operation/Plan/CampPlanOverview";
 import EditPage from "./PageMS/EditPage/EditPage";
 import PageStats from "./PageMS/PageStats";
 import NewDocumentCom from "./WFH/NewDocumentCom";
+import AnalyticDashboard from "./WFH/AnalyticDashboard/AnalyticDashboard";
 
 const Admin = () => {
   const [contextData, setData] = useState([]);
@@ -545,6 +546,7 @@ const Admin = () => {
                     path="/wfh-dashboard-overview/:id"
                     element={<DashboardWFHCardDetails />}
                   />
+                  <Route path="/wfhd-analytic-dashbaord" element={<AnalyticDashboard />} />
                   <Route path="/wfhd-overview" element={<WFHDOverview />} />
                   <Route
                     path="/wfh-users-overview/:deptId"

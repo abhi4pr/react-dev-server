@@ -5,6 +5,7 @@ import DataTable from "react-data-table-component";
 import Select from "react-select";
 import Modal from "react-modal";
 import { baseUrl } from "../../../../utils/config";
+import { DataGrid,GridToolbar } from "@mui/x-data-grid";
 
 const SalarySummary = () => {
   const [allSalaryData, setAllSalaryData] = useState([]);
@@ -14,6 +15,8 @@ const SalarySummary = () => {
   const [userCount, setUserCount] = useState([]);
   const [handleOpenUser, setHandleOpenUser] = useState(false);
   const [month, setMonth] = useState("");
+
+  const [totalSalaryDepartmentWise,setTotalSalaryDepartmentWise] = useState("")
   const MonthData = [
     { label: "All", value: "" },
     { label: "January", value: "January" },
@@ -52,8 +55,8 @@ const SalarySummary = () => {
   const [departmentData, setDepartmentData] = useState([]);
   const [departmentFilter, setDepartmentFilter] = useState([]);
   const departmentAPI = () => {
-    axios.get(baseUrl + "get_all_departments").then((res) => {
-      setDepartmentData(res.data);
+    axios.get(baseUrl + "get_wfh_users_with_dept").then((res) => {
+      setDepartmentData(res.data.data);
       getData();
     });
   };
@@ -64,8 +67,13 @@ const SalarySummary = () => {
       const monthMatch = !month || d.month === month;
       return deptMatch && monthMatch;
     });
+    const sumMonth = result?.reduce(
+      (acc, obj) => acc + obj.totalSalary,
+      0
+    );
     setAllSalaryData(result);
-  }, [departmentFilter, month]);
+    setTotalSalaryDepartmentWise(sumMonth);
+  }, [departmentFilter, month ]);
 
   useEffect(() => {
     departmentAPI();
@@ -180,14 +188,43 @@ const SalarySummary = () => {
 
   const SubCatColumns = [
     {
-      name: "S.No",
-      cell: (row, index) => <div>{index + 1}</div>,
-      width: "10%",
+      field: "S.NO",
+      headerName: "S.NO",
+      width: 90,
+      renderCell: (params) => {
+        const rowIndex = userCount.indexOf(params.row);
+        return <div>{rowIndex + 1}</div>;
+      },
     },
     {
-      name: "User Name",
-      width: "50%",
-      selector: (row) => row.user_name,
+      field: "user_name",
+      headerName: "User Name",
+      width: 200,
+    },
+    {
+      field: "salary",
+      headerName: "Salary",
+      width: 150,
+    },
+    {
+      field: "total_salary",
+      headerName: "Total Salary",
+      width: 150,
+    },
+    {
+      field: "bonus",
+      headerName: "Bonus",
+      width: 150,
+    },
+    {
+      field: "salary_deduction",
+      headerName: "Salary Deduction",
+      width: 150,
+    },
+    {
+      field: "toPay",
+      headerName: "To Pay",
+      width: 150,
     },
   ];
 
@@ -196,7 +233,7 @@ const SalarySummary = () => {
       <div className="row">
         <div className="form-group col-3">
           <label className="form-label">
-            Department Name<sup style={{ color: "red" }}>*</sup>
+            Department Name
           </label>
           <Select
             options={[
@@ -212,9 +249,9 @@ const SalarySummary = () => {
                 : {
                     value: departmentFilter,
                     label:
-                      departmentData.find(
+                      departmentData?.find(
                         (dept) => dept.dept_id === departmentFilter
-                      )?.dept_name || "Select...",
+                      )?.dept_name || "All",
                   }
             }
             onChange={(selectedOption) => {
@@ -228,7 +265,7 @@ const SalarySummary = () => {
           />
         </div>
         <div className={`form-group col-3`}>
-          <label className="form-label">Filter</label>
+          <label className="form-label">Monthly Filter</label>
           <Select
             options={MonthData}
             value={FilterDynamic.find((option) => option.value === month)}
@@ -237,7 +274,7 @@ const SalarySummary = () => {
                 getData(); // Call getData function
               } else {
                 setMonth(selectedOption.value); // Update state
-              }
+              } 
             }}
           />
         </div>
@@ -258,13 +295,15 @@ const SalarySummary = () => {
             }}
           />
         </div>
+        
       </div>
-
+      
       <div className="master-card-css">
         <FormContainer mainTitle="Salary Summary" link={"/admin/"} />
         <div className="card">
           <div className="card-header sb">
-            <h5>Total Salary Summary</h5>
+            {/* <h5>Total Salary Summary</h5> */}
+            <h5 style={{color:'green'}}>Total Deparmtent Wise Salary:- {totalSalaryDepartmentWise}</h5>
             <input
               type="text"
               placeholder="Search Here"
@@ -308,11 +347,20 @@ const SalarySummary = () => {
           >
             x
           </button>
-          <DataTable
+          {/* <DataTable
             columns={SubCatColumns}
             data={userCount}
             highlightOnHover
             pagination
+          /> */}
+          <DataGrid
+          rows={userCount}
+          columns={SubCatColumns}
+          getRowId={(row)=>row?.user_id}
+          slots={{
+            toolbar: GridToolbar
+          }}
+
           />
         </Modal>
       </div>

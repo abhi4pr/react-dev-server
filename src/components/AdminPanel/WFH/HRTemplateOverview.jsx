@@ -4,6 +4,7 @@ import Modal from "react-modal";
 import { baseUrl } from "../../../utils/config";
 import axios from "axios";
 import TemplateAssignedUsers from "./TemplateAssignedUsers";
+import { Link } from "react-router-dom";
 
 const templateImages = useInvoiceTemplateImages();
 
@@ -56,6 +57,16 @@ const HRTemplateOverview = () => {
 
   return (
     <div>
+        <Link to="/admin/billing-overview">
+          <button type="button" className="btn btn-outline-info btn-sm ml-5">
+            Billing{" "}
+          </button>
+        </Link>
+        <Link to="/admin/total-NDG">
+          <button type="button" className="btn btn-outline-info btn-sm ml-2">
+            Total & NDG{" "}
+          </button>
+        </Link>
       <div className="transfer_body">
         <div className="transfer_boxes">
           {templateImages.map((d) => (

@@ -82,10 +82,10 @@ const UserSingle = () => {
     "Professional",
     // "KRA",
     "Documents",
-    "Family",
-    "Education",
+    user.job_type ==="WFO"? "Family":"",
+    user.job_type === "WFO" ? "Education":"",
     // "Salary",
-    JobType === "WFHD" ? "Salary" : null,
+    user.job_type === "WFHD" ? "Salary" : null,
   ].filter(Boolean);
 
   return (
