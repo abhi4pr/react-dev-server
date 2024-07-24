@@ -101,6 +101,10 @@ const SalaryWFH = () => {
   const [selectedRows, setSelectedRows] = useState([]);
   const [workDaysLastDate , setWorkDaysLastDate] = useState(0)
 
+  const [pendingFinanceCount , setPendingFinanceCount] = useState('')
+
+  
+
   var settings = {
     dots: false,
     arrows: true,
@@ -576,6 +580,7 @@ const SalaryWFH = () => {
       const response = res.data.data;
       setFilterData(response.filter((option) => option.sendToFinance == 0));
       setData(response);
+      setPendingFinanceCount(response.filter((d)=>d.attendence_status_flow === "Pending From Finance").length)
     } catch (error) {
       console.error("Error submitting data:", error);
     }
@@ -721,7 +726,6 @@ const SalaryWFH = () => {
       });
       handleSubmit();
       toastAlert("Attendence deleted success");
-      console.log(res.data);
     } catch (error) {
       console.log(error);
     }
@@ -1221,10 +1225,13 @@ const SalaryWFH = () => {
                 Total Amount:- {data.totalAmount}
               </h3>
               <h3>
-                Total Pay:- {data.totalSalary}
+                Total Bonus:- {data.totalBonus}
               </h3>
               <h3>
-                Total Bonus:- {data.totalBonus}
+                Total Deduction:- {0}
+              </h3>
+              <h3>
+                Total Pay:- {data.totalSalary}
               </h3>
               <h3>
                 {data?.atdGenerated == 1 ? (
@@ -1255,6 +1262,7 @@ const SalaryWFH = () => {
           )})}
         </Slider>
       </div>
+      <h5>Verification Pending From Finance :{pendingFinanceCount}</h5>
 
       <div className="card mb24">
         <div className="card-header d-flex justify-content-between">
@@ -1296,7 +1304,7 @@ const SalaryWFH = () => {
                   </button>
                 </Link>
               )}
-            <button
+            {/* <button
               className="btn cmnbtn btn_sm btn-outline-primary "
               style={{
                 display: "flex",
@@ -1324,7 +1332,7 @@ const SalaryWFH = () => {
                   Create All Department Salary{" "}
                   <i className="bi bi-check-all"></i>
                 </button>
-              )}
+              )} */}
           </span>
         </div>
         <div className="card-body">
@@ -1374,6 +1382,7 @@ const SalaryWFH = () => {
                       <i class="bi bi-bounding-box"></i>
                     </div>
                     {option.dept_name}
+                    <h3>{option.user_count}</h3>
                   </div>
                 </div>
               );
@@ -1455,7 +1464,7 @@ const SalaryWFH = () => {
             <div className="col-xl-4 col-lg-4 col-md-6 col-sm-12 col-12">
               <div className="salary_dtlCard">
                 <div className="salary_dtlCard_head">
-                  <h2>Current Month Selected Dept</h2>
+                  <h2 className="bold">Current Month ({selectedMonth})</h2>
                 </div>
                 <div className="salary_dtlCard_info">
                   <ul>
@@ -1493,7 +1502,7 @@ const SalaryWFH = () => {
             <div className="col-xl-4 col-lg-4 col-md-6 col-sm-12 col-12">
               <div className="salary_dtlCard">
                 <div className="salary_dtlCard_head">
-                  <h2>This Year All Dept</h2>
+                  <h2 className="bold">This Year All Dept ({selectedYear})</h2>
                 </div>
                 <div className="salary_dtlCard_info">
                   <ul>
@@ -1501,14 +1510,15 @@ const SalaryWFH = () => {
                       <span>Total Amount :</span>
                       {card2Data?.totalsalary}
                     </li>
-                    <li className="bold">
-                      <span >Total Payout :</span>
-                      {card2Data?.totalToPay}
-                    </li>
                     <li>
                       <span>Total Bonus</span>
                       {card2Data?.totalBonus}
                     </li>
+                    <li className="bold">
+                      <span >Total Payout :</span>
+                      {card2Data?.totalToPay}
+                    </li>
+                    
                     {/* <li>
                       <span>Total Deductions</span>
                       {card2Data?.totalsalarydeduction}
@@ -1583,7 +1593,8 @@ const SalaryWFH = () => {
                 FilterTabData("Verification Pending"), setActiveTab(1);
               }}
             >
-              Verification Pending
+              Desbursment Pending
+              {/* Verification Pending */}
             </button>
             <button
               className={`named-tab ${activeTab == 2 ? "active-tab" : ""}`}
@@ -1591,7 +1602,8 @@ const SalaryWFH = () => {
                 FilterTabData("Verified"), setActiveTab(2);
               }}
             >
-              Verified
+              Paid
+              {/* Verified */}
             </button>
           </div>
           <div className="card">

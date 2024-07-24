@@ -743,11 +743,11 @@ const UserOverview = () => {
               Job Type
             </button>
           </Link>
-          <Link to="/admin/billing-overview">
+          {/* <Link to="/admin/billing-overview">
             <button type="button" className="btn btn-outline-primary btn-sm">
               Billing{" "}
             </button>
-          </Link>
+          </Link> */}
           <Link to="/admin/hobbies-overview">
             <button type="button" className="btn btn-outline-primary btn-sm">
               Hobbies
