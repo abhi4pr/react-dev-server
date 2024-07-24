@@ -346,6 +346,9 @@ import CampPlanOverview from "./Operation/Plan/CampPlanOverview";
 import EditPage from "./PageMS/EditPage/EditPage";
 import PageStats from "./PageMS/PageStats";
 import NewDocumentCom from "./WFH/NewDocumentCom";
+import CommunityHome from "../SuperTracker/CommunityManagement/CommunityHome";
+import CommunityManager from "../SuperTracker/CommunityManagement/CommunityManager";
+import CommunityPageView from "../SuperTracker/CommunityManagement/CommunityPageView";
 import AnalyticDashboard from "./WFH/AnalyticDashboard/AnalyticDashboard";
 
 const Admin = () => {
@@ -485,7 +488,7 @@ const Admin = () => {
                   <Route path="/wfhd-update/:id" element={<WFHDUpdate />} />
                   <Route
                     path="/wfhd-new-documentcom/:id"
-                    element={<NewDocumentCom/>}
+                    element={<NewDocumentCom />}
                   />
 
                   <Route
@@ -507,7 +510,7 @@ const Admin = () => {
                   />
                   <Route path="/attendence-mast" element={<Attendence />} />
                   <Route path="/stats" element={<Stats />} />
-                  { <Route path="/pageStats/:id" element={<PageStats />} />}
+                  {<Route path="/pageStats/:id" element={<PageStats />} />}
                   {/* Salary */}
                   <Route path="/salaryWFH" element={<SalaryWFH />} />
 
@@ -1655,6 +1658,28 @@ const Admin = () => {
                     path="/op-plan-overview/:id"
                     element={<CampPlanOverview />}
                   />
+
+                  {/* Community Management */}
+
+                  {contextData &&
+                    contextData[25] &&
+                    contextData[25].view_value === 1 && (
+                      <>
+                        <Route
+                          path="/instaapi/community"
+                          element={<CommunityHome />}
+                        />
+                        <Route
+                          path="/instaapi/community/manager"
+                          element={<CommunityManager />}
+                        />
+
+                        <Route
+                          path="/instaapi/community/manager/:creatorName"
+                          element={<CommunityPageView />}
+                        />
+                      </>
+                    )}
                 </Route>
               </Routes>
             </div>
