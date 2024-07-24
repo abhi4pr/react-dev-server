@@ -551,54 +551,9 @@ const WFHDOverview = () => {
     getWFHDWithCount();
   }, []);
 
-  //   useEffect(() => {
-  //     const processDepartmentData = () => {
-  //       const departmentCounts = allWFHDData.reduce((acc, item) => {
-  //         if (item.dept_id) {
-  //           acc[item.dept_id] = (acc[item.dept_id] || 0) + 1;
-  //         }
-  //         return acc;
-  //       }, {});
-
-  //       const departments = Object.keys(departmentCounts).map(dept_id => ({
-  //         dept_id,
-  //         count: departmentCounts[dept_id],
-  //        }));
-  // console.log(departments,"dept");
-  //       setDepartmentData(departments);
-  //     };
-
-  //     processDepartmentData();
-  //   }, [allWFHDData]);
-
-  // const [selectedDeptId, setSelectedDeptId] = useState('');
-
-  // const handleChange = (event) => {
-  //   setSelectedDeptId(event.target.value);
-  // };
-
-  // const selectedDepartment = allWFHDData.find(dept => dept.dept_id == selectedDeptId)?.dept_name;
-
   return (
     <>
-      {/* {loading ? (
-        <Loader />
-      ) : ( */}
-        <>
-          {/* <select onChange={handleChange} value={selectedDeptId}>
-        {departmentData.map(department => (
-          <option key={department.dept_id} value={department.dept_id}>
-            {department.name} ({department.count})
-          </option>
-        ))}
-      </select>
-      
-      {selectedDepartment && (
-        <div>
-          <p>Selected Department Name: {selectedDepartment}</p>
-        </div>
-      )} */}
-
+      <>
           <Modal
             className="Ready to Onboard"
             isOpen={showOnBoardModal}
@@ -679,8 +634,8 @@ const WFHDOverview = () => {
             style={{ display: "flex", flexDirection: "column", gap: "16px" }}
           >
             <FormContainer mainTitle="My Team" link={"/admin/"} />
-
             <div className="tab">
+              
               <div
                 className={` named-tab  ${activeTab == 3 ? "active-tab" : ""}`}
                 onClick={() => {

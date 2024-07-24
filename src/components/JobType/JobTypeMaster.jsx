@@ -244,6 +244,12 @@ const JobTypeMaster = () => {
                 value={jobTypeNameUpdate}
                 onChange={(e) => setJobTypeNameUpdate(e.target.value)}
               ></FieldContainer>
+              <FieldContainer
+                label="Description"
+                fieldGrid={12}
+                value={jobTypeDescriptionUpdate}
+                onChange={(e) => setJobTypeDescriptionUpdate(e.target.value)}
+              ></FieldContainer>
             </div>
             <div className="modal-footer">
               <button

@@ -440,6 +440,9 @@ const SidebarLinks = () => {
                   {/* <NavLink className="collapse-item" to="/admin/billing-overview">
                     Billing Header Overview
                   </NavLink> */}
+                  <NavLink className="collapse-item" to="/admin/wfhd-analytic-dashbaord">
+                    <i className="bi bi-dot"></i> WFHD Dashboard
+                  </NavLink>
                   <NavLink className="collapse-item" to="/admin/wfhd-overview">
                     <i className="bi bi-dot"></i> My Team
                   </NavLink>

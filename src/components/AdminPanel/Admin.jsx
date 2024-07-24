@@ -349,6 +349,7 @@ import NewDocumentCom from "./WFH/NewDocumentCom";
 import CommunityHome from "../SuperTracker/CommunityManagement/CommunityHome";
 import CommunityManager from "../SuperTracker/CommunityManagement/CommunityManager";
 import CommunityPageView from "../SuperTracker/CommunityManagement/CommunityPageView";
+import AnalyticDashboard from "./WFH/AnalyticDashboard/AnalyticDashboard";
 
 const Admin = () => {
   const [contextData, setData] = useState([]);
@@ -548,6 +549,7 @@ const Admin = () => {
                     path="/wfh-dashboard-overview/:id"
                     element={<DashboardWFHCardDetails />}
                   />
+                  <Route path="/wfhd-analytic-dashbaord" element={<AnalyticDashboard />} />
                   <Route path="/wfhd-overview" element={<WFHDOverview />} />
                   <Route
                     path="/wfh-users-overview/:deptId"
