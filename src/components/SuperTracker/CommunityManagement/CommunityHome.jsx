@@ -4,6 +4,7 @@ import {
   Badge,
   Box,
   Button,
+  ButtonGroup,
   Skeleton,
   Stack,
   Tab,
@@ -31,6 +32,8 @@ import { TabContext, TabList } from "@mui/lab";
 import dayjs from "dayjs";
 import { formatDate } from "../../../utils/formatDate";
 import { formatUTCDate } from "../../../utils/formatUTCDate";
+import CommunityReport from "./CommunityReport";
+// import { CommunityHomeColumn } from "./CommunityColumns";
 
 function CustomToolbar({
   setFilterButtonEl,
@@ -40,7 +43,8 @@ function CustomToolbar({
   setRight,
   setSelectedManager,
   setUserNumbers,
-  setEditMode,setTeamDetail
+  setEditMode,
+  setTeamDetail,
 }) {
   const { userContextData } = useContext(ApiContextData);
 
@@ -58,14 +62,10 @@ function CustomToolbar({
         `https://insights.ist:8080/api/v1/community/team_by_page_name/${pageName}`
       );
       if (res.data.success) {
-
         alert("Team is already created for this page.");
       } else {
-        
-       
         setOpenTeam(true);
       }
-      
     } catch (error) {
       console.log(error);
     }
@@ -162,14 +162,17 @@ function CommunityHome() {
   const [projectxpages, setProjectxpages] = useState([]);
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
-  const [teamDetail,setTeamDetail] = useState(null)
+  const [teamDetail, setTeamDetail] = useState(null);
+  const [reportView, setReportView] = useState(false);
   const minSelectableDate = dayjs("2023-11-01");
 
   const fetchRows = async () => {
     try {
       const res = await axios.post(
-        "https://insights.ist:8080/api/v1/community/super_tracker_post_analytics",{
-          startDate:startDate,endDate:endDate
+        "https://insights.ist:8080/api/v1/community/super_tracker_post_analytics",
+        {
+          startDate: startDate,
+          endDate: endDate,
         }
       );
       if (res.status === 200) {
@@ -197,18 +200,15 @@ function CommunityHome() {
   };
 
   useEffect(() => {
-  if(startDate){
-
-    fetchRows();
-    setRowSelectionModel([])
-  }
-  }, [reload,startDate,endDate]);
+    if (startDate) {
+      fetchRows();
+      setRowSelectionModel([]);
+    }
+  }, [reload, startDate, endDate]);
   useEffect(() => {
-    handleOverViewChange("e",2)
+    handleOverViewChange("e", 2);
     fetchCategory();
   }, [reloadpagecategory]);
-
-  
 
   useEffect(() => {
     try {
@@ -447,18 +447,13 @@ function CommunityHome() {
     },
   ];
 
-
   const handleOverViewChange = (event, newValue) => {
     const now = new Date();
-    // let startDate, endDate;
 
     if (newValue == 0) {
       // Today
       setStartDate(new Date(now.setHours(0, 0, 0, 0)));
       setEndDate(new Date(now.setDate(now.getDate() + 1)));
-      // console.log(new Date(now.setHours(0, 0, 0, 0)));
-      // console.log(new Date(now.setDate(now.getDate() + 1)));
-      // setEndDate(new Date(now.setHours(23, 59, 59, 999)));
     } else if (newValue == 1) {
       // This Week
 
@@ -498,7 +493,7 @@ function CommunityHome() {
       // Yesterday
       setStartDate(null); // Yesterday
       setEndDate(null); // Today (end of day)
-    }else if (newValue === 10) {
+    } else if (newValue === 10) {
       // Previous Three Months
       setStartDate(new Date(now.getFullYear(), now.getMonth() - 3, 1));
       setEndDate(new Date(now.getFullYear(), now.getMonth(), 0));
@@ -514,110 +509,125 @@ function CommunityHome() {
   return (
     <div className="workWrapper">
       {allRows.length > 0 ? (
-        <div className="card">
-          <CommunityHeader
-            setRows={setRows}
-            rows={rows}
-            allRows={allRows}
-            reload={reload}
-            setReload={setReload}
-            pagecategory={pagecategory}
-            rowSelectionModel={rowSelectionModel}
-            projectxpages={projectxpages}
-            setReloadpagecategory={setReloadpagecategory}
-            reloadpagecategory={reloadpagecategory}
-          />
-           <div >
-        <TabContext value={overViewvalue}>
-          <div className="card-header flex_center_between">
-            <h5 className="cardHeaderTitle">Page Overview From : {formatUTCDate(startDate)} To : {formatUTCDate(endDate)} </h5>
-            <TabList
-              className="tabSM"
-              onChange={handleOverViewChange}
-              aria-label="lab API tabs example"
-            >
-              {/* <Tab label="All" value={9} /> */}
-              <Tab label="Today" value={0} />
-              <Tab label="This Week" value={1} />
-              <Tab label="This Month" value={2} />
-              <Tab label="This Year" value={3} />
-              {/* <Tab label="Yesterday" value={8} /> */}
-              <Tab label="Last Week" value={4} />
-              <Tab label="Last Month" value={5} />
-              <Tab label="Quaterly" value={10} />
-              <Tab label="Half Yearly" value={11} />
-              <Tab label="Last Year" value={6} />
-              <Tab label="Custom" value={7} />
-            </TabList>
-          </div>
-          {overViewvalue == 7 && (
-            <DatePickerCf
-              startDate={startDate}
-              setStartDate={setStartDate}
-              endDate={endDate}
-              setEndDate={setEndDate}
-              minSelectableDate={minSelectableDate}
-            />
-          )}
+        <>
+        <ButtonGroup variant="text" aria-label="Basic button group">
+            <Button onClick={()=>setReportView(false)}>OverView</Button>
+            <Button onClick={()=>setReportView(true)} >Report</Button>
           
-        </TabContext>
-      </div>
-          <Stack>
-            {openTeam && (
-              <CommunityTeamCreation
-                rowSelectionModel={rowSelectionModel}
-                setRowSelectionModel={setRowSelectionModel}
-                openTeam={openTeam}
-                setOpenTeam={setOpenTeam}
-                left={left}
-                setLeft={setLeft}
-                right={right}
-                setRight={setRight}
-                selectedManager={selectedManager}
-                setSelectedManager={setSelectedManager}
-                userNumbers={userNumbers}
-                setUserNumbers={setUserNumbers}
+          </ButtonGroup>
+          {!reportView ? (
+            <div className="card">
+              <CommunityHeader
+                setRows={setRows}
+                rows={rows}
+                allRows={allRows}
                 reload={reload}
                 setReload={setReload}
-                editShowMode={editMode}
-                setRows={setRows}
-                teamDetail={teamDetail}
+                pagecategory={pagecategory}
+                rowSelectionModel={rowSelectionModel}
+                projectxpages={projectxpages}
+                setReloadpagecategory={setReloadpagecategory}
+                reloadpagecategory={reloadpagecategory}
               />
-            )}
-          </Stack>
-          <div className="card-header flex_center_between">
-            <DataGrid
-              rows={rows}
-              columns={columns}
-              getRowId={(row) => row.creatorName}
-              initialState={{
-                pagination: { paginationModel: { pageSize: 10 } },
-              }}
-              slots={{ toolbar: CustomToolbar }}
-              slotProps={{
-                panel: { anchorEl: filterButtonEl },
-                toolbar: {
-                  setFilterButtonEl,
-                  setOpenTeam,
-                  rowSelectionModel,
-                  setLeft,
-                  setRight,
-                  setSelectedManager,
-                  setUserNumbers,
-                  setEditMode,setTeamDetail
-                },
-              }}
-              pageSizeOptions={[10, 25, 50, 100]}
-              checkboxSelection
-              filterModel={filterModel}
-              onFilterModelChange={(model) => setFilterModel(model)}
-              onRowSelectionModelChange={(newRowSelectionModel) =>
-                setRowSelectionModel(newRowSelectionModel)
-              }
-              rowSelectionModel={rowSelectionModel}
-            />
-          </div>
-        </div>
+              <div>
+                <TabContext value={overViewvalue}>
+                  <div className="card-header flex_center_between">
+                    <h5 className="cardHeaderTitle">
+                      Page Overview From : {formatUTCDate(startDate)} To :{" "}
+                      {formatUTCDate(endDate)}{" "}
+                    </h5>
+                    <TabList
+                      className="tabSM"
+                      onChange={handleOverViewChange}
+                      aria-label="lab API tabs example"
+                    >
+                      {/* <Tab label="All" value={9} /> */}
+                      <Tab label="Today" value={0} />
+                      <Tab label="This Week" value={1} />
+                      <Tab label="This Month" value={2} />
+                      <Tab label="This Year" value={3} />
+                      {/* <Tab label="Yesterday" value={8} /> */}
+                      <Tab label="Last Week" value={4} />
+                      <Tab label="Last Month" value={5} />
+                      <Tab label="Quaterly" value={10} />
+                      <Tab label="Half Yearly" value={11} />
+                      <Tab label="Last Year" value={6} />
+                      <Tab label="Custom" value={7} />
+                    </TabList>
+                  </div>
+                  {overViewvalue == 7 && (
+                    <DatePickerCf
+                      startDate={startDate}
+                      setStartDate={setStartDate}
+                      endDate={endDate}
+                      setEndDate={setEndDate}
+                      minSelectableDate={minSelectableDate}
+                    />
+                  )}
+                </TabContext>
+              </div>
+              <Stack>
+                {openTeam && (
+                  <CommunityTeamCreation
+                    rowSelectionModel={rowSelectionModel}
+                    setRowSelectionModel={setRowSelectionModel}
+                    openTeam={openTeam}
+                    setOpenTeam={setOpenTeam}
+                    left={left}
+                    setLeft={setLeft}
+                    right={right}
+                    setRight={setRight}
+                    selectedManager={selectedManager}
+                    setSelectedManager={setSelectedManager}
+                    userNumbers={userNumbers}
+                    setUserNumbers={setUserNumbers}
+                    reload={reload}
+                    setReload={setReload}
+                    editShowMode={editMode}
+                    setRows={setRows}
+                    teamDetail={teamDetail}
+                  />
+                )}
+              </Stack>
+              <div className="card-header flex_center_between">
+                <DataGrid
+                  rows={rows}
+                  columns={columns}
+                  // columns={CommunityHomeColumn}
+                  getRowId={(row) => row.creatorName}
+                  initialState={{
+                    pagination: { paginationModel: { pageSize: 10 } },
+                  }}
+                  slots={{ toolbar: CustomToolbar }}
+                  slotProps={{
+                    panel: { anchorEl: filterButtonEl },
+                    toolbar: {
+                      setFilterButtonEl,
+                      setOpenTeam,
+                      rowSelectionModel,
+                      setLeft,
+                      setRight,
+                      setSelectedManager,
+                      setUserNumbers,
+                      setEditMode,
+                      setTeamDetail,
+                    },
+                  }}
+                  pageSizeOptions={[10, 25, 50, 100]}
+                  checkboxSelection
+                  filterModel={filterModel}
+                  onFilterModelChange={(model) => setFilterModel(model)}
+                  onRowSelectionModelChange={(newRowSelectionModel) =>
+                    setRowSelectionModel(newRowSelectionModel)
+                  }
+                  rowSelectionModel={rowSelectionModel}
+                />
+              </div>
+            </div>
+          ) : (
+            <CommunityReport/>
+          )}
+        </>
       ) : (
         <TableSkeleton />
       )}
