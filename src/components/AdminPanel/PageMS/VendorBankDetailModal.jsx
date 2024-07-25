@@ -39,15 +39,14 @@ export default function VendorBankDetailModal() {
       field: "payment_method",
       headerName: "Payment Method",
       width: 200,
-      valueGetter: ({ row }) =>
-        row.payment_method ? payData?.find(ele=>ele._id== row.payment_method)?.payMethod_name : "NA",
+      valueGetter: ({ row }) => (row.payment_method ? payData?.find(ele=>ele._id== row.payment_method)?.payMethod_name : "NA"),
     },
     {
       field: "bank_name",
       headerName: "Bank Name",
       width: 200,
-      valueGetter: (params) =>
-        params.row.bank_name?   bankName?.find((item) => item._id === params.row.bank_name)?.bank_name:"NA",
+      // valueGetter: (params) => params.row.bank_name?   bankName?.find((item) => item._id === params.row.bank_name)?.bank_name:"NA",
+      valueGetter: ({row}) => (row.bank_name ? row.bank_name : 'NA'),
     },
     {
       field: "account_type",
@@ -81,6 +80,12 @@ export default function VendorBankDetailModal() {
       width: 200,
       valueGetter: ({ row }) => (row.upi_id ? row.upi_id : "NA"),
     },
+    {
+      field: "description",
+      headerName: "Description",
+      width: 200,
+      valueGetter: ({ row }) => (row.description ? row.description : "NA"),
+    }
     
   ];
 

@@ -18,6 +18,7 @@ import { Button } from "@mui/material";
 import Swal from "sweetalert2";
 import { baseUrl } from "../../../utils/config";
 import Loader from "../Finance/Loader/Loader";
+import formatString from "../Operation/CampaignMaster/WordCapital";
 
 const UserOverview = () => {
   const { id } = useParams();
@@ -391,6 +392,9 @@ const UserOverview = () => {
       headerName: "Login ID",
       width: 190,
       sortable: true,
+      renderCell:(params)=>{
+        return formatString(params.row.user_login_id)
+      }
     },
     {
       field: "Role_name",

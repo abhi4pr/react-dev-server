@@ -9,7 +9,7 @@ const IndianStatesMui = ({ selectedState, onChange }) => {
 
   // Function to find the state object by isoCode
   const findStateByIsoCode = (isoCode) => {
-    return states.find((state) => state.isoCode === isoCode) || null;
+    return states.find((state) => state.isoCode === isoCode || state.name == isoCode) || null;
   };
 
   const handleInputChange = (event, newInputValue) => {

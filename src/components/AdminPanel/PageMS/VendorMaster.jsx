@@ -774,6 +774,26 @@ const VendorMaster = () => {
     setCopyOptions(data);
   }, [docDetails.map((e) => e.docName)]);
 
+  const handlepincode = async(event) => {
+    const newValue = event.target.value;
+    setHomePincode(newValue);
+
+    try {
+      const response = await axios.get(`https://api.postalpincode.in/pincode/${newValue}`);
+      const data = response.data;
+
+      if (data[0].Status === 'Success') {
+        const postOffice = data[0].PostOffice[0];
+        setHomeState(postOffice.State);
+        setHomeCity(postOffice.District);
+      } else {
+        console.log('Invalid Pincode')
+      }
+    } catch (error) {
+      console.log('Error fetching details.');
+    }
+  };
+
   if (isFormSubmitted) {
     return <Navigate to="/admin/pms-vendor-overview" />;
   }
@@ -1248,6 +1268,7 @@ const VendorMaster = () => {
                     />
                     <FieldContainer
                       required={false}
+                      maxLength={11}
                       label="IFSC "
                       value={bankRows[i].ifcs}
                       onChange={(e) => handleIFSCChange(e, i)}
@@ -1290,7 +1311,8 @@ const VendorMaster = () => {
                 variant="contained"
                 color="primary"
               >
-                <AddCircleTwoToneIcon />
+                {/* <AddCircleTwoToneIcon /> */}
+                <h5>Add Another Bank Details</h5>
               </IconButton>
               {/* {bankRows.length > 1 && (
             <IconButton
@@ -1370,6 +1392,14 @@ const VendorMaster = () => {
                 required={false}
               />
             </div>
+
+            <FieldContainer
+                label="Threshold Limit"
+                value={limit}
+                type="number"
+                required={false}
+                onChange={(e) => setLimit(e.target.value)}
+            />
 
             {/* <FieldContainer
               label="PAN"
@@ -1575,13 +1605,14 @@ const VendorMaster = () => {
                 value={homePincode}
                 maxLength={6}
                 required={false}
-                onChange={(e) => {
-                  const value = e.target.value;
-                  if (/^\d{0,6}$/.test(value)) {
-                    setHomePincode(value);
-                  }
-                }}
+                // onChange={(e) => {
+                //   const value = e.target.value;
+                //   if (/^\d{0,6}$/.test(value)) {
+                //     setHomePincode(value);
+                //   }
+                // }}
                 // setHomePincode(e.target.value)}
+                onChange={handlepincode}
               />
               <FormControlLabel
                 control={
@@ -1643,15 +1674,89 @@ const VendorMaster = () => {
                 />
               </div>
 
-              <FieldContainer
-                label="Threshold Limit"
-                value={limit}
-                type="number"
-                required={false}
-                onChange={(e) => setLimit(e.target.value)}
-              />
             </div>
-            {whatsappLink?.map((link, index) => (
+
+          {docDetails?.map((link, index) => (
+            <div className="row" key={index}>
+              {/* <FieldContainer
+                key={index}
+                fieldGrid={4}
+                label={`Document Name`}
+                value={link.docName}
+                // required={true}
+                onChange={(e) => handleDocNameChange(index, e.target.value)}
+              /> */}
+              <div className="col-md-3">
+                <label className="form-label">Document Name</label>
+                <Select
+                  className=""
+                  options={copyOptions.map((option) => ({
+                    value: option,
+                    label: option,
+                  }))}
+                  value={{
+                    value: link.docName,
+                    label: link.docName,
+                  }}
+                  onChange={(selectedOption) => {
+                    handleDocNameChange(index, selectedOption.value);
+                  }}
+                  required
+                />
+              </div>
+              <FieldContainer
+                key={index.docNumber}
+                label={`Document Number`}
+                fieldGrid={4}
+                value={link.docNumber}
+                // required={false}
+                onChange={(e) => handleDocNumberChange(index, e.target.value)}
+              />
+              <FieldContainer
+                key={index.docImage}
+                label={`Document Image`}
+                type="file"
+                accept={"image/*"}
+                fieldGrid={4}
+                // value={link.docImage}
+                onChange={(e) => handleDocImageChange(index, e)}
+              />
+              {/* {docDetails[index]?.docImage && (
+                <img
+                  className="profile-holder-1 mt-4"
+                  src={URL?.createObjectURL(docDetails[index]?.docImage)}
+                  alt="Selected"
+                  style={{ maxWidth: "50px", maxHeight: "50px" }}
+                />
+              )} */}
+              <div className="row">
+                <div className="col-12">
+                  <div className="addBankRow">
+                    <Button onClick={removedocLink(index)}>
+                      <IconButton variant="contained" color="error">
+                        <RemoveCircleTwoToneIcon />
+                      </IconButton>
+                    </Button>
+                  </div>
+                </div>
+              </div>
+              <div className="row thm_form"></div>
+            </div>
+          ))}
+          <div className="row">
+            <div className="col-12">
+              <div className="addBankRow">
+                <Button onClick={addDocDetails}>
+                  <IconButton variant="contained" color="primary">
+                    <AddCircleTwoToneIcon />
+                  </IconButton>
+                  Add Document
+                </Button>
+              </div>
+            </div>
+          </div>
+
+          {whatsappLink?.map((link, index) => (
               <>
                 <div className="col-6">
                   <FieldContainer
@@ -1749,85 +1854,6 @@ const VendorMaster = () => {
             </div>
           </div>
 
-          {docDetails?.map((link, index) => (
-            <div className="row" key={index}>
-              {/* <FieldContainer
-                key={index}
-                fieldGrid={4}
-                label={`Document Name`}
-                value={link.docName}
-                // required={true}
-                onChange={(e) => handleDocNameChange(index, e.target.value)}
-              /> */}
-              <div className="col-md-3">
-                <label className="form-label">Document Name</label>
-                <Select
-                  className=""
-                  options={copyOptions.map((option) => ({
-                    value: option,
-                    label: option,
-                  }))}
-                  value={{
-                    value: link.docName,
-                    label: link.docName,
-                  }}
-                  onChange={(selectedOption) => {
-                    handleDocNameChange(index, selectedOption.value);
-                  }}
-                  required
-                />
-              </div>
-              <FieldContainer
-                key={index.docNumber}
-                label={`Document Number`}
-                fieldGrid={4}
-                value={link.docNumber}
-                // required={false}
-                onChange={(e) => handleDocNumberChange(index, e.target.value)}
-              />
-              <FieldContainer
-                key={index.docImage}
-                label={`Document Image`}
-                type="file"
-                accept={"image/*"}
-                fieldGrid={4}
-                // value={link.docImage}
-                onChange={(e) => handleDocImageChange(index, e)}
-              />
-              {/* {docDetails[index]?.docImage && (
-                <img
-                  className="profile-holder-1 mt-4"
-                  src={URL?.createObjectURL(docDetails[index]?.docImage)}
-                  alt="Selected"
-                  style={{ maxWidth: "50px", maxHeight: "50px" }}
-                />
-              )} */}
-              <div className="row">
-                <div className="col-12">
-                  <div className="addBankRow">
-                    <Button onClick={removedocLink(index)}>
-                      <IconButton variant="contained" color="error">
-                        <RemoveCircleTwoToneIcon />
-                      </IconButton>
-                    </Button>
-                  </div>
-                </div>
-              </div>
-              <div className="row thm_form"></div>
-            </div>
-          ))}
-          <div className="row">
-            <div className="col-12">
-              <div className="addBankRow">
-                <Button onClick={addDocDetails}>
-                  <IconButton variant="contained" color="primary">
-                    <AddCircleTwoToneIcon />
-                  </IconButton>
-                  Add Document
-                </Button>
-              </div>
-            </div>
-          </div>
           <div className="row thm_form"></div>
         </div>
         <div className="card-footer">

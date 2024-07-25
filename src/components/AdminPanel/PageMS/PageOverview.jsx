@@ -624,11 +624,8 @@ const PageOverview = () => {
       headerName: "Category",
       width: 200,
       renderCell: (params) => {
-        let name = cat?.find(
-          (item) => item?.page_category_id == params.row?.temp_page_cat_id
-        )?.page_category;
-        // )?.category_name;
-
+        // let name = cat?.find((item) => item?.page_category_id == params.row?.temp_page_cat_id)?.page_category;
+        let name = cat?.find((item) => item?._id == params.row?.page_category_id)?.page_category;
         return <div>{name}</div>;
       },
     },
@@ -1529,7 +1526,7 @@ const PageOverview = () => {
               />
             </div>
             <div className="col-md-3 mb4">
-              <Autocomplete
+              {/* <Autocomplete
                 id="ownership-type-autocomplete"
                 options={[
                   ...new Set(
@@ -1561,6 +1558,26 @@ const PageOverview = () => {
                     let result = vendorTypes.filter(
                       (d) => d.ownership_type == newValue
                     );
+                    setFilterData(result);
+                  }
+                }}
+              /> */}
+              <Autocomplete
+                id="ownership-type-autocomplete"
+                options={['Solo', 'PartnerShip']}
+                style={{ width: 270 }}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    label="Ownership"
+                    variant="outlined"
+                  />
+                )}
+                onChange={(event, newValue) => {
+                  if (newValue === null) {
+                    setFilterData(vendorTypes);
+                  } else {
+                    let result = vendorTypes.filter((d) => d.ownership_type === newValue );
                     setFilterData(result);
                   }
                 }}
@@ -1676,23 +1693,16 @@ const PageOverview = () => {
               <Autocomplete
                 id="category-autocomplete"
                 options={[
-                  ...new Set(
-                    vendorTypes?.map((item) => {
-                      return item?.page_category_id;
-                    })
-                  ),
+                  ...new Set(vendorTypes?.map(item => item?.page_category_id))
                 ]}
                 getOptionLabel={(option) => {
-                  const category = cat?.find((e) => e._id == option);
-                  const count = vendorTypes.filter(
-                    (d) => d.page_category_id == option
-                  )?.length;
-                  return `${category?.category_name} (${count})`;
+                  const category = cat?.find(e => e?._id === option);
+                  const count = vendorTypes?.filter(
+                    d => d?.page_category_id === option
+                  ).length;
+                  return `${category?.page_category || 'Unknown Category'} (${count})`;
                 }}
-                style={{ width: 270 }}
-                renderInput={(params) => (
-                  <TextField {...params} label="Category" variant="outlined" />
-                )}
+                renderInput={(params) => <TextField {...params} label="Select Category" variant="outlined" />}
                 onChange={(event, newValue) => {
                   if (newValue === null) {
                     setFilterData(vendorTypes);

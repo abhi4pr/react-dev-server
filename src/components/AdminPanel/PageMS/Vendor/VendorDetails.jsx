@@ -10,7 +10,7 @@ import { useEffect,useState } from 'react';
 import axios from 'axios';
 import { baseUrl } from "../../../../utils/config";
 import { useGetVendorCompanyDetailQuery } from '../../../Store/PageBaseURL';
-
+import { Link } from "react-router-dom";
 
 export default function VendorDetails({vendorDetails,setVendorDetails}) {
   const [open, setOpen] = React.useState(true);
@@ -61,6 +61,7 @@ export default function VendorDetails({vendorDetails,setVendorDetails}) {
           </DialogContentText>
         </DialogContent>
         <DialogActions>
+          <Link to={`/admin/pms-vendor-master/${vendorDetails._id}`}><Button onClick={handleClose}>Edit</Button></Link>
           <Button onClick={handleClose}>Cancel</Button>
           {/* <Button onClick={handleClose}>Subscribe</Button> */}
         </DialogActions>
