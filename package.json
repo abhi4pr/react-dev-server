@@ -41,6 +41,7 @@
     "millify": "^6.1.0",
     "moment": "^2.30.1",
     "next": "^13.4.19",
+    "pdf-lib": "^1.17.1",
     "rc-progress": "^4.0.0",
     "react": "^18.2.0",
     "react-apexcharts": "^1.4.1",
