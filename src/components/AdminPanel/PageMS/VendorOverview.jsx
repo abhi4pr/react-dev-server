@@ -249,25 +249,23 @@ const VendorOverview = () => {
     {
       field: "vendor_type",
       headerName: "Vendor Type",
-      width: 200,
-      renderCell: (params) => {
-        let name = typeData?.find(
+      valueGetter: (params) => {
+       return typeData?.find(
           (item) => item?._id == params.row?.vendor_type
         )?.type_name;
-        return <div>{name}</div>;
       },
+      width: 200,
       editable: true,
     },
     {
       field: "vendor_platform",
       headerName: "Platform",
-      width: 200,
-      renderCell: (params) => {
-        let name = platformData?.find(
+      valueGetter: (params) => {
+        return  platformData?.find(
           (item) => item?._id == params.row?.vendor_platform
         )?.platform_name;
-        return <div>{name}</div>;
       },
+      width: 200,
       editable: true,
     },
     // {
@@ -287,6 +285,12 @@ const VendorOverview = () => {
       field: "pay_cycle",
       headerName: "Cycle",
       width: 200,
+      valueGetter: (params) => {
+       return cycleData?.find(
+          (item) => item?._id == params.row?.pay_cycle
+        )?.cycle_name;
+        
+      },
       renderCell: (params) => {
         let name = cycleData?.find(
           (item) => item?._id == params.row?.pay_cycle
