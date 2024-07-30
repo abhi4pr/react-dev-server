@@ -51,15 +51,21 @@ export const Template = {
     }
 
     function getLastDateOfMonth(monthName) {
+      console.log("monthNmae",monthName)
       const monthNumber = monthNameToNumber(monthName);
       if (monthNumber === null) {
-        return "Invalid month name";
+          return "Invalid month name";
       }
       const currentYear = new Date().getFullYear();
-      const lastDate = new Date(currentYear, monthNumber, 0).getDate();
-      const formattedMonth = monthNumber < 10 ? '0' + monthNumber : monthNumber;
-      const formattedLastDate = lastDate < 10 ? '0' + lastDate : lastDate;
-      return `${currentYear}-${formattedMonth}-${formattedLastDate}`;
+      const nextMonthNumber = monthNumber === 12 ? 1 : monthNumber + 1;
+      const nextMonthYear = monthNumber === 12 ? currentYear + 1 : currentYear;
+      const formattedMonth = nextMonthNumber < 10 ? '0' + nextMonthNumber : nextMonthNumber;
+      const formattedDay = '15';
+      console.log("nextMonthYear",nextMonthYear)
+      console.log("formattedMonth",formattedMonth)
+      console.log("formattedDay",formattedDay)
+      console.log("monthNmae111111111",`${formattedDay}-${formattedMonth}-${nextMonthYear}`)
+      return `${formattedDay}-${formattedMonth}-${nextMonthYear}`;
     }
     const doc = new jsPDF();
     const handelrightalign = (text, size) => {
@@ -234,15 +240,21 @@ export const Template = {
     }
 
     function getLastDateOfMonth(monthName) {
+      console.log("monthNmae",monthName)
       const monthNumber = monthNameToNumber(monthName);
       if (monthNumber === null) {
-        return "Invalid month name";
+          return "Invalid month name";
       }
       const currentYear = new Date().getFullYear();
-      const lastDate = new Date(currentYear, monthNumber, 0).getDate();
-      const formattedMonth = monthNumber < 10 ? '0' + monthNumber : monthNumber;
-      const formattedLastDate = lastDate < 10 ? '0' + lastDate : lastDate;
-      return `${currentYear}-${formattedMonth}-${formattedLastDate}`;
+      const nextMonthNumber = monthNumber === 12 ? 1 : monthNumber + 1;
+      const nextMonthYear = monthNumber === 12 ? currentYear + 1 : currentYear;
+      const formattedMonth = nextMonthNumber < 10 ? '0' + nextMonthNumber : nextMonthNumber;
+      const formattedDay = '15';
+      console.log("nextMonthYear",nextMonthYear)
+      console.log("formattedMonth",formattedMonth)
+      console.log("formattedDay",formattedDay)
+      console.log("monthNmae111111111",`${formattedDay}-${formattedMonth}-${nextMonthYear}`)
+      return `${formattedDay}-${formattedMonth}-${nextMonthYear}`;
     }
     const doc = new jsPDF();
     const handelrightalign = (text, size) => {
@@ -422,15 +434,21 @@ export const Template = {
     }
 
     function getLastDateOfMonth(monthName) {
+      console.log("monthNmae",monthName)
       const monthNumber = monthNameToNumber(monthName);
       if (monthNumber === null) {
-        return "Invalid month name";
+          return "Invalid month name";
       }
       const currentYear = new Date().getFullYear();
-      const lastDate = new Date(currentYear, monthNumber, 0).getDate();
-      const formattedMonth = monthNumber < 10 ? '0' + monthNumber : monthNumber;
-      const formattedLastDate = lastDate < 10 ? '0' + lastDate : lastDate;
-      return `${currentYear}-${formattedMonth}-${formattedLastDate}`;
+      const nextMonthNumber = monthNumber === 12 ? 1 : monthNumber + 1;
+      const nextMonthYear = monthNumber === 12 ? currentYear + 1 : currentYear;
+      const formattedMonth = nextMonthNumber < 10 ? '0' + nextMonthNumber : nextMonthNumber;
+      const formattedDay = '15';
+      console.log("nextMonthYear",nextMonthYear)
+      console.log("formattedMonth",formattedMonth)
+      console.log("formattedDay",formattedDay)
+      console.log("monthNmae111111111",`${formattedDay}-${formattedMonth}-${nextMonthYear}`)
+      return `${formattedDay}-${formattedMonth}-${nextMonthYear}`;
     }
     const doc = new jsPDF();
     const invoiceNo = data?.invoiceNo;
@@ -615,15 +633,21 @@ export const Template = {
     }
 
     function getLastDateOfMonth(monthName) {
+      console.log("monthNmae",monthName)
       const monthNumber = monthNameToNumber(monthName);
       if (monthNumber === null) {
-        return "Invalid month name";
+          return "Invalid month name";
       }
       const currentYear = new Date().getFullYear();
-      const lastDate = new Date(currentYear, monthNumber, 0).getDate();
-      const formattedMonth = monthNumber < 10 ? '0' + monthNumber : monthNumber;
-      const formattedLastDate = lastDate < 10 ? '0' + lastDate : lastDate;
-      return `${currentYear}-${formattedMonth}-${formattedLastDate}`;
+      const nextMonthNumber = monthNumber === 12 ? 1 : monthNumber + 1;
+      const nextMonthYear = monthNumber === 12 ? currentYear + 1 : currentYear;
+      const formattedMonth = nextMonthNumber < 10 ? '0' + nextMonthNumber : nextMonthNumber;
+      const formattedDay = '15';
+      console.log("nextMonthYear",nextMonthYear)
+      console.log("formattedMonth",formattedMonth)
+      console.log("formattedDay",formattedDay)
+      console.log("monthNmae111111111",`${formattedDay}-${formattedMonth}-${nextMonthYear}`)
+      return `${formattedDay}-${formattedMonth}-${nextMonthYear}`;
     }
     const doc = new jsPDF();
     const handelrightalign = (text, size) => {
@@ -798,15 +822,21 @@ export const Template = {
     }
 
     function getLastDateOfMonth(monthName) {
+      console.log("monthNmae",monthName)
       const monthNumber = monthNameToNumber(monthName);
       if (monthNumber === null) {
-        return "Invalid month name";
+          return "Invalid month name";
       }
       const currentYear = new Date().getFullYear();
-      const lastDate = new Date(currentYear, monthNumber, 0).getDate();
-      const formattedMonth = monthNumber < 10 ? '0' + monthNumber : monthNumber;
-      const formattedLastDate = lastDate < 10 ? '0' + lastDate : lastDate;
-      return `${currentYear}-${formattedMonth}-${formattedLastDate}`;
+      const nextMonthNumber = monthNumber === 12 ? 1 : monthNumber + 1;
+      const nextMonthYear = monthNumber === 12 ? currentYear + 1 : currentYear;
+      const formattedMonth = nextMonthNumber < 10 ? '0' + nextMonthNumber : nextMonthNumber;
+      const formattedDay = '15';
+      console.log("nextMonthYear",nextMonthYear)
+      console.log("formattedMonth",formattedMonth)
+      console.log("formattedDay",formattedDay)
+      console.log("monthNmae111111111",`${formattedDay}-${formattedMonth}-${nextMonthYear}`)
+      return `${formattedDay}-${formattedMonth}-${nextMonthYear}`;
     }
     const doc = new jsPDF();
     const handelrightalign = (text, size) => {
@@ -984,15 +1014,21 @@ export const Template = {
     }
 
     function getLastDateOfMonth(monthName) {
+      console.log("monthNmae",monthName)
       const monthNumber = monthNameToNumber(monthName);
       if (monthNumber === null) {
-        return "Invalid month name";
+          return "Invalid month name";
       }
       const currentYear = new Date().getFullYear();
-      const lastDate = new Date(currentYear, monthNumber, 0).getDate();
-      const formattedMonth = monthNumber < 10 ? '0' + monthNumber : monthNumber;
-      const formattedLastDate = lastDate < 10 ? '0' + lastDate : lastDate;
-      return `${currentYear}-${formattedMonth}-${formattedLastDate}`;
+      const nextMonthNumber = monthNumber === 12 ? 1 : monthNumber + 1;
+      const nextMonthYear = monthNumber === 12 ? currentYear + 1 : currentYear;
+      const formattedMonth = nextMonthNumber < 10 ? '0' + nextMonthNumber : nextMonthNumber;
+      const formattedDay = '15';
+      console.log("nextMonthYear",nextMonthYear)
+      console.log("formattedMonth",formattedMonth)
+      console.log("formattedDay",formattedDay)
+      console.log("monthNmae111111111",`${formattedDay}-${formattedMonth}-${nextMonthYear}`)
+      return `${formattedDay}-${formattedMonth}-${nextMonthYear}`;
     }
     const doc = new jsPDF();
     const handelrightalign = (text, size) => {
@@ -1162,15 +1198,21 @@ export const Template = {
     }
 
     function getLastDateOfMonth(monthName) {
+      console.log("monthNmae",monthName)
       const monthNumber = monthNameToNumber(monthName);
       if (monthNumber === null) {
-        return "Invalid month name";
+          return "Invalid month name";
       }
       const currentYear = new Date().getFullYear();
-      const lastDate = new Date(currentYear, monthNumber, 0).getDate();
-      const formattedMonth = monthNumber < 10 ? '0' + monthNumber : monthNumber;
-      const formattedLastDate = lastDate < 10 ? '0' + lastDate : lastDate;
-      return `${currentYear}-${formattedMonth}-${formattedLastDate}`;
+      const nextMonthNumber = monthNumber === 12 ? 1 : monthNumber + 1;
+      const nextMonthYear = monthNumber === 12 ? currentYear + 1 : currentYear;
+      const formattedMonth = nextMonthNumber < 10 ? '0' + nextMonthNumber : nextMonthNumber;
+      const formattedDay = '15';
+      console.log("nextMonthYear",nextMonthYear)
+      console.log("formattedMonth",formattedMonth)
+      console.log("formattedDay",formattedDay)
+      console.log("monthNmae111111111",`${formattedDay}-${formattedMonth}-${nextMonthYear}`)
+      return `${formattedDay}-${formattedMonth}-${nextMonthYear}`;
     }
     const doc = new jsPDF();
     const handelrightalign = (text, size) => {
@@ -1345,15 +1387,21 @@ export const Template = {
     }
 
     function getLastDateOfMonth(monthName) {
+      console.log("monthNmae",monthName)
       const monthNumber = monthNameToNumber(monthName);
       if (monthNumber === null) {
-        return "Invalid month name";
+          return "Invalid month name";
       }
       const currentYear = new Date().getFullYear();
-      const lastDate = new Date(currentYear, monthNumber, 0).getDate();
-      const formattedMonth = monthNumber < 10 ? '0' + monthNumber : monthNumber;
-      const formattedLastDate = lastDate < 10 ? '0' + lastDate : lastDate;
-      return `${currentYear}-${formattedMonth}-${formattedLastDate}`;
+      const nextMonthNumber = monthNumber === 12 ? 1 : monthNumber + 1;
+      const nextMonthYear = monthNumber === 12 ? currentYear + 1 : currentYear;
+      const formattedMonth = nextMonthNumber < 10 ? '0' + nextMonthNumber : nextMonthNumber;
+      const formattedDay = '15';
+      console.log("nextMonthYear",nextMonthYear)
+      console.log("formattedMonth",formattedMonth)
+      console.log("formattedDay",formattedDay)
+      console.log("monthNmae111111111",`${formattedDay}-${formattedMonth}-${nextMonthYear}`)
+      return `${formattedDay}-${formattedMonth}-${nextMonthYear}`;
     }
     const doc = new jsPDF();
     const handelrightalign = (text, size) => {
@@ -1530,15 +1578,21 @@ export const Template = {
     }
 
     function getLastDateOfMonth(monthName) {
+      console.log("monthNmae",monthName)
       const monthNumber = monthNameToNumber(monthName);
       if (monthNumber === null) {
-        return "Invalid month name";
+          return "Invalid month name";
       }
       const currentYear = new Date().getFullYear();
-      const lastDate = new Date(currentYear, monthNumber, 0).getDate();
-      const formattedMonth = monthNumber < 10 ? '0' + monthNumber : monthNumber;
-      const formattedLastDate = lastDate < 10 ? '0' + lastDate : lastDate;
-      return `${currentYear}-${formattedMonth}-${formattedLastDate}`;
+      const nextMonthNumber = monthNumber === 12 ? 1 : monthNumber + 1;
+      const nextMonthYear = monthNumber === 12 ? currentYear + 1 : currentYear;
+      const formattedMonth = nextMonthNumber < 10 ? '0' + nextMonthNumber : nextMonthNumber;
+      const formattedDay = '15';
+      console.log("nextMonthYear",nextMonthYear)
+      console.log("formattedMonth",formattedMonth)
+      console.log("formattedDay",formattedDay)
+      console.log("monthNmae111111111",`${formattedDay}-${formattedMonth}-${nextMonthYear}`)
+      return `${formattedDay}-${formattedMonth}-${nextMonthYear}`;
     }
     const doc = new jsPDF();
     const handelrightalign = (text, size) => {
@@ -1713,15 +1767,21 @@ export const Template = {
     }
 
     function getLastDateOfMonth(monthName) {
+      console.log("monthNmae",monthName)
       const monthNumber = monthNameToNumber(monthName);
       if (monthNumber === null) {
-        return "Invalid month name";
+          return "Invalid month name";
       }
       const currentYear = new Date().getFullYear();
-      const lastDate = new Date(currentYear, monthNumber, 0).getDate();
-      const formattedMonth = monthNumber < 10 ? '0' + monthNumber : monthNumber;
-      const formattedLastDate = lastDate < 10 ? '0' + lastDate : lastDate;
-      return `${currentYear}-${formattedMonth}-${formattedLastDate}`;
+      const nextMonthNumber = monthNumber === 12 ? 1 : monthNumber + 1;
+      const nextMonthYear = monthNumber === 12 ? currentYear + 1 : currentYear;
+      const formattedMonth = nextMonthNumber < 10 ? '0' + nextMonthNumber : nextMonthNumber;
+      const formattedDay = '15';
+      console.log("nextMonthYear",nextMonthYear)
+      console.log("formattedMonth",formattedMonth)
+      console.log("formattedDay",formattedDay)
+      console.log("monthNmae111111111",`${formattedDay}-${formattedMonth}-${nextMonthYear}`)
+      return `${formattedDay}-${formattedMonth}-${nextMonthYear}`;
     }
     const doc = new jsPDF();
     const handelrightalign = (text, size) => {
@@ -1920,11 +1980,12 @@ export const generatePDF = async (data) => {
   //   jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
   // };
 
+  const changedData=data;
 
 
 
 
-
+console.log(changedData,"prATY");
 
 
 
@@ -1943,8 +2004,7 @@ export const generatePDF = async (data) => {
       throw new Error("Invalid PDF data format: not an ArrayBuffer");
     }
 
-    // Log the size of the incoming ArrayBuffer
-    console.log("Original PDF size:", pdfArrayBuffer.byteLength);
+   
 
     // Load the PDF document
     const pdfDoc = await PDFDocument.load(pdfArrayBuffer);
@@ -1952,8 +2012,7 @@ export const generatePDF = async (data) => {
     // Compress the PDF document
     const compressedBytes = await pdfDoc.save({ useObjectStreams: true });
 
-    // Log the size of the compressed PDF
-    console.log("Compressed PDF size:", compressedBytes.length);
+    
 
     // Create a Blob from the compressed bytes
     const compressedBlob = new Blob([compressedBytes], { type: 'application/pdf' });
@@ -1971,8 +2030,8 @@ export const downloadSelectedInvoices = async (data, handelError) => {
   const zip = new JSZip();
   const pdfPromises = [];
 
-  console.log(data);
   for (const row of data) {
+    console.log(row,"prat");
     // if (row?.invoice_template_no !== "0") {
     const invoicePromise = generatePDF(row);
 
