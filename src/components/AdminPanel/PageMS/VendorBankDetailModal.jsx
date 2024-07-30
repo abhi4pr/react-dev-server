@@ -13,8 +13,10 @@ import {
   useGetSingleBankDetailQuery,
 } from "../../Store/reduxBaseURL";
 import { DataGrid } from "@mui/x-data-grid";
+import { useGlobalContext } from "../../../Context/Context";
 
 export default function VendorBankDetailModal() {
+  const { toastAlert } = useGlobalContext();
   const { data: payData } = useGetPmsPaymentMethodQuery();
   const { data: bankNameData } = useGetBankNameDetailQuery();
   const bankName = bankNameData?.data;
@@ -33,6 +35,20 @@ export default function VendorBankDetailModal() {
       skip: !vendorRowData._id,
     }
   );
+
+  const handleCopyToClipboard = () => {
+    if (data && data.length > 0) {
+      const rows = data.map(row => {
+        return columns.map(col => col.valueGetter({ row })).join("\t");
+      }).join("\n");
+
+      navigator.clipboard.writeText(rows).then(() => {
+        toastAlert("Data Copied");
+      }).catch(err => {
+        console.error('Could not copy text: ', err);
+      });
+    }
+  };
 
   const columns = [
     {
@@ -116,6 +132,9 @@ export default function VendorBankDetailModal() {
           )}
         </DialogContent>
         <DialogActions>
+          <Button onClick={handleCopyToClipboard}>
+            Copy Details
+          </Button>
           <Button onClick={handleClose} autoFocus>
             Close
           </Button>

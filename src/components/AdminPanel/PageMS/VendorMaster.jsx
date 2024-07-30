@@ -763,7 +763,7 @@ const VendorMaster = () => {
     }
   };
 
-  const docOptions = ["Pan card", "GST"];
+  const docOptions = ["Pan card", "GST", "Aadhar Card"];
   // const copyOptions= docOptions;
   const [copyOptions, setCopyOptions] = useState(docOptions);
 

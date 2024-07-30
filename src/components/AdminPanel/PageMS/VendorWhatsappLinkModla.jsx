@@ -75,7 +75,6 @@ export default function VendorWhatsappLinkModla() {
                   return links.indexOf(params.row) + 1;
                 },
               },
-              { field: "link", headerName: "Link", width: 150 },
               {
                 field: "type",
                 headerName: "Type",
@@ -86,6 +85,19 @@ export default function VendorWhatsappLinkModla() {
                   )?.link_type;
                 },
               },
+              {
+                field: "link",
+                headerName: "Link",
+                width: 150,
+                renderCell: (params) => {
+                  return (
+                    <a href={params.value} target="_blank" rel="noopener noreferrer">
+                      {params.value}
+                    </a>
+                  );
+                },
+              },
+              // { field: "link", headerName: "Link", width: 150 },
               // { field: 'remark', headerName: 'Remark', width: 150 },
             ]}
             pageSize={5}
