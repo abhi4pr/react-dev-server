@@ -94,7 +94,7 @@ const VendorMaster = () => {
   const [sameAsPrevious, setSameAsPrevious] = useState(false);
   const [mobileValid, setMobileValid] = useState(false);
   const [userData, setUserData] = useState([]);
-  const [userId, setUserId] = useState("");
+  const [userId, setUserId] = useState(230);
   const [company_id, setCompany_id] = useState("");
 
   const [getGstDetails] = useGstDetailsMutation();
@@ -357,7 +357,7 @@ const VendorMaster = () => {
         .then((res) => {
           const data = res.data.data;
           setCompany_id(data?._id);
-          console.log(data, "data");
+          // console.log(data, "data");
           setCompName(data?.company_name);
           setCompAddress(data?.address);
           setCompCity(data?.city);
@@ -377,7 +377,7 @@ const VendorMaster = () => {
           docImage: doc.document_image_upload,
         };
       });
-      console.log(doc, "doc");
+      // console.log(doc, "doc");
       setDocDetails(doc);
     }
   }, [venodrDocuments]);
@@ -409,15 +409,25 @@ const VendorMaster = () => {
   };
 
   const handleDocNumberChange = (i, value) => {
-    if (value.length > 12) {
-      alert("Document Number cannot exceed 12 digits");
-      return;
-    }
-
     let doc = [...docDetails];
+    let docName = doc[i].docName;
+    let maxLength = 12;
+  
+    if (docName === 'Pan card') {
+      maxLength = 11;
+    } else if (docName === 'GST') {
+      maxLength = 15;
+    } else if (docName === 'Aadhar Card'){
+      maxLength = 16;
+    }
+    if (value.length > maxLength) {
+      alert(`Document Number for ${docName} cannot exceed ${maxLength} digits`);
+      return;
+    }  
     doc[i].docNumber = value;
     setDocDetails(doc);
   };
+
   const handleDocImageChange = (i, e) => {
     const file = e.target.files[0];
 
@@ -540,9 +550,9 @@ const VendorMaster = () => {
     if (!mobile) {
       setValidator((prev) => ({ ...prev, mobile: true }));
     }
-    if (!email) {
-      setValidator((prev) => ({ ...prev, email: true }));
-    }
+    // if (!email) {
+    //   setValidator((prev) => ({ ...prev, email: true }));
+    // }
 
     if (!typeId) {
       setValidator((prev) => ({ ...prev, typeId: true }));
@@ -554,15 +564,15 @@ const VendorMaster = () => {
       setValidator((prev) => ({ ...prev, cycleId: true }));
     }
 
-    if (emailIsInvalid) {
-      toastError("Please enter a valid email");
-      return;
-    }
+    // if (emailIsInvalid) {
+    //   toastError("Please enter a valid email");
+    //   return;
+    // }
     if (
       !vendorName ||
       // !countryCode ||
       !mobile ||
-      !email ||
+      // !email ||
       !typeId ||
       !platformId ||
       !cycleId
@@ -639,7 +649,7 @@ const VendorMaster = () => {
             created_by: userID,
           }).then((res) => {  
             // console.log(res.data, "res");
-            toastAlert("company name added successfully")
+            // toastAlert("company name added successfully")
           }).catch((err) => {
             toastError(err.message);
           });
@@ -662,7 +672,7 @@ const VendorMaster = () => {
             //     toastError(err.message);
             //   });
             addVendorDocument(formData).then((res) => {
-              toastAlert("Document added successfully")
+              // toastAlert("Document added successfully")
             }
             ).catch((err) => {
               toastError(err.message);
@@ -688,7 +698,7 @@ const VendorMaster = () => {
         .then(() => {
 
           toastAlert("Data Updated Successfully");
-          console.log("Vendor updated")
+          // console.log("Vendor updated")
           for (let i = 0; i < docDetails?.length; i++) {
             const formData = new FormData();
 
@@ -960,13 +970,13 @@ const VendorMaster = () => {
               <FieldContainer
                 label="Email"
                 fieldGrid={12}
-                astric
+                // astric
                 value={email}
                 required={true}
                 type="email"
                 onChange={(e) => handleEmailSet(e, setEmail)}
               />
-              {emailIsInvalid && (
+              {/* {emailIsInvalid && (
                 <span style={{ color: "red", fontSize: "12px" }}>
                   Please enter a valid email
                 </span>
@@ -975,7 +985,7 @@ const VendorMaster = () => {
                 <span style={{ color: "red", fontSize: "12px" }}>
                   Please enter email
                 </span>
-              )}
+              )} */}
             </div>
             {/* <FieldContainer
           label="Personal Address"
@@ -1333,7 +1343,8 @@ const VendorMaster = () => {
                 options={cycleData?.map((option) => ({
                   value: option._id,
                   label: option.cycle_name,
-                }))}
+                }))
+                .sort((a, b) => a.label.localeCompare(b.label))}
                 required={true}
                 value={{
                   value: cycleId,
@@ -1387,7 +1398,7 @@ const VendorMaster = () => {
                 }}
                 onChange={(e) => {
                   setUserId(e.value);
-                  console.log(e.value, "e.value");
+                  // console.log(e.value, "e.value");
                 }}
                 required={false}
               />
@@ -1400,6 +1411,11 @@ const VendorMaster = () => {
                 required={false}
                 onChange={(e) => setLimit(e.target.value)}
             />
+            <div style={{display: "flex"}}>
+                <p className="vendor_threshold" onClick={() => setLimit(100)}>100</p>
+                <p className="vendor_threshold" onClick={() => setLimit(500)}>500</p>
+                <p className="vendor_threshold" onClick={() => setLimit(1000)}>1000</p>
+            </div>
 
             {/* <FieldContainer
               label="PAN"
@@ -1587,7 +1603,7 @@ const VendorMaster = () => {
                       value={homeCity}
                       onChange={(option) => {
                         setHomeCity(option ? option : null);
-                        console.log(option);
+                        // console.log(option);
                       }}
                     />
                   </div>

@@ -64,10 +64,10 @@ const PageMaster = () => {
   const [categoryId, setCategoryId] = useState("");
   const [tag, setTag] = useState([]);
   const [pageLevel, setPageLevel] = useState("");
-  const [pageStatus, setPageStatus] = useState("");
+  const [pageStatus, setPageStatus] = useState("Active");
   const [userData, setUserData] = useState([]);
   const [closeBy, setCloseBy] = useState("");
-  const [pageType, setPageType] = useState("");
+  const [pageType, setPageType] = useState("Clear");
   const [content, setContent] = useState("");
   const [ownerType, setOwnerType] = useState("");
   const [vendorId, setVendorId] = useState("");
@@ -431,7 +431,7 @@ const PageMaster = () => {
     ) {
       return toastError("Please Fill All Required Fields");
     }
-    console.warn("NO ERROR");
+    // console.warn("NO ERROR");
     // return
     const payload = {
       page_name: pageName,

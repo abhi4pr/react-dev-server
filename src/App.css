@@ -1499,3 +1499,9 @@ label.checkbox-inline.propscss {
 .css-o9k5xi-MuiInputBase-root-MuiOutlinedInput-root.Mui-error .MuiOutlinedInput-notchedOutline {
   border-color: rgb(225, 225, 225) !important;
 }
+
+.vendor_threshold{
+  border: 1px solid blue;
+  margin-right: 5px;
+  cursor: pointer;
+}
