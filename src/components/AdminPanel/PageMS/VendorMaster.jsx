@@ -773,7 +773,7 @@ const VendorMaster = () => {
     }
   };
 
-  const docOptions = ["Pan card", "GST", "Aadhar Card"];
+  const docOptions = ["Pan card", "GST", "Aadhar Card", "Driving License"];
   // const copyOptions= docOptions;
   const [copyOptions, setCopyOptions] = useState(docOptions);
 
@@ -1337,14 +1337,15 @@ const VendorMaster = () => {
 
             <div className="form-group col-6">
               <label className="form-label">
-                Pay Cycle <sup style={{ color: "red" }}>*</sup>
+                PayCycle <sup style={{ color: "red" }}>*</sup>
               </label>
               <Select
                 options={cycleData?.map((option) => ({
                   value: option._id,
                   label: option.cycle_name,
+                  createdAt: option.createdAt,
                 }))
-                .sort((a, b) => a.label.localeCompare(b.label))}
+                .sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt))}
                 required={true}
                 value={{
                   value: cycleId,
@@ -1510,12 +1511,6 @@ const VendorMaster = () => {
 
             <div className="card-header">Personal Details</div>
             <div className="card-body row">
-              <FieldContainer
-                label="Home Address"
-                value={homeAddress}
-                required={false}
-                onChange={(e) => setHomeAddress(e.target.value)}
-              />
               <div className="form-group col-6">
                 <label className="form-label">
                   Country Code
@@ -1584,6 +1579,20 @@ const VendorMaster = () => {
                   </span>
                 )} */}
               </div>
+              <FieldContainer
+                label="PinCode"
+                value={homePincode}
+                maxLength={6}
+                required={false}
+                // onChange={(e) => {
+                //   const value = e.target.value;
+                //   if (/^\d{0,6}$/.test(value)) {
+                //     setHomePincode(value);
+                //   }
+                // }}
+                // setHomePincode(e.target.value)}
+                onChange={handlepincode}
+              />
               {countryCode == "91" ? (
                 <div className=" row">
                   <div className="form-group col-6">
@@ -1617,19 +1626,12 @@ const VendorMaster = () => {
                 />
               )}
               <FieldContainer
-                label="PinCode"
-                value={homePincode}
-                maxLength={6}
+                label="Home Address"
+                value={homeAddress}
                 required={false}
-                // onChange={(e) => {
-                //   const value = e.target.value;
-                //   if (/^\d{0,6}$/.test(value)) {
-                //     setHomePincode(value);
-                //   }
-                // }}
-                // setHomePincode(e.target.value)}
-                onChange={handlepincode}
+                onChange={(e) => setHomeAddress(e.target.value)}
               />
+              
               <FormControlLabel
                 control={
                   <Checkbox

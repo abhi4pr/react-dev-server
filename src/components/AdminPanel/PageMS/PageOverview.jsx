@@ -584,18 +584,18 @@ const PageOverview = () => {
       field: "ownership_type",
       headerName: "Ownership",
       width: 200,
-      valueGetter: (params) => {
-        if (!ownerShipData) {
-          return <div>Unknown</div>;
-        }
+      // valueGetter: (params) => {
+      //   if (!ownerShipData) {
+      //     return <div>Unknown</div>;
+      //   }
 
-        const ownership = ownerShipData?.find(
-          (item) => item._id === params.row.ownership_type
-        )?.company_type_name;
-        const finalName = ownership ? ownership : "NA";
+      //   const ownership = ownerShipData?.find(
+      //     (item) => item._id === params.row.ownership_type
+      //   )?.company_type_name;
+      //   const finalName = ownership ? ownership : "NA";
 
-        return finalName;
-      },
+      //   return finalName;
+      // },
     },
 
     // {
@@ -1564,7 +1564,7 @@ const PageOverview = () => {
               /> */}
               <Autocomplete
                 id="ownership-type-autocomplete"
-                options={['Solo', 'PartnerShip']}
+                options={['Solo', 'PartnerShip', 'Vendor']}
                 style={{ width: 270 }}
                 renderInput={(params) => (
                   <TextField

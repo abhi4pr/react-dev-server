@@ -55,6 +55,9 @@ const VendorOverview = () => {
   } = useGetAllVendorQuery();
   let vendorTypes = vendorData?.data;
   const [filterData, setFilterData] = useState([]);
+  const [pageData, setPageData] = useState([]);
+  const token = sessionStorage.getItem("token");
+  const [activeTab, setActiveTab] = useState('Tab1')
 
   const { data: pageList } = useGetAllPageListQuery();
 
@@ -104,6 +107,18 @@ const VendorOverview = () => {
     setVendorDetails(params.row);
   };
 
+  const showPagesOfVendor = (data) => {
+    const result = axios.get(`${baseUrl}v1/vendor_wise_page_master_data/${data._id}`,{
+      headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json", 
+        },
+      })
+      .then((res) => {
+        setPageData(res.data.data)
+      });
+  }
+
   const dataGridcolumns = [
     {
       field: "sno",
@@ -149,6 +164,19 @@ const VendorOverview = () => {
     {
       field: "page_count",
       headerName: "Page Count",
+      renderCell: (params) => {
+        return (
+          <button
+            title="Bank Details"
+            className="btn btn-outline-primary btn-sm user-button"
+            onClick={()=>showPagesOfVendor(params.row)}
+            data-toggle="modal" data-target="#myModal"
+          >
+            {params.row.page_count}
+            {/* <OpenWithIcon /> */}
+          </button>
+        );
+      },
     },
     {
       field: "mobile",
@@ -180,12 +208,12 @@ const VendorOverview = () => {
     //   width: 200,
     //   editable: true,
     // },
-    {
-      field: "country_code",
-      headerName: "Country Code",
-      width: 200,
-      editable: true,
-    },
+    // {
+    //   field: "country_code",
+    //   headerName: "Country Code",
+    //   width: 200,
+    //   editable: true,
+    // },
     // {
     //   field: "company_pincode",
     //   headerName: "Company Pincode",
@@ -363,93 +391,155 @@ const VendorOverview = () => {
 
   return (
     <>
-      {filterData && (
-        <div className="card">
-          {vendorDetails && (
-            <VendorDetails
-              vendorDetails={vendorDetails}
-              setVendorDetails={setVendorDetails}
-            />
-          )}
-          <VendorWhatsappLinkModla />
-          <div className="card-header flexCenterBetween">
-            <h5 className="card-title">Vendor : {vendorTypes?.length}</h5>
-            <div className="flexCenter colGap8">
-              <Link
-                to={`/admin/pms-vendor-master`}
-                className="btn cmnbtn btn_sm btn-outline-primary"
-              >
-                Add Vendor <i className="fa fa-plus" />
-              </Link>
-              <Link
-                to={`/admin/pms-page-overview`}
-                className="btn cmnbtn btn_sm btn-outline-primary"
-              >
-                Page <KeyboardArrowRightIcon />
-              </Link>
+      <div className="modal fade" id="myModal" role="dialog">
+        <div className="modal-dialog">
+          <div className="modal-content">
+            <div className="modal-header">
+              <button type="button" className="close" data-dismiss="modal">&times;</button>
+              <h4 className="modal-title"></h4>
+            </div>
+            <div className="modal-body">
+            <table className="table table-bordered">
+              <thead>
+                <tr>
+                  <th>Page name</th>
+                  <th>Ownership</th>
+                  <th>Followers</th>
+                </tr>
+              </thead>
+              <tbody>
+              {pageData && pageData.map((item) => (
+                <tr key={item.page_link}>
+                  <td><a href={item.page_link} target="blank">{item.page_name}</a></td>
+                  <td>{item.ownership_type}</td>
+                  <td>{item.followers_count}</td>
+                </tr>
+              ))}
+              </tbody>
+            </table>  
+            </div>
+            <div className="modal-footer">
+              <button type="button" className="btn btn-default" data-dismiss="modal">Close</button>
             </div>
           </div>
-          {/* <VendorFilters
-            filterData={filterData}
-            setFilterData={setFilterData}
-          /> */}
-          <div className="data_tbl thm_table table-responsive card-body p0">
-            {loading ? (
-              <Box mt={2} ml={2} mb={3} sx={{ width: "95%" }}>
-                <Grid
-                  container
-                  spacing={{ xs: 1, md: 10 }}
-                  columns={{ xs: 4, sm: 8, md: 12 }}
-                >
-                  {Array.from(Array(5)).map((_, index) => (
-                    <Grid item md={1} key={index}>
-                      <Skeleton
-                        sx={{
-                          width: "100%",
-                        }}
-                      />
-                    </Grid>
-                  ))}
-                </Grid>
-                <Grid
-                  container
-                  spacing={{ xs: 2, md: 3 }}
-                  columns={{ xs: 4, sm: 8, md: 12 }}
-                >
-                  {Array.from(Array(30)).map((_, index) => (
-                    <Grid item xs={2} sm={2} md={2} key={index}>
-                      <Skeleton
-                        animation="wave"
-                        sx={{
-                          width: "100%",
-                        }}
-                      />
-                    </Grid>
-                  ))}
-                </Grid>
-              </Box>
-            ) : (
-              <DataGrid
-                rows={filterData}
-                columns={dataGridcolumns}
-                pageSize={5}
-                rowsPerPageOptions={[5]}
-                disableSelectionOnClick
-                getRowId={(row) => row._id}
-                slots={{ toolbar: GridToolbar }}
-                slotProps={{
-                  toolbar: {
-                    showQuickFilter: true,
-                  },
-                }}
-              />
-            )}
-          </div>
-          <VendorBankDetailModal />
-          <VendorPageModal />
-          <VendorWhatsappLinkModla />
         </div>
-      )}
+      </div>
+
+      <div className="tabs">
+        <button
+          className={activeTab === 'Tab1' ? 'active btn btn-info' : 'btn btn-link'}
+          onClick={() => setActiveTab('Tab1')}
+        >
+          Overview
+        </button>
+        <button
+          className={activeTab === 'Tab2' ? 'active btn btn-info' : 'btn btn-link'}
+          onClick={() => setActiveTab('Tab2')}
+        >
+          Statistics
+        </button>
+      </div>
+
+      <div className="content">
+        {activeTab === 'Tab1' && 
+        <div>
+          {filterData && (
+            <div className="card">
+              {vendorDetails && (
+                <VendorDetails
+                  vendorDetails={vendorDetails}
+                  setVendorDetails={setVendorDetails}
+                />
+              )}
+              <VendorWhatsappLinkModla />
+              <div className="card-header flexCenterBetween">
+                <h5 className="card-title">Vendor : {vendorTypes?.length}</h5>
+                <div className="flexCenter colGap8">
+                  <Link
+                    to={`/admin/pms-vendor-master`}
+                    className="btn cmnbtn btn_sm btn-outline-primary"
+                  >
+                    Add Vendor <i className="fa fa-plus" />
+                  </Link>
+                  <Link
+                    to={`/admin/pms-page-overview`}
+                    className="btn cmnbtn btn_sm btn-outline-primary"
+                  >
+                    Page <KeyboardArrowRightIcon />
+                  </Link>
+                </div>
+              </div>
+              {/* <VendorFilters
+                filterData={filterData}
+                setFilterData={setFilterData}
+              /> */}
+              <div className="data_tbl thm_table table-responsive card-body p0">
+                {loading ? (
+                  <Box mt={2} ml={2} mb={3} sx={{ width: "95%" }}>
+                    <Grid
+                      container
+                      spacing={{ xs: 1, md: 10 }}
+                      columns={{ xs: 4, sm: 8, md: 12 }}
+                    >
+                      {Array.from(Array(5)).map((_, index) => (
+                        <Grid item md={1} key={index}>
+                          <Skeleton
+                            sx={{
+                              width: "100%",
+                            }}
+                          />
+                        </Grid>
+                      ))}
+                    </Grid>
+                    <Grid
+                      container
+                      spacing={{ xs: 2, md: 3 }}
+                      columns={{ xs: 4, sm: 8, md: 12 }}
+                    >
+                      {Array.from(Array(30)).map((_, index) => (
+                        <Grid item xs={2} sm={2} md={2} key={index}>
+                          <Skeleton
+                            animation="wave"
+                            sx={{
+                              width: "100%",
+                            }}
+                          />
+                        </Grid>
+                      ))}
+                    </Grid>
+                  </Box>
+                ) : (
+                  <DataGrid
+                    rows={filterData}
+                    columns={dataGridcolumns}
+                    pageSize={5}
+                    rowsPerPageOptions={[5]}
+                    disableSelectionOnClick
+                    getRowId={(row) => row._id}
+                    slots={{ toolbar: GridToolbar }}
+                    slotProps={{
+                      toolbar: {
+                        showQuickFilter: true,
+                      },
+                    }}
+                  />
+                )}
+              </div>
+              <VendorBankDetailModal />
+              <VendorPageModal />
+              <VendorWhatsappLinkModla />
+            </div>
+          )}  
+        </div>
+        }
+        {activeTab === 'Tab2' && 
+        <div className="">
+          <p>vendor with 0 pages - </p>
+          <p>vendor with no mobile number - </p>
+          <p>vendor with no email id - </p>
+        </div>
+        }
+      </div>
     </>
   );
 };

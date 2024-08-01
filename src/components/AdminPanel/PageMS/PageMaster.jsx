@@ -104,7 +104,7 @@ const PageMaster = () => {
     description: false,
     rateType: false,
     variableType: false,
-    tag: false,
+    // tag: false,
     primary: false,
   });
 
@@ -258,8 +258,8 @@ const PageMaster = () => {
   ];
 
   const Contents = [
-    { value: "Own", label: "Own" },
-    { value: "CF", label: "CF" },
+    { value: "By Vendor", label: "By Vendor" },
+    { value: "By CF", label: "By CF" },
   ];
 
   const handleAddProfileTypeClick = () => {
@@ -404,9 +404,9 @@ const PageMaster = () => {
     if (rateType === "") {
       setValidateFields((prev) => ({ ...prev, rateType: true }));
     }
-    if (tag.length == 0) {
-      setValidateFields((prev) => ({ ...prev, tag: true }));
-    }
+    // if (tag.length == 0) {
+    //   setValidateFields((prev) => ({ ...prev, tag: true }));
+    // }
 
     if (
       pageName === "" ||
@@ -425,7 +425,7 @@ const PageMaster = () => {
       platformActive?.length == 0 ||
       // rate === "" ||
       rateType === "" ||
-      tag.length == 0 ||
+      // tag.length == 0 ||
       (rateType.value == "Variable" && variableType === "") ||
       rowCount.some((e) => e.page_price_type_id === "" || e.price === "")
     ) {
@@ -753,7 +753,8 @@ const PageMaster = () => {
             <div className="col-md-6 mb16">
               <div className="form-group m0">
                 <label className="form-label">
-                  Tags <sup style={{ color: "red" }}>*</sup>
+                  Tags 
+                  {/* <sup style={{ color: "red" }}>*</sup> */}
                 </label>
                 <Select
                   isMulti
@@ -771,9 +772,9 @@ const PageMaster = () => {
                     }
                   }}
                 ></Select>
-                {validateFields.tag && (
+                {/* {validateFields.tag && (
                   <small style={{ color: "red" }}>Please select Tags</small>
-                )}
+                )} */}
               </div>
             </div>
             <div className="col-md-6 p0 mb16">
@@ -828,7 +829,7 @@ const PageMaster = () => {
             </div>
             <div className="col-md-6 p0 mb16">
               <FieldContainer
-                label="Followers Count"
+                label="Followers Count (10L = 1M)"
                 fieldGrid={12}
                 astric={true}
                 type="text"
