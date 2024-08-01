@@ -448,8 +448,9 @@ const Attendence = () => {
       type: "Number",
       editable: true,
     },
-    filterData?.length !== 0 &&
-      filterData[0]?.attendence_generated == 0 && {
+    // filterData?.length !== 0 &&
+    //   filterData[0]?.attendence_generated == 0 && 
+      {
         field: "actions",
         type: "actions",
         headerName: "Actions",
@@ -489,19 +490,43 @@ const Attendence = () => {
         },
       },
   ];
+
+  const monthToNumber = (month) => {
+    const months = [
+      "January", "February", "March", "April", "May", "June",
+      "July", "August", "September", "October", "November", "December"
+    ];
+    return months.indexOf(month) + 1;
+  };
+  
+  const currentYearForDis = new Date().getFullYear();
+  const currentMonthForDis = new Date().getMonth() + 1;
   return (
     <>
       {/* Cards */}
       <FormContainer mainTitle="Create Attendance" link="true"></FormContainer>
       <div className="timeline_wrapper mb24">
         <Slider {...settings} className="timeline_slider">
-          {completedYearsMonths.map((data, index) => (
+          {completedYearsMonths.map((data, index) => {
+            const cardMonth = monthToNumber(data.month);
+            const isFutureCard = data.year > currentYearForDis || (data.year === currentYearForDis && cardMonth >= currentMonthForDis);
+            return(
             <div
-              className={`timeline_slideItem ${
-                data.atdGenerated && "completed"
-              } ${selectedCardIndex === index ? "selected" : ""} ${
-                currentMonth == data.month && "current"
-              }`}
+              className={`timeline_slideItem
+                  ${
+                    data.deptCount == departmentdata?.length && "completed"
+                  // data.atdGenerated && "completed"
+                } 
+                ${selectedCardIndex === index ? "selected" : ""} ${
+                  currentMonthForDis === cardMonth && "current"
+                } 
+                ${isFutureCard && "disabled"}`
+              //    ${
+              //   data.atdGenerated && "completed"
+              // } ${selectedCardIndex === index ? "selected" : ""} ${
+              //   currentMonth == data.month && "current"
+              // }`
+            }
               onClick={() => handleCardSelect(index, data)}
               key={index}
             >
@@ -522,14 +547,19 @@ const Attendence = () => {
                     <i className="bi bi-hourglass-top" />
                   </span>
                 )}
-                {data.atdGenerated == 1
+                {/* {data.atdGenerated == 1
                   ? "Completed"
                   : currentMonthNumber - 4 - index < 0
                   ? "Upcoming"
-                  : "Pending"}
+                  : "Pending"} */}
+                  {data.deptCount == departmentdata?.length
+                  ? "Completed"
+                  : currentMonthNumber - 4 - index < 0
+                  ? "Upcoming"
+                  : "Upcoming"}
               </h3>
-            </div>
-          ))}
+            </div>)
+})}
         </Slider>
       </div>
       <div className="card">

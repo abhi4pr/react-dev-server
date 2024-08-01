@@ -48,7 +48,7 @@ const WFHDOverview = () => {
   const [usercontact, setUserContact] = useState("");
   const [separationReasonGet, setSeparationReasonGet] = useState([]);
   const [separationUserID, setSeparationUserID] = useState(null);
-  const [separationStatus, setSeparationStatus] = useState("");
+  const [separationStatus, setSeparationStatus] = useState("Resigned");
   const [separationReason, setSeparationReason] = useState("");
   const [separationRemark, setSeparationRemark] = useState("");
   const [separationReinstateDate, setSeparationReinstateDate] = useState("");
@@ -244,7 +244,7 @@ const WFHDOverview = () => {
         user_id: separationUserID,
         status: separationStatus,
         created_by: userID,
-        resignation_date: separationResignationDate,
+        releaving_date: separationResignationDate,
         last_working_day: separationLWD,
         remark: separationRemark,
         reason: separationReason,
@@ -881,14 +881,14 @@ const WFHDOverview = () => {
                     astric
                     onChange={(e) => setSeparationStatus(e.target.value)}
                   >
-                    <option value="">Choose...</option>
-                    <option value="Resigned">Resigned</option>
+                    {/* <option value="">Choose...</option> */}
+                    <option value="Resigned">Exit</option>
                     {/* <option value="Resign Accepted">Resign Accepted</option>
                     <option value="On Long Leave">On Long Leave</option>
                     <option value="Subatical">Subatical</option>
                     <option value="Suspended">Suspended</option> */}
                   </FieldContainer>
-                  <FieldContainer
+                  {/* <FieldContainer
                     label="Reason"
                     Tag="select"
                     value={separationReason}
@@ -902,7 +902,7 @@ const WFHDOverview = () => {
                         {option.reason}
                       </option>
                     ))}
-                  </FieldContainer>
+                  </FieldContainer> */}
                   <FieldContainer
                     label="Remark"
                     value={separationRemark}
@@ -932,7 +932,7 @@ const WFHDOverview = () => {
                       onChange={(e) => setSeparationLWD(e.target.value)}
                     />
                   )}
-                  {separationStatus == "Resigned" && (
+                  {/* {separationStatus == "Resigned" && ( */}
                     <FieldContainer
                       label="Resignation Date"
                       type="date"
@@ -942,7 +942,7 @@ const WFHDOverview = () => {
                         setSeparationResignationDate(e.target.value)
                       }
                     />
-                  )}
+                  {/* )} */}
                 </div>
                 <div className="modal-footer">
                   <button
@@ -960,7 +960,6 @@ const WFHDOverview = () => {
                     disabled={
                       !separationRemark ||
                       !separationStatus ||
-                      !separationReason ||
                       !separationResignationDate
                     }
                   >

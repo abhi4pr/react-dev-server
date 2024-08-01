@@ -36,11 +36,12 @@ const DocumentTab = ({
     });
   };
 
-  const handleDocDelete = async (item) => {
-    // console.log(item, "item here");
-    await axios
+  const handleDocDelete =(item) => {
+    console.log(item, "item here");
+    axios
       .put(`${baseUrl}` + `update_doc_user`, {
-        _id: item._id,
+        _id:item,
+        doc_image:""
         // status: "unapprove",
       })
       .then((res) => {
@@ -208,6 +209,18 @@ const DocumentTab = ({
     }
   };
 
+  const handleDeleteDocument = async(ids)=>{
+    console.log(ids,  'ids h')
+    try{
+    await axios.delete(baseUrl+`delete_user_doc/${ids}`)
+    toastAlert("Document Deleted Successfully")
+     getData()
+    }
+    catch{
+      console.log(error)
+    }
+  }
+
   return (
     <>
       <div
@@ -231,7 +244,8 @@ const DocumentTab = ({
                     <th scope="col">Document Name</th>
                     <th scope="col">Document Type</th>
                     <th scope="col">Period (Days)</th>
-                    <th scope="col">Time Left</th>
+                    {/* <th scope="col">Time Left</th> */}
+                    <th scope="col">View</th>
                     <th scope="col">Upload</th>
                     <th scope="col" className="text-center">
                       Status
@@ -240,7 +254,7 @@ const DocumentTab = ({
                 </thead>
                 <tbody>
                   {documentData
-                    .slice()
+                    ?.slice()
                     .sort((a, b) => {
                       if (a.document?.isRequired && !b.document?.isRequired) {
                         return -1;
@@ -273,8 +287,13 @@ const DocumentTab = ({
                         <td scope="row">{item.document.doc_type}</td>
                         <td>{item.document.period} days</td>
                         {/* <td>1 Day</td> */}
-                        <td>
+                        {/* <td>
                           {diffDate < 0 ? "Please Upload Docs" : diffDate}
+                        </td> */}
+                        <td>
+                          <a href={item?.doc_image_url} target="_blank">
+                        <img style={{height:"70px"}} src={item?.doc_image_url} alt="Doc"/>
+                        </a>
                         </td>
                         <td>
                           <div className="uploadDocBtn">
@@ -336,6 +355,7 @@ const DocumentTab = ({
                                   Not Available
                                 </button>
                               )}
+                            <button className="btn btn-danger btn-sm" onClick={()=>handleDocDelete(item._id)} style={{ borderRadius: 17, padding: 7 }}>delete</button>
                             </span>
                           </div>
                         </td>

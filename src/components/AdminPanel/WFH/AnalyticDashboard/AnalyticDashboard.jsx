@@ -18,22 +18,22 @@ const AnalyticDashboard = () => {
         </div>
         <div className="">
           <Link to="/admin/wfhd-register">
-            <button type="button" className="btn btn-warning btn-sm mr-2">
+            <button type="button" className="btn btn-outline-info btn-sm mr-2">
               Add Buddy
             </button>
           </Link>
           <Link to="/admin/wfhd-overview">
-            <button type="button" className="btn btn-primary btn-sm">
+            <button type="button" className="btn btn-outline-info btn-sm">
               My Team
             </button>
           </Link>
           <Link to="/admin/attendence-mast">
-            <button type="button" className="btn btn-primary btn-sm ml-2">
+            <button type="button" className="btn btn-outline-info btn-sm ml-2">
             Create Attendance
             </button>
           </Link>
           <Link to="/admin/salaryWFH">
-            <button type="button" className="btn btn-success btn-sm ml-2">
+            <button type="button" className="btn btn-outline-success btn-sm ml-2">
               Payout Summary
             </button>
           </Link>
@@ -41,6 +41,7 @@ const AnalyticDashboard = () => {
       </div>
       <UserCountInCards />
       <BirthdayAndWorkAniCard />
+      <NewJoineeAndExitUsers />
       <div className="row">
         <div className="col-6">
           <h5 className="mb-2 card-title">Department Wise User Count</h5>
@@ -64,7 +65,7 @@ const AnalyticDashboard = () => {
           <YearWiseGraph />
         </div>
       </div>
-      <NewJoineeAndExitUsers />
+      
     </>
   );
 };

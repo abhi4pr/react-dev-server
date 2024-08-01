@@ -20,8 +20,8 @@ import LetterTabPreviewESIC from "./LetterTab/LetterTabPreviewESIC";
 import LetterTabPdf2Max from "./LetterTab/LetterTabPdf2Max";
 import LetterTabPdf3Min from "./LetterTab/LetterTabPdf3Min";
 import LetterTabPdf4ESIC from "./LetterTab/LetterTabPdf4ESIC";
-import { PDFViewer, Text, Document, Page } from "@react-pdf/renderer";
-import OfferLetter from "./OfferLetter";
+import PDFFooter from './PDFFooter.jsx';
+import PDFHeader from './PDFHeader.jsx';
 
 const LetterTab = ({ allUserData, gettingData }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -38,25 +38,6 @@ const LetterTab = ({ allUserData, gettingData }) => {
   const todayDate = `${year}-${month}-${day}`;
 
   const UserDetails = allUserData;
-  // const monthlySalary = allUserData?.ctc / 12;
-  // const basicMonthSal = monthlySalary * 0.6;
-  // const hraMonthSal = monthlySalary * 0.6 * 0.4;
-  // const advanceMonthSal = monthlySalary * 0.6 * 0.2;
-  // const monthLeaveEnhance = ((monthlySalary * 0.6) / 26) * 3;
-  // const monthPf =
-  //   monthlySalary < 9000
-  //     ? 0
-  //     : monthlySalary >= 9000 && monthlySalary < 15000
-  //     ? monthlySalary * 0.12
-  //     : 1800;
-  // const yearCalPf = monthPf * 12;
-  // const totalMonthearning =
-  //   basicMonthSal + hraMonthSal + advanceMonthSal + monthLeaveEnhance - monthPf;
-  // const totalMonthearning1 =
-  //   basicMonthSal + hraMonthSal + advanceMonthSal + monthLeaveEnhance + monthPf;
-  // const totalAnnualearning =
-  //   (basicMonthSal + hraMonthSal + advanceMonthSal + monthLeaveEnhance) * 12;
-
   const handleReject = () => {
     const formData = new FormData();
     formData.append("user_id", allUserData.user_id);
@@ -135,16 +116,16 @@ const LetterTab = ({ allUserData, gettingData }) => {
       });
   };
 
-  // axios
-  //   .post(baseUrl + "image_to_base64", {
-  //     imageUrl: allUserData.digital_signature_image_url,
-  //   })
-  //   .then((response) => {
-  //     setImage64(response.data.base64String);
-  //   })
-  //   .catch((error) => {
-  //     console.error("Error fetching data:", error);
-  //   });
+  axios
+    .post(baseUrl + "image_to_base64", {
+      imageUrl: allUserData.digital_signature_image_url,
+    })
+    .then((response) => {
+      setImage64(response.data.base64String);
+    })
+    .catch((error) => {
+      console.error("Error fetching data:", error);
+    });
 
   return (
     <>
@@ -154,12 +135,7 @@ const LetterTab = ({ allUserData, gettingData }) => {
           style={{ color: "black", background: "white" }}
         >
           <br />
-          <header className="header-letter">
-            <img src={logo} alt="Creativefuel Logo" width={70} height={70} />
-            <div className="brandtext">
-              Creative <span>fuel</span>
-            </div>
-          </header>
+          <PDFHeader />
           <article>
             <p>Date {new Date().toLocaleDateString()}</p>
 
@@ -231,34 +207,8 @@ const LetterTab = ({ allUserData, gettingData }) => {
                 </p>
               </div>{" "}
               <br />
-              <footer
-                className="footer-letter "
-                style={{ pageBreakAfter: "auto" }}
-              >
-                <p className="bold">CREATIVEFUEL PRIVATE LIMITED</p>
-                <p className="bold">
-                  Registered Office: - 105, Gravity Mall, Vijay Nagar Indore
-                  (M.P) 452010, India
-                </p>
-                <p className="bold">
-                  Email:
-                  <a href="mailto:fahbir@creativefuel.io">
-                    fahbir@creativefuel.io
-                  </a>
-                </p>
-                <p className="bold">www.creativefuel.io</p>
-              </footer>
-              <header className="header-letter mt-2">
-                <img
-                  src={logo}
-                  alt="Creativefuel Logo"
-                  width={70}
-                  height={70}
-                />
-                <div className="brandtext">
-                  Creative <span>fuel</span>
-                </div>
-              </header>
+              <PDFFooter />
+              <PDFHeader />
               <div>
                 <p className="bold">3) Probation Period:</p>
                 <p className="pl-3">
@@ -311,34 +261,8 @@ const LetterTab = ({ allUserData, gettingData }) => {
                     </p>{" "}
                   </div>
                   <br />
-                  <footer
-                    className="footer-letter "
-                    style={{ pageBreakAfter: "always" }}
-                  >
-                    <p className="bold">CREATIVEFUEL PRIVATE LIMITED</p>
-                    <p className="bold">
-                      Registered Office: - 105, Gravity Mall, Vijay Nagar Indore
-                      (M.P) 452010, India
-                    </p>
-                    <p className="bold">
-                      Email:
-                      <a href="mailto:fahbir@creativefuel.io">
-                        fahbir@creativefuel.io
-                      </a>
-                    </p>
-                    <p className="bold">www.creativefuel.io</p>
-                  </footer>
-                  <header className="header-letter">
-                    <img
-                      src={logo}
-                      alt="Creativefuel Logo"
-                      width={70}
-                      height={70}
-                    />
-                    <div className="brandtext">
-                      Creative <span>fuel</span>
-                    </div>
-                  </header>
+                  <PDFFooter />
+                  <PDFHeader />
                   <div className="flex-row gap-1">
                     <p>C)</p>
                     <p>
@@ -398,34 +322,8 @@ const LetterTab = ({ allUserData, gettingData }) => {
                 </p>{" "}
                 <br />
               </div>
-              <footer
-                className="footer-letter "
-                style={{ pageBreakAfter: "always" }}
-              >
-                <p className="bold">CREATIVEFUEL PRIVATE LIMITED</p>
-                <p className="bold">
-                  Registered Office: - 105, Gravity Mall, Vijay Nagar Indore
-                  (M.P) 452010, India
-                </p>
-                <p className="bold">
-                  Email:
-                  <a href="mailto:fahbir@creativefuel.io">
-                    fahbir@creativefuel.io
-                  </a>
-                </p>
-                <p className="bold">www.creativefuel.io</p>
-              </footer>
-              <header className="header-letter">
-                <img
-                  src={logo}
-                  alt="Creativefuel Logo"
-                  width={70}
-                  height={70}
-                />
-                <div className="brandtext">
-                  Creative <span>fuel</span>
-                </div>
-              </header>
+                  <PDFFooter />
+                  <PDFHeader />
               <div>
                 <p className="bold">8) Indemnity:</p>
                 <p className="pl-3">
@@ -474,29 +372,8 @@ const LetterTab = ({ allUserData, gettingData }) => {
                 <br />
               </div>
             </section>
-            <footer
-              className="footer-letter "
-              style={{ pageBreakAfter: "always" }}
-            >
-              <p className="bold">CREATIVEFUEL PRIVATE LIMITED</p>
-              <p className="bold">
-                Registered Office: - 105, Gravity Mall, Vijay Nagar Indore (M.P)
-                452010, India
-              </p>
-              <p className="bold">
-                Email:
-                <a href="mailto:fahbir@creativefuel.io">
-                  fahbir@creativefuel.io
-                </a>
-              </p>
-              <p className="bold">www.creativefuel.io</p>
-            </footer>
-            <header className="header-letter">
-              <img src={logo} alt="Creativefuel Logo" width={70} height={70} />
-              <div className="brandtext">
-                Creative <span>fuel</span>
-              </div>
-            </header>
+              <PDFFooter />
+              <PDFHeader />
             <div>
               <div>
                 <p>
@@ -542,13 +419,13 @@ const LetterTab = ({ allUserData, gettingData }) => {
                 </p>
                 <br />
 
-                <img
+                {/* <img
                   className="signature-img"
                   src={`data:image/png;base64,${image64}`}
                   alt=""
                   width={60}
                   height={40}
-                />
+                /> */}
                 <br />
                 <p className="bold">
                   {allUserData?.user_name}
@@ -559,27 +436,8 @@ const LetterTab = ({ allUserData, gettingData }) => {
               </div>
             </div>
           </article>
-          <footer
-            className="footer-letter "
-            style={{ pageBreakAfter: "always" }}
-          >
-            <p className="bold">CREATIVEFUEL PRIVATE LIMITED</p>
-            <p className="bold">
-              Registered Office: - 105, Gravity Mall, Vijay Nagar Indore (M.P)
-              452010, India
-            </p>
-            <p className="bold ">
-              Email:
-              <a href="mailto:fahbir@creativefuel.io">fahbir@creativefuel.io</a>
-            </p>
-            <p className="bold">www.creativefuel.io</p>
-          </footer>
-          <header className="header-letter">
-            <img src={logo} alt="Creativefuel Logo" width={70} height={70} />
-            <div className="brandtext">
-              Creative <span>fuel</span>
-            </div>
-          </header>
+            <PDFFooter />
+            <PDFHeader />
           <br />
           <div className="w-100 header-letter">
             <p className="bold underlined ">Annexure B</p>
@@ -1387,11 +1245,7 @@ const LetterTab = ({ allUserData, gettingData }) => {
           </div>
         </div>
       </div>
-      <div className="pdfPreviewWrapper">
-        <PDFViewer width={1000} height={700}>
-          <OfferLetter />
-        </PDFViewer>
-      </div>
+      <div className="pdfPreviewWrapper"></div>
     </>
   );
 };
