@@ -31,26 +31,28 @@ export default function SubDepartmentMaster() {
     axios.get(baseUrl + "get_all_departments").then((res) => {
       getDepartmentData(res.data);
     });
-  })
+  },[])
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (subDepartmentName == "") {
-      setIsRequired((perv) => ({ ...perv, subDepartmentName: true }));
+    let isValid = true;
+
+    if (subDepartmentName === "") {
+      setIsRequired((prev) => ({ ...prev, subDepartmentName: true }));
+      isValid = false;
     }
-    if (departmentName == "") {
-      setIsRequired((perv) => ({ ...perv, departmentName: true }));
+    if (departmentName === "") {
+      setIsRequired((prev) => ({ ...prev, departmentName: true }));
+      isValid = false;
     }
 
-    if (!subDepartmentName) {
-      return toastError("Fill Required Field");
-    } else if (!departmentName || departmentName == "") {
+    if (!isValid) {
       return toastError("Fill Required Field");
     }
 
     try {
-      await axios.post(baseUrl + "add_sub_department", {
+      const response = await axios.post(baseUrl + "add_sub_department", {
         sub_dept_name: subDepartmentName,
         dept_id: departmentName,
         remark: remark,
@@ -60,11 +62,11 @@ export default function SubDepartmentMaster() {
       setSubDepartmentName("");
       setDepartmentName("");
       setRemark("");
-      toastAlert("Submitted success");
+      toastAlert("Submitted successfully");
       setIsFormSubmitted(true);
     } catch (error) {
       toastError("Error while adding sub department.");
-      // alert(error.response.data.message);
+      alert(error.response.data.message);
     }
   };
 

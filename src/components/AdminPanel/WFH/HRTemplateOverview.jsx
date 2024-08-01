@@ -62,11 +62,11 @@ const HRTemplateOverview = () => {
             Billing{" "}
           </button>
         </Link>
-        <Link to="/admin/total-NDG">
+        {/* <Link to="/admin/total-NDG">
           <button type="button" className="btn btn-outline-info btn-sm ml-2">
             Total & NDG{" "}
           </button>
-        </Link>
+        </Link> */}
       <div className="transfer_body">
         <div className="transfer_boxes">
           {templateImages.map((d) => (

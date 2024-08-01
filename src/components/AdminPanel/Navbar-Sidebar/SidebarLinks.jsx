@@ -443,9 +443,9 @@ const SidebarLinks = () => {
                   <NavLink className="collapse-item" to="/admin/wfhd-analytic-dashbaord">
                     <i className="bi bi-dot"></i> WFHD Dashboard
                   </NavLink>
-                  <NavLink className="collapse-item" to="/admin/wfhd-overview">
+                  {/* <NavLink className="collapse-item" to="/admin/wfhd-overview">
                     <i className="bi bi-dot"></i> My Team
-                  </NavLink>
+                  </NavLink> */}
 
                   {/* {!isWFHDManager && ( */}
                   {isWFHDHRPayrollManager && (
@@ -456,21 +456,21 @@ const SidebarLinks = () => {
 
                   {RoleId !== constant.CONST_MANAGER_ROLE && (
                     <>
-                      <NavLink
+                      {/* <NavLink
                         className="collapse-item"
                         to="/admin/attendence-mast"
                       >
                         <i className="bi bi-dot"></i> Create Attendance
-                      </NavLink>
-                      <NavLink
+                      </NavLink> */}
+                      {/* <NavLink
                         className="collapse-item"
                         to="/admin/dispute-overview"
                       >
                         <i className="bi bi-dot"></i>Dispute Summary
-                      </NavLink>
-                      <NavLink className="collapse-item" to="/admin/total-NDG">
+                      </NavLink> */}
+                      {/* <NavLink className="collapse-item" to="/admin/total-NDG">
                         <i className="bi bi-dot"></i> Total & NDG
-                      </NavLink>
+                      </NavLink> */}
                     </>
                   )}
 

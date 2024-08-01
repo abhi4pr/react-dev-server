@@ -106,14 +106,15 @@ const UserSingle = () => {
             {activeAccordionIndex === 1 && (
               <UserSingleTab2 user={user} hobbiesData={hobbiesData} />
             )}
-            {activeAccordionIndex == 2 && <DocumentTabUserSingle id={id} />}
+            {activeAccordionIndex == 2 && <DocumentTabUserSingle user={user} id={id} />}
             {activeAccordionIndex == 3 && (
               <UserSingleTab5 familyData={familyData} />
             )}
             {activeAccordionIndex == 4 && (
               <UserSingleTab6 educationData={educationData} />
             )}
-            {activeAccordionIndex == 5 && <UserSingleWFHDSalaryTab id={id} />}
+            {user.job_type === "WFHD"
+            && activeAccordionIndex == 3 && <UserSingleWFHDSalaryTab id={id} />}
           </FormContainer>
         </div>
       </div>

@@ -13,7 +13,16 @@ import { useGlobalContext } from "../../../Context/Context";
 import Loader from "../Finance/Loader/Loader";
 import Select from "react-select";
 import ReportL1Component from "./ReportL1Component";
+import WFHDExcelConverter from "./WFHDExcelConverter";
 
+const customStyles = {
+  headCells: {
+    style: {
+      fontWeight: 'bold',
+      fontSize: '12px',
+    },
+  },
+};
 const WFHDOverview = () => {
   const whatsappApi = WhatsappAPI();
   const { toastAlert } = useGlobalContext();
@@ -551,6 +560,10 @@ const WFHDOverview = () => {
     getWFHDWithCount();
   }, []);
 
+  const handleExportClick = () => {
+    WFHDExcelConverter(filterDataS, "WFHD Users");
+  };
+
   return (
     <>
       <>
@@ -656,6 +669,8 @@ const WFHDOverview = () => {
                   ? statusCounts?.document_upload
                   : 0}
                 )
+
+                
               </div>
               {/* <div
                 className={`named-tab  ${activeTab == 2 ? "active-tab" : ""}`}
@@ -665,8 +680,6 @@ const WFHDOverview = () => {
               >
                 Training ({statusCounts?.training ? statusCounts?.training : 0})
               </div> */}
-            </div>
-            <div className="tab">
               <div
                 className={`named-tab  ${activeTab == 0 ? "active-tab" : ""}`}
                 onClick={() => {
@@ -676,7 +689,8 @@ const WFHDOverview = () => {
                 Onboarded (
                 {statusCounts?.onboarded ? statusCounts?.onboarded : 0})
               </div>
-
+            </div>
+            <div className="tab">
               <div className="form-group col-3">
                 <label className="form-label">Department</label>
                 <Select
@@ -739,9 +753,17 @@ const WFHDOverview = () => {
                   placeholder="Search Here"
                   className="form-control"
                   value={search}
-                  style={{ width: "300px" }}
+                  style={{ width: "600px" }}
                   onChange={(e) => setSearch(e.target.value)}
                 />
+                <button
+              onClick={handleExportClick}
+              className="btn cmnbtn btn_sm btn-success"
+              variant="text"
+              color="success"
+              sx={{ fontSize: "30px" }}
+              title="Download Excel"
+            >Export Excel</button>
               </div>
               <div className="card-body body-padding">
                 <DataTable
@@ -754,6 +776,7 @@ const WFHDOverview = () => {
                   highlightOnHover
                   paginationResetDefaultPage={true}
                   striped="true"
+                  customStyles={customStyles}
                 />
               </div>
             </div>
