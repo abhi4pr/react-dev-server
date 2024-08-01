@@ -111,7 +111,7 @@ useEffect(() => {
             enabled: true
           }
         },
-        colors: [''],
+        colors: ['#48bb69'],
         responsive: [{
           breakpoint: 480,
           options: {
