@@ -1786,7 +1786,7 @@ const PreOnboardingUserMaster = () => {
                 <div className="dashboard_body_inner">
                   {/* Welcome Screen Start */}
 
-                  {activeTab == 5 && (
+                  {activeTab == 0 && (
                     <div className="welcome_board">
                       <div className="welcome_board_heading">
                         <h1>Welcome </h1>
@@ -2300,7 +2300,7 @@ const PreOnboardingUserMaster = () => {
                     <FAQTab username={username} designation={designation} />
                   )}
 
-                  {activeTab == 0 && allUserData.offer_letter_send && (
+                  {activeTab == 5 && allUserData.offer_letter_send && (
                     <LetterTab
                       allUserData={allUserData}
                       gettingData={gettingData}
