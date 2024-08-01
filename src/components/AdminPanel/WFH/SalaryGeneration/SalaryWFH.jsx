@@ -26,6 +26,7 @@ import DateISOtoNormal from "../../../../utils/DateISOtoNormal";
 import { baseUrl } from "../../../../utils/config";
 import { downloadSelectedInvoices } from "./ZipGenerator";
 import BankExcelConverter from "../../../../utils/BankExcelConverter";
+import { FaEye } from "react-icons/fa6"
 
 const images = [
   { temp_id: 1, image: image1 },
@@ -358,35 +359,35 @@ const SalaryWFH = () => {
     }
   }
 
+  // const handleCardSelect = (index, data) => {
+  //   const monthMap = {
+  //     January: 'February',
+  //     February: 'March',
+  //     March: 'April',
+  //     April: 'May',
+  //     May: 'June',
+  //     June: 'July',
+  //     July: 'August',
+  //     August: 'September',
+  //     September: 'October',
+  //     October: 'November',
+  //     November: 'December',
+  //     December: 'January'
+  //   };
+    // setSelectedCardIndex(index);
+    // setYear(data.year);
+    // setMonth(data.month);
+    // setMonth(monthMap[data.month]);
+    // setSelectedYear(data.year);
+    // setSelectedMonth(data.month);
+  // };
   const handleCardSelect = (index, data) => {
-    const monthMap = {
-      January: 'February',
-      February: 'March',
-      March: 'April',
-      April: 'May',
-      May: 'June',
-      June: 'July',
-      July: 'August',
-      August: 'September',
-      September: 'October',
-      October: 'November',
-      November: 'December',
-      December: 'January'
-    };
     setSelectedCardIndex(index);
     setYear(data.year);
-    // setMonth(data.month);
-    setMonth(monthMap[data.month]);
+    setMonth(data.month);
     setSelectedYear(data.year);
     setSelectedMonth(data.month);
   };
-  // const handleCardSelect = (index, data) => {
-  //   setSelectedCardIndex(index);
-  //   setYear(data.year);
-  //   setMonth(data.month);
-  //   setSelectedYear(data.year);
-  //   setSelectedMonth(data.month);
-  // };
 
   const handleMonthYearData = async () => {
     try {
@@ -1020,6 +1021,23 @@ const SalaryWFH = () => {
       name: "Status",
       cell: (row) => row.attendence_status_flow,
     },
+    {name:"Action",
+      width:"200px",
+      cell:(row)=>(
+        <>
+              {row?.invoice_template_no !== "0" && (
+            <button
+              className="icon-1"
+              title="Download Invoice"
+              type="button"
+              onClick={() => generatePDF(row)}
+            >
+              <FaEye />
+            </button>
+          )}
+          </>
+      )
+    }
     // {
     //   name: "Action",
     //   width: "200px",
@@ -1194,7 +1212,7 @@ const SalaryWFH = () => {
       <div className="timeline_wrapper mb24">
         <Slider {...settings} className="timeline_slider">
           {
-            completedYearsMonths.map((data, index) => {
+            completedYearsMonths?.map((data, index) => {
             const cardMonth = monthToNumber(data.month);
             const isFutureCard = data.year > currentYearForDis || (data.year === currentYearForDis && cardMonth >= currentMonthForDis);
             return (
@@ -1593,7 +1611,7 @@ const SalaryWFH = () => {
                 FilterTabData("Verification Pending"), setActiveTab(1);
               }}
             >
-              Desbursment Pending
+              Disbursement Pending
               {/* Verification Pending */}
             </button>
             <button

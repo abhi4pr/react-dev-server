@@ -19201,3 +19201,10 @@ hr:not([size]) {
 .avatarBox:nth-child(15) .avatarImgBox {
   background-color: #7effa2;
 }
+
+.css-n3z9fz-MuiPopper-root-MuiDataGrid-panel{
+  z-index: 13000 !important;
+}
+.css-1xif2b4-MuiPopper-root-MuiDataGrid-menu {
+  z-index: 13000 !important;
+}

@@ -16,7 +16,30 @@ const SalarySummary = () => {
   const [handleOpenUser, setHandleOpenUser] = useState(false);
   const [month, setMonth] = useState("");
 
+  const [departmentData, setDepartmentData] = useState([]);
+  const [departmentFilter, setDepartmentFilter] = useState([]);
   const [totalSalaryDepartmentWise,setTotalSalaryDepartmentWise] = useState("")
+  const [dynamicFilter, setDynamicFilter] = useState("");
+
+  const [OpenBonus , setHandleOpenBonus] = useState(false)
+  const [bonusData , setBonusData] = useState([])
+  const handleOpenBonus = () =>{
+    setHandleOpenBonus(true)
+  }
+  const handleCloseBonus = () =>{
+    setHandleOpenBonus(false)
+  }
+
+  const bonusDatas = () =>{
+     axios.get(baseUrl+`get_all_wfhd_users_with_bonus`).then((res)=>{
+      setBonusData(res.data.data)
+       console.log(res.data.data)
+     })
+    
+  }
+  useEffect(()=>{
+  bonusDatas()
+  },[])
   const MonthData = [
     { label: "All", value: "" },
     { label: "January", value: "January" },
@@ -33,7 +56,6 @@ const SalarySummary = () => {
     { label: "December", value: "December" },
   ];
 
-  const [dynamicFilter, setDynamicFilter] = useState("");
   const FilterDynamic = [
     // { label: "Today", value: "today" },
     // { label: "This Week", value: "this_week" },
@@ -52,8 +74,9 @@ const SalarySummary = () => {
     setHandleOpenUser(false);
   };
 
-  const [departmentData, setDepartmentData] = useState([]);
-  const [departmentFilter, setDepartmentFilter] = useState([]);
+  
+  
+
   const departmentAPI = () => {
     axios.get(baseUrl + "get_wfh_users_with_dept").then((res) => {
       setDepartmentData(res.data.data);
@@ -176,14 +199,18 @@ const SalarySummary = () => {
     },
 
     {
+      name: "Salary",
+      cell: (row) => row.salary + " ₹",
+    },
+    {
       name: "Total Salary",
       cell: (row) => row.totalSalary + " ₹",
     },
-
     {
-      name: "Pending Amount",
-      cell: (row) => row.pendingAmount + " ₹",
+      name: "Bonus",
+      cell: (row) => row.totalBonus + " ₹",
     },
+
   ];
 
   const SubCatColumns = [
@@ -228,6 +255,53 @@ const SalarySummary = () => {
     },
   ];
 
+
+  const BonusColumns = [
+    {
+      field: "S.NO",
+      headerName: "S.NO",
+      width: 90,
+      renderCell: (params) => {
+        const rowIndex = bonusData.indexOf(params.row);
+        return <div>{rowIndex + 1}</div>;
+      },
+    },  
+    {
+      field: "user_name",
+      headerName: "User Name",
+      width: 180,
+    },
+    {
+      field: "dept_name",
+      headerName: "Department Name",
+      width: 190,
+    },
+    {
+      field: "month",
+      headerName: "Month",
+      width: 150,
+    },
+    {
+      field: "salary",
+      headerName: "Salary",
+      width: 150,
+    },
+    {
+      field: "bonus",
+      headerName: "Bonus",
+      width: 150,
+    },
+    {
+      field: "totalSalary",
+      headerName: "Total Salary",
+      width: 150,
+    },
+      {
+        field: "toPay",
+        headerName: "To Pay",
+        width: 150,
+      },
+  ]
   return (
     <>
       <div className="row">
@@ -300,6 +374,7 @@ const SalarySummary = () => {
       
       <div className="master-card-css">
         <FormContainer mainTitle="Salary Summary" link={"/admin/"} />
+        <button className="btn btn-info" onClick={handleOpenBonus}>Bonus</button>
         <div className="card">
           <div className="card-header sb">
             {/* <h5>Total Salary Summary</h5> */}
@@ -331,28 +406,23 @@ const SalarySummary = () => {
           style={{
             content: {
               width: "60%",
-              height: "50%",
+              height: "80%",
               top: "50%",
               left: "50%",
               right: "auto",
               bottom: "auto",
               marginRight: "-50%",
               transform: "translate(-50%, -50%)",
+             
             },
           }}
         >
           <button
-            className="btn btn-success mb-3 float-right"
+            className="btn btn-danger mb-3 float-right"
             onClick={handleCloseSubCat}
           >
             x
           </button>
-          {/* <DataTable
-            columns={SubCatColumns}
-            data={userCount}
-            highlightOnHover
-            pagination
-          /> */}
           <DataGrid
           rows={userCount}
           columns={SubCatColumns}
@@ -360,7 +430,43 @@ const SalarySummary = () => {
           slots={{
             toolbar: GridToolbar
           }}
+          />
+        </Modal>
 
+
+        {/* bonus user list  */}
+        <Modal
+          isOpen={OpenBonus}
+          onRequestClose={handleCloseBonus}
+          contentLabel="Example Modal"
+          appElement={document.getElementById("root")}
+          style={{
+            content: {
+              width: "60%",
+              height: "80%",
+              top: "50%",
+              left: "50%",
+              right: "auto",
+              bottom: "auto",
+              marginRight: "-50%",
+              transform: "translate(-50%, -50%)",
+             
+            },
+          }}
+        >
+          <button
+            className="btn btn-danger mb-3 float-right"
+            onClick={handleCloseBonus}
+          >
+            x
+          </button>
+          <DataGrid
+          rows={bonusData}
+          columns={BonusColumns}
+          getRowId={(row)=>row?.user_id}
+          slots={{
+            toolbar: GridToolbar
+          }}
           />
         </Modal>
       </div>

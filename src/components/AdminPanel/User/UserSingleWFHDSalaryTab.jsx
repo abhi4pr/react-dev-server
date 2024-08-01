@@ -5,6 +5,7 @@ import axios from "axios";
 import { baseUrl } from "../../../utils/config";
 
 const UserSingleWFHDSalaryTab = ({ id }) => {
+  console.log("hii bros")
   const [search, setSearch] = useState("");
   const [filterdata, setFilterData] = useState([]);
   const [data, setDatas] = useState([]);
@@ -18,7 +19,6 @@ const UserSingleWFHDSalaryTab = ({ id }) => {
         const response = res.data.data;
         setDatas(response);
         setFilterData(response);
-        console.log(response, "salary ");
       })
       .catch((e) => console.error("come to error"));
   }, []);

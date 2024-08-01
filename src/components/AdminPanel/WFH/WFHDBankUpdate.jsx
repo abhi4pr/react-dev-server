@@ -61,9 +61,9 @@ const WFHDBankUpdate = () => {
         bank_name,
         account_no,
         ifsc_code,
-        permanent_city,
-        permanent_address,
-        permanent_state,
+        // permanent_city,
+        // permanent_address,
+        // permanent_state,
         beneficiary,
         permanent_pin_code,
         pan_no,
@@ -73,9 +73,9 @@ const WFHDBankUpdate = () => {
       setBankName(bank_name);
       setBankAccountNumber(account_no);
       setIFSC(ifsc_code);
-      setCity(permanent_city);
-      setAddress(permanent_address);
-      setState(permanent_state);
+      // setCity(permanent_city);
+      // setAddress(permanent_address);
+      // setState(permanent_state);
       setBeneficiary(beneficiary);
       setPincode(permanent_pin_code);
       setPanNo(pan_no);
@@ -97,15 +97,15 @@ const WFHDBankUpdate = () => {
     if (beneficiary == "") {
       setIsRequired((perv) => ({ ...perv, beneficiary: true }));
     }
-    if (address == "") {
-      setIsRequired((perv) => ({ ...perv, address: true }));
-    }
-    if (state == "") {
-      setIsRequired((perv) => ({ ...perv, state: true }));
-    }
-    if (city == "") {
-      setIsRequired((perv) => ({ ...perv, city: true }));
-    }
+    // if (address == "") {
+    //   setIsRequired((perv) => ({ ...perv, address: true }));
+    // }
+    // if (state == "") {
+    //   setIsRequired((perv) => ({ ...perv, state: true }));
+    // }
+    // if (city == "") {
+    //   setIsRequired((perv) => ({ ...perv, city: true }));
+    // }
     if (pincode == "") {
       setIsRequired((perv) => ({ ...perv, pincode: true }));
     }
@@ -119,15 +119,17 @@ const WFHDBankUpdate = () => {
       return toastError("Please fill all Required field");
     } else if (!IFSC || IFSC == "") {
       return toastError("Please fill all Required field");
-    } else if (!city || city == "") {
-      return toastError("Please fill all Required field");
-    } else if (!address || address == "") {
-      return toastError("Please fill all Required field");
-    } else if (!state || state == "") {
-      return toastError("Please fill all Required field");
-    } else if (!pincode || pincode == "") {
-      return toastError("Please fill all Required field");
     }
+    // else if (!city || city == "") {
+    //   return toastError("Please fill all Required field");
+    // } else if (!address || address == "") {
+    //   return toastError("Please fill all Required field");
+    // } else if (!state || state == "") {
+    //   return toastError("Please fill all Required field");
+    // }
+    //  else if (!pincode || pincode == "") {
+    //   return toastError("Please fill all Required field");
+    // }
     try {
       const response = axios.put(baseUrl + "update_user", {
         user_id: user_id,
@@ -135,9 +137,9 @@ const WFHDBankUpdate = () => {
         account_no: bankAccountNumber,
         ifsc_code: IFSC,
         beneficiary: beneficiary,
-        permanent_city: city,
-        permanent_address: address,
-        permanent_state: state,
+        // permanent_city: city,
+        // permanent_address: address,
+        // permanent_state: state,
         permanent_pin_code: Number(pincode),
         pan_no: panNo,
         upi_Id: upi,
@@ -311,7 +313,7 @@ const WFHDBankUpdate = () => {
                 fieldGrid={3}
                 onChange={(e) => setBeneficiary(e.target.value)}
               />
-              <div className="col-3">
+              {/* <div className="col-3">
                 <FieldContainer
                   label="Address"
                   astric
@@ -337,8 +339,8 @@ const WFHDBankUpdate = () => {
                 {isRequired.address && (
                   <p className="form-error">Please Enter Address</p>
                 )}
-              </div>
-              <div className="form-group col-3">
+              </div> */}
+              {/* <div className="form-group col-3">
                 <label className="form-label">State</label>
                 <IndianStatesMui
                   selectedState={state}
@@ -402,7 +404,7 @@ const WFHDBankUpdate = () => {
                 {isRequired.pincode && (
                   <p className="form-error">Please Enter Pincode</p>
                 )}
-              </div>
+              </div> */}
               <FieldContainer
                 label="Upi Id"
                 type="text"

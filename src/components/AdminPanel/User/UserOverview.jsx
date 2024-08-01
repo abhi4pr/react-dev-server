@@ -18,7 +18,6 @@ import { Button } from "@mui/material";
 import Swal from "sweetalert2";
 import { baseUrl } from "../../../utils/config";
 import Loader from "../Finance/Loader/Loader";
-import formatString from "../Operation/CampaignMaster/WordCapital";
 
 const UserOverview = () => {
   const { id } = useParams();
@@ -392,9 +391,6 @@ const UserOverview = () => {
       headerName: "Login ID",
       width: 190,
       sortable: true,
-      renderCell:(params)=>{
-        return formatString(params.row.user_login_id)
-      }
     },
     {
       field: "Role_name",
@@ -799,18 +795,6 @@ const UserOverview = () => {
                   className="btn btn-warning btn-sm"
                 >
                   Add Pre Onboarding
-                </button>
-              </Link>
-            )}
-          {contextData &&
-            contextData[0] &&
-            contextData[0].insert_value === 1 && (
-              <Link to="/admin/wfhd-register">
-                <button
-                  type="button"
-                  className="btn btn-warning btn-sm"
-                >
-                  Add Buddy
                 </button>
               </Link>
             )}

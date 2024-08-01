@@ -61,10 +61,6 @@ export const Template = {
       const nextMonthYear = monthNumber === 12 ? currentYear + 1 : currentYear;
       const formattedMonth = nextMonthNumber < 10 ? '0' + nextMonthNumber : nextMonthNumber;
       const formattedDay = '15';
-      console.log("nextMonthYear",nextMonthYear)
-      console.log("formattedMonth",formattedMonth)
-      console.log("formattedDay",formattedDay)
-      console.log("monthNmae111111111",`${formattedDay}-${formattedMonth}-${nextMonthYear}`)
       return `${formattedDay}-${formattedMonth}-${nextMonthYear}`;
     }
     const doc = new jsPDF();
