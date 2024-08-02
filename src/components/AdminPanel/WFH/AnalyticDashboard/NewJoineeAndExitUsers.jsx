@@ -22,7 +22,6 @@ const NewJoineeAndExitUsers = () => {
   const allExitUserDatas = () =>{
     axios.get(baseUrl+`get_all_exit_users_of_wfhd`).then((res)=>{
      setExitUserData(res.data.data)
-      console.log(res.data.data ,'good')
     })
    
  }

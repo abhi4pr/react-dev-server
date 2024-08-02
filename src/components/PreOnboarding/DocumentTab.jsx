@@ -225,7 +225,8 @@ const DocumentTab = ({
   return (
     <>
       <div
-        className={`documentarea cardBoard ${
+      // cardBoard
+        className={`documentarea  ${
           normalUserLayout && "documentareaLight"
         }`}
       >
