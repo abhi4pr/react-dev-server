@@ -14,7 +14,7 @@ export default function VendorPagePriceOverview() {
 
   const getData = () => {
     axios.get(baseUrl + "getVendorPagePriceList").then((res) => {
-      console.log(res.data.data, "data");
+      // console.log(res.data.data, "data");
       setData(res.data.data);
       setFilterData(res.data.data);
     });

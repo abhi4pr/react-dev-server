@@ -163,7 +163,7 @@ export default function PageAddMasterModal() {
 
   if (modalType === "Price Type" || modalType === "Price Type Update") {
     const priceTypeFormSubmit = (data) => {
-      console.log(data);
+      // console.log(data);
       const obj = {
         name: data.priceType,
         platfrom_id: platformList.find(

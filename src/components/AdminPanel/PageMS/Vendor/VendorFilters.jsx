@@ -18,21 +18,21 @@ function VendorFilters({filterData,setFilterData}) {
 
 
     const category = pageCate?.data;
-    console.log(vendorData,"vendorData");
+    // console.log(vendorData,"vendorData");
     let vendorGlobalData = vendorData?.data;
 
 
 
     const handleCategoryfilter = (e,newValue) => {
         if(newValue && newValue != ""){
-            console.log(newValue);
+            // console.log(newValue);
 
             setFilterData ( vendorGlobalData?.filter((ele)=> ele.vendor_category?.toLowerCase() == newValue?.toLowerCase() ))
         }
     }
     const handleVendorTypefilter = (e,newValue) => {
         if(newValue && newValue != ""){
-            console.log(newValue);
+            // console.log(newValue);
 
             setFilterData ( vendorGlobalData?.filter((ele)=> ele.vendor_category?.toLowerCase() == newValue?.toLowerCase() ))
         }

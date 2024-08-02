@@ -70,6 +70,9 @@ const PageOverview = () => {
   } = useGetAllPageListQuery();
   const { data: pageStates } = useGetPageStateQuery();
   const [vendorTypes, setVendorTypes] = useState([]);
+  const [activeTab, setActiveTab] = useState('Tab1');
+  const [pageLevels, setPageLevels] = useState([]);
+  const [tabFilterData, setTabFilterData] = useState([])
   // const [pieChart, setPieChart] = useState({
   //   series: [40, 60],
   //   options: {
@@ -512,6 +515,7 @@ const PageOverview = () => {
     if (pageList) {
       setVendorTypes(pageList.data);
       setFilterData(pageList.data);
+      setTabFilterData(pageList.data)
     }
   }, [pageList]);
 
@@ -1462,401 +1466,455 @@ const PageOverview = () => {
   if (showPageHealthColumn) {
     dataGridcolumns.push(...pageHealthColumn);
   }
+
+  useEffect(() => {
+    const countPageLevels = (tabFilterData) => {
+        const counts = {};
+        tabFilterData.forEach(item => {
+            const category = item.preference_level;
+            counts[category] = (counts[category] || 0) + 1;
+        });
+        return counts;
+    };
+
+    const counts = countPageLevels(tabFilterData);
+    setPageLevels(counts);
+  }, [tabFilterData]);
+
+  const pageWithLevels = (level) =>{
+    const pagewithlevels = tabFilterData.filter((item)=>item.preference_level == level);
+    setFilterData(pagewithlevels)
+    setActiveTab('Tab1')
+  }
+
   return (
     <>
-      <div className="card">
-        <div className="card-header flexCenterBetween">
-          <h5 className="card-title flexCenterBetween">
-            {pageStatsAuth && (
-              <Switch
-                checked={showPageHealthColumn}
-                value={showPageHealthColumn}
-                onChange={() =>
-                  dispatch(setShowPageHealthColumn(!showPageHealthColumn))
-                }
-                name="Page Health"
-                color="primary"
-              />
-            )}
-            <Typography>Page Health</Typography>
-            <Typography>: {filterData?.length}</Typography>
-          </h5>
-          <div className="flexCenter colGap8">
-            <Link
-              to={`/admin/pms-page-master`}
-              className="btn cmnbtn btn_sm btn-outline-primary"
-            >
-              Add Page <AddIcon />
-            </Link>
-            <Link
-              to={`/admin/pms-vendor-overview`}
-              className="btn cmnbtn btn_sm btn-outline-primary"
-            >
-              Vendor <KeyboardArrowRightIcon />
-            </Link>
-          </div>
-        </div>
-        <div className="card-body pb4">
-          <div className="row thm_form">
-            <div className="col-md-3 mb4">
-              <Autocomplete
-                id="platform-autocomplete"
-                options={platformData}
-                getOptionLabel={(option) => {
-                  const count = vendorTypes.filter(
-                    (d) => d.platform_id == option._id
-                  )?.length;
-                  return `${option.platform_name} (${count})`;
-                }}
-                style={{ width: 270 }}
-                renderInput={(params) => (
-                  <TextField {...params} label="Platform" variant="outlined" />
-                )}
-                onChange={(event, newValue) => {
-                  if (newValue === null) {
-                    // Reset the data when the clear button is clicked
-                    setFilterData(vendorTypes);
-                  } else {
-                    let result = vendorTypes.filter(
-                      (d) => d.platform_id == newValue._id
-                    );
-                    setFilterData(result);
-                  }
-                }}
-              />
-            </div>
-            <div className="col-md-3 mb4">
-              {/* <Autocomplete
-                id="ownership-type-autocomplete"
-                options={[
-                  ...new Set(
-                    vendorTypes?.map((item) => {
-                      return item?.ownership_type;
-                    })
-                  ),
-                ]}
-                getOptionLabel={(option) => {
-                  const count = vendorTypes.filter(
-                    (d) => d.ownership_type == option
-                  )?.length;
-                  let item = ownerShipData?.find((item) => item._id == option);
-                  let name = item ? item.company_type_name : "NA"; // Access the name property of the item
-                  return `${name} (${count})`;
-                }}
-                style={{ width: 270 }}
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    label="Ownership "
-                    variant="outlined"
-                  />
-                )}
-                onChange={(event, newValue) => {
-                  if (newValue === null) {
-                    setFilterData(vendorTypes);
-                  } else {
-                    let result = vendorTypes.filter(
-                      (d) => d.ownership_type == newValue
-                    );
-                    setFilterData(result);
-                  }
-                }}
-              /> */}
-              <Autocomplete
-                id="ownership-type-autocomplete"
-                options={['Solo', 'PartnerShip', 'Vendor']}
-                style={{ width: 270 }}
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    label="Ownership"
-                    variant="outlined"
-                  />
-                )}
-                onChange={(event, newValue) => {
-                  if (newValue === null) {
-                    setFilterData(vendorTypes);
-                  } else {
-                    let result = vendorTypes.filter((d) => d.ownership_type === newValue );
-                    setFilterData(result);
-                  }
-                }}
-              />
-            </div>
-            <div className="col-md-3 mb4">
-              <Autocomplete
-                id="page-status-autocomplete"
-                options={[
-                  ...new Set(
-                    vendorTypes?.map((item) => {
-                      return item?.status;
-                    })
-                  ),
-                ]}
-                getOptionLabel={(option) => {
-                  const count = vendorTypes.filter(
-                    (d) => d.status == option
-                  )?.length;
-                  let name = option == 1 ? "Active" : "Inactive";
-                  return `${name} (${count})`;
-                }}
-                style={{ width: 270 }}
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    label="Page Status"
-                    variant="outlined"
-                  />
-                )}
-                onChange={(event, newValue) => {
-                  if (newValue === null) {
-                    setFilterData(vendorTypes);
-                  } else {
-                    let result = vendorTypes.filter(
-                      (d) => d.status == newValue
-                    );
-                    setFilterData(result);
-                  }
-                }}
-              />
-            </div>
-            <div className="col-md-3 mb4">
-              <Autocomplete
-                id="pagename-type-autocomplete"
-                options={[
-                  ...new Set(
-                    vendorTypes?.map((item) => {
-                      return item?.page_name_type;
-                    })
-                  ),
-                ]}
-                getOptionLabel={(option) => {
-                  const count = vendorTypes.filter(
-                    (d) => d.page_name_type == option
-                  )?.length;
-                  return `${option} (${count})`;
-                }}
-                style={{ width: 270 }}
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    label="Page Name Type"
-                    variant="outlined"
-                  />
-                )}
-                onChange={(event, newValue) => {
-                  if (newValue === null) {
-                    setFilterData(vendorTypes);
-                  } else {
-                    let result = vendorTypes.filter(
-                      (d) => d.page_name_type == newValue
-                    );
-                    setFilterData(result);
-                  }
-                }}
-              />
-            </div>
-            <div className="col-md-3 mb4">
-              <Autocomplete
-                id="closedby-autocomplete"
-                options={[
-                  ...new Set(
-                    vendorTypes?.map((item) => {
-                      return item?.page_closed_by;
-                    })
-                  ),
-                ]}
-                getOptionLabel={(option) => {
-                  const users = user?.find((e) => e.user_id == option);
-                  const count = vendorTypes.filter(
-                    (d) => d.page_closed_by == option
-                  )?.length;
-                  return `${users?.user_name} (${count})`;
-                }}
-                style={{ width: 270 }}
-                renderInput={(params) => (
-                  <TextField {...params} label="Closed By" variant="outlined" />
-                )}
-                onChange={(event, newValue) => {
-                  if (newValue === null) {
-                    setFilterData(vendorTypes);
-                  } else {
-                    let result = vendorTypes.filter(
-                      (d) => d.page_closed_by == newValue
-                    );
-                    setFilterData(result);
-                  }
-                }}
-              />
-            </div>
-            <div className="col-md-3 mb4">
-              <Autocomplete
-                id="category-autocomplete"
-                options={[
-                  ...new Set(vendorTypes?.map(item => item?.page_category_id))
-                ]}
-                getOptionLabel={(option) => {
-                  const category = cat?.find(e => e?._id === option);
-                  const count = vendorTypes?.filter(
-                    d => d?.page_category_id === option
-                  ).length;
-                  return `${category?.page_category || 'Unknown Category'} (${count})`;
-                }}
-                renderInput={(params) => <TextField {...params} label="Select Category" variant="outlined" />}
-                onChange={(event, newValue) => {
-                  if (newValue === null) {
-                    setFilterData(vendorTypes);
-                  } else {
-                    let result = vendorTypes.filter(
-                      (d) => d.page_category_id == newValue
-                    );
-                    setFilterData(result);
-                  }
-                }}
-              />
-            </div>
-            {/* <div className="col-md-3 mb4">
-              <Autocomplete
-                id="ownership-autocomplete"
-                options={[
-                  ...new Set(
-                    vendorTypes?.map((item) => {
-                      return item?.ownership_type;
-                    })
-                  ),
-                ]}
-                getOptionLabel={(option) => {
-                  const count = vendorTypes.filter(
-                    (d) => d.ownership_type == option
-                  )?.length;
-                  return `${option} (${count})`;
-                }}
-                style={{ width: 270 }}
-                renderInput={(params) => (
-                  <TextField {...params} label="Ownership" variant="outlined" />
-                )}
-                onChange={(event, newValue) => {
-                  if (newValue === null) {
-                    setFilterData(vendorTypes);
-                  } else {
-                    let result = vendorTypes.filter(
-                      (d) => d.ownership_type == newValue
-                    );
-                    setFilterData(result);
-                  }
-                }}
-              />
-            </div> */}
-          </div>
-        </div>
-        <div className="card-body p0">
-          <div className="data_tbl thm_table table-responsive">
-            {isPageListLoading ? (
-              <Box
-                sx={{
-                  textAlign: "center",
-                  position: "relative",
-                  margin: "auto",
-                  width: "100%",
-                  display: "flex",
-                  justifyContent: "center",
-                }}
-              >
-                <CircularProgress variant="determinate" value={progress} />
-                <Box
-                  sx={{
-                    top: 0,
-                    left: 0,
-                    bottom: 0,
-                    right: 0,
-                    position: "absolute",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                  }}
-                >
-                  <Typography
-                    variant="caption"
-                    component="div"
-                    color="text-primary"
-                  >
-                    {`${Math.round(progress)}%`}
-                  </Typography>
-                </Box>
-              </Box>
-            ) : (
-              <Box sx={{ height: 700, width: "100%" }}>
-                <DataGrid
-                  title="Page Overview"
-                  rows={filterData}
-                  columns={dataGridcolumns}
-                  // processRowUpdate={handleEditCellChange}
-                  // onCellEditStop={handleEditCellChange}
-                  // onCellEditStart={handleEditCellChange}
-                  // onEditCellChange={handleEditCellChange}
-                  onRowDoubleClick={(params) => {
-                    navigate(`/admin/pms-page-edit/${params.row._id}`);
-                  }}
-                  // onCellEditStop={(params) =>
-                  //   setTimeout(() => handleEditCellChange(params), 1000)
-                  // }
-
-                  // onPaginationModelChange={handlePageChange}
-                  pageSize={5}
-                  rowsPerPageOptions={[5]}
-                  // rowHeight={38}
-                  disableSelectionOnClick
-                  getRowId={(row) => row._id}
-                  slots={{ toolbar: GridToolbar }}
-                  slotProps={{
-                    toolbar: {
-                      showQuickFilter: true,
-                    },
-                  }}
-                  checkboxSelection
-                  disableRowSelectionOnClick
-                />
-              </Box>
-            )}
-          </div>
-        </div>
+      <div className="tabs">
+        <button
+          className={activeTab === 'Tab1' ? 'active btn btn-info' : 'btn btn-link'}
+          onClick={() => setActiveTab('Tab1')}
+        >
+          Overview
+        </button>
+        <button
+          className={activeTab === 'Tab2' ? 'active btn btn-info' : 'btn btn-link'}
+          onClick={() => setActiveTab('Tab2')}
+        >
+          Statistics
+        </button>
       </div>
-      <Dialog
-        open={showPriceModal}
-        onClose={handleClose}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
-      >
-        <DialogTitle id="alert-dialog-title">{"Price Details"}</DialogTitle>
-        <DialogContent>
-          <DialogContentText id="alert-dialog-description">
-            {!isPriceLoading && (
-              <DataGrid
-                rows={priceData}
-                columns={priceColumn}
-                pageSize={5}
-                rowsPerPageOptions={[5]}
-                disableSelectionOnClick
-                getRowId={(row) => row._id}
-                slots={{ toolbar: GridToolbar }}
-                slotProps={{
-                  toolbar: {
-                    showQuickFilter: true,
-                  },
-                }}
-              />
-            )}
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleClose} autoFocus>
-            Close
-          </Button>
-        </DialogActions>
-      </Dialog>
-      <TagCategoryListModal />
-      <VendorNotAssignedModal />
-      <PageDetail />
+
+      <div className="content">
+        {activeTab === 'Tab1' &&
+        <div className="">
+          <div className="card">
+            <div className="card-header flexCenterBetween">
+              <h5 className="card-title flexCenterBetween">
+                {pageStatsAuth && (
+                  <Switch
+                    checked={showPageHealthColumn}
+                    value={showPageHealthColumn}
+                    onChange={() =>
+                      dispatch(setShowPageHealthColumn(!showPageHealthColumn))
+                    }
+                    name="Page Health"
+                    color="primary"
+                  />
+                )}
+                <Typography>Page Health</Typography>
+                <Typography>: {filterData?.length}</Typography>
+              </h5>
+              <div className="flexCenter colGap8">
+                <Link
+                  to={`/admin/pms-page-master`}
+                  className="btn cmnbtn btn_sm btn-outline-primary"
+                >
+                  Add Page <AddIcon />
+                </Link>
+                <Link
+                  to={`/admin/pms-vendor-overview`}
+                  className="btn cmnbtn btn_sm btn-outline-primary"
+                >
+                  Vendor <KeyboardArrowRightIcon />
+                </Link>
+              </div>
+            </div>
+            <div className="card-body pb4">
+              <div className="row thm_form">
+                <div className="col-md-3 mb4">
+                  <Autocomplete
+                    id="platform-autocomplete"
+                    options={platformData}
+                    getOptionLabel={(option) => {
+                      const count = vendorTypes.filter(
+                        (d) => d.platform_id == option._id
+                      )?.length;
+                      return `${option.platform_name} (${count})`;
+                    }}
+                    style={{ width: 270 }}
+                    renderInput={(params) => (
+                      <TextField {...params} label="Platform" variant="outlined" />
+                    )}
+                    onChange={(event, newValue) => {
+                      if (newValue === null) {
+                        // Reset the data when the clear button is clicked
+                        setFilterData(vendorTypes);
+                      } else {
+                        let result = vendorTypes.filter(
+                          (d) => d.platform_id == newValue._id
+                        );
+                        setFilterData(result);
+                      }
+                    }}
+                  />
+                </div>
+                <div className="col-md-3 mb4">
+                  {/* <Autocomplete
+                    id="ownership-type-autocomplete"
+                    options={[
+                      ...new Set(
+                        vendorTypes?.map((item) => {
+                          return item?.ownership_type;
+                        })
+                      ),
+                    ]}
+                    getOptionLabel={(option) => {
+                      const count = vendorTypes.filter(
+                        (d) => d.ownership_type == option
+                      )?.length;
+                      let item = ownerShipData?.find((item) => item._id == option);
+                      let name = item ? item.company_type_name : "NA"; // Access the name property of the item
+                      return `${name} (${count})`;
+                    }}
+                    style={{ width: 270 }}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        label="Ownership "
+                        variant="outlined"
+                      />
+                    )}
+                    onChange={(event, newValue) => {
+                      if (newValue === null) {
+                        setFilterData(vendorTypes);
+                      } else {
+                        let result = vendorTypes.filter(
+                          (d) => d.ownership_type == newValue
+                        );
+                        setFilterData(result);
+                      }
+                    }}
+                  /> */}
+                  <Autocomplete
+                    id="ownership-type-autocomplete"
+                    options={['Solo', 'PartnerShip', 'Vendor']}
+                    style={{ width: 270 }}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        label="Ownership"
+                        variant="outlined"
+                      />
+                    )}
+                    onChange={(event, newValue) => {
+                      if (newValue === null) {
+                        setFilterData(vendorTypes);
+                      } else {
+                        let result = vendorTypes.filter((d) => d.ownership_type === newValue );
+                        setFilterData(result);
+                      }
+                    }}
+                  />
+                </div>
+                <div className="col-md-3 mb4">
+                  <Autocomplete
+                    id="page-status-autocomplete"
+                    options={[
+                      ...new Set(
+                        vendorTypes?.map((item) => {
+                          return item?.status;
+                        })
+                      ),
+                    ]}
+                    getOptionLabel={(option) => {
+                      const count = vendorTypes.filter(
+                        (d) => d.status == option
+                      )?.length;
+                      let name = option == 1 ? "Active" : "Inactive";
+                      return `${name} (${count})`;
+                    }}
+                    style={{ width: 270 }}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        label="Page Status"
+                        variant="outlined"
+                      />
+                    )}
+                    onChange={(event, newValue) => {
+                      if (newValue === null) {
+                        setFilterData(vendorTypes);
+                      } else {
+                        let result = vendorTypes.filter(
+                          (d) => d.status == newValue
+                        );
+                        setFilterData(result);
+                      }
+                    }}
+                  />
+                </div>
+                <div className="col-md-3 mb4">
+                  <Autocomplete
+                    id="pagename-type-autocomplete"
+                    options={[
+                      ...new Set(
+                        vendorTypes?.map((item) => {
+                          return item?.page_name_type;
+                        })
+                      ),
+                    ]}
+                    getOptionLabel={(option) => {
+                      const count = vendorTypes.filter(
+                        (d) => d.page_name_type == option
+                      )?.length;
+                      return `${option} (${count})`;
+                    }}
+                    style={{ width: 270 }}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        label="Page Name Type"
+                        variant="outlined"
+                      />
+                    )}
+                    onChange={(event, newValue) => {
+                      if (newValue === null) {
+                        setFilterData(vendorTypes);
+                      } else {
+                        let result = vendorTypes.filter(
+                          (d) => d.page_name_type == newValue
+                        );
+                        setFilterData(result);
+                      }
+                    }}
+                  />
+                </div>
+                <div className="col-md-3 mb4">
+                  <Autocomplete
+                    id="closedby-autocomplete"
+                    options={[
+                      ...new Set(
+                        vendorTypes?.map((item) => {
+                          return item?.page_closed_by;
+                        })
+                      ),
+                    ]}
+                    getOptionLabel={(option) => {
+                      const users = user?.find((e) => e.user_id == option);
+                      const count = vendorTypes.filter(
+                        (d) => d.page_closed_by == option
+                      )?.length;
+                      return `${users?.user_name} (${count})`;
+                    }}
+                    style={{ width: 270 }}
+                    renderInput={(params) => (
+                      <TextField {...params} label="Closed By" variant="outlined" />
+                    )}
+                    onChange={(event, newValue) => {
+                      if (newValue === null) {
+                        setFilterData(vendorTypes);
+                      } else {
+                        let result = vendorTypes.filter(
+                          (d) => d.page_closed_by == newValue
+                        );
+                        setFilterData(result);
+                      }
+                    }}
+                  />
+                </div>
+                <div className="col-md-3 mb4">
+                  <Autocomplete
+                    id="category-autocomplete"
+                    options={[
+                      ...new Set(vendorTypes?.map(item => item?.page_category_id))
+                    ]}
+                    getOptionLabel={(option) => {
+                      const category = cat?.find(e => e?._id === option);
+                      const count = vendorTypes?.filter(
+                        d => d?.page_category_id === option
+                      ).length;
+                      return `${category?.page_category || 'Unknown Category'} (${count})`;
+                    }}
+                    renderInput={(params) => <TextField {...params} label="Select Category" variant="outlined" />}
+                    onChange={(event, newValue) => {
+                      if (newValue === null) {
+                        setFilterData(vendorTypes);
+                      } else {
+                        let result = vendorTypes.filter(
+                          (d) => d.page_category_id == newValue
+                        );
+                        setFilterData(result);
+                      }
+                    }}
+                  />
+                </div>
+                {/* <div className="col-md-3 mb4">
+                  <Autocomplete
+                    id="ownership-autocomplete"
+                    options={[
+                      ...new Set(
+                        vendorTypes?.map((item) => {
+                          return item?.ownership_type;
+                        })
+                      ),
+                    ]}
+                    getOptionLabel={(option) => {
+                      const count = vendorTypes.filter(
+                        (d) => d.ownership_type == option
+                      )?.length;
+                      return `${option} (${count})`;
+                    }}
+                    style={{ width: 270 }}
+                    renderInput={(params) => (
+                      <TextField {...params} label="Ownership" variant="outlined" />
+                    )}
+                    onChange={(event, newValue) => {
+                      if (newValue === null) {
+                        setFilterData(vendorTypes);
+                      } else {
+                        let result = vendorTypes.filter(
+                          (d) => d.ownership_type == newValue
+                        );
+                        setFilterData(result);
+                      }
+                    }}
+                  />
+                </div> */}
+              </div>
+            </div>
+            <div className="card-body p0">
+              <div className="data_tbl thm_table table-responsive">
+                {isPageListLoading ? (
+                  <Box
+                    sx={{
+                      textAlign: "center",
+                      position: "relative",
+                      margin: "auto",
+                      width: "100%",
+                      display: "flex",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <CircularProgress variant="determinate" value={progress} />
+                    <Box
+                      sx={{
+                        top: 0,
+                        left: 0,
+                        bottom: 0,
+                        right: 0,
+                        position: "absolute",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
+                    >
+                      <Typography
+                        variant="caption"
+                        component="div"
+                        color="text-primary"
+                      >
+                        {`${Math.round(progress)}%`}
+                      </Typography>
+                    </Box>
+                  </Box>
+                ) : (
+                  <Box sx={{ height: 700, width: "100%" }}>
+                    <DataGrid
+                      title="Page Overview"
+                      rows={filterData}
+                      columns={dataGridcolumns}
+                      // processRowUpdate={handleEditCellChange}
+                      // onCellEditStop={handleEditCellChange}
+                      // onCellEditStart={handleEditCellChange}
+                      // onEditCellChange={handleEditCellChange}
+                      onRowDoubleClick={(params) => {
+                        navigate(`/admin/pms-page-edit/${params.row._id}`);
+                      }}
+                      // onCellEditStop={(params) =>
+                      //   setTimeout(() => handleEditCellChange(params), 1000)
+                      // }
+
+                      // onPaginationModelChange={handlePageChange}
+                      pageSize={5}
+                      rowsPerPageOptions={[5]}
+                      // rowHeight={38}
+                      disableSelectionOnClick
+                      getRowId={(row) => row._id}
+                      slots={{ toolbar: GridToolbar }}
+                      slotProps={{
+                        toolbar: {
+                          showQuickFilter: true,
+                        },
+                      }}
+                      checkboxSelection
+                      disableRowSelectionOnClick
+                    />
+                  </Box>
+                )}
+              </div>
+            </div>
+          </div>
+          <Dialog
+            open={showPriceModal}
+            onClose={handleClose}
+            aria-labelledby="alert-dialog-title"
+            aria-describedby="alert-dialog-description"
+          >
+            <DialogTitle id="alert-dialog-title">{"Price Details"}</DialogTitle>
+            <DialogContent>
+              <DialogContentText id="alert-dialog-description">
+                {!isPriceLoading && (
+                  <DataGrid
+                    rows={priceData}
+                    columns={priceColumn}
+                    pageSize={5}
+                    rowsPerPageOptions={[5]}
+                    disableSelectionOnClick
+                    getRowId={(row) => row._id}
+                    slots={{ toolbar: GridToolbar }}
+                    slotProps={{
+                      toolbar: {
+                        showQuickFilter: true,
+                      },
+                    }}
+                  />
+                )}
+              </DialogContentText>
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={handleClose} autoFocus>
+                Close
+              </Button>
+            </DialogActions>
+          </Dialog>
+          <TagCategoryListModal />
+          <VendorNotAssignedModal />
+          <PageDetail />
+        </div>
+        }
+        {activeTab === 'Tab2' && 
+        <div className="vendor-container">
+          <p className="vendor-heading">Vendor with Levels:</p>
+          {Object.entries(pageLevels).map(([level, count]) => (
+            <div key={level} onClick={() => pageWithLevels(level)} className="vendor-item">
+              <span>{level}:</span>
+              <span className="vendor-count vendor-bg-orange">{count}</span>
+            </div>
+          ))}
+          <hr />
+        </div>
+        }
+      </div>
     </>
   );
 };

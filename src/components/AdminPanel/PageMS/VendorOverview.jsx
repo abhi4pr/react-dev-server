@@ -58,6 +58,9 @@ const VendorOverview = () => {
   const [pageData, setPageData] = useState([]);
   const token = sessionStorage.getItem("token");
   const [activeTab, setActiveTab] = useState('Tab1')
+  const [tabFilterData, setTabFilterData] = useState([])
+  const [categoryCounts, setCategoryCounts] = useState({});
+  const [platformCounts, setPlatformCounts] = useState([]);
 
   const { data: pageList } = useGetAllPageListQuery();
 
@@ -86,6 +89,7 @@ const VendorOverview = () => {
     // console.log(vendorData?.data);
     if (vendorData) {
       setFilterData(vendorData?.data);
+      setTabFilterData(vendorData?.data);
     }
   }, [vendorData]);
 
@@ -389,6 +393,75 @@ const VendorOverview = () => {
     },
   ];
 
+  // for category statistics
+  useEffect(() => {
+    const countVendorCategories = (tabFilterData) => {
+        const counts = {};
+        tabFilterData.forEach(item => {
+            const category = item.vendor_category;
+            counts[category] = (counts[category] || 0) + 1;
+        });
+        return counts;
+    };
+
+    const counts = countVendorCategories(tabFilterData);
+    setCategoryCounts(counts);
+  }, [tabFilterData]);
+
+  // for platform statistics
+  useEffect(() => {
+    const platformCountsMap = {};
+    for (const vendor of tabFilterData) {
+      const platformId = vendor.vendor_platform;
+      const platform = platformData.find((item) => item._id === platformId);
+      if (platform) {
+        const platformName = platform.platform_name;
+        if (platformCountsMap[platformId]) {
+          platformCountsMap[platformId].count++;
+        } else {
+          platformCountsMap[platformId] = {
+            platform_name: platformName,
+            count: 1,
+          };
+        }
+      }
+    }
+    const platformCountsArray = Object.keys(platformCountsMap).map(
+      (platformId) => ({
+        platform_id: platformId,
+        platform_name: platformCountsMap[platformId].platform_name,
+        count: platformCountsMap[platformId].count,
+      })
+    );
+    setPlatformCounts(platformCountsArray);
+  }, [tabFilterData, platformData]);
+
+  const vendorWithNoMobileNum = () =>{
+    const vendorwithnomobilenum = tabFilterData.filter((item)=>item.mobile == 0);
+    setFilterData(vendorwithnomobilenum)
+    setActiveTab('Tab1')
+  }
+  const vendorWithNoEmail = () =>{
+    const vendorwithnoemail = tabFilterData.filter((item)=>item.email == '');
+    setFilterData(vendorwithnoemail)
+    setActiveTab('Tab1')
+  }
+  const vendorWithNoPages = () =>{
+    const vendorwithnopages = tabFilterData.filter((item)=>item.page_count == 0);
+    setFilterData(vendorwithnopages)
+    setActiveTab('Tab1')
+  }
+  const vendorWithCategories = (category) =>{
+    const vendorwithcategories = tabFilterData.filter((item)=>item.vendor_category == category);
+    setFilterData(vendorwithcategories)
+    setActiveTab('Tab1')
+  }
+  const vendorWithPlatforms = (platform) =>{
+    const vendorwithplatforms = tabFilterData.filter((item)=>item.vendor_platform == platform);
+    setFilterData(vendorwithplatforms)
+    setActiveTab('Tab1')
+  }
+
   return (
     <>
       <div className="modal fade" id="myModal" role="dialog">
@@ -533,10 +606,37 @@ const VendorOverview = () => {
         </div>
         }
         {activeTab === 'Tab2' && 
-        <div className="">
-          <p>vendor with 0 pages - </p>
-          <p>vendor with no mobile number - </p>
-          <p>vendor with no email id - </p>
+        <div className="vendor-container">
+          <p className="vendor-heading">Vendor with categories:</p>
+          {Object.entries(categoryCounts).map(([category, count]) => (
+            <div key={category} onClick={() => vendorWithCategories(category)} className="vendor-item">
+              <span>{category}:</span>
+              <span className="vendor-count vendor-bg-orange">{count}</span>
+            </div>
+          ))}
+          <hr />
+          <p onClick={vendorWithNoPages} className="vendor-item">
+            Vendor with 0 pages:
+            <span className="vendor-count vendor-bg-red">{tabFilterData.filter((item) => item.page_count == 0).length}</span>
+          </p>
+          <hr />
+          <p onClick={vendorWithNoMobileNum} className="vendor-item">
+            Vendor with no mobile number:
+            <span className="vendor-count vendor-bg-blue">{tabFilterData.filter((item) => item.mobile == 0).length}</span>
+          </p>
+          <hr />
+          <p onClick={vendorWithNoEmail} className="vendor-item">
+            Vendor with no email id:
+            <span className="vendor-count vendor-bg-green">{tabFilterData.filter((item) => item.email == '').length}</span>
+          </p>
+          <hr />
+          <p className="vendor-heading">Vendor with platforms:</p>
+          {platformCounts.map((item, index) => (
+            <div key={index} onClick={() => vendorWithPlatforms(item.platform_id)} className="vendor-item">
+              <span>{item.platform_name}:</span>
+              <span className="vendor-count vendor-bg-orange">{item.count}</span>
+            </div>
+          ))}
         </div>
         }
       </div>

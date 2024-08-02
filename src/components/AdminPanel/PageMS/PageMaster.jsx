@@ -226,7 +226,7 @@ const PageMaster = () => {
       setPriceTypeList(platformPriceData);
       setFilterPriceTypeList(platformPriceData);
     } else {
-      console.log("Condition not met. platformPriceData:", platformPriceData);
+      console.log("Condition not met");
     }
   }, [platformPriceData, isPriceLoading]);
 

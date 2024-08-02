@@ -62,10 +62,6 @@ export default function VendorDetailAccordion({ vendorDetails, bankRows }) {
     vendorDetails?._id
   );
   const states = State.getStatesOfCountry("IN"); // Array of state objects
-
-  console.log( states.find((ele) => ele.isoCode == vendorDetails?.home_state)?.name);
-
-
   const { data: paltform } = useGetPmsPlatformQuery();
   const platformData = paltform?.data || [];
 
