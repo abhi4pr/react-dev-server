@@ -51,7 +51,6 @@ export const Template = {
     }
 
     function getLastDateOfMonth(monthName) {
-      console.log("monthNmae",monthName)
       const monthNumber = monthNameToNumber(monthName);
       if (monthNumber === null) {
           return "Invalid month name";

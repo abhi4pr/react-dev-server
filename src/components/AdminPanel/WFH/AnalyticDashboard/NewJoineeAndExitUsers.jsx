@@ -11,7 +11,7 @@ const NewJoineeAndExitUsers = () => {
 
 
 
-  const [OpenBonus , setHandleOpenExitEmp] = useState(false)
+  const [OpenExit , setHandleOpenExitEmp] = useState(false)
   const [allExitUserData , setExitUserData] = useState([])
   const handleOpenExitUser = () =>{
     setHandleOpenExitEmp(true)
@@ -159,7 +159,7 @@ const NewJoineeAndExitUsers = () => {
       </div>
     </div>
     <Modal
-          isOpen={OpenBonus}
+          isOpen={OpenExit}
           onRequestClose={handleCloseExitUser}
           contentLabel="Example Modal"
           appElement={document.getElementById("root")}

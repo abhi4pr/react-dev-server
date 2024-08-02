@@ -4,6 +4,7 @@ import { useGlobalContext } from "../../Context/Context";
 import { baseUrl } from "../../utils/config";
 import { useParams, useNavigate } from "react-router-dom";
 import jwtDecode from "jwt-decode";
+import { FaRegFilePdf } from "react-icons/fa";
 
 const DocumentTab = ({
   documentData,
@@ -281,7 +282,7 @@ const DocumentTab = ({
                         <td style={{ width: "20%" }}>
                           {item.document.doc_name}
                           {item.document.isRequired && (
-                            <span style={{ color: "red" }}> * </span>
+                            <span style={{ color: "red" }}>  </span>
                           )}
                         </td>
                         <td scope="row">{item.document.doc_type}</td>
@@ -291,9 +292,23 @@ const DocumentTab = ({
                           {diffDate < 0 ? "Please Upload Docs" : diffDate}
                         </td> */}
                         <td>
-                          <a href={item?.doc_image_url} target="_blank">
+                          {/* <a href={item?.doc_image_url} target="_blank">
                         <img style={{height:"70px"}} src={item?.doc_image_url} alt="Doc"/>
-                        </a>
+                        </a> */}
+                        {item?.doc_image ? (
+              <a href={item.doc_image_url} target="_blank" download>
+                {item.doc_image_url.endsWith(".pdf") ? (
+                  <FaRegFilePdf style={{ fontSize: "50px" }} />
+                ) : (
+                  <>
+                    <img style={{height:"80px"}} src={item.doc_image_url} alt="doc image" />
+                    <i className="fa-solid fa-eye" />
+                  </>
+                )}
+              </a>
+            ) : (
+              "N/A"
+            )}
                         </td>
                         <td>
                           <div className="uploadDocBtn">

@@ -518,7 +518,8 @@ const Attendence = () => {
                   // data.atdGenerated && "completed"
                 } 
                 ${selectedCardIndex === index ? "selected" : ""} ${
-                  currentMonthForDis === cardMonth && "current"
+                  currentMonthForDis === cardMonth+1 && "current"
+                  // currentMonthForDis === cardMonth && "current"
                 } 
                 ${isFutureCard && "disabled"}`
               //    ${
@@ -538,7 +539,7 @@ const Attendence = () => {
                   <span>
                     <i className="bi bi-check2-circle" />
                   </span>
-                ) : currentMonthNumber - 4 - index < 0 ? (
+                ) : currentMonthNumber - 5 - index < 0 ? (
                   <span>
                     <i className="bi bi-clock-history" />
                   </span>
@@ -554,9 +555,9 @@ const Attendence = () => {
                   : "Pending"} */}
                   {data.deptCount == departmentdata?.length
                   ? "Completed"
-                  : currentMonthNumber - 4 - index < 0
+                  : currentMonthNumber - 5 - index < 0
                   ? "Upcoming"
-                  : "Upcoming"}
+                  : "Pending"}
               </h3>
             </div>)
 })}

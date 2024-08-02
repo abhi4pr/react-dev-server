@@ -1216,15 +1216,24 @@ const SalaryWFH = () => {
             completedYearsMonths?.map((data, index) => {
             const cardMonth = monthToNumber(data.month);
             const isFutureCard = data.year > currentYearForDis || (data.year === currentYearForDis && cardMonth >= currentMonthForDis);
+
+            const getClassName = (data, index, selectedCardIndex) => {
+              if (data.card_status === 1) {
+                return "pending";
+              } else if(data.card_status === 0) {
+                return selectedCardIndex === index ? "selected" : "";
+              }
+            };
             return (
               <div
                 className={`timeline_slideItem 
                   ${
                     data.deptCount == departmentdata?.length && "completed"
-                  // data.atdGenerated && "completed"
                 } 
-                ${selectedCardIndex === index ? "selected" : ""} ${
-                  currentMonthForDis === cardMonth && "current"
+                  ${selectedCardIndex === index ? "selected" : ""}
+                ${getClassName(data, index, selectedCardIndex)}
+               ${
+                  currentMonthForDis === cardMonth+1 && "current"  // this code for current month card select blue card
                 } 
                 ${isFutureCard && "disabled"}`
               }
@@ -1257,7 +1266,7 @@ const SalaryWFH = () => {
                   <span>
                     <i className="bi bi-check2-circle" />
                   </span>
-                ) : currentMonthNumber - 4 - index < 0 ? (
+                ) : currentMonthNumber - 5 - index < 0 ? (
                   <span>
                     <i className="bi bi-clock-history" />
                   </span>
@@ -1268,9 +1277,9 @@ const SalaryWFH = () => {
                 )}
                 {data.deptCount == departmentdata?.length
                   ? "Completed"
-                  : currentMonthNumber - 4 - index < 0
+                  : currentMonthNumber - 5 - index < 0
                   ? "Upcoming"
-                  : "Upcoming"}
+                  : "Pending"}
                 {/* {data.atdGenerated == 1
                   ? "Completed"
                   : currentMonthNumber - 4 - index < 0
@@ -1533,10 +1542,10 @@ const SalaryWFH = () => {
                       <span>Total Bonus</span>
                       {card2Data?.totalBonus}
                     </li>
-                    <li className="bold">
+                    {/* <li className="bold">
                       <span >Total Payout :</span>
                       {card2Data?.totalToPay}
-                    </li>
+                    </li> */}
                     
                     {/* <li>
                       <span>Total Deductions</span>
