@@ -5,68 +5,36 @@ import { baseUrl } from "../../../../utils/config";
 
 function UserCountWithLPA() {
   const [graphData, setGraphData] = useState([]);
-  const [viewOption, setViewOption] = useState("male");
   const [state, setState] = useState({
-    series: [
-      {
-        name: "Count",
-        data: [],
-      },
-    ],
+    series: [], // Donut chart series is an array of values
     options: {
       chart: {
-        type: 'bar',
+        type: 'donut',
         height: 350,
-        stacked: true,
-        toolbar: {
-          show: true
-        },
-        zoom: {
-          enabled: true
-        }
       },
       responsive: [{
         breakpoint: 480,
         options: {
+          chart: {
+            width: 300
+          },
           legend: {
-            position: 'bottom',
-            offsetX: -10,
-            offsetY: 0
+            position: 'bottom'
           }
         }
       }],
-      plotOptions: {
-        bar: {
-          horizontal: false,
-          borderRadius: 10,
-          borderRadiusApplication: 'end',
-          borderRadiusWhenStacked: 'last',
-          dataLabels: {
-            total: {
-              enabled: false,
-              style: {
-                fontSize: '13px',
-                fontWeight: 900
-              }
-            }
-          },
-            columnWidth: '60px'
-        },
-    },
-    dataLabels: {
-        enabled: false  // Disable all data labels
-      },
-    xaxis: {
-        type: "category",
-        categories: [],
-      },
+      labels: [], // Labels for the donut chart
       legend: {
         position: 'right',
         offsetY: 40
       },
-      fill: {
-        opacity: 1
-      }
+      plotOptions: {
+        pie: {
+          donut: {
+            size: '70%'
+          }
+        }
+      },
     },
   });
 
@@ -85,74 +53,46 @@ function UserCountWithLPA() {
   }, []);
 
   const createSeriesData = (data) => {
-    const categories = [];
+    const labels = [];
     const seriesData = [];
 
     data.forEach(item => {
       const range = Object.keys(item)[0];
       const count = Object.values(item)[0];
-      categories.push(range);
+      labels.push(range);
       seriesData.push(count);
     });
 
     const apexobj = {
-      series: [
-        {
-          name: "Count",
-          data: seriesData,
-        },
-      ],
+      series: seriesData, // Update the series data
       options: {
         chart: {
-          type: 'bar',
+          type: 'donut',
           height: 350,
-          stacked: true,
-          toolbar: {
-            show: true
-          },
-          zoom: {
-            enabled: true
-          }
         },
-        colors: ['#85D5CA'],
+        labels: labels, // Update the labels
         responsive: [{
           breakpoint: 480,
           options: {
+            chart: {
+              width: 300
+            },
             legend: {
-              position: 'bottom',
-              offsetX: -10,
-              offsetY: 0
+              position: 'bottom'
             }
           }
         }],
-        plotOptions: {
-          bar: {
-            horizontal: false,
-            borderRadius: 10,
-            borderRadiusApplication: 'end',
-            borderRadiusWhenStacked: 'last',
-            dataLabels: {
-              total: {
-                enabled: true,
-                style: {
-                  fontSize: '13px',
-                  fontWeight: 900
-                }
-              }
-            }
-          },
-        },
-        xaxis: {
-          type: "category",
-          categories: categories,
-        },
         legend: {
           position: 'right',
           offsetY: 40
         },
-        fill: {
-          opacity: 1
-        }
+        plotOptions: {
+          pie: {
+            donut: {
+              size: '68%'
+            }
+          }
+        },
       },
     };
     return apexobj;
@@ -175,8 +115,8 @@ function UserCountWithLPA() {
                 <ReactApexChart
                   options={state.options}
                   series={state.series}
-                  type="bar"
-                  height={250}
+                  type="donut"
+                  height={260}
                 />
               </div>
             )}

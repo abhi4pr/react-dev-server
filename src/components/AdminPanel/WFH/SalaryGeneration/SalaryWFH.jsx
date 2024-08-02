@@ -582,7 +582,6 @@ const SalaryWFH = () => {
       setFilterData(response.filter((option) => option.sendToFinance == 0));
       setData(response);
       setPendingFinanceCount(response.filter((d)=>d.attendence_status_flow === "Pending From Finance").length)
-      console.log(response.filter((d)=>d) , 'just imagein')
     } catch (error) {
       console.error("Error submitting data:", error);
     }

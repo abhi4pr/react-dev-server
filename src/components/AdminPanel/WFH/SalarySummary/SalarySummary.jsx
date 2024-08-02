@@ -369,12 +369,14 @@ const SalarySummary = () => {
             }}
           />
         </div>
+        <div className="col-2 mt-4">
+        <button className="btn btn-primary" onClick={handleOpenBonus}>Bonus Users List</button>
+        </div>
         
       </div>
       
       <div className="master-card-css">
         <FormContainer mainTitle="Salary Summary" link={"/admin/"} />
-        <button className="btn btn-info" onClick={handleOpenBonus}>Bonus</button>
         <div className="card">
           <div className="card-header sb">
             {/* <h5>Total Salary Summary</h5> */}

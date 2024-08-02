@@ -13,7 +13,7 @@ const NewDocumentCom = () => {
 
   async function getDocuments() {
     try {
-      const response = await axios.post(baseUrl + "get_user_doc", {
+      const response = await axios.post(baseUrl + "get_wfhd_user_doc", {
         user_id: id,
       });
       setDocumentData(response.data.data);

@@ -37,6 +37,7 @@ const [documentData, setDocumentData] = useState([]);
 
   const tab1 = <WFHDRegister userUpdateID={id} />;
   const tab2 = 
+  <div className="table-wrap-user">
         <DocumentTab
           documentData={documentData}
           setDocumentData={setDocumentData}
@@ -44,7 +45,7 @@ const [documentData, setDocumentData] = useState([]);
           submitButton={false}
           normalUserLayout={true}
         />
-
+</div>
 
   return (
     <>

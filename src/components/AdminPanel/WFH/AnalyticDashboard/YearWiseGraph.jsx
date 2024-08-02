@@ -149,7 +149,10 @@ useEffect(() => {
         },
         fill: {
           opacity: 1
-        }
+        },
+        grid: {
+          show: false // Remove horizontal lines
+        },
       },
     };
     return apexobj;

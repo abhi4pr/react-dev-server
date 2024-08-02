@@ -26,7 +26,6 @@ const AnalyticDashboard = () => {
   const allExitUserDatas = () =>{
     axios.get(baseUrl+`get_all_history_data`).then((res)=>{
      setExitUserData(res.data.data)
-      console.log(res.data.data ,'good')
     })
    
  }
