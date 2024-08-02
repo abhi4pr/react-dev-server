@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import WFHDUsersGrapf from "./WFHDUsersGraph";
 import UserCountInCards from "./UserCountInCards";
 import SalaryDetailsInLineChart from "./SalaryDetailsInLineChart";
@@ -8,8 +8,91 @@ import UserCountWithLPA from "./UserCountWithLPA";
 import AgeGraf from "./AgeGraf";
 import YearWiseGraph from "./YearWiseGraph";
 import { Link } from "react-router-dom";
+import Modal from "react-modal";
+import { DataGrid,GridToolbar } from "@mui/x-data-grid";
+import axios from "axios";
+import { baseUrl } from "../../../../utils/config";
 
 const AnalyticDashboard = () => {
+
+  const [OpenBonus , setHandleOpenExitEmp] = useState(false)
+  const [allExitUserData , setExitUserData] = useState([])
+  const handleOpenExitUser = () =>{
+    setHandleOpenExitEmp(true)
+  }
+  const handleCloseExitUser = () =>{
+    setHandleOpenExitEmp(false)
+  }
+  const allExitUserDatas = () =>{
+    axios.get(baseUrl+`get_all_history_data`).then((res)=>{
+     setExitUserData(res.data.data)
+      console.log(res.data.data ,'good')
+    })
+   
+ }
+ useEffect(()=>{
+ allExitUserDatas()
+ },[])
+
+ const formatDate = (dateString) => {
+  const date = new Date(dateString);
+  const day = String(date.getDate()).padStart(2, '0');
+  const month = String(date.getMonth() + 1).padStart(2, '0'); 
+  const year = date.getFullYear();
+
+  return `${day}-${month}-${year}`;
+};
+    // MODAL 
+    const ExitUserColumns = [
+      {
+        field: "S.NO",
+        headerName: "S.NO",
+        width: 120,
+        renderCell: (params) => {
+          const rowIndex = allExitUserData.indexOf(params.row);
+          return <div>{rowIndex + 1}</div>;
+        },
+      },  
+      {
+        field: "user_name",
+        headerName: "User Name",
+        width: 150,
+      },
+      {
+        field: "department_name",
+        headerName: "Department Name",
+        width: 150,
+      },
+      {
+        field: "designation_name",
+        headerName: "Designation Name",
+        width: 180,
+      },
+      {
+        field:"user_email_id",
+        headerName: "Email",
+        width: 180,
+      },
+      {
+        field:"job_type",
+        headerName: "Job Type",
+        width: 100,
+      },
+      {
+        field: "DOB",
+        headerName: "DOB",
+        width: 150,
+        valueGetter: (params) => {
+          return formatDate(params.value);
+        },
+      },
+      {
+        field:"salary",
+        headerName: "Salary",
+        width: 120,
+      },
+      
+    ]
   return (
     <>
       <div className="d-flex" style={{ justifyContent: "space-between" }}>
@@ -18,17 +101,17 @@ const AnalyticDashboard = () => {
         </div>
         <div className="">
           <Link to="/admin/wfhd-register">
-            <button type="button" className="btn btn-outline-info btn-sm mr-2">
+            <button type="button" className="btn btn-outline-primary btn-sm mr-2">
               Add Buddy
             </button>
           </Link>
           <Link to="/admin/wfhd-overview">
-            <button type="button" className="btn btn-outline-info btn-sm">
+            <button type="button" className="btn btn-outline-primary btn-sm">
               My Team
             </button>
           </Link>
           <Link to="/admin/attendence-mast">
-            <button type="button" className="btn btn-outline-info btn-sm ml-2">
+            <button type="button" className="btn btn-outline-primary btn-sm ml-2">
             Create Attendance
             </button>
           </Link>
@@ -37,6 +120,9 @@ const AnalyticDashboard = () => {
               Payout Summary
             </button>
           </Link>
+          <button onClick={handleOpenExitUser} type="button" className="btn btn-outline-danger btn-sm ml-2">
+              History
+            </button>
         </div>
       </div>
       <UserCountInCards />
@@ -65,6 +151,44 @@ const AnalyticDashboard = () => {
           <YearWiseGraph />
         </div>
       </div>
+
+
+
+      {/* History MOdal  */}
+      <Modal
+          isOpen={OpenBonus}
+          onRequestClose={handleCloseExitUser}
+          contentLabel="Example Modal"
+          appElement={document.getElementById("root")}
+          style={{
+            content: {
+              width: "60%",
+              height: "80%",
+              top: "50%",
+              left: "50%",
+              right: "auto",
+              bottom: "auto",
+              marginRight: "-50%",
+              transform: "translate(-50%, -50%)",
+             
+            },
+          }}
+        >
+          <button
+            className="btn btn-danger mb-3 float-right"
+            onClick={handleCloseExitUser}
+          >
+            x
+          </button>
+          <DataGrid
+          rows={allExitUserData}
+          columns={ExitUserColumns}
+          getRowId={(row)=>row?.user_id}
+          slots={{
+            toolbar: GridToolbar
+          }}
+          />
+        </Modal>
       
     </>
   );

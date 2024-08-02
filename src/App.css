@@ -1155,6 +1155,9 @@ label.checkbox-inline.propscss {
 .timeline_slideItem.completed {
   border-color: var(--success);
 }
+.timeline_slideItem.warning {
+  border-color: var(--warning);
+}
 
 .timeline_slideItem.completed h2,
 .timeline_slideItem.completed h3 {
@@ -1164,6 +1167,15 @@ label.checkbox-inline.propscss {
 .timeline_slideItem.selected {
   border-color: var(--success);
   background-color: var(--success);
+}
+.timeline_slideItem.pending {
+  border-color: var(--warning);
+  background-color: var(--warning);
+}
+
+.timeline_slideItem.pending h2,
+.timeline_slideItem.pending h3 {
+  color: var(--white);
 }
 
 .timeline_slideItem.selected h2,
