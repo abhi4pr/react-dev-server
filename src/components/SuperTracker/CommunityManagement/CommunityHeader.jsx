@@ -22,44 +22,63 @@ function CommunityHeader({
   pagecategory,
   rowSelectionModel,
   projectxpages,
-  reload,setReload,
-  reloadpagecategory,setReloadpagecategory
+  reload,
+  setReload,
+  reloadpagecategory,
+  setReloadpagecategory,
 }) {
   const [teamCreated, setTeamCreated] = useState({ totalCor: 0, teamCount: 0 });
   const [selectedCategory, setSelectedCategory] = useState(null);
+  const [filteredPageCategory, setFilteredPageCategory] = useState(null);
 
   useEffect(() => {
-    const result = processRecords(allRows);
-    setTeamCreated(result);
-    // console.log("resultt",result?.totalPaidPost);
+    if (allRows.length > 0) {
+      const result = processRecords(allRows);
+      setTeamCreated(result);
+      setFilteredPageCategory(result?.categoryCounts);
+      console.log("resultt", result?.categoryCounts);
+    }
   }, [allRows]);
 
   const processRecords = (rows) => {
     let totalCor = 0;
     let teamCount = 0;
     let totalPaidPost = 0;
+    let categoryCounts = {};
+
     rows.forEach((record) => {
+      // Calculate total cost of running (totalCor)
       if (record.teamInfo?.team?.cost_of_running) {
         totalCor += record.teamInfo.team.cost_of_running;
 
+        // Increment team count if there is a team count greater than 0
         if (record.teamInfo.team.team_count > 0) {
           teamCount++;
         }
       }
-      if (record.paidPosts?.count > 0) {
-        totalPaidPost += record.paidPosts?.count;
 
-        
+      // Calculate total paid posts (totalPaidPost)
+      if (record.paidPosts?.count > 0) {
+        totalPaidPost += record.paidPosts.count;
+      }
+
+      // Group by category ID and count the records
+      const categoryId = record.projectxRecord?.pageCategoryId;
+      if (categoryId) {
+        if (!categoryCounts[categoryId]) {
+          categoryCounts[categoryId] = 0;
+        }
+        categoryCounts[categoryId]++;
       }
     });
 
     return {
       totalCor: totalCor,
       teamCount: teamCount,
-      totalPaidPost :totalPaidPost 
+      totalPaidPost: totalPaidPost,
+      categoryCounts: categoryCounts,
     };
   };
-
 
   const handleAllTeam = () => {
     setRows(allRows);
@@ -81,24 +100,33 @@ function CommunityHeader({
   const handleCategoryChange = (event, value) => {
     // Find the category object based on the selected category name
     const selectedCategoryObject = pagecategory.find(
-      (category) => category.category_name === value
+      (category) =>
+        `${category.category_name} - (${
+          filteredPageCategory[category.category_id] || 0
+        })` === value
     );
+
     if (selectedCategoryObject) {
       const filteredRows = allRows.filter(
         (record) =>
-          record.reportStatus.previousDay.pageCategoryId ==
-          selectedCategoryObject?.category_id
+          record.projectxRecord?.pageCategoryId ===
+          selectedCategoryObject.category_id
       );
-      if (rowSelectionModel.length == 0) {
+
+      // Only set filtered rows if rowSelectionModel is empty
+      if (rowSelectionModel.length === 0) {
         setRows(filteredRows);
       }
+
       setSelectedCategory(selectedCategoryObject);
     }
-    if (value === null || value === "") {
+
+    // Clear category filter if the value is null or empty
+    if (!value) {
       handleCategoryClear();
     }
-    // console.log(value, selectedCategoryObject, "selectedCategoryObject");
   };
+
   const handleCategoryClear = () => {
     setSelectedCategory(null);
     setRows(allRows);
@@ -108,8 +136,7 @@ function CommunityHeader({
     if (selectedCategory == null) {
       alert("Please select category first");
     }
-    // console.log(projectxpages, "projectxpages", selectedCategory);
-    // return;
+
     // Assuming rowSelectionModel contains the selected page names
     const selectedPageNames = rowSelectionModel; // Replace with your actual rowSelectionModel array
 
@@ -117,7 +144,7 @@ function CommunityHeader({
     const pagesToUpdate = projectxpages.filter((page) =>
       selectedPageNames.includes(page.page_name)
     );
-    // console.log(pagesToUpdate, "pagesToUpdate");
+
     // Loop through the filtered pages and make API calls to update them
     for (const page of pagesToUpdate) {
       try {
@@ -128,30 +155,37 @@ function CommunityHeader({
             page_category_id: selectedCategory.category_id,
           }
         );
-
-        // console.log(
-        //   `Updated page ${page.page_name} successfully`,
-        //   response.data
-        // );
       } catch (error) {
         console.error(`Failed to update page ${page.page_name}`, error);
-        alert("There is some error while updating category")
+        alert("There is some error while updating category");
       }
     }
     setReload(!reload);
-    alert("Please check the update Category")
+    alert("Please check the update Category");
   };
+
+  const options =
+    rowSelectionModel.length === 0
+      ? Object.entries(filteredPageCategory || {})
+          .map(([key, count]) => {
+            const category = pagecategory.find(
+              (pc) => pc.category_id === parseInt(key)
+            );
+            return category ? `${category.category_name} - (${count})` : null;
+          })
+          .filter((name) => name !== null)
+      : pagecategory.map((ele) => ele.category_name);
 
   return (
     <Stack direction="row" justifyContent="space-evenly" sx={{ mt: 2 }}>
       <Badge badgeContent={allRows.length} color="secondary">
         <Button onClick={handleAllTeam} variant="outlined">
-          All Team{" "}
+          All 
         </Button>
       </Badge>
       <Badge badgeContent={teamCreated?.teamCount} color="success">
         <Button onClick={handleCreatedTeam} variant="outlined">
-          Team Created
+           Created
         </Button>
       </Badge>
       <Badge
@@ -159,13 +193,14 @@ function CommunityHeader({
         color="error"
       >
         <Button onClick={handlePendingTeam} variant="outlined">
-          Team Pending
+           Pending
         </Button>
       </Badge>
       <Autocomplete
         disablePortal
         id="combo-box-demo"
-        options={pagecategory.map((ele) => ele.category_name)}
+        options={options}
+        // options={pagecategory.map((ele) => ele.category_name)}
         sx={{ width: 200 }}
         // onClear={handleCategoryClear}
         onInputChange={handleCategoryChange}
@@ -173,25 +208,28 @@ function CommunityHeader({
           <TextField size="small" {...params} label="Category" />
         )}
       />
-       {/* <Button  variant="outlined">
-        +
-        </Button> */}
-        <AddProjectxpageCategory
+
+      <AddProjectxpageCategory
         setReloadpagecategory={setReloadpagecategory}
         reloadpagecategory={reloadpagecategory}
-       />
+      />
       {teamCreated?.totalCor > 0 && (
-        <Chip sx={{mt:1}} label={`COR : ${formatNumber(teamCreated?.totalCor)}`} />
+        <Chip
+          sx={{ mt: 1 }}
+          label={`COR : ${formatNumber(teamCreated?.totalCor)}`}
+        />
       )}
       {teamCreated?.totalPaidPost > 0 && (
-        <Chip sx={{mt:1}} label={`Paid-Post : ${formatNumber(teamCreated?.totalPaidPost)}`} />
+        <Chip
+          sx={{ mt: 1 }}
+          label={`Paid-Post : ${formatNumber(teamCreated?.totalPaidPost)}`}
+        />
       )}
       {rowSelectionModel.length > 0 && (
         <Button onClick={handleUpdateCategory} variant="outlined">
           Update-Category
         </Button>
       )}
-     
     </Stack>
   );
 }

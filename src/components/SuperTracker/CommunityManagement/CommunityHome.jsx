@@ -8,6 +8,7 @@ import {
   Skeleton,
   Stack,
   Tab,
+  TextField,
 } from "@mui/material";
 import {
   DataGrid,
@@ -15,10 +16,11 @@ import {
   GridToolbarColumnsButton,
   GridToolbarDensitySelector,
   GridToolbarFilterButton,
+  GridToolbarExport,
 } from "@mui/x-data-grid";
 import clsx from "clsx";
 import { useState, useEffect, useContext, useCallback } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 // import LogoLoader from "../../InstaApi.jsx/LogoLoader";
 import CommunityTeamCreation from "./CommunityTeamCreation";
@@ -130,6 +132,8 @@ function CustomToolbar({
       <GridToolbarColumnsButton />
       <GridToolbarDensitySelector />
       <GridToolbarFilterButton ref={setFilterButtonEl} />
+      <GridToolbarExport />
+
       <Button variant="contained" onClick={handleTeam}>
         Create Team
       </Button>
@@ -141,6 +145,7 @@ function CustomToolbar({
 }
 
 function CommunityHome() {
+  const navigate = useNavigate();
   const { userContextData } = useContext(ApiContextData);
   const [filterButtonEl, setFilterButtonEl] = useState(null);
   const [rowSelectionModel, setRowSelectionModel] = useState([]);
@@ -165,7 +170,6 @@ function CommunityHome() {
   const [teamDetail, setTeamDetail] = useState(null);
   const [reportView, setReportView] = useState(false);
   const minSelectableDate = dayjs("2023-11-01");
-
   const fetchRows = async () => {
     try {
       const res = await axios.post(
@@ -271,16 +275,18 @@ function CommunityHome() {
       },
     },
     {
-      field: "reportStatus.previousDay.pageCategoryId",
+      field: "projectxRecord?.pageCategoryId",
       headerName: "Category",
       width: 220,
       valueGetter: (params) =>
-        params.row?.projectxRecord?.pageCategoryId || 0,
+        pagecategory.find(
+          (category) =>
+            category.category_id === params.row.projectxRecord?.pageCategoryId
+        )?.category_name,
       renderCell: (params) => {
         const CategoryName = pagecategory.find(
           (category) =>
-            category.category_id ===
-            params.row.projectxRecord?.pageCategoryId
+            category.category_id === params.row.projectxRecord?.pageCategoryId
         );
         return CategoryName?.category_name;
       },
@@ -296,6 +302,17 @@ function CommunityHome() {
         )?.user_name || "N/A",
     },
     {
+      field: "Date ",
+      headerName: "Date",
+      width: 200,
+      valueGetter: (params) => params.row.projectxRecord?.created_at,
+      renderCell: (params) => {
+        return new Date(params.row.projectxRecord?.created_at)
+          .toLocaleDateString("en-GB", { timeZone: "IST" })
+          .replace(/(\d+)\/(\d+)\/(\d+)/, "$3/$2/$1");
+      },
+    },
+    {
       field: "teamtype",
       headerName: "Page Type",
       width: 200,
@@ -305,8 +322,8 @@ function CommunityHome() {
           params.row.teamInfo?.team?.team_count > 1
             ? "Team"
             : params.row.teamInfo?.team?.team_count == 1
-            ? "Individual"
-            : "Team Not Created";
+              ? "Individual"
+              : "Team Not Created";
         return pageType;
       },
     },
@@ -322,7 +339,6 @@ function CommunityHome() {
       width: 100,
       valueGetter: (params) => params.row.teamInfo?.team?.cost_of_running || 0,
     },
-    // { field: "postcount", headerName: "StorePost", width: 100 },
     {
       field: "followersCount",
       headerName: "Follower",
@@ -355,36 +371,36 @@ function CommunityHome() {
         return formatNumber(mediaCount);
       },
     },
-    {
-      field: "nonPaidPosts.allLikes",
-      headerName: "Np-Likes",
-      width: 100,
-      valueGetter: (params) => params.row.nonPaidPosts?.allLikes || 0,
-      renderCell: (params) => {
-        const nonpaidlikes = params.row.nonPaidPosts?.allLikes || 0;
-        return formatNumber(nonpaidlikes);
-      },
-    },
-    {
-      field: "allViews",
-      headerName: "Np-Views",
-      width: 100,
-      valueGetter: (params) => params.row.nonPaidPosts?.allViews || 0,
-      renderCell: (params) => {
-        const npViews = params.row.nonPaidPosts?.allViews || 0;
-        return formatNumber(npViews);
-      },
-    },
-    {
-      field: "allComments",
-      headerName: "Np-Comments",
-      width: 100,
-      valueGetter: (params) => params.row.nonPaidPosts?.allComments || 0,
-      renderCell: (params) => {
-        const allComments = params.row.nonPaidPosts?.allComments || 0;
-        return formatNumber(allComments);
-      },
-    },
+    // {
+    //   field: "nonPaidPosts.allLikes",
+    //   headerName: "Np-Likes",
+    //   width: 100,
+    //   valueGetter: (params) => params.row.nonPaidPosts?.allLikes || 0,
+    //   renderCell: (params) => {
+    //     const nonpaidlikes = params.row.nonPaidPosts?.allLikes || 0;
+    //     return formatNumber(nonpaidlikes);
+    //   },
+    // },
+    // {
+    //   field: "allViews",
+    //   headerName: "Np-Views",
+    //   width: 100,
+    //   valueGetter: (params) => params.row.nonPaidPosts?.allViews || 0,
+    //   renderCell: (params) => {
+    //     const npViews = params.row.nonPaidPosts?.allViews || 0;
+    //     return formatNumber(npViews);
+    //   },
+    // },
+    // {
+    //   field: "allComments",
+    //   headerName: "Np-Comments",
+    //   width: 100,
+    //   valueGetter: (params) => params.row.nonPaidPosts?.allComments || 0,
+    //   renderCell: (params) => {
+    //     const allComments = params.row.nonPaidPosts?.allComments || 0;
+    //     return formatNumber(allComments);
+    //   },
+    // },
     {
       field: "yesterdaypost",
       headerName: "YesterDay-Post-Count",
@@ -404,7 +420,7 @@ function CommunityHome() {
         return (
           <div
             style={{
-              color : growth > 0 ? "green" : growth < 0 ? "red" : "black",
+              color: growth > 0 ? "green" : growth < 0 ? "red" : "black",
             }}
           >
             {growth}
@@ -419,7 +435,8 @@ function CommunityHome() {
       // valueGetter: (params) => params.row.creatorInfo?.followersCount || 0,
       renderCell: (params) => {
         const instagramfollowerCount =
-          params.row?.reportStatus?.startDate?.followersCount - params.row?.reportStatus?.endDate?.followersCount;
+          params.row?.reportStatus?.endDate?.followersCount -
+          params.row?.reportStatus?.startDate?.followersCount;
         return formatNumber(instagramfollowerCount);
       },
     },
@@ -430,21 +447,30 @@ function CommunityHome() {
       // valueGetter: (params) => params.row.creatorInfo?.followersCount || 0,
       renderCell: (params) => {
         const instagramfollowerCount =
-          params.row?.reportStatus?.startDate?.followersCount || 0 ;
-        return (instagramfollowerCount);
+          params.row?.reportStatus?.startDate?.followersCount || 0;
+        return instagramfollowerCount;
       },
     },
     {
       field: "followerEnddate",
       headerName: "EndDate-Follower",
-      width: 100,
+      width: 130,
       // valueGetter: (params) => params.row.creatorInfo?.followersCount || 0,
       renderCell: (params) => {
         const instagramfollowerCount =
-          params.row?.reportStatus?.endDate?.followersCount || 0 ;
-        return (instagramfollowerCount);
+          params.row?.reportStatus?.endDate?.followersCount || 0;
+        return instagramfollowerCount;
       },
     },
+    {
+      field: 'Image', headerName: 'Image ', width: 110, valueGetter: (params) => params.row.postTypes[0]?.count ? params.row.postTypes[0]?.count : "-" ,
+  },
+  {
+      field: 'Carousel', headerName: 'Carousel ', width: 110, valueGetter: (params) => params.row.postTypes[1]?.count ? params.row.postTypes[1]?.count : "-",
+  },
+  {
+      field: 'Reel', headerName: 'Reel ', width: 110, valueGetter: (params) => params.row.postTypes[2]?.count ? params.row.postTypes[2]?.count : "-",
+  },
   ];
 
   const handleOverViewChange = (event, newValue) => {
@@ -510,10 +536,13 @@ function CommunityHome() {
     <div className="workWrapper">
       {allRows.length > 0 ? (
         <>
-        <ButtonGroup variant="text" aria-label="Basic button group">
-            <Button onClick={()=>setReportView(false)}>OverView</Button>
-            <Button onClick={()=>setReportView(true)} >Report</Button>
-          
+          <ButtonGroup variant="outlined" sx={{ mb: 1 }} aria-label="Basic button group">
+            <Button onClick={() => setReportView(false)}> Pages </Button>
+            <Button onClick={() => setReportView(true)}>Overview</Button>
+            <Button onClick={() => navigate("/admin/instaapi/community/user")}>
+              {" "}
+              Users
+            </Button>
           </ButtonGroup>
           {!reportView ? (
             <div className="card">
@@ -596,7 +625,7 @@ function CommunityHome() {
                   // columns={CommunityHomeColumn}
                   getRowId={(row) => row.creatorName}
                   initialState={{
-                    pagination: { paginationModel: { pageSize: 10 } },
+                    pagination: { paginationModel: { pageSize: 100 } },
                   }}
                   slots={{ toolbar: CustomToolbar }}
                   slotProps={{
@@ -625,7 +654,13 @@ function CommunityHome() {
               </div>
             </div>
           ) : (
-            <CommunityReport/>
+            <CommunityReport
+              rows={rows}
+              pagecategory={pagecategory}
+              allRows={allRows}
+              setRows={setRows}
+              setReportView={setReportView}
+            />
           )}
         </>
       ) : (

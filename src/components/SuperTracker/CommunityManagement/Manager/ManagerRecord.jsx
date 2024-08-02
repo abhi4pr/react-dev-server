@@ -1,24 +1,12 @@
-import { Avatar, Badge, Button, Skeleton, Stack } from "@mui/material";
-import {
-  GridToolbarColumnsButton,
-  GridToolbarDensitySelector,
-  GridToolbarExport,
-  GridToolbarFilterButton,
-} from "@mui/x-data-grid";
-import { DataGrid, GridToolbarContainer } from "@mui/x-data-grid";
+import { Avatar, Skeleton } from "@mui/material";
+import { DataGrid } from "@mui/x-data-grid";
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
-import * as XLSX from "xlsx";
 import jwtDecode from "jwt-decode";
-// import BrandTableSkeleton from "../../InstaApi.jsx/Analytics/Brand/Skeleton/BrandTableSkeleton";
-import formatString from "../../../utils/formatString";
-import ManagerRecord from "./Manager/ManagerRecord";
+import formatString from "../../../../utils/formatString";
 
-function CommunityManagerPage() {
-  const [filterButtonEl, setFilterButtonEl] = useState(null);
-  const [rowSelectionModel, setRowSelectionModel] = useState([]);
-  const [isLoading, setLoading] = useState(true);
+function ManagerRecord() {
   const [rows, setRows] = useState([]);
   const [pageNames, setPageNames] = useState([]);
   const storedToken = sessionStorage.getItem("token");
@@ -26,15 +14,15 @@ function CommunityManagerPage() {
   const userID = decodedToken.id;
 
   useEffect(() => {
-    // Fetch data from the second API to get the page names
     axios
       .get(
-        `https://insights.ist:8080/api/v1/community/community_user_records_by_id/${873}`
+        `https://insights.ist:8080/api/v1/community/community_user_records_by_manager/${873}`
       )
       .then((res) => {
         if (res.status === 200) {
           const names = res.data.data.map((record) => record.page_name);
           setPageNames(names);
+          console.log(names);
         }
       })
       .catch((error) => {
@@ -44,7 +32,6 @@ function CommunityManagerPage() {
 
   useEffect(() => {
     if (pageNames.length > 0) {
-      // Fetch data from the first API only after getting the page names
       axios
         .post(
           "https://insights.ist:8080/api/v1/community/super_tracker_post_analytics"
@@ -54,7 +41,6 @@ function CommunityManagerPage() {
             const filteredData = res.data.data.filter((row) =>
               pageNames.includes(row._id)
             );
-            // console.log("Filtered Data:", filteredData);
             setRows(filteredData);
           }
         })
@@ -160,7 +146,6 @@ function CommunityManagerPage() {
 
   return (
     <div>
-      <ManagerRecord />
       {rows.length > 0 ? (
         <DataGrid
           rows={rows}
@@ -182,4 +167,4 @@ function CommunityManagerPage() {
   );
 }
 
-export default CommunityManagerPage;
+export default ManagerRecord;

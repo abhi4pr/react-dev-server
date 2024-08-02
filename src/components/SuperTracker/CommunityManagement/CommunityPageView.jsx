@@ -33,6 +33,7 @@ import PageDateWiseStatus from "../../PageProfile/PageDateWiseStatus";
 import PostGrid from "../../PageProfile/PostGrid";
 import CommunityManagerPostTabs from "./CommunityManagerPostTabs";
 import TableSkeleton from "../../CommonTool/TableSkeleton";
+import MultipleWhatsappLinks from "./MultipleWhatsappLinks";
 
 const data = [
   { name: "Post 1", Engagements: 400 },
@@ -238,8 +239,7 @@ const CommunityPageView = () => {
             creatorDetail={creatorDetail}
             setCreatorDetail={setCreatorDetail}
           />
-        
-
+        <MultipleWhatsappLinks/>
           <div className="card">
             <div className="card-header ">
               <Stack className="w-100"
