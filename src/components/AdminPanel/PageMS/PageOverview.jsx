@@ -75,6 +75,13 @@ const PageOverview = () => {
   const [pageStatus, setPageStatus] = useState([]);
   const [tabFilterData, setTabFilterData] = useState([])
   const [topVendorData, setTopVendorData] = useState([])
+  const [data, setData] = useState({
+    lessThan1Lac: [],
+    between1And10Lac: [],
+    between10And20Lac: [],
+    between20And30Lac: [],
+    moreThan30Lac: []
+  });
   // const [pieChart, setPieChart] = useState({
   //   series: [40, 60],
   //   options: {
@@ -1514,27 +1521,38 @@ const PageOverview = () => {
     setActiveTab('Tab1')
   }
 
-    let lessThan1Lac = 0;
-    let between1And10Lac = 0;
-    let between10And20Lac = 0;
-    let between20And30Lac = 0;
-    let moreThan30Lac = 0;
+  useEffect(() => {
+    let newData = {
+        lessThan1Lac: [],
+        between1And10Lac: [],
+        between10And20Lac: [],
+        between20And30Lac: [],
+        moreThan30Lac: []
+    };
 
     for (let i = 0; i < tabFilterData.length; i++) {
-        const followersCount = tabFilterData[i].followers_count;
+        const item = tabFilterData[i];
+        const followersCount = item.followers_count;
 
         if (followersCount < 100000) {
-            lessThan1Lac++;
+            newData.lessThan1Lac.push(item);
         } else if (followersCount >= 100000 && followersCount < 1000000) {
-            between1And10Lac++;
+            newData.between1And10Lac.push(item);
         } else if (followersCount >= 1000000 && followersCount < 2000000) {
-            between10And20Lac++;
+            newData.between10And20Lac.push(item);
         } else if (followersCount >= 2000000 && followersCount < 3000000) {
-            between20And30Lac++;
+            newData.between20And30Lac.push(item);
         } else if (followersCount >= 3000000) {
-            moreThan30Lac++;
+            newData.moreThan30Lac.push(item);
         }
     }
+    setData(newData);
+  }, [tabFilterData]);
+
+  const showData = (dataArray) => {
+    setActiveTab('Tab1')
+    setFilterData(dataArray)
+  };
 
   const closedByCounts = tabFilterData.reduce((acc, item) => {
     acc[item.page_closed_by] = (acc[item.page_closed_by] || 0) + 1;
@@ -2024,12 +2042,14 @@ const PageOverview = () => {
           ))}
           <hr />
           <p className="vendor-heading">Page with Followers Count:</p>
-            <p>Less than 1 Lac: <span className="vendor-count vendor-bg-orange">{lessThan1Lac}</span></p>
-            <p>1-10 Lacs: <span className="vendor-count vendor-bg-orange">{between1And10Lac}</span></p>
-            <p>10-20 Lacs: <span className="vendor-count vendor-bg-orange">{between10And20Lac}</span></p>
-            <p>20-30 Lacs: <span className="vendor-count vendor-bg-orange">{between20And30Lac}</span></p>
-            <p>More than 30 Lacs: <span className="vendor-count vendor-bg-orange">{moreThan30Lac}</span></p>
-          <hr />
+          <div className="vendor-item">
+            <p onClick={() => showData(data.lessThan1Lac)}>Less than 1 Lac: <span className="vendor-count vendor-bg-orange">{data.lessThan1Lac.length}</span></p>
+            <p onClick={() => showData(data.between1And10Lac)}>1-10 Lacs: <span className="vendor-count vendor-bg-orange">{data.between1And10Lac.length}</span></p>
+            <p onClick={() => showData(data.between10And20Lac)}>10-20 Lacs: <span className="vendor-count vendor-bg-orange">{data.between10And20Lac.length}</span></p>
+            <p onClick={() => showData(data.between20And30Lac)}>20-30 Lacs: <span className="vendor-count vendor-bg-orange">{data.between20And30Lac.length}</span></p>
+            <p onClick={() => showData(data.moreThan30Lac)}>More than 30 Lacs: <span className="vendor-count vendor-bg-orange">{data.moreThan30Lac.length}</span></p>
+            <hr />
+          </div>
           <p className="vendor-heading">Page closed by:</p>
             {userCounts.map((item) => (
               <div  key={item.userName} className="vendor-item">
