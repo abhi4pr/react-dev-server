@@ -128,6 +128,7 @@ function PageGrowthGraph({ creatorProgress }) {
   useEffect(() => {
     const apexobject = createSeriesData(viewOption);
     setState(apexobject);
+    console.log(apexobject,"apexobject")
   }, [creatorProgress, viewOption]);
 
   return (

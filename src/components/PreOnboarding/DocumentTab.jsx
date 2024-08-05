@@ -5,6 +5,7 @@ import { baseUrl } from "../../utils/config";
 import { useParams, useNavigate } from "react-router-dom";
 import jwtDecode from "jwt-decode";
 import { FaRegFilePdf } from "react-icons/fa";
+import { constant } from "../../utils/constants";
 
 const DocumentTab = ({
   documentData,
@@ -16,7 +17,7 @@ const DocumentTab = ({
   submitButton = true,
   normalUserLayout = false,
 }) => {
-  const { toastAlert, toastError } = useGlobalContext();
+  const { toastAlert, toastError , } = useGlobalContext();
   const { user_id } = useParams();
   const [user, setUser] = useState({});
   const [diffDate, setDiffDate] = useState(null);
@@ -25,6 +26,7 @@ const DocumentTab = ({
   const storedToken = sessionStorage.getItem("token");
   const decodedToken = jwtDecode(storedToken);
   const userID = decodedToken.id;
+  const RoleID = decodedToken.role_id
 
   const getData = () => {
     axios.get(`${baseUrl}` + `get_single_user/${userID}`).then((res) => {
@@ -37,12 +39,11 @@ const DocumentTab = ({
     });
   };
 
-  const handleDocDelete =(item) => {
-    console.log(item, "item here");
+  const handleDocDelete = (item) => {
     axios
       .put(`${baseUrl}` + `update_doc_user`, {
-        _id:item,
-        doc_image:""
+        _id: item,
+        doc_image: "",
         // status: "unapprove",
       })
       .then((res) => {
@@ -50,6 +51,19 @@ const DocumentTab = ({
         toastAlert("Document Deleted Successfully");
       });
   };
+
+  const handleApproveDocument = async(id) =>{
+    try {
+      const payload = {
+        _id: id,
+        status: "Approved",
+      };
+      const response = await axios.put(baseUrl + "update_user_doc", payload);
+      getDocuments();
+    } catch (error) {
+      console.error("Error white Submitting data", error);
+    }
+  }
 
   useEffect(() => {
     getData();
@@ -210,25 +224,22 @@ const DocumentTab = ({
     }
   };
 
-  const handleDeleteDocument = async(ids)=>{
-    console.log(ids,  'ids h')
-    try{
-    await axios.delete(baseUrl+`delete_user_doc/${ids}`)
-    toastAlert("Document Deleted Successfully")
-     getData()
+  const handleDeleteDocument = async (ids) => {
+    console.log(ids, "ids h");
+    try {
+      await axios.delete(baseUrl + `delete_user_doc/${ids}`);
+      toastAlert("Document Deleted Successfully");
+      getData();
+    } catch {
+      console.log(error);
     }
-    catch{
-      console.log(error)
-    }
-  }
+  };
 
   return (
     <>
       <div
-      // cardBoard
-        className={`documentarea  ${
-          normalUserLayout && "documentareaLight"
-        }`}
+        // cardBoard
+        className={`documentarea  ${normalUserLayout && "documentareaLight"}`}
       >
         <div className="cardHeaderBoard">
           <h5 className="cardTitle">Documents</h5>
@@ -252,6 +263,9 @@ const DocumentTab = ({
                     <th scope="col" className="text-center">
                       Status
                     </th>
+                      <th scope="col" className="text-center">
+                        Action
+                      </th>
                   </tr>
                 </thead>
                 <tbody>
@@ -283,7 +297,7 @@ const DocumentTab = ({
                         <td style={{ width: "20%" }}>
                           {item.document.doc_name}
                           {item.document.isRequired && (
-                            <span style={{ color: "red" }}>  </span>
+                            <span style={{ color: "red" }}> </span>
                           )}
                         </td>
                         <td scope="row">{item.document.doc_type}</td>
@@ -296,20 +310,28 @@ const DocumentTab = ({
                           {/* <a href={item?.doc_image_url} target="_blank">
                         <img style={{height:"70px"}} src={item?.doc_image_url} alt="Doc"/>
                         </a> */}
-                        {item?.doc_image ? (
-              <a href={item.doc_image_url} target="_blank" download>
-                {item.doc_image_url.endsWith(".pdf") ? (
-                  <FaRegFilePdf style={{ fontSize: "50px" }} />
-                ) : (
-                  <>
-                    <img style={{height:"80px"}} src={item.doc_image_url} alt="doc image" />
-                    <i className="fa-solid fa-eye" />
-                  </>
-                )}
-              </a>
-            ) : (
-              "N/A"
-            )}
+                          {item?.doc_image ? (
+                            <a
+                              href={item.doc_image_url}
+                              target="_blank"
+                              download
+                            >
+                              {item.doc_image_url.endsWith(".pdf") ? (
+                                <FaRegFilePdf style={{ fontSize: "50px" }} />
+                              ) : (
+                                <>
+                                  <img
+                                    style={{ height: "80px" }}
+                                    src={item.doc_image_url}
+                                    alt="doc image"
+                                  />
+                                  <i className="fa-solid fa-eye" />
+                                </>
+                              )}
+                            </a>
+                          ) : (
+                            "N/A"
+                          )}
                         </td>
                         <td>
                           <div className="uploadDocBtn">
@@ -358,22 +380,41 @@ const DocumentTab = ({
                                   Unapprove
                                 </button>
                               )} */}
-                              {item?.status == "Not Available" ||
+                            </span>
+                          </div>
+                        </td>
+                        <td>
+                          {" "}
+                          <button
+                            className="btn btn-danger btn-sm mr-2"
+                            onClick={() => handleDocDelete(item._id)}
+                            style={{ borderRadius: 17, padding: 7 }}
+                          >
+                            Delete
+                          </button>
+                          {item.status == "Verification Pending" && (RoleID === constant.CONST_ADMIN_ROLE || RoleID === constant.CONST_HR_ROLE) &&
+                          <button
+                            type="button"
+                            style={{ borderRadius: 17, padding: 7 }}
+                            onClick={()=>handleApproveDocument(item._id)}
+                            className="btn btn-success btn-sm"
+                          >
+                            Approve
+                          </button>
+                          }
+                          {item?.status == "Not Available" ||
                               item?.status !== "" ? (
                                 ""
                               ) : (
                                 <button
                                   type="button"
                                   style={{ borderRadius: 17, padding: 7 }}
-                                  className="btn btn-danger btn-sm"
+                                  className="btn btn-danger btn-sm ml-2"
                                   onClick={() => handleNotAvail(item)}
                                 >
                                   Not Available
                                 </button>
                               )}
-                            <button className="btn btn-danger btn-sm" onClick={()=>handleDocDelete(item._id)} style={{ borderRadius: 17, padding: 7 }}>delete</button>
-                            </span>
-                          </div>
                         </td>
                       </tr>
                     ))}

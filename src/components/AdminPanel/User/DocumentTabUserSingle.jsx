@@ -67,7 +67,7 @@ const joType = "WFHD"
   };
   const filteredData = documentData.filter((item) => item.doc_image !== "");
   return (
-    <>
+    <div className="table-wrap-user">
       <div className={`documentarea  "documentareaLight"`}>
         <div className="document_box">
           <div
@@ -257,7 +257,7 @@ const joType = "WFHD"
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

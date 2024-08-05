@@ -25,7 +25,7 @@ function SalaryDetailsInLineChart() {
     ],
     options: {
       chart: {
-        height: 350,
+        height: 400,
         type: 'area'
       },
       dataLabels: {
@@ -93,7 +93,7 @@ function SalaryDetailsInLineChart() {
       series: seriesArray,
       options: {
         chart: {
-          height: 350,
+          height: 400,
           type: 'area'
         },
         dataLabels: {

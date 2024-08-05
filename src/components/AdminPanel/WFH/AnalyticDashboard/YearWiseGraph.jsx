@@ -86,7 +86,7 @@ useEffect(() => {
     const seriesData = [];
 
     data.forEach(item => {
-      const range = item.year;
+      const range = item.monthName;
       const count = item.userjoined;
       categories.push(range);
       seriesData.push(count);
@@ -111,7 +111,7 @@ useEffect(() => {
             enabled: true
           }
         },
-        colors: ['#48bb69'],
+        colors: ['#dd58b9'],
         responsive: [{
           breakpoint: 480,
           options: {

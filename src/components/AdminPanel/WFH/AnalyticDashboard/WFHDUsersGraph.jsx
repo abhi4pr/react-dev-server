@@ -30,6 +30,7 @@ function WFHDUsersGrapf() {
           enabled: true
         }
       },
+      
       responsive: [{
         breakpoint: 480,
         options: {
@@ -124,6 +125,7 @@ console.log(categoriesdata,"categoriesdata")
               enabled: true
             }
           },
+          colors: ["#1E90FF", "#FF69B4"], // Add your custom colors here
           responsive: [{
             breakpoint: 480,
             options: {

@@ -15,6 +15,7 @@ import SaveAsIcon from "@mui/icons-material/SaveAs";
 import ClearIcon from "@mui/icons-material/Clear";
 import { baseUrl } from "../../../utils/config";
 import FormContainer from "../FormContainer";
+import { constant } from "../../../utils/constants";
 
 const Attendence = () => {
   const { toastAlert, toastError } = useGlobalContext();
@@ -42,6 +43,7 @@ const Attendence = () => {
   const userID = decodedToken.id;
   
   const [workDaysLastDate , setWorkDaysLastDate] = useState()
+
   
   var settings = {
     dots: false,
@@ -514,9 +516,14 @@ const Attendence = () => {
             <div
               className={`timeline_slideItem
                   ${
-                    data.deptCount == departmentdata?.length && "completed"
+                    // data.deptCount == departmentdata?.length && "completed"
                   // data.atdGenerated && "completed"
-                } 
+                // }
+                RoleIDContext === constant.CONST_MANAGER_ROLE  
+                ? data.atdGenerated && "completed" 
+                : data.deptCount == departmentdata?.length && "completed"
+            } 
+
                 ${selectedCardIndex === index ? "selected" : ""} ${
                   currentMonthForDis === cardMonth+1 && "current"
                   // currentMonthForDis === cardMonth && "current"
@@ -548,12 +555,13 @@ const Attendence = () => {
                     <i className="bi bi-hourglass-top" />
                   </span>
                 )}
-                {/* {data.atdGenerated == 1
+                { RoleIDContext === constant.CONST_MANAGER_ROLE ?
+                 data.atdGenerated == 1
                   ? "Completed"
-                  : currentMonthNumber - 4 - index < 0
+                  : currentMonthNumber - 5 - index < 0
                   ? "Upcoming"
-                  : "Pending"} */}
-                  {data.deptCount == departmentdata?.length
+                  : "Pending"
+                  : data.deptCount == departmentdata?.length
                   ? "Completed"
                   : currentMonthNumber - 5 - index < 0
                   ? "Upcoming"
