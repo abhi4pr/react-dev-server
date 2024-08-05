@@ -18,6 +18,7 @@ import { Button } from "@mui/material";
 import Swal from "sweetalert2";
 import { baseUrl } from "../../../utils/config";
 import Loader from "../Finance/Loader/Loader";
+import ReJoinReusable from "./ReJoinReusable";
 
 const UserOverview = () => {
   const { id } = useParams();
@@ -108,7 +109,6 @@ const UserOverview = () => {
     SummaryData(userId);
   };
   const [reJoinModalOpen, setRejoinModalOpen] = useState(false);
-  const [reJoinDate, setReJoinDate] = useState("");
   const [rejoinID, setRejoinID] = useState("");
   const reJoinClose = () => {
     setRejoinModalOpen(false);
@@ -116,21 +116,6 @@ const UserOverview = () => {
   const handleReJoin = (id) => {
     setRejoinModalOpen(true);
     setRejoinID(id);
-  };
-  const handleSubmitReJoin = async () => {
-    if (!reJoinDate || reJoinDate == "") {
-      toastAlert("ReJoin Date is Required");
-    }
-    try {
-      await axios.put(`${baseUrl}` + `rejoin_user`, {
-        user_id: rejoinID,
-        joining_date: reJoinDate,
-      });
-      reJoinClose();
-      setReJoinDate("")
-      getData();
-      toastAlert("Re-Join Successfully")
-    } catch {}
   };
 
   const SummaryData = (userId) => {
@@ -359,6 +344,12 @@ const UserOverview = () => {
     }
   }
 
+
+  // Function to capitalize the first letter of a string
+const capitalizeFirstLetter = (string) => {
+  return string.charAt(0).toUpperCase() + string.slice(1);
+};
+
   const columns = [
     {
       field: "id",
@@ -387,10 +378,13 @@ const UserOverview = () => {
       sortable: true,
     },
     {
-      field: "user_login_id",
-      headerName: "Login ID",
+      field: 'user_login_id',
+      headerName: 'Login ID',
       width: 190,
       sortable: true,
+      renderCell: (params) => (
+        <span>{capitalizeFirstLetter(params.value)}</span>
+      ),
     },
     {
       field: "Role_name",
@@ -1367,53 +1361,13 @@ const UserOverview = () => {
       </Modal>
 
       {/* Re-Join Modal here  */}
-      <Modal
-        isOpen={reJoinModalOpen}
-        onRequestClose={reJoinClose}
-        style={{
-          content: {
-            width: "30%",
-            height: "40%",
-            top: "50%",
-            left: "50%",
-            right: "auto",
-            bottom: "auto",
-            marginRight: "-50%",
-            transform: "translate(-50%, -50%)",
-          },
-        }}
-      >
-        {/* {selectedRow && ( */}
+      <ReJoinReusable
+        getData={getData}
+        reJoinModalOpen={reJoinModalOpen}
+        reJoinClose={reJoinClose}
+        id={rejoinID}
+      />
 
-        <div>
-          <div className="d-flex justify-content-between mb-2">
-            <h3>Re-Join</h3>
-            <div className="d-flex">
-              <button className="btn btn-danger" onClick={reJoinClose}>
-                X
-              </button>
-            </div>
-          </div>
-          <div>
-            <FieldContainer
-              label="Re-Join Date"
-              type="date"
-              astric
-              value={reJoinDate}
-              onChange={(e) => setReJoinDate(e.target.value)}
-              fieldGrid={12}
-            />
-          </div>
-          <button
-            className="btn btn-success ml-3 mt-3"
-            disabled={!reJoinDate}
-            onClick={handleSubmitReJoin}
-          >
-            Submit
-          </button>
-        </div>
-        {/* )} */}
-      </Modal>
     </div>
   );
 };

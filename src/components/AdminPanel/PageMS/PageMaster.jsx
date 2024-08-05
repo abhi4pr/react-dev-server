@@ -5,8 +5,8 @@ import FieldContainer from "../FieldContainer";
 import FormContainer from "../FormContainer";
 import { baseUrl } from "../../../utils/config";
 import jwtDecode from "jwt-decode";
-import { Navigate } from "react-router";
-import Select from "react-select";
+import { Navigate, useLocation } from "react-router";
+import Select, {components} from "react-select";
 import "./Tagcss.css";
 import { IconButton, Stack } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
@@ -41,6 +41,8 @@ import {
 import { useParams } from "react-router";
 
 const PageMaster = () => {
+  const location = useLocation();
+  const vendor_id_from_redirect = location.state;
   const { pageMast_id } = useParams();
   const vendorInfoModalOpen = useSelector(
     (state) => state.vendorMaster.showVendorInfoModal
@@ -69,7 +71,7 @@ const PageMaster = () => {
   const [closeBy, setCloseBy] = useState("");
   const [pageType, setPageType] = useState("Clear");
   const [content, setContent] = useState("");
-  const [ownerType, setOwnerType] = useState("");
+  const [ownerType, setOwnerType] = useState("66ab43f41068e2b9eea495a9");
   const [vendorId, setVendorId] = useState("");
   const [followCount, setFollowCount] = useState("");
   const [profileId, setProfileId] = useState("");
@@ -136,6 +138,9 @@ const PageMaster = () => {
 
   const { data: platformPriceData, isLoading: isPriceLoading } =
     useGetPlatformPriceQuery();
+
+  const [showAll, setShowAll] = useState(false)
+  const optionsToShow = showAll ? userData : userData.slice(0, 5);
 
   useEffect(() => {
     if (!singlePageLoading && pageMast_id) {
@@ -547,6 +552,28 @@ const PageMaster = () => {
     return ((followCount / val) * (rowCount[index]?.price || 0)).toFixed(2);
   };
 
+  // see more button inside close by
+  const MenuList = (props) => {
+    return (
+      <components.MenuList {...props}>
+        {props.children}
+        {!showAll && userData.length > 5 && (
+          <div
+            style={{
+              padding: "10px",
+              textAlign: "center",
+              cursor: "pointer",
+              color: "#007bff",
+            }}
+            onClick={() => setShowAll(true)}
+          >
+            See More
+          </div>
+        )}
+      </components.MenuList>
+    );
+  };
+
   return (
     <>
       <FormContainer
@@ -563,6 +590,39 @@ const PageMaster = () => {
         )}
         <div className="card-body pb4">
           <div className="row thm_form">
+          <div className="col-md-6 mb16">
+              <div className="form-group m0">
+                <label className="form-label">
+                  Vendor <sup style={{ color: "red" }}>*</sup>
+                </label>
+                <Select
+                  options={vendorData.map((option) => ({
+                    value: option._id,
+                    label: option.vendor_name,
+                  }))}
+                  required={true}
+                  value={{
+                    value: vendorId || vendor_id_from_redirect,
+                    label:
+                      vendorData.find((role) => role._id === vendorId)
+                        ?.vendor_name || "",
+                  }}
+                  onChange={(e) => {
+                    setVendorId(e.value);
+                    if (e.value) {
+                      setValidateFields((prev) => ({
+                        ...prev,
+                        vendorId: false,
+                      }));
+                    }
+                  }}
+                ></Select>
+                {validateFields.vendorId && (
+                  <small style={{ color: "red" }}>Please select Vendor</small>
+                )}
+              </div>
+            </div>
+
             <div className="col-md-6 mb16">
               <div className="form-group m0">
                 <label className="form-label">
@@ -975,7 +1035,8 @@ const PageMaster = () => {
                   Close By <sup style={{ color: "red" }}>*</sup>
                 </label>
                 <Select
-                  options={userData.map((option) => ({
+                  components={{ MenuList }}
+                  options={optionsToShow.map((option) => ({
                     value: option.user_id,
                     label: option.user_name,
                   }))}
@@ -983,8 +1044,7 @@ const PageMaster = () => {
                   value={{
                     value: closeBy,
                     label:
-                      userData.find((role) => role.user_id === closeBy)
-                        ?.user_name || "",
+                      userData.find((role) => role.user_id === closeBy)?.user_name || "",
                   }}
                   onChange={(e) => {
                     setCloseBy(e.value);
@@ -995,7 +1055,7 @@ const PageMaster = () => {
                       }));
                     }
                   }}
-                ></Select>
+                />
                 {validateFields.closeBy && (
                   <small style={{ color: "red" }}>Please select Close By</small>
                 )}
@@ -1089,38 +1149,6 @@ const PageMaster = () => {
                     </small>
                   ) // Page Name Type
                 }
-              </div>
-            </div>
-            <div className="col-md-6 mb16">
-              <div className="form-group m0">
-                <label className="form-label">
-                  Vendor <sup style={{ color: "red" }}>*</sup>
-                </label>
-                <Select
-                  options={vendorData.map((option) => ({
-                    value: option._id,
-                    label: option.vendor_name,
-                  }))}
-                  required={true}
-                  value={{
-                    value: vendorId,
-                    label:
-                      vendorData.find((role) => role._id === vendorId)
-                        ?.vendor_name || "",
-                  }}
-                  onChange={(e) => {
-                    setVendorId(e.value);
-                    if (e.value) {
-                      setValidateFields((prev) => ({
-                        ...prev,
-                        vendorId: false,
-                      }));
-                    }
-                  }}
-                ></Select>
-                {validateFields.vendorId && (
-                  <small style={{ color: "red" }}>Please select Vendor</small>
-                )}
               </div>
             </div>
             <div className="col-md-6 p0 mb16">

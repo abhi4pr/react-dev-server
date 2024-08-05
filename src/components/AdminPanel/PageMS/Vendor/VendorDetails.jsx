@@ -61,6 +61,7 @@ export default function VendorDetails({vendorDetails,setVendorDetails}) {
           </DialogContentText>
         </DialogContent>
         <DialogActions>
+          <Link to={{pathname:'/admin/pms-page-master', state: vendorDetails}}><Button>Add Page</Button></Link>
           <Link to={`/admin/pms-vendor-master/${vendorDetails._id}`}><Button onClick={handleClose}>Edit</Button></Link>
           <Button onClick={handleClose}>Cancel</Button>
           {/* <Button onClick={handleClose}>Subscribe</Button> */}

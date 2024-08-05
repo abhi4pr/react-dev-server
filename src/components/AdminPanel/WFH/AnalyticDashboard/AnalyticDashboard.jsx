@@ -27,8 +27,8 @@ const AnalyticDashboard = () => {
     axios.get(baseUrl+`get_all_history_data`).then((res)=>{
      setExitUserData(res.data.data)
     })
-   
  }
+
  useEffect(()=>{
  allExitUserDatas()
  },[])
@@ -129,25 +129,25 @@ const AnalyticDashboard = () => {
       <NewJoineeAndExitUsers />
       <div className="row">
         <div className="col-6">
-          <h5 className="mb-2 card-title">Department Wise User Count</h5>
+          <h5 className="mb-2 card-title">Department Wise Users Count</h5>
           <WFHDUsersGrapf />
         </div>
         <div className="col-5 ml-5">
-          <h5 className="mb-2 card-title">User Count With LPA</h5>
+          <h5 className="mb-2 card-title">Users Count With LPA</h5>
           <UserCountWithLPA />
         </div>
 
-        <div className="col-7 mr-5">
+        <div className="col-12 mr-5">
           <h5 className="mb-2 card-title">Department & Month Wise Salary</h5>
           <SalaryDetailsInLineChart />
         </div>
-        <div className="col-4">
-          <h5 className="mb-2 card-title">Age Wise Graph</h5>
-          <AgeGraf />
-        </div>
-        <div className="col-4">
-          <h5 className="mb-2 card-title">Years Wise Users</h5>
+        <div className="col-12">
+          <h5 className="mb-2 card-title">Month Wise Joinee Users</h5>
           <YearWiseGraph />
+        </div>
+        <div className="col-4 mr-2">
+          <h5 className="mb-2 card-title">Age Wise Users Graph</h5>
+          <AgeGraf />
         </div>
       </div>
 
@@ -179,6 +179,8 @@ const AnalyticDashboard = () => {
           >
             x
           </button>
+
+          {/* All Exit User List  */}
           <DataGrid
           rows={allExitUserData}
           columns={ExitUserColumns}

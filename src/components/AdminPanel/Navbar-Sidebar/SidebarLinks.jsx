@@ -397,7 +397,7 @@ const SidebarLinks = () => {
       {/* WFHD USER */}
 
       {/* PAYOUT HR / MANAGER ACCOUNTS */}
-      {(isWFHDManager || isWFHDHRPayrollManager) && (
+      {/* {(isWFHDManager || isWFHDHRPayrollManager) && ( */}
         <li className="nav-item">
           <a
             className="nav-btn nav-link collapsed"
@@ -440,19 +440,41 @@ const SidebarLinks = () => {
                   {/* <NavLink className="collapse-item" to="/admin/billing-overview">
                     Billing Header Overview
                   </NavLink> */}
-                  <NavLink className="collapse-item" to="/admin/wfhd-analytic-dashbaord">
+                  {RoleId !== constant.CONST_MANAGER_ROLE && (
+                  <NavLink
+                    className="collapse-item"
+                    to="/admin/wfhd-analytic-dashbaord"
+                  >
                     <i className="bi bi-dot"></i> WFHD Dashboard
                   </NavLink>
-                  {/* <NavLink className="collapse-item" to="/admin/wfhd-overview">
+                )}
+                  {RoleId === constant.CONST_MANAGER_ROLE && isWFHDManager && (
+                <NavLink className="collapse-item" to="/admin/wfhd-register">
+                    <i className="bi bi-dot"></i> Add Buddy
+                  </NavLink>
+                  )}
+                  {RoleId === constant.CONST_MANAGER_ROLE && isWFHDManager && (
+                <NavLink className="collapse-item" to="/admin/wfhd-overview">
                     <i className="bi bi-dot"></i> My Team
-                  </NavLink> */}
+                  </NavLink>
+                  )}
 
                   {/* {!isWFHDManager && ( */}
-                  {isWFHDHRPayrollManager && (
+                  {/* {isWFHDHRPayrollManager && (
                     <NavLink className="collapse-item" to="/admin/salaryWFH">
                       <i className="bi bi-dot"></i> Payout Summary
                     </NavLink>
-                  )}
+                  )} */}
+
+{RoleId === constant.CONST_MANAGER_ROLE && isWFHDManager && (
+                  // <>
+                  <NavLink
+                    className="collapse-item"
+                    to="/admin/attendence-mast"
+                  >
+                    <i className="bi bi-dot"></i> Create Attendance
+                  </NavLink>
+                )}
 
                   {RoleId !== constant.CONST_MANAGER_ROLE && (
                     <>
@@ -686,7 +708,7 @@ const SidebarLinks = () => {
             {/* PREOBOARDING END*/}
           </div>
         </li>
-      )}
+      {/* )} */}
 
       {/* PAYOUT HR / MANAGER ACCOUNTS  END*/}
 
