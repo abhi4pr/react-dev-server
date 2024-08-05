@@ -350,6 +350,9 @@ import CommunityHome from "../SuperTracker/CommunityManagement/CommunityHome";
 import CommunityManager from "../SuperTracker/CommunityManagement/CommunityManager";
 import CommunityPageView from "../SuperTracker/CommunityManagement/CommunityPageView";
 import AnalyticDashboard from "./WFH/AnalyticDashboard/AnalyticDashboard";
+import CommunityUser from "../SuperTracker/CommunityManagement/CommunityUser";
+import CommunityManagerView from "../SuperTracker/CommunityManagement/CommunityManagerView";
+
 
 const Admin = () => {
   const [contextData, setData] = useState([]);
@@ -1677,6 +1680,14 @@ const Admin = () => {
                         <Route
                           path="/instaapi/community/manager/:creatorName"
                           element={<CommunityPageView />}
+                        />
+                       <Route path="/instaapi/community/user"
+                          element={<CommunityUser
+                             />}
+                        />
+                        <Route
+                          path="/instaapi/community/managerView"
+                          element={<CommunityManagerView />}
                         />
                       </>
                     )}
