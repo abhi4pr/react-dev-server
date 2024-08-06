@@ -1030,7 +1030,7 @@ const SalaryWFH = () => {
               className="icon-1"
               title="Download Invoice"
               type="button"
-              onClick={() => generatePDF(row)}
+              onClick={() =>generatePDF(row)}
             >
               <FaEye />
             </button>

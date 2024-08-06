@@ -397,7 +397,7 @@ const SidebarLinks = () => {
       {/* WFHD USER */}
 
       {/* PAYOUT HR / MANAGER ACCOUNTS */}
-      {/* {(isWFHDManager || isWFHDHRPayrollManager) && ( */}
+      {(isWFHDManager || isWFHDHRPayrollManager) && (
         <li className="nav-item">
           <a
             className="nav-btn nav-link collapsed"
@@ -708,7 +708,7 @@ const SidebarLinks = () => {
             {/* PREOBOARDING END*/}
           </div>
         </li>
-      {/* )} */}
+       )}
 
       {/* PAYOUT HR / MANAGER ACCOUNTS  END*/}
 
