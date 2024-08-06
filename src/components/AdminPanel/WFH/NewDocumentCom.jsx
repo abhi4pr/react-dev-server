@@ -3,13 +3,16 @@ import DocumentTab from "../../PreOnboarding/DocumentTab";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import { baseUrl } from "../../../utils/config";
+import { Navigate } from "react-router-dom";
 
 const NewDocumentCom = () => {
   const { id } = useParams();
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const [documentData, setDocumentData] = useState([]);
   const [isUpdaing, setIsUpdating] = useState(false);
   const [user, setUser] = useState({});
+
+  const [isFormSubmitted, setIsFormSubmitted] = useState(false);
 
   async function getDocuments() {
     try {
@@ -67,13 +70,14 @@ const NewDocumentCom = () => {
         .filter((doc) => doc.status === "");
 
       if (requiredDocumentsMissing.length === 0) {
-        await axios.put(baseUrl + "update_user", {
+        await axios.put(baseUrl + "update_training", {
           user_id: id,
           att_status: "document_upload",
         }); 
       }
-
-      navigate("/admin/wfhd-overview");
+      
+      setIsFormSubmitted(true) 
+      // navigate("/admin/wfhd-overview");
       toastAlert("Documents Updated");
       getDocuments();
     } catch (error) {
@@ -83,6 +87,9 @@ const NewDocumentCom = () => {
     }
   };
 
+  if (isFormSubmitted) {
+    return <Navigate to="/admin/wfhd-overview" />;
+  }
   return (
     <div className="table-wrap-user">
       <DocumentTab

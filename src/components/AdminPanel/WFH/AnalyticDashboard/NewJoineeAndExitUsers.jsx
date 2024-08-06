@@ -127,18 +127,18 @@ const NewJoineeAndExitUsers = () => {
         return formatDate(params.value);
       },
     },
-    // {
-    //       field: "Re-Join",
-    //       headerName: "Re-Join",
-    //       width: 100,
-    //       renderCell: (params) =>
-    //           <button
-    //             className="btn cmnbtn btn_sm btn-outline-danger"
-    //             onClick={() => handleReJoin(params.row.user_id)}
-    //           >
-    //             Re-Join
-    //           </button>
-    //     },
+    {
+          field: "Re-Join",
+          headerName: "Re-Join",
+          width: 100,
+          renderCell: (params) =>
+              <button
+                className="btn cmnbtn btn_sm btn-outline-danger"
+                onClick={() => handleReJoin(params.row.user_id)}
+              >
+                Re-Join
+              </button>
+        },
   ];
 
   const AllUsers = [
@@ -176,7 +176,7 @@ const NewJoineeAndExitUsers = () => {
     },
     {
       field: "joining_date",
-      headerName: "DOB",
+      headerName: "Joining Date",
       width: 150,
       valueGetter: (params) => {
         return formatDate(params.value);
