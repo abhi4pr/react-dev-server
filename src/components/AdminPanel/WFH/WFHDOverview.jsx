@@ -202,7 +202,7 @@ const WFHDOverview = () => {
       training_date: trainingDate,
     };
     await axios.post(baseUrl + "add_user_training", payload);
-    await axios.put(baseUrl + "update_user", {
+    await axios.put(baseUrl + "update_training", {
       user_id: rowData.user_id,
       // att_status: "training",
       att_status: "onboarded",
