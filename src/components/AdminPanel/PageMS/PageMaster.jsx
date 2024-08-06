@@ -42,7 +42,12 @@ import { useParams } from "react-router";
 
 const PageMaster = () => {
   const location = useLocation();
-  const vendor_id_from_redirect = location.state;
+
+  const queryParams = new URLSearchParams(location.search);
+  const vendorDetails = {
+    _id: queryParams.get('_id'),
+  };
+
   const { pageMast_id } = useParams();
   const vendorInfoModalOpen = useSelector(
     (state) => state.vendorMaster.showVendorInfoModal
@@ -61,7 +66,7 @@ const PageMaster = () => {
   const [isFormSubmitted, setIsFormSubmitted] = useState(false);
   const [platformId, setPlatformId] = useState("");
 
-  const [primary, setPrimary] = useState({ value: "No", label: "No" });
+  const [primary, setPrimary] = useState({ value: "Yes", label: "Yes" });
 
   const [categoryId, setCategoryId] = useState("");
   const [tag, setTag] = useState([]);
@@ -573,6 +578,12 @@ const PageMaster = () => {
       </components.MenuList>
     );
   };
+  
+  const getInitialValue = () => {
+    const initialId = vendorId || vendorDetails._id;
+    const initialVendor = vendorData.find((vendor) => vendor._id === initialId);
+    return initialVendor ? { value: initialVendor._id, label: initialVendor.vendor_name } : null;
+  };
 
   return (
     <>
@@ -595,28 +606,23 @@ const PageMaster = () => {
                 <label className="form-label">
                   Vendor <sup style={{ color: "red" }}>*</sup>
                 </label>
-                <Select
+                 <Select
                   options={vendorData.map((option) => ({
                     value: option._id,
                     label: option.vendor_name,
                   }))}
                   required={true}
-                  value={{
-                    value: vendorId || vendor_id_from_redirect,
-                    label:
-                      vendorData.find((role) => role._id === vendorId)
-                        ?.vendor_name || "",
-                  }}
-                  onChange={(e) => {
-                    setVendorId(e.value);
-                    if (e.value) {
+                  value={getInitialValue()}
+                  onChange={(selectedOption) => {
+                    setVendorId(selectedOption.value);
+                    if (selectedOption.value) {
                       setValidateFields((prev) => ({
                         ...prev,
                         vendorId: false,
                       }));
                     }
                   }}
-                ></Select>
+                />
                 {validateFields.vendorId && (
                   <small style={{ color: "red" }}>Please select Vendor</small>
                 )}

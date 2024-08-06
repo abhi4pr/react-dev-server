@@ -1455,14 +1455,14 @@ const Admin = () => {
                     path="/pms-purchase-price/:id"
                     element={<PurchasePrice />}
                   />
-                  {/* <Route
-                    path="/pms-page-edit/:pageMast_id"
-                    element={<PageEdit />}
-                  /> */}
                   <Route
                     path="/pms-page-edit/:pageMast_id"
-                    element={<EditPage />}
+                    element={<PageEdit />}
                   />
+                  {/* <Route
+                    path="/pms-page-edit/:pageMast_id"
+                    element={<EditPage />}
+                  /> */}
                   <Route
                     path="/pms-vendor-page-price-overview"
                     element={<VendorPagePriceOverview />}

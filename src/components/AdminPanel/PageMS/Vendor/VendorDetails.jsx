@@ -22,6 +22,11 @@ export default function VendorDetails({vendorDetails,setVendorDetails}) {
     // setScroll(scrollType);
   };
 
+  const sendingId = {
+    _id: vendorDetails._id
+  }
+  const queryParams = new URLSearchParams(sendingId).toString();
+
   const handleClose = () => {
     setOpen(false);
     setVendorDetails(null)
@@ -61,7 +66,7 @@ export default function VendorDetails({vendorDetails,setVendorDetails}) {
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Link to={{pathname:'/admin/pms-page-master', state: vendorDetails}}><Button>Add Page</Button></Link>
+          <Link to={`/admin/pms-page-master?${queryParams}`}><Button>Add Page</Button></Link>
           <Link to={`/admin/pms-vendor-master/${vendorDetails._id}`}><Button onClick={handleClose}>Edit</Button></Link>
           <Button onClick={handleClose}>Cancel</Button>
           {/* <Button onClick={handleClose}>Subscribe</Button> */}

@@ -5,7 +5,7 @@ import FieldContainer from "../FieldContainer";
 import FormContainer from "../FormContainer";
 import { baseUrl } from "../../../utils/config";
 import jwtDecode from "jwt-decode";
-import { Navigate } from "react-router";
+import { Navigate, useNavigate } from "react-router";
 import Select from "react-select";
 import {
   Autocomplete,
@@ -51,6 +51,7 @@ import { useGstDetailsMutation } from "../../Store/API/Sales/GetGstDetailApi";
 import formatString from "../Operation/CampaignMaster/WordCapital";
 
 const VendorMaster = () => {
+  const navigate = useNavigate();
   const { data: countries, isLoading: isCountriesLoading } =
     useGetCountryCodeQuery();
 
@@ -538,6 +539,14 @@ const VendorMaster = () => {
     return setEmailIsInvalid(true);
   };
 
+  const redirectAfterVendor = (resID) =>{
+    const sendingId = {
+      _id: resID
+    };
+    const queryParams = new URLSearchParams(sendingId).toString();
+    navigate(`/admin/pms-page-master?${queryParams}`)
+  }
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -617,10 +626,11 @@ const VendorMaster = () => {
       //   })
       addVendor(formData)
         .then((res) => {
-          setIsFormSubmitted(true);
+          // setIsFormSubmitted(true);
           toastAlert("Data Submitted Successfully");
-          setIsFormSubmitting(false);
+          // setIsFormSubmitting(false);
           const resID = res.data.data._id;
+          redirectAfterVendor(resID)
           // axios.post(
           //   baseUrl + "v1/company_name",
           //   {
