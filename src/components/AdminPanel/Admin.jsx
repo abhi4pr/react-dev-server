@@ -352,7 +352,7 @@ import CommunityPageView from "../SuperTracker/CommunityManagement/CommunityPage
 import AnalyticDashboard from "./WFH/AnalyticDashboard/AnalyticDashboard";
 import CommunityUser from "../SuperTracker/CommunityManagement/CommunityUser";
 import CommunityManagerView from "../SuperTracker/CommunityManagement/CommunityManagerView";
-
+import PlanMaking from '../AdminPanel/PageMS/PlanMaking'
 
 const Admin = () => {
   const [contextData, setData] = useState([]);
@@ -1421,6 +1421,7 @@ const Admin = () => {
                     element={<VendorEdit />}
                   /> */}
                   <Route path="/pms-vendor-master" element={<VendorMaster />} />
+                  <Route path="/pms-plan-making" element={<PlanMaking />} />
                   <Route
                     path="/pms-vendor-master/:_id"
                     element={<VendorMaster />}
