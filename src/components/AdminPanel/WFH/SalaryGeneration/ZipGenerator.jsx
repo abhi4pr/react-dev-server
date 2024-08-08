@@ -235,6 +235,7 @@ export const Template = {
     }
 
     function getLastDateOfMonth(monthName) {
+      console.log("monthNmae",monthName)
       const monthNumber = monthNameToNumber(monthName);
       if (monthNumber === null) {
           return "Invalid month name";
@@ -244,6 +245,10 @@ export const Template = {
       const nextMonthYear = monthNumber === 12 ? currentYear + 1 : currentYear;
       const formattedMonth = nextMonthNumber < 10 ? '0' + nextMonthNumber : nextMonthNumber;
       const formattedDay = '15';
+      console.log("nextMonthYear",nextMonthYear)
+      console.log("formattedMonth",formattedMonth)
+      console.log("formattedDay",formattedDay)
+      console.log("monthNmae111111111",`${formattedDay}-${formattedMonth}-${nextMonthYear}`)
       return `${formattedDay}-${formattedMonth}-${nextMonthYear}`;
     }
     const doc = new jsPDF();
@@ -274,6 +279,7 @@ export const Template = {
     doc.text('Invoice No:', doc.internal.pageSize.width - 70, 30);
     doc.text('Invoice Date:', doc.internal.pageSize.width - 70, 40);
     doc.setTextColor("#505050");
+    console.log(invoiceNo, " ", invoiceDate);
     doc.text(invoiceNo, handelrightalign(invoiceNo, 12), 30); // Black color and bold
     doc.text(invoiceDate, handelrightalign(invoiceDate, 12), 40); // Black color and bold
     doc.setTextColor(0); // Gray color
@@ -423,6 +429,7 @@ export const Template = {
     }
 
     function getLastDateOfMonth(monthName) {
+      console.log("monthNmae",monthName)
       const monthNumber = monthNameToNumber(monthName);
       if (monthNumber === null) {
           return "Invalid month name";
@@ -432,6 +439,10 @@ export const Template = {
       const nextMonthYear = monthNumber === 12 ? currentYear + 1 : currentYear;
       const formattedMonth = nextMonthNumber < 10 ? '0' + nextMonthNumber : nextMonthNumber;
       const formattedDay = '15';
+      console.log("nextMonthYear",nextMonthYear)
+      console.log("formattedMonth",formattedMonth)
+      console.log("formattedDay",formattedDay)
+      console.log("monthNmae111111111",`${formattedDay}-${formattedMonth}-${nextMonthYear}`)
       return `${formattedDay}-${formattedMonth}-${nextMonthYear}`;
     }
     const doc = new jsPDF();
@@ -627,6 +638,10 @@ export const Template = {
       const nextMonthYear = monthNumber === 12 ? currentYear + 1 : currentYear;
       const formattedMonth = nextMonthNumber < 10 ? '0' + nextMonthNumber : nextMonthNumber;
       const formattedDay = '15';
+      console.log("nextMonthYear",nextMonthYear)
+      console.log("formattedMonth",formattedMonth)
+      console.log("formattedDay",formattedDay)
+      console.log("monthNmae111111111",`${formattedDay}-${formattedMonth}-${nextMonthYear}`)
       return `${formattedDay}-${formattedMonth}-${nextMonthYear}`;
     }
     const doc = new jsPDF();
@@ -812,6 +827,10 @@ export const Template = {
       const nextMonthYear = monthNumber === 12 ? currentYear + 1 : currentYear;
       const formattedMonth = nextMonthNumber < 10 ? '0' + nextMonthNumber : nextMonthNumber;
       const formattedDay = '15';
+      console.log("nextMonthYear",nextMonthYear)
+      console.log("formattedMonth",formattedMonth)
+      console.log("formattedDay",formattedDay)
+      console.log("monthNmae111111111",`${formattedDay}-${formattedMonth}-${nextMonthYear}`)
       return `${formattedDay}-${formattedMonth}-${nextMonthYear}`;
     }
     const doc = new jsPDF();
@@ -1000,6 +1019,10 @@ export const Template = {
       const nextMonthYear = monthNumber === 12 ? currentYear + 1 : currentYear;
       const formattedMonth = nextMonthNumber < 10 ? '0' + nextMonthNumber : nextMonthNumber;
       const formattedDay = '15';
+      console.log("nextMonthYear",nextMonthYear)
+      console.log("formattedMonth",formattedMonth)
+      console.log("formattedDay",formattedDay)
+      console.log("monthNmae111111111",`${formattedDay}-${formattedMonth}-${nextMonthYear}`)
       return `${formattedDay}-${formattedMonth}-${nextMonthYear}`;
     }
     const doc = new jsPDF();
@@ -1180,6 +1203,10 @@ export const Template = {
       const nextMonthYear = monthNumber === 12 ? currentYear + 1 : currentYear;
       const formattedMonth = nextMonthNumber < 10 ? '0' + nextMonthNumber : nextMonthNumber;
       const formattedDay = '15';
+      console.log("nextMonthYear",nextMonthYear)
+      console.log("formattedMonth",formattedMonth)
+      console.log("formattedDay",formattedDay)
+      console.log("monthNmae111111111",`${formattedDay}-${formattedMonth}-${nextMonthYear}`)
       return `${formattedDay}-${formattedMonth}-${nextMonthYear}`;
     }
     const doc = new jsPDF();
@@ -1365,6 +1392,10 @@ export const Template = {
       const nextMonthYear = monthNumber === 12 ? currentYear + 1 : currentYear;
       const formattedMonth = nextMonthNumber < 10 ? '0' + nextMonthNumber : nextMonthNumber;
       const formattedDay = '15';
+      console.log("nextMonthYear",nextMonthYear)
+      console.log("formattedMonth",formattedMonth)
+      console.log("formattedDay",formattedDay)
+      console.log("monthNmae111111111",`${formattedDay}-${formattedMonth}-${nextMonthYear}`)
       return `${formattedDay}-${formattedMonth}-${nextMonthYear}`;
     }
     const doc = new jsPDF();
@@ -1552,6 +1583,10 @@ export const Template = {
       const nextMonthYear = monthNumber === 12 ? currentYear + 1 : currentYear;
       const formattedMonth = nextMonthNumber < 10 ? '0' + nextMonthNumber : nextMonthNumber;
       const formattedDay = '15';
+      console.log("nextMonthYear",nextMonthYear)
+      console.log("formattedMonth",formattedMonth)
+      console.log("formattedDay",formattedDay)
+      console.log("monthNmae111111111",`${formattedDay}-${formattedMonth}-${nextMonthYear}`)
       return `${formattedDay}-${formattedMonth}-${nextMonthYear}`;
     }
     const doc = new jsPDF();
@@ -1737,6 +1772,10 @@ export const Template = {
       const nextMonthYear = monthNumber === 12 ? currentYear + 1 : currentYear;
       const formattedMonth = nextMonthNumber < 10 ? '0' + nextMonthNumber : nextMonthNumber;
       const formattedDay = '15';
+      console.log("nextMonthYear",nextMonthYear)
+      console.log("formattedMonth",formattedMonth)
+      console.log("formattedDay",formattedDay)
+      console.log("monthNmae111111111",`${formattedDay}-${formattedMonth}-${nextMonthYear}`)
       return `${formattedDay}-${formattedMonth}-${nextMonthYear}`;
     }
     const doc = new jsPDF();

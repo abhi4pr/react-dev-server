@@ -13,7 +13,7 @@ import * as XLSX from "xlsx";
 import DataGridDialog from "../DataGridDialog/DataGridDialog";
 import FieldContainer from "../AdminPanel/FieldContainer";
 import BankExcelConverter from "../../utils/BankExcelConverter";
-import { FaEye } from "react-icons/fa6"
+import { FaEye } from "react-icons/fa6";
 
 const accordionButtons = [
   "Pending Verify",
@@ -591,11 +591,11 @@ export default function FinanceWFHDashboard() {
     },
     {
       headerName: "Name",
-      field: "name",
+      field: "user_name",
       width: 150,
-      renderCell: (params) => {
-        return <div>{params.row.user_name}</div>;
-      },
+      // renderCell: (params) => {
+      //   return <div>{params.row.user_name}</div>;
+      // },
     },
     {
       headerName: "Department",
@@ -869,7 +869,7 @@ export default function FinanceWFHDashboard() {
       <div className="thm_table">
         <DataGrid
           rows={filterData?.filter((item) => item.status_ === 0)}
-          columns={pendingColumns}
+          columns={pendingColumns} 
           getRowId={(row) => row.id}
           initialState={{
             pagination: {
@@ -1033,7 +1033,6 @@ export default function FinanceWFHDashboard() {
           // disableRowSelectionOnClick
           onRowSelectionModelChange={(rowIds) => {
             handleRowSelectionModelChange(rowIds);
-            // console.log(rowIds);
           }}
           rowSelectionModel={rowSelectionModel}
           slotProps={{
@@ -1360,10 +1359,9 @@ export default function FinanceWFHDashboard() {
                         ? { value: "", label: "All" }
                         : {
                             value: departmentFilter,
-                            label:
-                              departmentData.find(
-                                (dept) => dept.dept_id === departmentFilter
-                              )?.dept_name 
+                            label: departmentData.find(
+                              (dept) => dept.dept_id === departmentFilter
+                            )?.dept_name,
                           }
                     }
                     onChange={(selectedOption) => {

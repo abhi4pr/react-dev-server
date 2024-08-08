@@ -1723,6 +1723,7 @@ const SalaryWFH = () => {
                 highlightOnHover
                 pagination
                 exportToCSV
+                paginationPerPage={100} 
                 // subHeader
                 conditionalRowStyles={conditionalRowStyles}
                 selectableRows={activeTab == 0 ? true : false}

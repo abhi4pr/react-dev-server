@@ -1,4 +1,3 @@
-
 import { Autocomplete, Stack, TextField } from "@mui/material";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
@@ -6,9 +5,8 @@ import ReactApexChart from "react-apexcharts";
 import { useParams } from "react-router-dom";
 import { baseUrl } from "../../../../utils/config";
 
-
 function WFHDUsersGrapf() {
-    const [graphData, setGraphData] = useState([]);
+  const [graphData, setGraphData] = useState([]);
   const [viewOption, setViewOption] = useState("male");
   const [state, setState] = useState({
     series: [
@@ -17,45 +15,47 @@ function WFHDUsersGrapf() {
         data: [],
       },
     ],
-    
+
     options: {
       chart: {
-        type: 'bar',
+        type: "bar",
         height: 350,
         stacked: true,
         toolbar: {
-          show: true
+          show: true,
         },
         zoom: {
-          enabled: true
-        }
+          enabled: true,
+        },
       },
-      
-      responsive: [{
-        breakpoint: 480,
-        options: {
-          legend: {
-            position: 'bottom',
-            offsetX: -10,
-            offsetY: 0
-          }
-        }
-      }],
+
+      responsive: [
+        {
+          breakpoint: 480,
+          options: {
+            legend: {
+              position: "bottom",
+              offsetX: -10,
+              offsetY: 0,
+            },
+          },
+        },
+      ],
       plotOptions: {
         bar: {
           horizontal: false,
           borderRadius: 10,
-          borderRadiusApplication: 'end', // 'around', 'end'
-          borderRadiusWhenStacked: 'last', // 'all', 'last'
+          borderRadiusApplication: "end", // 'around', 'end'
+          borderRadiusWhenStacked: "last", // 'all', 'last'
           dataLabels: {
             total: {
               enabled: true,
               style: {
-                fontSize: '13px',
-                fontWeight: 900
-              }
-            }
-          }
+                fontSize: "13px",
+                fontWeight: 900,
+              },
+            },
+          },
         },
       },
       xaxis: {
@@ -63,16 +63,16 @@ function WFHDUsersGrapf() {
         categories: [],
       },
       legend: {
-        position: 'right',
-        offsetY: 40
+        position: "right",
+        offsetY: 40,
       },
       fill: {
-        opacity: 1
-      }
+        opacity: 1,
+      },
     },
   });
 
-    useEffect(() => {
+  useEffect(() => {
     axios
       .post(baseUrl + "get_user_graph_data_of_wfhd", {
         caseType: "department_wise",
@@ -91,16 +91,16 @@ function WFHDUsersGrapf() {
 
     if (graphData && graphData.length > 0) {
       graphData.forEach((dayData) => {
-        if ( dayData.dept_name) {
+        if (dayData.dept_name) {
           categoriesdata.push(dayData.dept_name);
 
           male.push(dayData.maleCount);
           female.push(dayData.femaleCount);
         }
       });
-console.log(categoriesdata,"categoriesdata")
-      let selectedData = male ;
-      let selectedDatas = female ;
+      console.log(categoriesdata, "categoriesdata");
+      let selectedData = male;
+      let selectedDatas = female;
 
       const apexobj = {
         series: [
@@ -115,43 +115,45 @@ console.log(categoriesdata,"categoriesdata")
         ],
         options: {
           chart: {
-            type: 'bar',
+            type: "bar",
             height: 350,
             stacked: true,
             toolbar: {
-              show: true
+              show: true,
             },
             zoom: {
-              enabled: true
-            }
+              enabled: true,
+            },
           },
-          colors: ["#1E90FF", "#FF69B4"], // Add your custom colors here
-          responsive: [{
-            breakpoint: 480,
-            options: {
-              legend: {
-                position: 'bottom',
-                offsetX: -10,
-                offsetY: 0
-              }
-            }
-          }],
+          colors: ["#845ADF", "#26BF94"], // Add your custom colors here
+          responsive: [
+            {
+              breakpoint: 480,
+              options: {
+                legend: {
+                  position: "bottom",
+                  offsetX: -10,
+                  offsetY: 0,
+                },
+              },
+            },
+          ],
           plotOptions: {
             bar: {
               horizontal: false,
-              borderRadius: 10,
-              borderRadiusApplication: 'end', // 'around', 'end'
-              borderRadiusWhenStacked: 'last', // 'all', 'last'
+              borderRadius: 4,
+              borderRadiusApplication: "end", // 'around', 'end'
+              borderRadiusWhenStacked: "last", // 'all', 'last'
               dataLabels: {
                 total: {
                   enabled: true,
                   style: {
-                    fontSize: '13px',
-                    fontWeight: 900
-                  }
-                }
+                    fontSize: "12px",
+                    fontWeight: 600,
+                  },
+                },
               },
-              columnWidth: '80px'
+              columnWidth: "60px",
             },
           },
           xaxis: {
@@ -159,12 +161,12 @@ console.log(categoriesdata,"categoriesdata")
             categories: categoriesdata,
           },
           legend: {
-            position: 'right',
-            offsetY: 40
+            position: "right",
+            offsetY: 20,
           },
           fill: {
-            opacity: 1
-          }
+            opacity: 1,
+          },
         },
       };
       return apexobj;
@@ -183,13 +185,15 @@ console.log(categoriesdata,"categoriesdata")
   }, [graphData, viewOption]);
 
   return (
-    <div className="row">
-      <div className="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
-        <div className="card">
-          <div className="card-body pb0">
-           {state && graphData.length > 0 &&  <div className="allSelChart thmChart">
-              <Stack direction="row">
-                {/* <Autocomplete
+    <div className="card">
+      <div className="card-header">
+        <h5 className="card-title"> Department Wise Users Count</h5>
+      </div>
+      <div className="card-body p0">
+        {state && graphData.length > 0 && (
+          <div className="allSelChart thmChart">
+            <Stack direction="row">
+              {/* <Autocomplete
                   disablePortal
                   clearIcon={false}
                   sx={{ width: "20%" }}
@@ -202,20 +206,18 @@ console.log(categoriesdata,"categoriesdata")
                     </>
                   )}
                 /> */}
-              </Stack>
-              <ReactApexChart
-                options={state.options}
-                series={state.series}
-                type="bar"
-                height={250}
-              />
-            </div>}
+            </Stack>
+            <ReactApexChart
+              options={state.options}
+              series={state.series}
+              type="bar"
+              height={250}
+            />
           </div>
-        </div>
+        )}
       </div>
     </div>
   );
 }
 
 export default WFHDUsersGrapf;
-

@@ -18,6 +18,7 @@ import WFHDDahboard from "./WFHDDahboard";
 import { useAPIGlobalContext } from "../APIContext/APIContext";
 import { constant } from "../../../utils/constants";
 import OrgTree from "../WFH/OrgTree/OrgTree";
+import imageTest1 from "../../../assets/img/product/Avtrar1.png";
 
 function Dashboard() {
   const { RoleIDContext } = useAPIGlobalContext();
@@ -126,9 +127,9 @@ function Dashboard() {
             </button>
           </Link> */}
         </div>
-        <div className="row" style={{ marginTop: "16px" }}>
+        <div className="row">
           {contextData && contextData[8] && contextData[8].view_value === 1 && (
-            <div className="col-xxl-4 col-xl-3 col-lg-4 col-md-6 col-sm-12 d_infocard_col">
+            <div className="col-xxl-4 col-xl-3 col-lg-4 col-md-6 col-sm-12 d_infocard_col mb0">
               <div className="d_infocard card shadow">
                 <Link to="/pantry-user">
                   <div className="card-body">
@@ -147,7 +148,7 @@ function Dashboard() {
             </div>
           )}
           {contextData && contextData[9] && contextData[9].view_value === 1 && (
-            <div className="col-xxl-4 col-xl-3 col-lg-4 col-md-6 col-sm-12 d_infocard_col">
+            <div className="col-xxl-4 col-xl-3 col-lg-4 col-md-6 col-sm-12 d_infocard_col mb0">
               <div className="d_infocard card shadow">
                 <Link to="/pantry-delivery">
                   <div className="card-body">
@@ -168,7 +169,7 @@ function Dashboard() {
           {contextData &&
             contextData[15] &&
             contextData[15].view_value === 1 && (
-              <div className="col-xxl-4 col-xl-3 col-lg-4 col-md-6 col-sm-12 d_infocard_col">
+              <div className="col-xxl-4 col-xl-3 col-lg-4 col-md-6 col-sm-12 d_infocard_col mb0">
                 <div className="d_infocard card shadow">
                   <Link to="/admin/pantry-home">
                     <div className="card-body">
@@ -190,7 +191,7 @@ function Dashboard() {
           {contextData &&
             contextData[12] &&
             contextData[12].view_value === 1 && (
-              <div className="col-xxl-4 col-xl-3 col-lg-4 col-md-6 col-sm-12 d_infocard_col">
+              <div className="col-xxl-4 col-xl-3 col-lg-4 col-md-6 col-sm-12 d_infocard_col mb0">
                 <div className="d_infocard card shadow">
                   <div className="card-body" onClick={handleBrand}>
                     <div className="d_infocard_txt">
@@ -209,7 +210,7 @@ function Dashboard() {
           {contextData &&
             contextData[39] &&
             contextData[39].view_value === 1 && (
-              <div className="col-xxl-4 col-xl-3 col-lg-4 col-md-6 col-sm-12 d_infocard_col">
+              <div className="col-xxl-4 col-xl-3 col-lg-4 col-md-6 col-sm-12 d_infocard_col mb0">
                 <div className="d_infocard card shadow">
                   <div className="card-body" onClick={handleDataBrand}>
                     <div className="d_infocard_txt">
@@ -228,7 +229,7 @@ function Dashboard() {
           {contextData &&
             contextData[13] &&
             contextData[13].view_value === 1 && (
-              <div className="col-xxl-4 col-xl-3 col-lg-4 col-md-6 col-sm-12 d_infocard_col">
+              <div className="col-xxl-4 col-xl-3 col-lg-4 col-md-6 col-sm-12 d_infocard_col mb0">
                 <div className="d_infocard card shadow">
                   <div className="card-body" onClick={handleIP}>
                     <div className="d_infocard_txt">
@@ -246,7 +247,7 @@ function Dashboard() {
             )}
 
           {loginUserData.department_name == "Accounts" && (
-            <div className="col-xxl-4 col-xl-3 col-lg-4 col-md-6 col-sm-12 d_infocard_col">
+            <div className="col-xxl-4 col-xl-3 col-lg-4 col-md-6 col-sm-12 d_infocard_col mb0">
               <div className="d_infocard card shadow">
                 <div
                   className="card-body"
@@ -267,7 +268,7 @@ function Dashboard() {
           )}
 
           {loginUserData.department_name == "Accounts" &&
-            // <div className="col-xxl-4 col-xl-3 col-lg-4 col-md-6 col-sm-12 d_infocard_col">
+            // <div className="col-xxl-4 col-xl-3 col-lg-4 col-md-6 col-sm-12 d_infocard_col mb0">
             //   <div className="d_infocard card shadow">
             //     <div
             //       className="card-body"
@@ -289,9 +290,9 @@ function Dashboard() {
         </div>
 
         {RoleIDContext == constant.CONST_MANAGER_ROLE && <OrgTree />}
-        {contextData && contextData[55] && contextData[55].view_value === 1 && (
+        {/* {contextData && contextData[55] && contextData[55].view_value === 1 && (
           <WFHDDahboard />
-        )}
+        )} */}
       </div>
       {/* <ChatApplication /> */}
     </>
