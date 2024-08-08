@@ -56,7 +56,8 @@ const PlanMaking = () => {
   const [costPerStoryValues, setCostPerStoryValues] = useState({});
   const [costPerBothValues, setCostPerBothValues] = useState({});
   const [totalCostValues, setTotalCostValues] = useState({});
-  
+  const [showTotalCost, setShowTotalCost] = useState({});
+
   const { data: allPriceTypeList } = useGetpagePriceTypeQuery();
   const { data: ownerShipData } = useGetOwnershipTypeQuery();
 
@@ -129,11 +130,15 @@ const PlanMaking = () => {
     useGetMultiplePagePriceQuery();
 
   const handleCheckboxChange = (row) => (event) => {
-    if (event.target.checked) {
-      setSelectedRows([...selectedRows, row]);
-    } else {
-      setSelectedRows(selectedRows.filter((selectedRow) => selectedRow._id !== row._id));
-    }
+    const updatedSelectedRows = event.target.checked
+      ? [...selectedRows, row]
+      : selectedRows.filter((selectedRow) => selectedRow._id !== row._id);
+
+    setSelectedRows(updatedSelectedRows);
+    setShowTotalCost({
+      ...showTotalCost,
+      [row._id]: event.target.checked,
+    });
   };
 
   const handlePostPerPageChange = (row) => (event) => {
@@ -220,7 +225,7 @@ const PlanMaking = () => {
           <Checkbox
             checked={selectedRows.some((row) => row._id === params.row._id)}
             onChange={handleCheckboxChange(params.row)}
-      />
+          />
         );
       },
     },
@@ -258,7 +263,7 @@ const PlanMaking = () => {
       width: 200,
       renderCell: (params) => {
         return (
-          <div>{totalCostValues[params.row._id] || 0}</div>
+          <div>{showTotalCost[params.row._id] ? totalCostValues[params.row._id] || 0 : '-'}</div>
         );
       },
     },
