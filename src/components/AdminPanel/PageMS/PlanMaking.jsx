@@ -67,6 +67,11 @@ const PlanMaking = () => {
 
   const { data: cities } = useGetAllCitiesQuery();
 
+  const [totalFollowers, setTotalFollowers] = useState(0);
+  const [totalCost, setTotalCost] = useState(0);
+  const [totalPostsPerPage, setTotalPostsPerPage] = useState(0);
+  const [totalStoriesPerPage, setTotalStoriesPerPage] = useState(0);
+  
   useEffect(() => {
     if (userID && !contextData) {
       axios
@@ -139,6 +144,7 @@ const PlanMaking = () => {
       ...showTotalCost,
       [row._id]: event.target.checked,
     });
+    updateStatistics(updatedSelectedRows);
   };
 
   const handlePostPerPageChange = (row) => (event) => {
@@ -148,6 +154,7 @@ const PlanMaking = () => {
     };
     setPostPerPageValues(updatedPostValues);
     calculateTotalCost(row._id, updatedPostValues[row._id], storyPerPageValues[row._id], costPerPostValues[row._id], costPerStoryValues[row._id], costPerBothValues[row._id]);
+    updateStatistics(selectedRows);
   };
 
   const handleStoryPerPageChange = (row) => (event) => {
@@ -157,6 +164,26 @@ const PlanMaking = () => {
     };
     setStoryPerPageValues(updatedStoryValues);
     calculateTotalCost(row._id, postPerPageValues[row._id], updatedStoryValues[row._id], costPerPostValues[row._id], costPerStoryValues[row._id], costPerBothValues[row._id]);
+    updateStatistics(selectedRows);
+  };
+
+  const updateStatistics = (rows) => {
+    let followers = 0;
+    let cost = 0;
+    let posts = 0;
+    let stories = 0;
+
+    rows.forEach(row => {
+      followers += row.followers_count || 0;
+      cost += totalCostValues[row._id] || 0;
+      posts += Number(postPerPageValues[row._id]) || 0;
+      stories += Number(storyPerPageValues[row._id]) || 0;
+    });
+
+    setTotalFollowers(followers);
+    setTotalCost(cost);
+    setTotalPostsPerPage(posts);
+    setTotalStoriesPerPage(stories);
   };
 
   const calculateTotalCost = (id, postPerPage, storyPerPage, costPerPost, costPerStory, costPerBoth) => {
@@ -209,17 +236,17 @@ const PlanMaking = () => {
     {
       field: "followers_count",
       headerName: "Followers",
-      width: 200,
+      width: 100,
     },
     {
       field: "ownership_type",
       headerName: "Ownership",
-      width: 200
+      width: 100
     },
     {
       field: "est_update",
       headerName: 'Selection',
-      width: 200,
+      width: 100,
       renderCell: (params) => {
         return (
           <Checkbox
@@ -232,25 +259,27 @@ const PlanMaking = () => {
     {
       field: "created_at",
       headerName: 'Post Per Page',
-      width: 200,
+      width: 150,
       renderCell: (params) => {
         return (
           <input
             type="number"
+            style={{width:'70%'}}
             value={postPerPageValues[params.row._id] || ''}
             onChange={handlePostPerPageChange(params.row)}
-          />
-        );
+            />
+          );
       },
     },
     {
       field: "updated_by",
       headerName: 'Story Per Page',
-      width: 200,
+      width: 150,
       renderCell: (params) => {
         return (
           <input
             type="number"
+            style={{width:'70%'}}
             value={storyPerPageValues[params.row._id] || ''}
             onChange={handleStoryPerPageChange(params.row)}
           />
@@ -260,10 +289,10 @@ const PlanMaking = () => {
     {
       field: "last_updated_by",
       headerName: 'Total Cost',
-      width: 200,
+      width: 100,
       renderCell: (params) => {
         return (
-          <div>{showTotalCost[params.row._id] ? totalCostValues[params.row._id] || 0 : '-'}</div>
+          <div style={{border:"1px solid red", padding:'10px'}}>{'₹'}{showTotalCost[params.row._id] ? totalCostValues[params.row._id] || 0 : '-'}</div>
         );
       },
     },
@@ -292,7 +321,7 @@ const PlanMaking = () => {
     {
       field: "m_post_price",
       headerName: "Cost Per Post",
-      width: 200,
+      width: 150,
       valueGetter: ({ row }) => {
         let mPostPrice = row.m_post_price;
         let postPrice = row.post;
@@ -302,7 +331,7 @@ const PlanMaking = () => {
     {
       field: "m_story_price",
       headerName: "Cost Per Story",
-      width: 200,
+      width: 150,
       valueGetter: ({ row }) => {
         let mStoryPrice = row.m_story_price;
         let storyPrice = row.story;
@@ -312,7 +341,7 @@ const PlanMaking = () => {
     {
       field: "m_both_price",
       headerName: "Both Price",
-      width: 200,
+      width: 150,
       valueGetter: ({ row }) => {
         let mBothPrice = row.m_both_price;
         let bothPrice = row.both_;
@@ -377,14 +406,21 @@ const PlanMaking = () => {
                     </Box>
                   </Box>
                 ) : (
+                  <>
+                    <Box sx={{ padding: 2 }}>
+                      <Typography>Total Followers: {totalFollowers}</Typography>
+                      <Typography>Total Cost: {totalCost}</Typography>
+                      <Typography>Total Posts Per Page: {totalPostsPerPage}</Typography>
+                      <Typography>Total Stories Per Page: {totalStoriesPerPage}</Typography>
+                    </Box>
                   <Box sx={{ height: 700, width: "100%" }}>
                     <DataGrid
                       title="Page Overview"
                       rows={filterData}
                       columns={dataGridcolumns}
-                      onRowDoubleClick={(params) => {
-                        navigate(`/admin/pms-page-edit/${params.row._id}`);
-                      }}
+                      // onRowDoubleClick={(params) => {
+                      //   navigate(`/admin/pms-page-edit/${params.row._id}`);
+                      // }}
                       pageSize={5}
                       rowsPerPageOptions={[5]}
                       disableSelectionOnClick
@@ -395,10 +431,11 @@ const PlanMaking = () => {
                           showQuickFilter: true,
                         },
                       }}
-                      checkboxSelection
+                      // checkboxSelection
                       disableRowSelectionOnClick
                     />
                   </Box>
+                </>
                 )}
               </div>
             </div>

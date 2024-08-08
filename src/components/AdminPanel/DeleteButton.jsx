@@ -4,6 +4,7 @@ import { MdDelete } from "react-icons/md";
 import { baseUrl } from "../../utils/config";
 
 const DeleteButton = ({ endpoint, id, getData }) => {
+  const token = sessionStorage.getItem("token");
   const handleDelete = () => {
     const swalWithBootstrapButtons = Swal.mixin({
       customClass: {
@@ -26,7 +27,12 @@ const DeleteButton = ({ endpoint, id, getData }) => {
       .then((result) => {
         if (result.isConfirmed) {
           axios
-            .delete(`${baseUrl}` + `${endpoint}/${id}`)
+            .delete(`${baseUrl}` + `${endpoint}/${id}`,{
+              headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json", 
+              }
+            })
             .then(() => {
               // Check if no error occurred and then show the success alert
               swalWithBootstrapButtons.fire(
