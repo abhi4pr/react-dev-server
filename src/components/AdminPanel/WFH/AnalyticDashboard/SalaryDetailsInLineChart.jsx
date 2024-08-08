@@ -1,7 +1,7 @@
-import axios from 'axios';
-import React, { useEffect, useState } from 'react';
-import { baseUrl } from '../../../../utils/config';
-import ReactApexChart from 'react-apexcharts';
+import axios from "axios";
+import React, { useEffect, useState } from "react";
+import { baseUrl } from "../../../../utils/config";
+import ReactApexChart from "react-apexcharts";
 
 function SalaryDetailsInLineChart() {
   const [graphData, setGraphData] = useState([]);
@@ -26,13 +26,13 @@ function SalaryDetailsInLineChart() {
     options: {
       chart: {
         height: 400,
-        type: 'area'
+        type: "area",
       },
       dataLabels: {
-        enabled: false
+        enabled: false,
       },
       stroke: {
-        curve: 'smooth'
+        curve: "smooth",
       },
       xaxis: {
         type: "number",
@@ -44,7 +44,7 @@ function SalaryDetailsInLineChart() {
   const groupByPageCategoryId = (rows) => {
     let grouped = {};
 
-    rows.forEach(row => {
+    rows.forEach((row) => {
       let departmentName = row.dept_name;
 
       if (!grouped[departmentName]) {
@@ -58,14 +58,26 @@ function SalaryDetailsInLineChart() {
     return grouped;
   };
 
-  const monthOrder = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+  const monthOrder = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+  ];
   const formatForSeries = (grouped) => {
-
-    let series = Object.keys(grouped).map(departmentName => {
-      let data = monthOrder.map(month => grouped[departmentName][month] || 0); // Default to 0 if no data for the month
+    let series = Object.keys(grouped).map((departmentName) => {
+      let data = monthOrder.map((month) => grouped[departmentName][month] || 0); // Default to 0 if no data for the month
       return {
         name: departmentName,
-        data: data
+        data: data,
       };
     });
 
@@ -94,13 +106,13 @@ function SalaryDetailsInLineChart() {
       options: {
         chart: {
           height: 400,
-          type: 'area'
+          type: "area",
         },
         dataLabels: {
-          enabled: false
+          enabled: false,
         },
         stroke: {
-          curve: 'smooth'
+          curve: "smooth",
         },
         xaxis: {
           type: "number",
@@ -125,22 +137,21 @@ function SalaryDetailsInLineChart() {
   }, [graphData, seriesArray]);
 
   return (
-    <div className="row">
-      <div className="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
-        <div className="card">
-          <div className="card-body pb0">
-            {state && graphData.length > 0 && (
-              <div className="allSelChart thmChart">
-                <ReactApexChart
-                  options={state.options}
-                  series={state.series}
-                  type="area"
-                  height={300}
-                />
-              </div>
-            )}
+    <div className="card">
+      <div className="card-header">
+        <h5 className="card-title"> Department & Month Wise Salary</h5>
+      </div>
+      <div className="card-body p0">
+        {state && graphData.length > 0 && (
+          <div className="allSelChart thmChart">
+            <ReactApexChart
+              options={state.options}
+              series={state.series}
+              type="area"
+              height={300}
+            />
           </div>
-        </div>
+        )}
       </div>
     </div>
   );

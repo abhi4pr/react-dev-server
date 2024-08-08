@@ -2,6 +2,12 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { baseUrl } from "../../../../utils/config";
 import { Link } from "react-router-dom";
+import {
+  UsersThree,
+  MaskHappy,
+  FolderUser,
+  HouseLine,
+} from "@phosphor-icons/react";
 
 const UserCountInCards = () => {
   const [departmentData, setDepartmentData] = useState([]);
@@ -21,41 +27,44 @@ const UserCountInCards = () => {
     );
     setDepartmentCount(sumMonth);
   }, [departmentData]);
+
+  const icons = [ <MaskHappy weight="duotone" />, <FolderUser weight="duotone" />, <HouseLine weight="duotone" />];
+const classes = ['bgSecondaryLight', 'bgTertiaryLight', 'bgSuccessLight'];
   return (
     <>
       <div className="row">
-        <div className="col-xxl-4 col-xl-3 col-lg-4 col-md-6 col-sm-12">
-          <div className="card mb0">
-            <div className="card-body" style={{backgroundColor:'lightblue'}}>
-              <h5 className="mb10">All Users</h5>
-              <h2 className="flexCenterBetween">
-                {departmentCount}
-                <Link to="/admin/wfhd-overview">
-                  <span className="icon" style={{backgroundColor:"#23448D"}}>
-                    <i class="bi bi-arrow-up-right" style={{color:"white"}}></i>
+        <div className="col-xxl-3 col-xl-3 col-lg-3 col-md-6 col-sm-12">
+          <div class="card text-center">
+            <div class="card-body pb20">
+              <Link to="/admin/wfhd-overview">
+                <div className="iconBadge bgPrimaryLight">
+                  <span>
+                    <UsersThree weight="duotone" />
                   </span>
-                </Link>
-              </h2>
+                </div>
+              </Link>
+              <h6 className="colorMedium">All Users</h6>
+              <h3 className="mt8">{departmentCount}</h3>
             </div>
           </div>
         </div>
-        {departmentData.map((d) => (
-          <div className="col-xxl-4 col-xl-3 col-lg-4 col-md-6 col-sm-12">
-            <div className="card mb0">
-              <div className="card-body" style={{backgroundColor:'lightblue'}}>
-                <h5 className="mb10">{d.dept_name}</h5>
-                <h2 className="flexCenterBetween">
-                  {d.user_count}
-                  <Link to="/admin/wfhd-overview">
-                    <span className="icon" style={{backgroundColor:"#23448D"}}>
-                      <i class="bi bi-arrow-up-right" style={{color:"white"}}></i>
-                    </span>
-                  </Link>
-                </h2>
-              </div>
+        {departmentData.map((d, index) => (
+        <div key={d.id} className="col-xxl-4 col-xl-3 col-lg-4 col-md-6 col-sm-12">
+          <div className="card text-center">
+            <div className="card-body pb20">
+              <Link to="/admin/wfhd-overview">
+                <div className={`iconBadge ${classes[index % classes.length]}`}>
+                  <span>
+                    {icons[index % icons.length]}
+                  </span>
+                </div>
+              </Link>
+              <h6 className="colorMedium">{d.dept_name}</h6>
+              <h3 className="mt8">{d.user_count}</h3>
             </div>
           </div>
-        ))}
+        </div>
+      ))}
       </div>
     </>
   );

@@ -1,10 +1,10 @@
-import axios from 'axios';
-import React, { useEffect, useState } from 'react'
-import { baseUrl } from '../../../../utils/config';
+import axios from "axios";
+import React, { useEffect, useState } from "react";
+import { baseUrl } from "../../../../utils/config";
 import Modal from "react-modal";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
-import DateISOtoNormal from '../../../../utils/DateISOtoNormal';
-import ReJoinReusable from '../../User/ReJoinReusable';
+import DateISOtoNormal from "../../../../utils/DateISOtoNormal";
+import ReJoinReusable from "../../User/ReJoinReusable";
 
 const NewJoineeAndExitUsers = () => {
   const [newJoineeData, setNewJoineeData] = useState([]);
@@ -18,22 +18,22 @@ const NewJoineeAndExitUsers = () => {
   const handleOpenModal = (type) => {
     setModalType(type);
     setModalOpen(true);
-  }
+  };
   const handleCloseModal = () => {
     setModalOpen(false);
-  }
-  
+  };
+
   const allExitUserDatas = () => {
     axios.get(baseUrl + `get_exit_of_wfhd_users`).then((res) => {
       setExistUserData(res.data.data);
     });
-  }
+  };
   const allWFHDExitUsers = () => {
     axios.get(baseUrl + `get_all_exit_users_of_wfhd`).then((res) => {
       setAllExitUsers(res.data.data);
-      console.log(res.data.data, 'new lalit exit');
+      console.log(res.data.data, "new lalit exit");
     });
-  }
+  };
 
   const [reJoinModalOpen, setRejoinModalOpen] = useState(false);
   const [rejoinID, setRejoinID] = useState("");
@@ -44,7 +44,7 @@ const NewJoineeAndExitUsers = () => {
     setRejoinModalOpen(true);
     setRejoinID(id);
   };
-  
+
   useEffect(() => {
     allExitUserDatas();
     allWFHDExitUsers();
@@ -78,14 +78,14 @@ const NewJoineeAndExitUsers = () => {
 
   const formatDate = (dateString) => {
     const date = new Date(dateString);
-    const day = String(date.getDate()).padStart(2, '0');
-    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, "0");
+    const month = String(date.getMonth() + 1).padStart(2, "0");
     const year = date.getFullYear();
 
     return `${day}-${month}-${year}`;
   };
 
-  // MODAL 
+  // MODAL
   const ExitUserColumns = [
     {
       field: "S.NO",
@@ -128,17 +128,18 @@ const NewJoineeAndExitUsers = () => {
       },
     },
     {
-          field: "Re-Join",
-          headerName: "Re-Join",
-          width: 100,
-          renderCell: (params) =>
-              <button
-                className="btn cmnbtn btn_sm btn-outline-danger"
-                onClick={() => handleReJoin(params.row.user_id)}
-              >
-                Re-Join
-              </button>
-        },
+      field: "Re-Join",
+      headerName: "Re-Join",
+      width: 100,
+      renderCell: (params) => (
+        <button
+          className="btn cmnbtn btn_sm btn-outline-danger"
+          onClick={() => handleReJoin(params.row.user_id)}
+        >
+          Re-Join
+        </button>
+      ),
+    },
   ];
 
   const AllUsers = [
@@ -188,13 +189,21 @@ const NewJoineeAndExitUsers = () => {
     <>
       <div className="row">
         <div className="col-xxl-6 col-xl-6 col-lg-6 col-md-6 col-sm-12">
-          <div className="card mb0">
-            <div className="card-header d-flex" style={{ justifyContent: 'space-between' }}>
+          <div className="card">
+            <div
+              className="card-header d-flex"
+              style={{ justifyContent: "space-between" }}
+            >
               <div>
                 <h5 class="card-title">New Joiners</h5>
               </div>
               <div>
-                <h6 style={{ color: "blue", cursor: "pointer" }} onClick={() => handleOpenModal("newJoiners")}>View All Employees</h6>
+                <h6
+                  className="anchorBadge"
+                  onClick={() => handleOpenModal("newJoiners")}
+                >
+                  View All Employees
+                </h6>
               </div>
             </div>
             <div className="card-body">
@@ -218,13 +227,21 @@ const NewJoineeAndExitUsers = () => {
           </div>
         </div>
         <div className="col-xxl-6 col-xl-6 col-lg-6 col-md-6 col-sm-12">
-          <div className="card mb0">
-            <div className="card-header f-flex" style={{ justifyContent: 'space-between' }}>
+          <div className="card">
+            <div
+              className="card-header f-flex"
+              style={{ justifyContent: "space-between" }}
+            >
               <div>
                 <h5 class="card-title">Exit Users</h5>
               </div>
               <div>
-                <h6 style={{ color: "blue", cursor: "pointer" }} onClick={() => handleOpenModal("exitUsers")}>View All Employees</h6>
+                <h6
+                  className="anchorBadge"
+                  onClick={() => handleOpenModal("exitUsers")}
+                >
+                  View All Employees
+                </h6>
               </div>
             </div>
             <div className="card-body">
@@ -301,7 +318,7 @@ const NewJoineeAndExitUsers = () => {
         id={rejoinID}
       />
     </>
-  )
-}
+  );
+};
 
-export default NewJoineeAndExitUsers
+export default NewJoineeAndExitUsers;

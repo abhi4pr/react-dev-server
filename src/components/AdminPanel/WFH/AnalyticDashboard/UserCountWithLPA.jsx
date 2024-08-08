@@ -9,31 +9,33 @@ function UserCountWithLPA() {
     series: [], // Donut chart series is an array of values
     options: {
       chart: {
-        type: 'donut',
+        type: "donut",
         height: 350,
       },
-      responsive: [{
-        breakpoint: 480,
-        options: {
-          chart: {
-            width: 300
+      responsive: [
+        {
+          breakpoint: 480,
+          options: {
+            chart: {
+              width: 300,
+            },
+            legend: {
+              position: "bottom",
+            },
           },
-          legend: {
-            position: 'bottom'
-          }
-        }
-      }],
+        },
+      ],
       labels: [], // Labels for the donut chart
       legend: {
-        position: 'right',
-        offsetY: 40
+        position: "right",
+        offsetY: 40,
       },
       plotOptions: {
         pie: {
           donut: {
-            size: '70%'
-          }
-        }
+            size: "70%",
+          },
+        },
       },
     },
   });
@@ -42,7 +44,7 @@ function UserCountWithLPA() {
     try {
       const res = await axios.get(baseUrl + "get_salary_by_LPA");
       setGraphData(res.data.data);
-      console.log(res.data.data, 'lpa');
+      console.log(res.data.data, "lpa");
     } catch (error) {
       console.error("Error fetching data: ", error);
     }
@@ -56,7 +58,7 @@ function UserCountWithLPA() {
     const labels = [];
     const seriesData = [];
 
-    data.forEach(item => {
+    data.forEach((item) => {
       const range = Object.keys(item)[0];
       const count = Object.values(item)[0];
       labels.push(range);
@@ -67,31 +69,33 @@ function UserCountWithLPA() {
       series: seriesData, // Update the series data
       options: {
         chart: {
-          type: 'donut',
+          type: "donut",
           height: 350,
         },
         labels: labels, // Update the labels
-        responsive: [{
-          breakpoint: 480,
-          options: {
-            chart: {
-              width: 300
+        responsive: [
+          {
+            breakpoint: 480,
+            options: {
+              chart: {
+                width: 300,
+              },
+              legend: {
+                position: "bottom",
+              },
             },
-            legend: {
-              position: 'bottom'
-            }
-          }
-        }],
+          },
+        ],
         legend: {
-          position: 'right',
-          offsetY: 40
+          position: "right",
+          offsetY: 40,
         },
         plotOptions: {
           pie: {
             donut: {
-              size: '68%'
-            }
-          }
+              size: "68%",
+            },
+          },
         },
       },
     };
@@ -106,22 +110,21 @@ function UserCountWithLPA() {
   }, [graphData]);
 
   return (
-    <div className="row">
-      <div className="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
-        <div className="card">
-          <div className="card-body pb0">
-            {state && graphData.length > 0 && (
-              <div className="allSelChart thmChart">
-                <ReactApexChart
-                  options={state.options}
-                  series={state.series}
-                  type="donut"
-                  height={260}
-                />
-              </div>
-            )}
+    <div className="card">
+      <div className="card-header">
+        <h5 className="card-title"> Users Count With LPA</h5>
+      </div>
+      <div className="card-body p0">
+        {state && graphData.length > 0 && (
+          <div className="allSelChart thmChart">
+            <ReactApexChart
+              options={state.options}
+              series={state.series}
+              type="donut"
+              height={260}
+            />
           </div>
-        </div>
+        )}
       </div>
     </div>
   );

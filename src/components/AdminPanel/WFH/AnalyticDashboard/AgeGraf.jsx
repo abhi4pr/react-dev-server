@@ -9,30 +9,32 @@ function AgeGraf() {
     series: [],
     options: {
       chart: {
-        type: 'radialBar',
-        height: 350,
+        type: "radialBar",
+        height: 300,
       },
       plotOptions: {
         radialBar: {
           dataLabels: {
             name: {
-              fontSize: '22px',
+              fontSize: "22px",
             },
             value: {
-              fontSize: '16px',
+              fontSize: "16px",
               show: true,
               formatter: function (val) {
                 return val + " users";
-              }
+              },
             },
             total: {
               show: true,
-              label: 'Total',
+              label: "Total",
               formatter: function (w) {
-                return w.globals.seriesTotals.reduce((a, b) => a + b, 0) + " users";
-              }
-            }
-          }
+                return (
+                  w.globals.seriesTotals.reduce((a, b) => a + b, 0) + " users"
+                );
+              },
+            },
+          },
         },
       },
       labels: [],
@@ -41,9 +43,9 @@ function AgeGraf() {
         y: {
           formatter: function (val) {
             return val + " users";
-          }
-        }
-      }
+          },
+        },
+      },
     },
   });
 
@@ -61,8 +63,16 @@ function AgeGraf() {
     const seriesData = [];
     const labels = [];
     const colors = [
-      "#FF5733", "#33FF57", "#3357FF", "#FF33A1", "#A133FF",
-      "#33FFF4", "#FFC133", "#8D33FF", "#FF338D", "#33FF8D"
+      "#FF5733",
+      "#33FF57",
+      "#3357FF",
+      "#FF33A1",
+      "#A133FF",
+      "#33FFF4",
+      "#FFC133",
+      "#8D33FF",
+      "#FF338D",
+      "#33FF8D",
     ];
 
     data.forEach((item, index) => {
@@ -74,31 +84,33 @@ function AgeGraf() {
       series: seriesData,
       options: {
         chart: {
-          type: 'radialBar',
-          height: 350,
+          type: "radialBar",
+          height: 300,
         },
         plotOptions: {
           radialBar: {
             dataLabels: {
               name: {
-                fontSize: '22px',
+                fontSize: "22px",
               },
               value: {
-                fontSize: '16px',
+                fontSize: "16px",
                 show: true,
                 formatter: function (val) {
                   return val + " users";
-                }
+                },
               },
               total: {
                 show: true,
-                label: 'Total',
+                label: "Total",
                 formatter: function (w) {
-                  return w.globals.seriesTotals.reduce((a, b) => a + b, 0) + " users";
-                }
-              }
-            }
-          }
+                  return (
+                    w.globals.seriesTotals.reduce((a, b) => a + b, 0) + " users"
+                  );
+                },
+              },
+            },
+          },
         },
         labels: labels,
         colors: colors.slice(0, seriesData.length),
@@ -106,9 +118,9 @@ function AgeGraf() {
           y: {
             formatter: function (val) {
               return val + " users";
-            }
-          }
-        }
+            },
+          },
+        },
       },
     };
     return apexobj;
@@ -122,30 +134,27 @@ function AgeGraf() {
   }, [graphData]);
 
   return (
-    <div className="row">
-      <div className="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
-        <div className="card">
-          <div className="card-body pb0">
-            {state.series.length > 0 && (
-              <div className="allSelChart thmChart">
-                <ReactApexChart
-                  options={state.options}
-                  series={state.series}
-                  type="radialBar"
-                  height={340}
-                />
-              </div>
-            )}
+    <div className="card">
+      <div className="card-header">
+        <h5 className="card-title">Age Wise Users Graph</h5>
+      </div>
+      <div className="card-body p0">
+        {state.series.length > 0 && (
+          <div className="allSelChart thmChart">
+            <ReactApexChart
+              options={state.options}
+              series={state.series}
+              type="radialBar"
+              height={335}
+            />
           </div>
-        </div>
+        )}
       </div>
     </div>
   );
 }
 
 export default AgeGraf;
-
-
 
 // import axios from "axios";
 // import React, { useEffect, useState } from "react";
@@ -232,7 +241,6 @@ export default AgeGraf;
 //         setGraphData(res.data);
 //       });
 //   }, []);
-
 
 //   const createSeriesData = (data) => {
 //     const categories = [];
