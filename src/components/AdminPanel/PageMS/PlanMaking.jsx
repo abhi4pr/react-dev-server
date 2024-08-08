@@ -56,7 +56,9 @@ const PlanMaking = () => {
   const [costPerStoryValues, setCostPerStoryValues] = useState({});
   const [costPerBothValues, setCostPerBothValues] = useState({});
   const [totalCostValues, setTotalCostValues] = useState({});
+  const [totalPagesSelected, setTotalPagesSelected] = useState(0);
   const [showTotalCost, setShowTotalCost] = useState({});
+  const [totalDeliverables, setTotalDeliverables] = useState(0);
 
   const { data: allPriceTypeList } = useGetpagePriceTypeQuery();
   const { data: ownerShipData } = useGetOwnershipTypeQuery();
@@ -172,18 +174,26 @@ const PlanMaking = () => {
     let cost = 0;
     let posts = 0;
     let stories = 0;
+    let totalDeliverables = 0;
 
     rows.forEach(row => {
+      const postPerPage = Number(postPerPageValues[row._id]) || 0;
+      const storyPerPage = Number(storyPerPageValues[row._id]) || 0;
+      const rowFollowers = row.followers_count || 0;
+
       followers += row.followers_count || 0;
       cost += totalCostValues[row._id] || 0;
       posts += Number(postPerPageValues[row._id]) || 0;
       stories += Number(storyPerPageValues[row._id]) || 0;
+      totalDeliverables += (postPerPage + storyPerPage) * rowFollowers;
+      setTotalDeliverables(totalDeliverables);
     });
 
     setTotalFollowers(followers);
     setTotalCost(cost);
     setTotalPostsPerPage(posts);
     setTotalStoriesPerPage(stories);
+    setTotalPagesSelected(rows.length);
   };
 
   const calculateTotalCost = (id, postPerPage, storyPerPage, costPerPost, costPerStory, costPerBoth) => {
@@ -312,9 +322,9 @@ const PlanMaking = () => {
         let name = platformData?.find((item) => item?._id == params.row.platform_id)?.platform_name;
         return <div>{name}</div>;
       },
-      width: 200,
+      width: 150,
     },
-    { field: "page_status", headerName: "Status", width: 200 }
+    { field: "page_status", headerName: "Status", width: 100 }
   ];
 
   const pageDetailColumn = [
@@ -408,10 +418,13 @@ const PlanMaking = () => {
                 ) : (
                   <>
                     <Box sx={{ padding: 2 }}>
-                      <Typography>Total Followers: {totalFollowers}</Typography>
-                      <Typography>Total Cost: {totalCost}</Typography>
-                      <Typography>Total Posts Per Page: {totalPostsPerPage}</Typography>
-                      <Typography>Total Stories Per Page: {totalStoriesPerPage}</Typography>
+                      <Typography>Total Followers: {totalFollowers} || 
+                        Total Cost: {totalCost} ||
+                        Total Posts Per Page: {totalPostsPerPage} ||
+                        Total Stories Per Page: {totalStoriesPerPage} ||
+                        Total Deliverable: {totalDeliverables} ||
+                        Total Pages: {totalPagesSelected}
+                      </Typography>
                     </Box>
                   <Box sx={{ height: 700, width: "100%" }}>
                     <DataGrid
