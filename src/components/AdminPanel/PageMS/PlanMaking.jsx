@@ -159,6 +159,10 @@ const PlanMaking = () => {
     updateStatistics(selectedRows);
   };
 
+  useEffect(() => {
+    updateStatistics(selectedRows);
+  }, [storyPerPageValues, postPerPageValues]);
+
   const handleStoryPerPageChange = (row) => (event) => {
     const updatedStoryValues = {
       ...storyPerPageValues,
@@ -166,7 +170,7 @@ const PlanMaking = () => {
     };
     setStoryPerPageValues(updatedStoryValues);
     calculateTotalCost(row._id, postPerPageValues[row._id], updatedStoryValues[row._id], costPerPostValues[row._id], costPerStoryValues[row._id], costPerBothValues[row._id]);
-    updateStatistics(selectedRows);
+    // updateStatistics(selectedRows);
   };
 
   const updateStatistics = (rows) => {
