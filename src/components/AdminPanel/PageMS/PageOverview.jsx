@@ -913,7 +913,7 @@ const PageOverview = () => {
                 className="btn cmnbtn btn_sm btn-outline-primary"
                 onClick={handleSetState()}
               >
-                Page Stats
+                Profile Stats
               </button>
             </Link>
           </>
@@ -1602,7 +1602,7 @@ const PageOverview = () => {
                 <tr>
                   <th>Vendor Name</th>
                   {/* <th>Page Name</th> */}
-                  <th>Page Count</th>
+                  <th>Profile Count</th>
                   <th>Total Sales</th>
                 </tr>
               </thead>
@@ -1638,11 +1638,11 @@ const PageOverview = () => {
                     onChange={() =>
                       dispatch(setShowPageHealthColumn(!showPageHealthColumn))
                     }
-                    name="Page Health"
+                    name="Profile Health"
                     color="primary"
                   />
                 )}
-                <Typography>Page Health</Typography>
+                <Typography>Profile Health</Typography>
                 <Typography>: {filterData?.length}</Typography>
               </h5>
               <div className="flexCenter colGap8">
@@ -1650,7 +1650,7 @@ const PageOverview = () => {
                   to={`/admin/pms-page-master`}
                   className="btn cmnbtn btn_sm btn-outline-primary"
                 >
-                  Add Page <AddIcon />
+                  Add Profile <AddIcon />
                 </Link>
                 <Link
                   to={`/admin/pms-vendor-overview`}
@@ -1768,7 +1768,7 @@ const PageOverview = () => {
                     renderInput={(params) => (
                       <TextField
                         {...params}
-                        label="Page Status"
+                        label="Profile Status"
                         variant="outlined"
                       />
                     )}
@@ -1804,7 +1804,7 @@ const PageOverview = () => {
                     renderInput={(params) => (
                       <TextField
                         {...params}
-                        label="Page Name Type"
+                        label="Profile Name Type"
                         variant="outlined"
                       />
                     )}
@@ -1951,7 +1951,7 @@ const PageOverview = () => {
                 ) : (
                   <Box sx={{ height: 700, width: "100%" }}>
                     <DataGrid
-                      title="Page Overview"
+                      title="Profile Overview"
                       rows={filterData}
                       columns={dataGridcolumns}
                       // processRowUpdate={handleEditCellChange}
@@ -2025,7 +2025,7 @@ const PageOverview = () => {
         }
         {activeTab === 'Tab2' && 
         <div className="vendor-container">
-          <p className="vendor-heading">Page with Levels:</p>
+          <p className="vendor-heading">Profile with Levels:</p>
           {Object.entries(pageLevels).map(([level, count]) => (
             <div key={level} onClick={() => pageWithLevels(level)} className="vendor-item">
               <span>{level}:</span>
@@ -2033,7 +2033,7 @@ const PageOverview = () => {
             </div>
           ))}
           <hr />
-          <p className="vendor-heading">Page with Status:</p>
+          <p className="vendor-heading">Profile with Status:</p>
           {Object.entries(pageStatus).map(([status, count]) => (
             <div key={status} onClick={() => pageWithStatus(status)} className="vendor-item">
               <span>{status}:</span>
@@ -2041,7 +2041,7 @@ const PageOverview = () => {
             </div>
           ))}
           <hr />
-          <p className="vendor-heading">Page with Followers Count:</p>
+          <p className="vendor-heading">Profile with Followers Count:</p>
           <div className="vendor-item">
             <p onClick={() => showData(data.lessThan1Lac)}>Less than 1 Lac: <span className="vendor-count vendor-bg-orange">{data.lessThan1Lac.length}</span></p>
             <p onClick={() => showData(data.between1And10Lac)}>1-10 Lacs: <span className="vendor-count vendor-bg-orange">{data.between1And10Lac.length}</span></p>
@@ -2050,7 +2050,7 @@ const PageOverview = () => {
             <p onClick={() => showData(data.moreThan30Lac)}>More than 30 Lacs: <span className="vendor-count vendor-bg-orange">{data.moreThan30Lac.length}</span></p>
             <hr />
           </div>
-          <p className="vendor-heading">Page closed by:</p>
+          <p className="vendor-heading">Profile closed by:</p>
             {userCounts.map((item) => (
               <div  key={item.userName} className="vendor-item">
               <p key={item.userName} onClick={()=>pageClosedBy(item.userId)}>{item.userName} - 

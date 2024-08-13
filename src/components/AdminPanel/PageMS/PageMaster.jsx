@@ -64,7 +64,7 @@ const PageMaster = () => {
   const [pageName, setPageName] = useState("");
   const [link, setLink] = useState("");
   const [isFormSubmitted, setIsFormSubmitted] = useState(false);
-  const [platformId, setPlatformId] = useState("");
+  const [platformId, setPlatformId] = useState("666818824366007df1df1319");
 
   const [primary, setPrimary] = useState({ value: "Yes", label: "Yes" });
 
@@ -74,8 +74,8 @@ const PageMaster = () => {
   const [pageStatus, setPageStatus] = useState("Active");
   const [userData, setUserData] = useState([]);
   const [closeBy, setCloseBy] = useState("");
-  const [pageType, setPageType] = useState("Clear");
-  const [content, setContent] = useState("");
+  const [pageType, setPageType] = useState("Non Adult");
+  const [content, setContent] = useState("By CF");
   const [ownerType, setOwnerType] = useState("66ab43f41068e2b9eea495a9");
   const [vendorId, setVendorId] = useState("");
   const [followCount, setFollowCount] = useState("");
@@ -85,6 +85,8 @@ const PageMaster = () => {
   const [description, setDescription] = useState("");
   const [priceTypeList, setPriceTypeList] = useState([]);
   const [filterPriceTypeList, setFilterPriceTypeList] = useState([]);
+  const [activeTab, setActiveTab] = useState('666818824366007df1df1319');
+  const [singleVendor, setSingleVendor] = useState({});
 
   const [rateType, setRateType] = useState({ value: "Fixed", label: "Fixed" });
   const [variableType, setVariableType] = useState({
@@ -144,7 +146,7 @@ const PageMaster = () => {
   const { data: platformPriceData, isLoading: isPriceLoading } =
     useGetPlatformPriceQuery();
 
-  const [showAll, setShowAll] = useState(false)
+  const [showAll, setShowAll] = useState(true)
   const optionsToShow = showAll ? userData : userData.slice(0, 5);
 
   useEffect(() => {
@@ -222,14 +224,24 @@ const PageMaster = () => {
     }
   }, [singlePageLoading]);
 
+  // useEffect(() => {
+  //   if (rowCount.length > 0) {
+  //     let data = priceTypeList?.filter(
+  //       (e) => !rowCount.map((row) => row.page_price_type_id).includes(e._id)
+  //     );
+  //     setFilterPriceTypeList(data);
+  //   }
+  // }, [rowCount, priceTypeList]);
+
   useEffect(() => {
     if (rowCount.length > 0) {
       let data = priceTypeList?.filter(
         (e) => !rowCount.map((row) => row.page_price_type_id).includes(e._id)
       );
-      setFilterPriceTypeList(data);
+      const updatedPrices = data.filter((item)=> item.platfrom_id == platformId)
+      setFilterPriceTypeList(updatedPrices);
     }
-  }, [rowCount, priceTypeList]); // Added priceTypeList as a dependency
+  }, [rowCount, priceTypeList, platformId]);
 
   useEffect(() => {
     if (platformPriceData?.length > 0) {
@@ -263,13 +275,19 @@ const PageMaster = () => {
   ];
 
   const PageTypes = [
-    { value: "Clear", label: "Clear" },
-    { value: "Shreddy", label: "Shreddy" },
+    { value: "Non Adult", label: "Non Adult" },
+    { value: "Adult", label: "Adult" },
   ];
 
   const Contents = [
     { value: "By Vendor", label: "By Vendor" },
     { value: "By CF", label: "By CF" },
+    { value: "Both", label: "Both" },
+  ];
+
+  const ProfileTypeData = [
+    { value: "Theme", label: "Theme" },
+    { value: "Influencer", label: "Influencer" },
   ];
 
   const handleAddProfileTypeClick = () => {
@@ -585,18 +603,54 @@ const PageMaster = () => {
     return initialVendor ? { value: initialVendor._id, label: initialVendor.vendor_name } : null;
   };
 
+  useEffect(() => {
+    const fetchData = async() => {
+      try {
+        const getData = await axios.get(`${baseUrl}v1/vendor/${vendorId}`, {
+          headers: {
+            Authorization: `Bearer ${sessionStorage.getItem("token")}`,
+          },
+        });
+        setSingleVendor(getData?.data?.data)
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+    fetchData();
+  }, [vendorId]);
+
   return (
     <>
       <FormContainer
-        mainTitle={!pageMast_id ? "Page Master" : ""}
+        mainTitle={!pageMast_id ? "Profile Master" : ""}
         link={true}
         // handleSubmit={handleSubmit}
         submitButton={false}
       />
+
+      <div className="parent_of_tab" style={{display:'flex'}}>
+        {
+          platformData?.map((item)=>(
+            <div key={item._id} className="tabs">
+              <button
+                className={activeTab === item._id ? 'active btn btn-info' : 'btn btn-link'}
+                onClick={() => {
+                  setActiveTab(item._id)
+                  setPlatformId(item._id)
+                  setRowCount([{ page_price_type_id: "", price: "" }])
+                }}
+              >
+                {item.platform_name}
+              </button>
+            </div>
+          ))
+        }
+      </div>
+
       <div className={!pageMast_id ? "card" : ""}>
         {!pageMast_id && (
           <div className="card-header">
-            <h5 className="card-title">Page Master</h5>
+            <h5 className="card-title">Profile Master</h5>
           </div>
         )}
         <div className="card-body pb4">
@@ -686,7 +740,7 @@ const PageMaster = () => {
                   Profile Type <sup style={{ color: "red" }}>*</sup>
                 </label>
                 <div className="input-group inputAddGroup">
-                  <Select
+                  {/* <Select
                     className="w-100"
                     options={profileData?.data.map((option) => ({
                       value: option._id,
@@ -698,6 +752,27 @@ const PageMaster = () => {
                       label:
                         profileData?.data.find((role) => role._id === profileId)
                           ?.profile_type || "",
+                    }}
+                    onChange={(e) => {
+                      setProfileId(e.value);
+                      if (e.value) {
+                        setValidateFields((prev) => ({
+                          ...prev,
+                          profileId: false,
+                        }));
+                      }
+                    }}
+                  /> */}
+                  <Select
+                    className="w-100"
+                    options={['Theme','Influencer'].map((option) => ({
+                      value: option,
+                      label: option,
+                    }))}
+                    required={true}
+                    value={{
+                      value: singleVendor.vendor_category,
+                      label: singleVendor.vendor_category,
                     }}
                     onChange={(e) => {
                       setProfileId(e.value);
@@ -739,7 +814,7 @@ const PageMaster = () => {
                   Profile Status <sup style={{ color: "red" }}>*</sup>
                 </label>
                 <Select
-                  name="page status"
+                  name="Profile status"
                   options={PageStatus}
                   required={true}
                   className="basic-multi-select"
@@ -845,7 +920,7 @@ const PageMaster = () => {
             </div>
             <div className="col-md-6 p0 mb16">
               <FieldContainer
-                label="Page Name"
+                label="Profile Name"
                 fieldGrid={12}
                 astric={true}
                 value={pageName}
@@ -871,7 +946,7 @@ const PageMaster = () => {
                 }}
               />
               {validateFields.pageName && (
-                <small style={{ color: "red" }}>Please Fill Page Name</small>
+                <small style={{ color: "red" }}>Please Fill Profile Name</small>
               )}
             </div>
             <div className="col-md-6 p0 mb16">
@@ -930,7 +1005,7 @@ const PageMaster = () => {
                   Preference Level <sup style={{ color: "red" }}>*</sup>
                 </label>
                 <Select
-                  name="page level"
+                  name="Profile level"
                   options={PageLevels}
                   required={true}
                   className="basic-multi-select"
@@ -1041,16 +1116,16 @@ const PageMaster = () => {
                   Close By <sup style={{ color: "red" }}>*</sup>
                 </label>
                 <Select
-                  components={{ MenuList }}
-                  options={optionsToShow.map((option) => ({
+                  // components={{ MenuList }}
+                  options={userData.map((option) => ({
                     value: option.user_id,
                     label: option.user_name,
                   }))}
                   required={true}
                   value={{
-                    value: closeBy,
+                    value: singleVendor.closed_by,
                     label:
-                      userData.find((role) => role.user_id === closeBy)?.user_name || "",
+                      userData.find((role) => role.user_id == singleVendor.closed_by)?.user_name || "",
                   }}
                   onChange={(e) => {
                     setCloseBy(e.value);
@@ -1129,10 +1204,10 @@ const PageMaster = () => {
             <div className="col-md-6 mb16">
               <div className="form-group m0">
                 <label className="form-label">
-                  Page Name Type <sup style={{ color: "red" }}>*</sup>
+                  Profile Name Type <sup style={{ color: "red" }}>*</sup>
                 </label>
                 <Select
-                  name="page name type"
+                  name="profile name type"
                   options={PageTypes}
                   required={true}
                   className="basic-multi-select"
@@ -1151,7 +1226,7 @@ const PageMaster = () => {
                 {
                   validateFields.pageType && (
                     <small style={{ color: "red" }}>
-                      Please select Page Name Type
+                      Please select Profile Name Type
                     </small>
                   ) // Page Name Type
                 }
@@ -1193,7 +1268,7 @@ const PageMaster = () => {
                 onChange={(e) => setDescription(e.target.value)}
               />
             </div>
-            <div className="col-md-6 mb16">
+            {/* <div className="col-md-6 mb16">
               <div className="form-group m0">
                 <label className="form-label">
                   Platform ID <sup style={{ color: "red" }}>*</sup>
@@ -1227,7 +1302,7 @@ const PageMaster = () => {
                   ) // Platform ID
                 }
               </div>
-            </div>
+            </div> */}
             <div className="col-md-6 mb16">
               <div className="form-group m0">
                 <label className="form-label">
@@ -1325,7 +1400,7 @@ const PageMaster = () => {
                   />
                   {rateType.label == "Variable" && (
                     <p className="ml-3" style={{ color: "blue" }}>
-                      This Page Cost = {"  Rs "}{" "}
+                      This Profile Cost = {"  Rs "}{" "}
                       {calculateFollowerCount(index.toFixed(0))}
                     </p>
                   )}

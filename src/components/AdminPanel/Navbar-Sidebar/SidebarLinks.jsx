@@ -109,13 +109,16 @@ const SidebarLinks = () => {
   );
   const isOpration = [42].some((index) => contextData[index]?.view_value === 1);
   const isCustomer = [50].some((index) => contextData[index]?.view_value === 1);
-  const isPageManagement = [51].some(
+  const isPageManagement = [50].some(
     (index) => contextData[index]?.view_value === 1
   );
   const isSales = [52].some((index) => contextData[index]?.view_value === 1);
   const isAssets = [53].some((index) => contextData[index]?.view_value === 1);
   const isPageAssignment = [54].some(
     (index) => contextData[index]?.view_value === 1
+  );
+  const vendorStandalone = [62].some(
+    (index) => contextData[index]?.view_value == 1
   );
 
   // const isWFHDuser  = [].some(index=>context )
@@ -1751,12 +1754,16 @@ const SidebarLinks = () => {
           >
             <div className="internal collapse-inner">
              
-              <NavLink
-                className="collapse-item"
-                to="/admin/pms-vendor-overview"
-              >
-                <i className="bi bi-dot"></i>Vendor
-              </NavLink>
+              {
+                vendorStandalone && (
+                  <NavLink
+                  className="collapse-item"
+                  to="/admin/pms-vendor-overview"
+                >
+                  <i className="bi bi-dot"></i>Vendor
+                </NavLink>
+                )
+              }   
              
               <NavLink className="collapse-item" to="/admin/pms-page-overview">
                 <i className="bi bi-dot"></i>Page
