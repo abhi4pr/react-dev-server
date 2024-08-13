@@ -1,10 +1,10 @@
-import { List, ListItem, ListItemText, ListItemAvatar, Avatar, Typography, Divider, Stack, Paper } from '@mui/material';
+import { List, ListItem, ListItemText, ListItemAvatar, Avatar, Typography, Divider, Stack, Paper, Box } from '@mui/material';
 import { useEffect, useState } from 'react';
 import BottomTenPage from './BottomTenPage';
 import TopTenPages from './TopTenPages';
 
 function CommunityReport({ rows, setRows, pagecategory, allRows, setReportView }) {
-  console.log(rows,'rows');
+  console.log(rows, 'rows');
   const [teamCreated, setTeamCreated] = useState({ totalCor: 0, teamCount: 0 });
   const [zeroPostData, setZeroPostData] = useState([]);
   const [oneToFivePost, setOneToFivePost] = useState([]);
@@ -137,7 +137,7 @@ function CommunityReport({ rows, setRows, pagecategory, allRows, setReportView }
     <Stack direction="row" spacing={2} sx={{ width: '100%', alignItems: "flex-start" }}>
       <Stack sx={{ width: '50%', paddingRight: '10px' }}>
         <div className="card" style={{ background: '#33bfff2e' }}>
-          <Typography variant="h6" sx={{ mt: 2, ml: 2, mb: 2 }}> All Category</Typography>
+          <Typography variant="h6" sx={{ mt: 2, ml: 2, mb: 1 }}> All Category</Typography>
           <Paper sx={{ color: '#FF8D33' }} elevation={6}>
             <div className="card-body d-flex justify-content-between align-item-center" >
               <Typography >Followers: {formatFollowersCount(totalFollowers)}</Typography>
@@ -146,6 +146,22 @@ function CommunityReport({ rows, setRows, pagecategory, allRows, setReportView }
             <div className='ml-3 mb-2'> <h6>Team not created count - {allRows?.length - teamCreated?.teamCount}</h6></div>
           </Paper>
         </div>
+
+        <Paper className="card" elevation={6}>
+          <Typography sx={{ background: '#33bff2e', mt: 1, ml: 2 }}> Pages </Typography>
+          <Box sx={{ display: 'flex', justifyContent: "space-around", color: '#FF8D33', mb: 1, mt: 1 }}>
+            <Typography sx={{ color: '#FF8D33' }}> All - {allRows.length} </Typography>
+            <Typography sx={{ color: '#FF8D33' }}> Active  - {allRows.filter(
+              (record) => record.projectxRecord.page_status == 3
+            ).length} </Typography>
+            <Typography sx={{ color: '#FF8D33' }}> Disabled - {allRows.filter(
+              (record) => record.projectxRecord.page_status == 2
+            ).length}  </Typography>
+            <Typography sx={{ color: '#FF8D33' }}> Private - {allRows.filter(
+              (record) => record.projectxRecord.page_status == 1
+            ).length}  </Typography>
+          </Box>
+        </Paper>
 
         {pagecategory.map((item, index) => {
           let countData = groupedData[item.category_id] || { count: 0, followersCount: 0, todayPostCount: 0 };

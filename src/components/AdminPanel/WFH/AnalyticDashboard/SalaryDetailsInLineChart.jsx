@@ -52,7 +52,7 @@ function SalaryDetailsInLineChart() {
       }
 
       let month = row._id.month;
-      grouped[departmentName][month] = row.toPay;
+      grouped[departmentName][month] = row.toPay.toFixed(2);
     });
 
     return grouped;

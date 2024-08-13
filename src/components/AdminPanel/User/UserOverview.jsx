@@ -141,7 +141,6 @@ const UserOverview = () => {
   const today = new Date().toISOString().split("T")[0];
 
   function handleSeparationDataPost() {
-    console.log(separationUserID , 'sepration user id')
     axios.post(baseUrl + "add_separation", {
       user_id: separationUserID,
       status: separationStatus,
@@ -347,7 +346,7 @@ const UserOverview = () => {
 
   // Function to capitalize the first letter of a string
 const capitalizeFirstLetter = (string) => {
-  return string.charAt(0).toUpperCase() + string.slice(1);
+  return string?.charAt(0)?.toUpperCase() + string?.slice(1);
 };
 
   const columns = [
@@ -577,7 +576,7 @@ const capitalizeFirstLetter = (string) => {
                 </div>
               </Link>
             )}
-          {contextData &&
+          {/* {contextData &&
             contextData[0] &&
             contextData[0].delete_flag_value === 1 && (
               <div
@@ -586,7 +585,7 @@ const capitalizeFirstLetter = (string) => {
               >
                 <i className="bi bi-trash" />
               </div>
-            )}
+            )} */}
         </>
       ),
     },
