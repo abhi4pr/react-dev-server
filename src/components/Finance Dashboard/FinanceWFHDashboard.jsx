@@ -836,7 +836,7 @@ export default function FinanceWFHDashboard() {
             className="ml-3 mb-2"
             onClick={handleDownloadInvoices}
           >
-            Download PDF Zip
+            Download Invoice 
           </Button>
         )}
 
@@ -908,7 +908,7 @@ export default function FinanceWFHDashboard() {
             className="ml-3 mb-2"
             onClick={handleDownloadInvoices}
           >
-            Download PDF Zip
+            Download Invoice 
           </Button>
         )}
 
@@ -981,7 +981,7 @@ export default function FinanceWFHDashboard() {
               size="small"
               onClick={handleDownloadInvoices}
             >
-              Download PDF Zip
+              Download Invoice 
             </button>
             <button
               className="btn cmnbtn btn_sm btn-outline-primary ml-3 "
@@ -1105,7 +1105,7 @@ export default function FinanceWFHDashboard() {
               className=" btn cmn-btn  btn-outline-primary ml-3 mb-2"
               onClick={handleDownloadIPayoutReleased}
             >
-              Download PDF Zip
+              Download Invoice 
             </button>
             <button
               variant="contained"
@@ -1129,7 +1129,7 @@ export default function FinanceWFHDashboard() {
               className="ml-3 mb-2"
               onClick={handleDownloadInvoices}
             >
-              Download PDF Zip
+              Download Invoice 
             </Button>
           )}
         </div> */}
@@ -1181,7 +1181,7 @@ export default function FinanceWFHDashboard() {
             className="ml-3 mb-2"
             onClick={handleDownloadInvoices}
           >
-            Download PDF Zip
+            Download Invoice 
           </Button>
         )}
 
@@ -1298,7 +1298,7 @@ export default function FinanceWFHDashboard() {
   //             className="ml-3 mb-2"
   //             onClick={handleDownloadInvoices}
   //           >
-  //             Download PDF Zip
+  //             Download Invoice 
   //           </Button>
   //         )}
   //       </div>

@@ -36,7 +36,6 @@ function CommunityHeader({
       const result = processRecords(allRows);
       setTeamCreated(result);
       setFilteredPageCategory(result?.categoryCounts);
-      console.log("resultt", result?.categoryCounts);
     }
   }, [allRows]);
 
@@ -88,7 +87,6 @@ function CommunityHeader({
       (record) => !record.teamInfo.team.cost_of_running
     );
     setRows(pendingTeam);
-    // console.log(pendingTeam.length)
   };
   const handleCreatedTeam = () => {
     const createdTeam = allRows.filter(
@@ -98,14 +96,14 @@ function CommunityHeader({
   };
 
   const handleCategoryChange = (event, value) => {
-    // Find the category object based on the selected category name
+    
     const selectedCategoryObject = pagecategory.find(
       (category) =>
-        `${category.category_name} - (${
+        (`${category.category_name} - ( ${
           filteredPageCategory[category.category_id] || 0
-        })` === value
-    );
-
+        })` == value )|| (category.category_name.toLowerCase() == value?.toLowerCase())
+      );
+     
     if (selectedCategoryObject) {
       const filteredRows = allRows.filter(
         (record) =>
@@ -117,7 +115,6 @@ function CommunityHeader({
       if (rowSelectionModel.length === 0) {
         setRows(filteredRows);
       }
-
       setSelectedCategory(selectedCategoryObject);
     }
 

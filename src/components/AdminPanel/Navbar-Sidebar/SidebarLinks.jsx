@@ -117,6 +117,9 @@ const SidebarLinks = () => {
   const isPageAssignment = [54].some(
     (index) => contextData[index]?.view_value === 1
   );
+  const vendorStandalone = [62].some(
+    (index) => contextData[index]?.view_value == 1
+  );
 
   // const isWFHDuser  = [].some(index=>context )
   const activelink = useLocation().pathname;
@@ -466,7 +469,7 @@ const SidebarLinks = () => {
                     </NavLink>
                   )} */}
 
-{RoleId === constant.CONST_MANAGER_ROLE && isWFHDManager && (
+{/* {RoleId === constant.CONST_MANAGER_ROLE && isWFHDManager && (
                   // <>
                   <NavLink
                     className="collapse-item"
@@ -474,7 +477,7 @@ const SidebarLinks = () => {
                   >
                     <i className="bi bi-dot"></i> Create Attendance
                   </NavLink>
-                )}
+                )} */}
 
                   {RoleId !== constant.CONST_MANAGER_ROLE && (
                     <>
@@ -1751,12 +1754,16 @@ const SidebarLinks = () => {
           >
             <div className="internal collapse-inner">
              
-              <NavLink
-                className="collapse-item"
-                to="/admin/pms-vendor-overview"
-              >
-                <i className="bi bi-dot"></i>Vendor
-              </NavLink>
+              {
+                vendorStandalone && (
+                  <NavLink
+                  className="collapse-item"
+                  to="/admin/pms-vendor-overview"
+                >
+                  <i className="bi bi-dot"></i>Vendor
+                </NavLink>
+                )
+              }   
              
               <NavLink className="collapse-item" to="/admin/pms-page-overview">
                 <i className="bi bi-dot"></i>Page

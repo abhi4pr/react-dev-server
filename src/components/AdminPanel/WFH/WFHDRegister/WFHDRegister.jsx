@@ -98,6 +98,7 @@ const WFHDRegister = ({ userUpdateID }) => {
   const [designationData, setDesignationData] = useState([]);
 
   const [selectedImage, setSelectedImage] = useState(null);
+  const [imagePreview, setImagePreview] = useState(null);
   //   const [roledata, getRoleData] = useState([]);
   const [dateOfBirth, setDateOfBirth] = useState("");
   const [gender, setGender] = useState("");
@@ -126,9 +127,9 @@ const WFHDRegister = ({ userUpdateID }) => {
     gender: false,
     dateOfBirth: false,
     city: false,
-    currentState:false,
-    address:false,
-    pincode:false
+    currentState: false,
+    address: false,
+    pincode: false,
   });
   const statusData = ["Active", "Exit", "PreOnboard"];
 
@@ -153,7 +154,7 @@ const WFHDRegister = ({ userUpdateID }) => {
             Report_L1,
             Report_L2,
             Report_L3,
-            
+
             joining_date,
             salary,
             Gender,
@@ -167,7 +168,8 @@ const WFHDRegister = ({ userUpdateID }) => {
             user_status,
             PersonalEmail,
             permanent_state,
-            permanent_address
+            permanent_address,
+            image_url,
           } = fetchedData;
 
           setUserName(user_name);
@@ -175,9 +177,9 @@ const WFHDRegister = ({ userUpdateID }) => {
           setSubDeparment(sub_dept_id);
           setDesignation(user_designation);
           setCity(permanent_city);
-          setAddress(permanent_address)
-          setcurrentState(permanent_state)
-          setPincode(permanent_pin_code,)
+          setAddress(permanent_address);
+          setcurrentState(permanent_state);
+          setPincode(permanent_pin_code);
           setReportL1(Report_L1);
           setSalary(salary);
           setLoginId(user_login_id);
@@ -198,6 +200,7 @@ const WFHDRegister = ({ userUpdateID }) => {
           setSitting(sitting_id);
           setRoomId(room_id);
           setAttStatus(att_status);
+          setImagePreview(image_url);
         });
   }, [userUpdateID]);
 
@@ -205,8 +208,7 @@ const WFHDRegister = ({ userUpdateID }) => {
     setDepartment(deptID);
   }, [deptID]);
 
-  useEffect(() => {
-  }, [reportL2]);
+  useEffect(() => {}, [reportL2]);
 
   // Handle change for Monthly Salary
   const handleMonthlySalaryChange = (e) => {
@@ -403,11 +405,11 @@ const WFHDRegister = ({ userUpdateID }) => {
       return toastError("Fill Required Field");
     } else if (!subDepartment || subDepartment == "") {
       return toastError("Fill Required Field");
-    } 
+    }
     // else if (!city || city == "") {
     //   return toastError("Fill Required Field");
     // }
-     else if (!salary || salary == "") {
+    else if (!salary || salary == "") {
       return toastError("Fill Required Field");
     } else if (!yearlySalary || yearlySalary == "") {
       return toastError("Fill Required Field");
@@ -423,29 +425,20 @@ const WFHDRegister = ({ userUpdateID }) => {
       return toastError("Fill Required Field");
     } else if (!reportL1 || reportL1 == "") {
       return toastError("Fill Required Field");
-    }
-    else if (!address || address == "") {
+    } else if (!address || address == "") {
       return toastError("Fill Required Field");
-    }
-    else if (!city || city == "") {
+    } else if (!city || city == "") {
       return toastError("Fill Required Field");
-    }
-    else if (!currentState || currentState == "") {
+    } else if (!currentState || currentState == "") {
       return toastError("Fill Required Field");
-    }
-     else if (!pincode || pincode == "") {
+    } else if (!pincode || pincode == "") {
       return toastError("Please fill all Required field");
-    }
-     else if (!personalContact || personalContact=="") {
+    } else if (!personalContact || personalContact == "") {
       return toastError(
         "Personal Contact Is Required and should be equal to 10"
       );
     } else if (!personalEmail || personalEmail == "") {
       return toastError("Fill Required Field");
-    } else if (!contact || contact=="" ) {
-      return toastError(
-        "Alternate Contact Is Required and should be equal to 10"
-      );
     }
 
     const payload = {
@@ -458,7 +451,7 @@ const WFHDRegister = ({ userUpdateID }) => {
       created_by: loginUserId,
       user_name: validateAndCorrectUserName(username),
       role_id: 4,
-      image: selectedImage,
+      // image: selectedImage,
       ctc: Number(yearlySalary),
       salary: Number(salary),
       offer_letter_send: sendLetter.value ? Boolean(sendLetter.value) : false,
@@ -481,7 +474,7 @@ const WFHDRegister = ({ userUpdateID }) => {
       report_L1: reportL1,
       report_L2: reportL2 == null ? 0 : reportL2,
       report_L3: reportL3 == null ? 0 : reportL3,
-      
+
       user_designation: designation,
       joining_date: joiningDate,
       releaving_date: releavingDate,
@@ -496,8 +489,8 @@ const WFHDRegister = ({ userUpdateID }) => {
     formData.append("dept_id", department);
     formData.append("sub_dept_id", subDepartment);
     formData.append("permanent_city", city);
-    formData.append("permanent_state", currentState );
-    formData.append("permanent_address", address );
+    formData.append("permanent_state", currentState);
+    formData.append("permanent_address", address);
     formData.append("created_by", loginUserId);
     formData.append("user_name", validateAndCorrectUserName(username));
     formData.append("role_id", 4);
@@ -587,9 +580,15 @@ const WFHDRegister = ({ userUpdateID }) => {
           return;
         }
       }
-      await axios.post(baseUrl + "add_user", payload, {}).then(() => {
-        setIsFormSubmitted(true);
-      });
+      await axios
+        .post(baseUrl + `add_user`, formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        })
+        .then(() => {
+          setIsFormSubmitted(true);
+        });
 
       whatsappApi.callWhatsAPI(
         "Preonboarding Register",
@@ -695,17 +694,17 @@ const WFHDRegister = ({ userUpdateID }) => {
       if (contact?.length < 10) {
         setValidContact(false);
       }
-      if (newContact1 === "") {
-        setIsRequired((prev) => ({
-          ...prev,
-          contact: true,
-        }));
-      } else {
-        setIsRequired((prev) => ({
-          ...prev,
-          contact: false,
-        }));
-      }
+      // if (newContact1 === "") {
+      //   setIsRequired((prev) => ({
+      //     ...prev,
+      //     contact: true,
+      //   }));
+      // } else {
+      //   setIsRequired((prev) => ({
+      //     ...prev,
+      //     contact: false,
+      //   }));
+      // }
 
       if (
         newContact1 === "" ||
@@ -884,8 +883,7 @@ const WFHDRegister = ({ userUpdateID }) => {
     return age;
   };
 
-  const 
-  handleDateChange = (e) => {
+  const handleDateChange = (e) => {
     const selectedDate = e.target.value;
     const age = calculateAge(selectedDate);
     if (selectedDate === "") {
@@ -902,7 +900,7 @@ const WFHDRegister = ({ userUpdateID }) => {
 
     if (age < 15) {
       window.alert("Your age must be greater than 15 years.");
-      setDateOfBirth("")
+      setDateOfBirth("");
     } else {
       setDateOfBirth(selectedDate);
     }
@@ -957,6 +955,27 @@ const WFHDRegister = ({ userUpdateID }) => {
         </div>
         <div className="card-body">
           <div className="row">
+            <div className="col-md-3">
+              <FieldContainer
+                label="Profile"
+                astric
+                type="file"
+                fieldGrid={3}
+                required
+                // value={selectedImage}
+                onChange={(e) => setSelectedImage(e.target.files[0])}
+              />
+              {userUpdateID && (
+                <img
+                  src={imagePreview}
+                  alt="Profile"
+                  style={{ height: "40px", width: "40px" }}
+                />
+              )}
+              {isRequired.username && (
+                <p className="form-error">Please Enter Full Name</p>
+              )}
+            </div>
             <div className="col-md-3">
               <FieldContainer
                 label="Full Name"
@@ -1106,8 +1125,8 @@ const WFHDRegister = ({ userUpdateID }) => {
                 required
               />
               {isRequired.designation && (
-                  <p className="form-error">Please Select Designation</p>
-                )}
+                <p className="form-error">Please Select Designation</p>
+              )}
             </div>
 
             <div className="form-group col-3">
@@ -1266,7 +1285,6 @@ const WFHDRegister = ({ userUpdateID }) => {
                 <p className="form-error">Please select City</p>
               )}
             </div> */}
-            
 
             {/* {jobType === "WFH" && ( */}
             <>
@@ -1400,7 +1418,7 @@ const WFHDRegister = ({ userUpdateID }) => {
               <FieldContainer
                 label="Alternate Contact "
                 type="number"
-                astric
+                // astric
                 fieldGrid={3}
                 value={contact}
                 required={false}
@@ -1411,9 +1429,9 @@ const WFHDRegister = ({ userUpdateID }) => {
                 !isValidcontact && (
                   <p className="form-error">Please enter a valid Number</p>
                 )}
-              {isRequired.contact && (
+              {/* {isRequired.contact && (
                 <p className="form-error">Please Enter Alternate Contact</p>
-              )}
+              )} */}
             </div>
 
             <div className="col-xl-3 col-lg-3 col-md-3 col-sm-12">
@@ -1533,7 +1551,7 @@ const WFHDRegister = ({ userUpdateID }) => {
                 fieldGrid={3}
                 value={joiningDate}
                 onChange={(e) => {
-                  setJoiningDate(e.target.value)
+                  setJoiningDate(e.target.value);
                   if (e.target.value === "") {
                     setIsRequired((prev) => ({
                       ...prev,
@@ -1624,35 +1642,38 @@ const WFHDRegister = ({ userUpdateID }) => {
             </div>
 
             <div className="col-3 mt-3">
-                <FieldContainer
-                  label="Address"
-                  astric
-                  fieldGrid={3}
-                  value={address}
-                  onChange={(e) => {
-                    const value = e.target.value;
-                    setAddress(value);
+              <FieldContainer
+                label="Address"
+                astric
+                fieldGrid={3}
+                value={address}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  setAddress(value);
 
-                    if (value === "") {
-                      setIsRequired((prev) => ({
-                        ...prev,
-                        address: true,
-                      }));
-                    } else {
-                      setIsRequired((prev) => ({
-                        ...prev,
-                        address: false,
-                      }));
-                    }
-                  }}
-                />
-                {isRequired.address && (
-                  <p className="form-error">Please Enter Address</p>
-                )}
-              </div>
+                  if (value === "") {
+                    setIsRequired((prev) => ({
+                      ...prev,
+                      address: true,
+                    }));
+                  } else {
+                    setIsRequired((prev) => ({
+                      ...prev,
+                      address: false,
+                    }));
+                  }
+                }}
+              />
+              {isRequired.address && (
+                <p className="form-error">Please Enter Address</p>
+              )}
+            </div>
 
             <div className="form-group col-3 mt-3">
-              <label htmlFor=""> State <span style={{color:"red"}}>*</span></label>
+              <label htmlFor="">
+                {" "}
+                State <span style={{ color: "red" }}>*</span>
+              </label>
               <IndianStatesMui
                 selectedState={currentState}
                 // onChange={(option) => setcurrentState(option ? option : null)}
@@ -1666,12 +1687,15 @@ const WFHDRegister = ({ userUpdateID }) => {
                 }}
               />
               {isRequired.currentState && (
-                  <p className="form-error">Please Enter State</p>
-                )}
+                <p className="form-error">Please Enter State</p>
+              )}
             </div>
 
             <div className="form-group col-3 mt-3">
-              <label htmlFor=""> City <span style={{color:"red"}}>*</span></label>
+              <label htmlFor="">
+                {" "}
+                City <span style={{ color: "red" }}>*</span>
+              </label>
 
               <IndianCitiesMui
                 selectedState={currentState}
@@ -1687,39 +1711,39 @@ const WFHDRegister = ({ userUpdateID }) => {
                 }}
               />
               {isRequired.city && (
-                  <p className="form-error">Please Enter City</p>
-                )}
+                <p className="form-error">Please Enter City</p>
+              )}
             </div>
             <div className="col-3 mt-3">
-                <FieldContainer
-                  label="Pincode"
-                  type="number"
-                  astric={true}
-                  fieldGrid={3}
-                  maxLength={6}
-                  value={pincode}
-                  onChange={(e) => {
-                    const value = e.target.value;
-                    if (/^\d{0,6}$/.test(value)) {
-                      setPincode(value);
-                    }
-                    if (e.target.value === "") {
-                      setIsRequired((prev) => ({
-                        ...prev,
-                        pincode: true,
-                      }));
-                    } else {
-                      setIsRequired((prev) => ({
-                        ...prev,
-                        pincode: false,
-                      }));
-                    }
-                  }}
-                />
-                {isRequired.pincode && (
-                  <p className="form-error">Please Enter Pincode</p>
-                )}
-              </div>
+              <FieldContainer
+                label="Pincode"
+                type="number"
+                astric={true}
+                fieldGrid={3}
+                maxLength={6}
+                value={pincode}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  if (/^\d{0,6}$/.test(value)) {
+                    setPincode(value);
+                  }
+                  if (e.target.value === "") {
+                    setIsRequired((prev) => ({
+                      ...prev,
+                      pincode: true,
+                    }));
+                  } else {
+                    setIsRequired((prev) => ({
+                      ...prev,
+                      pincode: false,
+                    }));
+                  }
+                }}
+              />
+              {isRequired.pincode && (
+                <p className="form-error">Please Enter Pincode</p>
+              )}
+            </div>
           </div>
         </div>
         <div className="card-footer">

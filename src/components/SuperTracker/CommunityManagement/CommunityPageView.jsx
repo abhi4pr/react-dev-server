@@ -239,7 +239,7 @@ const CommunityPageView = () => {
             creatorDetail={creatorDetail}
             setCreatorDetail={setCreatorDetail}
           />
-        <MultipleWhatsappLinks/>
+        <MultipleWhatsappLinks creatorDetail={creatorDetail}/>
           <div className="card">
             <div className="card-header ">
               <Stack className="w-100"

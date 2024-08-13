@@ -673,7 +673,6 @@ const UserUpdate = () => {
       setTempLanguage(modifiedLang);
       setGender(Gender);
       setNationality(Nationality);
-      console.log(Nationality, "nathios");
       setDateOfBirth(DOB.split("T")?.[0]);
 
       function agesCalculate() {

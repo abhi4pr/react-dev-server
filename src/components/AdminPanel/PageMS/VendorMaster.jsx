@@ -855,7 +855,8 @@ const VendorMaster = () => {
             <div className="col-md-6 mb16">
               <div className="form-group m0">
                 <label className="form-label">
-                  Vendor Category <sup style={{ color: "red" }}>*</sup>
+                  {/* Vendor Category <sup style={{ color: "red" }}>*</sup> */}
+                  Profile Type <sup style={{ color: "red" }}>*</sup>
                 </label>
                 <Select
                   options={["Theme Page", "Influencer"].map((option) => ({

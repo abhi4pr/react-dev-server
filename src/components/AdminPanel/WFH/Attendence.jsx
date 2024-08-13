@@ -16,6 +16,7 @@ import ClearIcon from "@mui/icons-material/Clear";
 import { baseUrl } from "../../../utils/config";
 import FormContainer from "../FormContainer";
 import { constant } from "../../../utils/constants";
+import { Link, Navigate } from "react-router-dom";
 
 const Attendence = () => {
   const { toastAlert, toastError } = useGlobalContext();
@@ -43,6 +44,8 @@ const Attendence = () => {
   const userID = decodedToken.id;
   
   const [workDaysLastDate , setWorkDaysLastDate] = useState()
+
+  const [isFormSubmitted, setIsFormSubmitted] = useState(false);
 
   
   var settings = {
@@ -156,18 +159,10 @@ const Attendence = () => {
     setRowModesModel(newRowModesModel);
   };
 
+  const [isButtonDisabled, setIsButtonDisabled] = useState(false);
   const handleAttendence = async () => {
     try {
-      // const monthNames = ["January", "February", "March", "April", "May", "June","July", "August", "September", "October", "November", "December"];
-  
-      // let selectedMonth = monthNames.indexOf(month);
-      // let selectedYear = Number(year);
-      // let date = new Date(selectedYear, selectedMonth);
-      // date.setMonth(date.getMonth() + 1);
-
-      // let newMonth = monthNames[date.getMonth()];
-      // let newYear = date.getFullYear();
-
+      setIsButtonDisabled(true)
       await axios.post(baseUrl + "add_attendance", {
         dept: department,
         user_id: userName.user_id,
@@ -177,14 +172,16 @@ const Attendence = () => {
       });
 
       setNoOfAbsent("");
-      toastAlert("Submitted success");
 
-      await getAttendanceData();
+      getAttendanceData();
       toastAlert("Submitted success");
     } catch (error) {
-      toastError("Billing header not set for this department");
+      // toastError("Billing header not set for this department");
       // console.error("Error submitting attendance:", error);
       // Handle error as needed
+    }
+    finally{
+      setIsButtonDisabled(false)
     }
   };
 
@@ -274,8 +271,9 @@ const Attendence = () => {
         setFilterData([]);
         department &&
           selectedMonth &&
-          selectedYear &&
-          toastError("Attendance not created");
+          selectedYear 
+          // &&
+          // toastError("Attendance not created");
       });
   };
 
@@ -305,11 +303,14 @@ const Attendence = () => {
       });
       getAttendanceData();
       toastAlert("Attendance Completed");
+      setIsFormSubmitted(true)
+
     } catch (error) {
       console.error("Error updating attendance status", error);
       toastError("Failed to complete attendance");
     }
   };
+  
 
   const processRowUpdate = (newRow) => {
     if (newRow.noOfabsent < 0 || newRow.noOfabsent > newRow.present_days) {
@@ -503,6 +504,10 @@ const Attendence = () => {
   
   const currentYearForDis = new Date().getFullYear();
   const currentMonthForDis = new Date().getMonth() + 1;
+
+  if (isFormSubmitted) {
+    return <Navigate to="/admin/salaryWFH"/>;
+  }
   return (
     <>
       {/* Cards */}
@@ -596,13 +601,14 @@ const Attendence = () => {
               selectedYear && (
                 <button
                   onClick={handleAttendence}
+                  disabled={isButtonDisabled}
                   className="btn  cmnbtn btn_sm btn-danger"
                 >
                   No Absents, Create Attendance{" "}
                   <i className="bi bi-arrow-right"></i>
                 </button>
               )}
-            {deptSalary?.length !== departmentdata?.length &&
+            {/* {deptSalary?.length !== departmentdata?.length &&
               (RoleIDContext == 1 || RoleIDContext == 5) && (
                 <button
                   className="btn  cmnbtn btn_sm btn-primary"
@@ -611,7 +617,7 @@ const Attendence = () => {
                   Create All Department Attendance{" "}
                   <i className="bi bi-check-all"></i>
                 </button>
-              )}
+              )} */}
           </span>
         </div>
         <div className="card-body">

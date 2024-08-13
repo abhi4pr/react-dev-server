@@ -24,7 +24,7 @@ import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 // import LogoLoader from "../../InstaApi.jsx/LogoLoader";
 import CommunityTeamCreation from "./CommunityTeamCreation";
-import { ApiContextData } from "../../AdminPanel/APIContext/APIContext";
+import { ApiContextData, useAPIGlobalContext } from "../../AdminPanel/APIContext/APIContext";
 import formatString from "../../../utils/formatString";
 import CommunityHeader from "./CommunityHeader";
 import { formatNumber } from "../../../utils/formatNumber";
@@ -35,6 +35,7 @@ import dayjs from "dayjs";
 import { formatDate } from "../../../utils/formatDate";
 import { formatUTCDate } from "../../../utils/formatUTCDate";
 import CommunityReport from "./CommunityReport";
+import jwtDecode from "jwt-decode";
 // import { CommunityHomeColumn } from "./CommunityColumns";
 
 function CustomToolbar({
@@ -49,8 +50,8 @@ function CustomToolbar({
   setTeamDetail,
 }) {
   const { userContextData } = useContext(ApiContextData);
-
   const handleTeam = useCallback(async () => {
+
     if (rowSelectionModel.length === 0) {
       alert("Please select the Page first.");
       return;
@@ -145,6 +146,12 @@ function CustomToolbar({
 }
 
 function CommunityHome() {
+  const token = sessionStorage.getItem("token");
+  const decodedToken = jwtDecode(token);
+  const loginUserId = decodedToken.id;
+  console.log(loginUserId, 'kl');
+  const { contextData } = useAPIGlobalContext()
+
   const navigate = useNavigate();
   const { userContextData } = useContext(ApiContextData);
   const [filterButtonEl, setFilterButtonEl] = useState(null);
@@ -179,15 +186,33 @@ function CommunityHome() {
           endDate: endDate,
         }
       );
+  
       if (res.status === 200) {
-        setRows(res.data.data);
+        console.log(res.data.data); 
+  
+        let filteredData;
+  
+        if (loginUserId === 926) {
+          filteredData = res.data.data.filter(item => {
+            return item.projectxRecord &&
+                   (item.projectxRecord.pageCategoryId === 1004 ||
+                    item.projectxRecord.pageCategoryId === 14 ||
+                    item.projectxRecord.pageCategoryId === 1008);
+          });
+          console.log(filteredData, 'filteredData');
+        } else {
+          filteredData = res.data.data;
+        }
+        setRows(filteredData);
         setAllRows(res.data.data);
-        // console.log(res.data.data, "res.data.data");
+        console.log(res.data.data, "res.data.data");
       }
     } catch (error) {
       console.error("Error fetching data: ", error);
     }
   };
+  
+
 
   const fetchCategory = async () => {
     try {
@@ -301,6 +326,26 @@ function CommunityHome() {
           (user) => user.user_id === params.row.teamInfo?.teamManager?.user_id
         )?.user_name || "N/A",
     },
+    {
+      field: 'status',
+      headerName: 'Status',
+      width: 200,
+      renderCell: (params) => {
+        const status = params.row.projectxRecord.page_status;
+
+        if (status == 1) {
+          return <Button variant="outlined" color="warning">Private</Button>;
+        } else if (status == 2) {
+          return <Button variant="outlined" color="success">Disabled</Button>;
+        } else if (status == 3) {
+          return <Button variant="outlined" color="error">Active</Button>;
+        } else {
+          return 'N/A';
+        }
+      },
+    }
+
+    ,
     {
       field: "Date ",
       headerName: "Date",
@@ -463,14 +508,14 @@ function CommunityHome() {
       },
     },
     {
-      field: 'Image', headerName: 'Image ', width: 110, valueGetter: (params) => params.row.postTypes[0]?.count ? params.row.postTypes[0]?.count : "-" ,
-  },
-  {
+      field: 'Image', headerName: 'Image ', width: 110, valueGetter: (params) => params.row.postTypes[0]?.count ? params.row.postTypes[0]?.count : "-",
+    },
+    {
       field: 'Carousel', headerName: 'Carousel ', width: 110, valueGetter: (params) => params.row.postTypes[1]?.count ? params.row.postTypes[1]?.count : "-",
-  },
-  {
+    },
+    {
       field: 'Reel', headerName: 'Reel ', width: 110, valueGetter: (params) => params.row.postTypes[2]?.count ? params.row.postTypes[2]?.count : "-",
-  },
+    },
   ];
 
   const handleOverViewChange = (event, newValue) => {
@@ -545,23 +590,28 @@ function CommunityHome() {
             </Button>
             <Button onClick={() => navigate("/admin/instaapi/community/managerView")}>
               {" "}
-              Manager View 
+              Manager View
             </Button>
           </ButtonGroup>
+
+
           {!reportView ? (
             <div className="card">
-              <CommunityHeader
-                setRows={setRows}
-                rows={rows}
-                allRows={allRows}
-                reload={reload}
-                setReload={setReload}
-                pagecategory={pagecategory}
-                rowSelectionModel={rowSelectionModel}
-                projectxpages={projectxpages}
-                setReloadpagecategory={setReloadpagecategory}
-                reloadpagecategory={reloadpagecategory}
-              />
+              {contextData && contextData[0] && contextData[0].view_value == 1 && (
+
+                <CommunityHeader
+                  setRows={setRows}
+                  rows={rows}
+                  allRows={allRows}
+                  reload={reload}
+                  setReload={setReload}
+                  pagecategory={pagecategory}
+                  rowSelectionModel={rowSelectionModel}
+                  projectxpages={projectxpages}
+                  setReloadpagecategory={setReloadpagecategory}
+                  reloadpagecategory={reloadpagecategory}
+                />
+              )}
               <div>
                 <TabContext value={overViewvalue}>
                   <div className="card-header flex_center_between">

@@ -123,7 +123,7 @@ const WFHDOverview = () => {
       // } else {
     } else if (RoleIDContext == 2) {
       const deptWiseData = response.data.data?.filter(
-        (d) => d.dept_id == ContextDept
+        (d) => d.dept_id == ContextDept && d.user_status == "Active"
       );
       setAllWFHDData(deptWiseData);
       setLoading(false);
@@ -334,17 +334,44 @@ const WFHDOverview = () => {
     setSearchFilter(filteredData);
   };
 
+  const capitalizeName = (name) => {
+    const nameParts = name.split(" ");
+    if (nameParts.length >= 2) {
+      const firstNameInitial = nameParts[0].charAt(0).toUpperCase();
+      const lastNameInitial = nameParts[1].charAt(0).toUpperCase();
+      return firstNameInitial + lastNameInitial;
+    }
+    return name.charAt(0).toUpperCase();
+  };
+
   const columns = [
     {
       name: "S.No",
       cell: (row, index) => <div>{index + 1}</div>,
-      // width: "80px",
+      width: "80px",
       sortable: true,
     },
-    // {
-    //   name: "User Image",
-    //   cell: (row) => <img src={row.image} />,
-    // },
+    {
+      name: "Profile",
+      cell: (row) => {
+        const baseUrl = "https://storage.googleapis.com/jarvis-dev-bucket/";
+        const imageUrl = row.image;
+        
+        return (
+          <div className="eventListBox w-100 avatarBox">
+            <div className="avatarImgBox">
+              {imageUrl && imageUrl !== baseUrl ? (
+                <a href={imageUrl} target="_blank">
+                <img src={imageUrl} alt={capitalizeName(row.user_name)} />
+                </a>
+              ) : (
+                <h2>{capitalizeName(row.user_name)}</h2>
+              )}
+            </div>
+          </div>
+        );
+      },
+    },
     {
       name: "User Name",
       cell: (row) => (
@@ -355,6 +382,7 @@ const WFHDOverview = () => {
           {row.user_name}
         </Link>
       ),
+      width:'160px'
     },
     {
       name: "Employee ID",

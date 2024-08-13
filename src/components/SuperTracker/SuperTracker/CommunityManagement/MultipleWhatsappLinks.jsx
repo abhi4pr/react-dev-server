@@ -5,6 +5,7 @@ import FieldContainer from "../../AdminPanel/FieldContainer";
 import FormContainer from "../../AdminPanel/FormContainer";
 import axios from "axios";
 import { useGlobalContext } from "../../../Context/Context";
+import {  useNavigate } from "react-router-dom";
 
 const style = {
     position: 'absolute',
@@ -19,8 +20,9 @@ const style = {
     px: 4,
     pb: 3,
 };
-const MultipleWhatsappLinks = () => {
+const MultipleWhatsappLinks = ({creatorDetail}) => {
     const { toastAlert, toastError } = useGlobalContext();
+    const navigate = useNavigate()
     const [open, setOpen] = useState(false);
     const [editOpen, setEditOpen] = useState(false);
     const [heading, setHeading] = useState("");
@@ -86,7 +88,7 @@ const MultipleWhatsappLinks = () => {
     const handleEditClose = () => {
         setEditOpen(false);
     };
- 
+
     const handleEditSubmit = async (e) => {
         e.preventDefault();
         try {
@@ -99,15 +101,22 @@ const MultipleWhatsappLinks = () => {
             });
             console.log(res);
             setEditOpen(false);
-            await getAllinks(); 
+            await getAllinks();
             toastAlert('Update Successful');
         } catch (error) {
             toastError('Update Failed');
         }
     };
+    const handleNavigateMeetingPage = () => {
+        navigate('/admin/instaapi/community/meetingPage', { state: { creatorDetail } });
+    };
     return (
         <>
             <Button onClick={handleOpen} variant="outlined" sx={{ m: 1 }}>Add Link</Button>
+            <Button onClick={handleNavigateMeetingPage} variant="outlined" sx={{ m: 1 }}>
+                Add Meeting Pages
+            </Button>
+
             <Modal
                 open={open}
                 onClose={handleClose}
