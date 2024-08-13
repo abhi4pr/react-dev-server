@@ -7,6 +7,7 @@ import { useParams } from "react-router-dom";
 import { baseUrl } from "../../../utils/config";
 import AccountBalanceIcon from "@mui/icons-material/AccountBalance";
 import NotificationsActiveTwoToneIcon from "@mui/icons-material/NotificationsActiveTwoTone";
+import ImageView from "./ImageView";
 
 const PaymentDoneTransactionList = () => {
   const [transactionData, setTransactionData] = useState([]);
@@ -147,7 +148,7 @@ const PaymentDoneTransactionList = () => {
           return "No Image";
         }
         // Extract file extension and check if it's a PDF
-        const fileExtension = params.row.invc_img
+        const fileExtension = params.row.evidence
           .split(".")
           .pop()
           .toLowerCase();
@@ -204,6 +205,16 @@ const PaymentDoneTransactionList = () => {
         new Date(params.row.request_date).toLocaleDateString("en-IN") +
           " " +
           new Date(params.row.request_date).toLocaleTimeString("en-IN");
+      },
+    },
+    {
+      field: "payment_date",
+      headerName: "Payment Date ",
+      width: 150,
+      renderCell: (params) => {
+        new Date(params.row.payment_date).toLocaleDateString("en-IN") +
+          " " +
+          new Date(params.row.payment_date).toLocaleTimeString("en-IN");
       },
     },
     {
@@ -596,6 +607,15 @@ const PaymentDoneTransactionList = () => {
             }}
             getRowId={(row) => transactionData.indexOf(row)}
           />
+          {openImageDialog && (
+            <ImageView
+              viewImgSrc={viewImgSrc}
+              fullWidth={true}
+              maxWidth={"md"}
+              setViewImgDialog={setOpenImageDialog}
+              openImageDialog={openImageDialog}
+            />
+          )}
         </div>
       </div>
     </div>

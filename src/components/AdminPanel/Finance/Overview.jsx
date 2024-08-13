@@ -22,39 +22,6 @@ const Overview = (props) => {
   const [openImageDialog, setOpenImageDialog] = useState(false);
   const [viewImgSrc, setViewImgSrc] = useState("");
 
-  // const filterData = () => {
-  //   switch (selectedRange) {
-  //     case "0-10k":
-  //       setFilteredData(
-  //         pendingReqData?.filter((data) => data?.balance_amount <= 10000)
-  //       );
-  //       break;
-  //     case "10k-50k":
-  //       setFilteredData(
-  //         pendingReqData?.filter(
-  //           (data) =>
-  //             data?.balance_amount > 10000 && data?.balance_amount <= 50000
-  //         )
-  //       );
-  //       break;
-  //     case "50k-100k":
-  //       setFilteredData(
-  //         pendingReqData?.filter(
-  //           (data) =>
-  //             data?.balance_amount > 50000 && data?.balance_amount <= 100000
-  //         )
-  //       );
-  //       break;
-  //     case "100k-above":
-  //       setFilteredData(
-  //         pendingReqData?.filter((data) => data?.balance_amount > 100000)
-  //       );
-  //       break;
-  //     default:
-  //       setFilteredData(pendingReqData);
-  //   }
-  // };
-
   const calculateTotalAmount = (data) => {
     return data?.reduce(
       (total, item) => total + parseFloat(item.balance_amount),
@@ -81,7 +48,6 @@ const Overview = (props) => {
                 <th>Data</th>
                 <th>count</th>
                 <th>Balance Amount</th>
-                <th>Total Amount</th>
               </tr>
             </thead>
             <tbody>
@@ -113,12 +79,12 @@ const Overview = (props) => {
                     data?.filter((item) => item.balance_amount <= 10000)
                   )}
                 </td>
-                <td>
+                {/* <td>
                   {" "}
                   {calculateTotalAmount(
                     data?.filter((item) => item.paid_amount <= 10000)
                   )}
-                </td>
+                </td> */}
               </tr>
               <tr>
                 <td>10k-20k</td>
@@ -160,7 +126,7 @@ const Overview = (props) => {
                     )
                   )}
                 </td>
-                <td>
+                {/* <td>
                   {" "}
                   {calculateTotalAmount(
                     data?.filter(
@@ -168,7 +134,7 @@ const Overview = (props) => {
                         item.paid_amount >= 10000 && item.paid_amount <= 20000
                     )
                   )}
-                </td>
+                </td> */}
               </tr>
               <tr>
                 <td>20k-30k</td>
@@ -210,7 +176,7 @@ const Overview = (props) => {
                     )
                   )}
                 </td>
-                <td>
+                {/* <td>
                   {" "}
                   {calculateTotalAmount(
                     data?.filter(
@@ -218,7 +184,7 @@ const Overview = (props) => {
                         item.paid_amount >= 20000 && item.paid_amount <= 30000
                     )
                   )}
-                </td>
+                </td> */}
               </tr>
               <tr>
                 <td>30k-40k</td>
@@ -259,7 +225,7 @@ const Overview = (props) => {
                     )
                   )}
                 </td>
-                <td>
+                {/* <td>
                   {" "}
                   {calculateTotalAmount(
                     data?.filter(
@@ -267,7 +233,7 @@ const Overview = (props) => {
                         item.paid_amount >= 30000 && item.paid_amount <= 40000
                     )
                   )}
-                </td>
+                </td> */}
               </tr>
               <tr>
                 <td>40k-50k</td>
@@ -309,7 +275,7 @@ const Overview = (props) => {
                     )
                   )}
                 </td>
-                <td>
+                {/* <td>
                   {" "}
                   {calculateTotalAmount(
                     data?.filter(
@@ -317,7 +283,7 @@ const Overview = (props) => {
                         item.paid_amount >= 40000 && item.paid_amount <= 50000
                     )
                   )}
-                </td>
+                </td> */}
               </tr>
               <tr>
                 <td>50k-100k</td>
@@ -359,7 +325,7 @@ const Overview = (props) => {
                     )
                   )}
                 </td>
-                <td>
+                {/* <td>
                   {" "}
                   {calculateTotalAmount(
                     data?.filter(
@@ -367,7 +333,7 @@ const Overview = (props) => {
                         item.paid_amount >= 50000 && item.paid_amount <= 100000
                     )
                   )}
-                </td>
+                </td> */}
               </tr>
               <tr>
                 <td>100k-200k</td>
@@ -408,7 +374,7 @@ const Overview = (props) => {
                     )
                   )}
                 </td>
-                <td>
+                {/* <td>
                   {" "}
                   {calculateTotalAmount(
                     data?.filter(
@@ -416,7 +382,7 @@ const Overview = (props) => {
                         item.paid_amount >= 100000 && item.paid_amount <= 200000
                     )
                   )}
-                </td>
+                </td> */}
               </tr>
               <tr>
                 <td>200k-300k</td>
@@ -457,7 +423,7 @@ const Overview = (props) => {
                     )
                   )}
                 </td>
-                <td>
+                {/* <td>
                   {" "}
                   {calculateTotalAmount(
                     data?.filter(
@@ -465,7 +431,7 @@ const Overview = (props) => {
                         item.paid_amount >= 200000 && item.paid_amount <= 300000
                     )
                   )}
-                </td>
+                </td> */}
               </tr>
               <tr>
                 <td>300k-400k</td>
@@ -506,7 +472,7 @@ const Overview = (props) => {
                     )
                   )}
                 </td>
-                <td>
+                {/* <td>
                   {" "}
                   {calculateTotalAmount(
                     data?.filter(
@@ -514,7 +480,7 @@ const Overview = (props) => {
                         item.paid_amount >= 300000 && item.paid_amount <= 400000
                     )
                   )}
-                </td>
+                </td> */}
               </tr>
               <tr>
                 <td>400k-500k</td>
@@ -555,7 +521,7 @@ const Overview = (props) => {
                     )
                   )}
                 </td>
-                <td>
+                {/* <td>
                   {" "}
                   {calculateTotalAmount(
                     data?.filter(
@@ -563,7 +529,7 @@ const Overview = (props) => {
                         item.paid_amount >= 400000 && item.paid_amount <= 500000
                     )
                   )}
-                </td>
+                </td> */}
               </tr>
               <tr>
                 <td>500k-700k</td>
@@ -604,7 +570,7 @@ const Overview = (props) => {
                     )
                   )}
                 </td>
-                <td>
+                {/* <td>
                   {" "}
                   {calculateTotalAmount(
                     data?.filter(
@@ -612,7 +578,7 @@ const Overview = (props) => {
                         item.paid_amount >= 500000 && item.paid_amount <= 700000
                     )
                   )}
-                </td>
+                </td> */}
               </tr>
               <tr>
                 <td>700k-10L</td>
@@ -653,7 +619,7 @@ const Overview = (props) => {
                     )
                   )}
                 </td>
-                <td>
+                {/* <td>
                   {" "}
                   {calculateTotalAmount(
                     data?.filter(
@@ -662,7 +628,7 @@ const Overview = (props) => {
                         item.paid_amount <= 1000000
                     )
                   )}
-                </td>
+                </td> */}
               </tr>
               <tr>
                 <td>10L-15L</td>
@@ -703,7 +669,7 @@ const Overview = (props) => {
                     )
                   )}
                 </td>
-                <td>
+                {/* <td>
                   {" "}
                   {calculateTotalAmount(
                     data?.filter(
@@ -712,7 +678,7 @@ const Overview = (props) => {
                         item.paid_amount <= 1500000
                     )
                   )}
-                </td>
+                </td> */}
               </tr>
               <tr>
                 <td>15L+</td>
@@ -742,12 +708,12 @@ const Overview = (props) => {
                     data?.filter((item) => item.balance_amount >= 1500000)
                   )}
                 </td>
-                <td>
+                {/* <td>
                   {" "}
                   {calculateTotalAmount(
                     data?.filter((item) => item.paid_amount >= 1500000)
                   )}
-                </td>
+                </td> */}
               </tr>
             </tbody>
           </table>
