@@ -597,7 +597,7 @@ function CommunityHome() {
 
           {!reportView ? (
             <div className="card">
-              {contextData && contextData[0] && contextData[0].view_value !== 1 && (
+              {contextData && contextData[0] && contextData[0].view_value == 1 && (
 
                 <CommunityHeader
                   setRows={setRows}
