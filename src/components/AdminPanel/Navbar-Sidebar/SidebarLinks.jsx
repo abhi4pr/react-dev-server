@@ -466,7 +466,7 @@ const SidebarLinks = () => {
                     </NavLink>
                   )} */}
 
-{RoleId === constant.CONST_MANAGER_ROLE && isWFHDManager && (
+{/* {RoleId === constant.CONST_MANAGER_ROLE && isWFHDManager && (
                   // <>
                   <NavLink
                     className="collapse-item"
@@ -474,7 +474,7 @@ const SidebarLinks = () => {
                   >
                     <i className="bi bi-dot"></i> Create Attendance
                   </NavLink>
-                )}
+                )} */}
 
                   {RoleId !== constant.CONST_MANAGER_ROLE && (
                     <>

@@ -1,5 +1,5 @@
 import { Button, ButtonGroup } from '@mui/material';
-import { DataGrid } from '@mui/x-data-grid';
+import { DataGrid, GridToolbar } from '@mui/x-data-grid';
 import axios from 'axios';
 import { useEffect, useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -48,6 +48,7 @@ const CommunityManagerView = () => {
         {
             field: "S.NO",
             headerName: "S.NO",
+            valueGetter: (params) => rows.findIndex(row => row.reportTo === params.row.reportTo),
             renderCell: (params) => {
                 const rowIndex = rows.findIndex(row => row.reportTo === params.row.reportTo);
                 return <div>{rowIndex + 1}</div>;
@@ -57,6 +58,12 @@ const CommunityManagerView = () => {
             field: "reportTo",
             headerName: "Manager",
             width: 200,
+            valueGetter: (params) => {
+                const user = userContextData?.find(
+                    (user) => user.user_id == params.row.reportTo
+                );
+                return user ? user.user_name : 'N/A';
+            },
             renderCell: (params) => {
                 const user = userContextData?.find(
                     (user) => user.user_id == params.row.reportTo
@@ -68,6 +75,7 @@ const CommunityManagerView = () => {
             field: "count",
             headerName: "Page Count",
             width: 200,
+            
             renderCell: (params) => {
                 return (
                     <Button
@@ -87,6 +95,7 @@ const CommunityManagerView = () => {
             field: "followerGrowthCount",
             headerName: "Follower Growth Count",
             width: 200,
+            valueGetter: (params) => params.value,
             renderCell: (params) => {
                 const growth = params.value || 0;
                 return (
@@ -122,6 +131,9 @@ const CommunityManagerView = () => {
                     getRowId={(row) => row.reportTo}
                     pageSize={5}
                     rowsPerPageOptions={[5]}
+                    slots={{
+                        toolbar: GridToolbar,
+                    }}
                 />
             </div>
             <Modal

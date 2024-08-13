@@ -302,6 +302,26 @@ function CommunityHome() {
         )?.user_name || "N/A",
     },
     {
+      field: 'status',
+      headerName: 'Status',
+      width: 200,
+      renderCell: (params) => {
+        const status = params.row.projectxRecord.page_status;
+  
+        if (status == 1) {
+          return <Button variant="outlined" color="warning">Private</Button>;
+        } else if (status == 2) {
+          return <Button variant="outlined" color="success">Disabled</Button>;
+        } else if (status == 3) {
+          return <Button variant="outlined" color="error">Active</Button>;
+        } else {
+          return 'N/A';
+        }
+      },
+    }
+    
+    ,
+    {
       field: "Date ",
       headerName: "Date",
       width: 200,

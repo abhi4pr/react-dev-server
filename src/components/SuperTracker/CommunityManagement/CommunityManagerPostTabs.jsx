@@ -114,8 +114,6 @@ export default function CommunityManagerPostTabs({
       // Today
       setStartDate(new Date(now.setHours(0, 0, 0, 0)));
       setEndDate(new Date(now.setDate(now.getDate() + 1)));
-      // console.log(new Date(now.setHours(0, 0, 0, 0)));
-      // console.log(new Date(now.setDate(now.getDate() + 1)));
       // setEndDate(new Date(now.setHours(23, 59, 59, 999)));
     } else if (newValue == 1) {
       // This Week
@@ -136,11 +134,11 @@ export default function CommunityManagerPostTabs({
       setEndDate(new Date(now.setDate(now.getDate() + 6 - now.getDay())));
     } else if (newValue == 5) {
       // Previous Month
-      setStartDate(new Date(now.getFullYear(), now.getMonth() - 1, 1));
-      setEndDate(new Date(now.getFullYear(), now.getMonth(), 0));
+      setStartDate(new Date(now.getFullYear(), now.getMonth() - 1, 3));
+      setEndDate(new Date(now.getFullYear(), now.getMonth(), 2));
     } else if (newValue == 6) {
       // Previous Year
-      setStartDate(new Date(now.getFullYear() - 1, 0, 1));
+      setStartDate(new Date(now.getFullYear() - 1, 0, 1)); 
       setEndDate(new Date(now.getFullYear() - 1, 11, 31));
     } else if (newValue == 7) {
       // Custom (Example: Last 30 days)
@@ -150,8 +148,6 @@ export default function CommunityManagerPostTabs({
       // Yesterday
       setStartDate(new Date(now.setDate(now.getDate() - 2))); // Yesterday
       setEndDate(new Date(now.setDate(now.getDate()+1 ))); // Today (end of day)
-      //  console.log((new Date(now.setDate(now.getDate() - 2))),"Start Date");
-      // console.log((new Date(now.setDate(now.getDate()+1 ))),"End Date");
     } else if (newValue === 9) {
       // Yesterday
       setStartDate(null); // Yesterday
@@ -170,7 +166,6 @@ export default function CommunityManagerPostTabs({
   };
 
   const formatNumber = (value) => {
-    // console.log(value);
     if (!value) {
       return 0;
     } else if (value >= 1000000) {
@@ -181,7 +176,6 @@ export default function CommunityManagerPostTabs({
       return Math.round(value).toString();
     }
   };
- console.log(startDate,"startDate")
   return (
     <>
       <div className="card pgTab">
@@ -194,7 +188,7 @@ export default function CommunityManagerPostTabs({
               aria-label="lab API tabs example"
             >
               <Tab label="All" value={9} />
-              <Tab label="Today" value={0} />
+              {/* <Tab label="Today" value={0} /> */}
               <Tab label="Yesterday" value={8} />
               <Tab label="This Week" value={1} />
               <Tab label="This Month" value={2} />

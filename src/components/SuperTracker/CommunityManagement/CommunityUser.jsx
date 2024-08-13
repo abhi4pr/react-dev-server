@@ -1,5 +1,5 @@
 import { DataGrid, GridToolbar } from '@mui/x-data-grid';
-import { Box, Button, ButtonGroup, Dialog, DialogActions, DialogContent, DialogTitle, Typography, List, ListItem } from '@mui/material';
+import { Box, Button, ButtonGroup, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material';
 import { useEffect, useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
@@ -30,8 +30,6 @@ const CommunityUser = () => {
         try {
             const res = await axios.get('https://insights.ist:8080/api/v1/community/community_user');
             const data = res.data.data;
-
-            console.log(data, 'kkkk');
             const counts = countPagesPerUser(data);
 
             // Create a map to store unique user data
@@ -66,6 +64,8 @@ const CommunityUser = () => {
         {
             field: "S.NO",
             headerName: "S.NO",
+            valueGetter: (params) =>  managerData.indexOf(params.row),
+            
             renderCell: (params) => {
                 const rowIndex = managerData.indexOf(params.row);
                 return <div>{rowIndex + 1}</div>;
@@ -75,6 +75,9 @@ const CommunityUser = () => {
             field: "User name",
             headerName: "User Name",
             width: 200,
+            valueGetter: (params) =>  userContextData?.find(
+                (user) => user.user_id === params.row.user_id
+            )?.user_name || "N/A",
             renderCell: (params) =>
                 userContextData?.find(
                     (user) => user.user_id === params.row.user_id
@@ -112,11 +115,7 @@ const CommunityUser = () => {
         <>
             <ButtonGroup variant="outlined" aria-label="Basic button group">
                 <Button onClick={() => navigate('/admin/instaapi/community')}> Pages </Button>
-                {/* <Button onClick={() => navigate('/admin/instaapi/community/user')}> Users </Button> */}
-                <Button onClick={() => navigate("/admin/instaapi/community/managerView")}>
-              {" "}
-              Manager View 
-            </Button>
+                <Button onClick={() => navigate('/admin/instaapi/community/user')}> Users </Button>
             </ButtonGroup>
 
             <Box sx={{ height: 500, width: '100%' }}>
@@ -136,11 +135,11 @@ const CommunityUser = () => {
                     {selectedUser && (
                         <>
 
-                            <div className='d-flex m-2 gap-2' >
-                                <h6>User : {userContextData?.find(user => user.user_id === selectedUser.user_id)?.user_name || "N/A"}</h6>
-                                <h6>Page Count : {selectedUser.page_count}</h6>
-                            </div>
-
+<div className='d-flex m-2 gap-2' >
+    <h6>User : {userContextData?.find(user => user.user_id === selectedUser.user_id)?.user_name || "N/A"}</h6>
+    <h6>Page Count : {selectedUser.page_count}</h6>
+</div>
+                            
                             <table className="table">
                                 <thead>
                                     <tr>
@@ -155,7 +154,7 @@ const CommunityUser = () => {
                                         <tr key={index}>
                                             <th scope="row">{index + 1}</th>
                                             <td>{page.page_name}</td>
-                                            <td>{userContextData?.find(user => user.user_id === page.report_to)?.user_name}</td>
+                                            <td>{userContextData?.find(user => user.user_id === page.report_to)?.user_name }</td>
                                         </tr>
                                     ))}
                                 </tbody>
