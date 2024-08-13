@@ -109,7 +109,7 @@ const SidebarLinks = () => {
   );
   const isOpration = [42].some((index) => contextData[index]?.view_value === 1);
   const isCustomer = [50].some((index) => contextData[index]?.view_value === 1);
-  const isPageManagement = [50].some(
+  const isPageManagement = [51].some(
     (index) => contextData[index]?.view_value === 1
   );
   const isSales = [52].some((index) => contextData[index]?.view_value === 1);

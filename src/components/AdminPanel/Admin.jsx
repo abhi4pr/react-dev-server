@@ -353,6 +353,8 @@ import AnalyticDashboard from "./WFH/AnalyticDashboard/AnalyticDashboard";
 import CommunityUser from "../SuperTracker/CommunityManagement/CommunityUser";
 import CommunityManagerView from "../SuperTracker/CommunityManagement/CommunityManagerView";
 import PlanMaking from '../AdminPanel/PageMS/PlanMaking'
+import OverviewMeetingVia from "../SuperTracker/SuperTracker/MeetingPages/OverviewMeetingVia";
+import MeetingPagesOverView from "../SuperTracker/MeetingPages/MeetingPagesOverView";
 
 const Admin = () => {
   const [contextData, setData] = useState([]);
@@ -1689,6 +1691,14 @@ const Admin = () => {
                         <Route
                           path="/instaapi/community/managerView"
                           element={<CommunityManagerView />}
+                        />
+                        <Route
+                          path="/instaapi/community/meetingPage"
+                          element={<MeetingPagesOverView />}
+                        />
+                          <Route
+                          path="/instaapi/community/overviewMeetingVia"
+                          element={<OverviewMeetingVia />}
                         />
                       </>
                     )}
