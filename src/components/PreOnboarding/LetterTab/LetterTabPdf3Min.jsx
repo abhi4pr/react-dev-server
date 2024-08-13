@@ -18,6 +18,7 @@ const LetterTabPdf3Min = ({ UserDetails }) => {
       ? 208
       : 0;
   const TotalCTC = salary;
+
   return (
     <>
       <div className="ol-table">
@@ -58,7 +59,6 @@ const LetterTabPdf3Min = ({ UserDetails }) => {
             )}
 
             <tr>
-              {/* <td>Special Allowance</td> */}
               <td>Monthly Leave Encashment</td>
               <td>INR {specialAllowance}</td>
               <td>INR {specialAllowance * 12}</td>

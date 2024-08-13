@@ -346,6 +346,13 @@ import CampPlanOverview from "./Operation/Plan/CampPlanOverview";
 import EditPage from "./PageMS/EditPage/EditPage";
 import PageStats from "./PageMS/PageStats";
 import NewDocumentCom from "./WFH/NewDocumentCom";
+import CommunityHome from "../SuperTracker/CommunityManagement/CommunityHome";
+import CommunityManager from "../SuperTracker/CommunityManagement/CommunityManager";
+import CommunityPageView from "../SuperTracker/CommunityManagement/CommunityPageView";
+import AnalyticDashboard from "./WFH/AnalyticDashboard/AnalyticDashboard";
+import CommunityUser from "../SuperTracker/CommunityManagement/CommunityUser";
+import CommunityManagerView from "../SuperTracker/CommunityManagement/CommunityManagerView";
+import PlanMaking from '../AdminPanel/PageMS/PlanMaking'
 
 const Admin = () => {
   const [contextData, setData] = useState([]);
@@ -484,7 +491,7 @@ const Admin = () => {
                   <Route path="/wfhd-update/:id" element={<WFHDUpdate />} />
                   <Route
                     path="/wfhd-new-documentcom/:id"
-                    element={<NewDocumentCom/>}
+                    element={<NewDocumentCom />}
                   />
 
                   <Route
@@ -506,7 +513,7 @@ const Admin = () => {
                   />
                   <Route path="/attendence-mast" element={<Attendence />} />
                   <Route path="/stats" element={<Stats />} />
-                  { <Route path="/pageStats/:id" element={<PageStats />} />}
+                  {<Route path="/pageStats/:id" element={<PageStats />} />}
                   {/* Salary */}
                   <Route path="/salaryWFH" element={<SalaryWFH />} />
 
@@ -545,6 +552,7 @@ const Admin = () => {
                     path="/wfh-dashboard-overview/:id"
                     element={<DashboardWFHCardDetails />}
                   />
+                  <Route path="/wfhd-analytic-dashbaord" element={<AnalyticDashboard />} />
                   <Route path="/wfhd-overview" element={<WFHDOverview />} />
                   <Route
                     path="/wfh-users-overview/:deptId"
@@ -1413,6 +1421,7 @@ const Admin = () => {
                     element={<VendorEdit />}
                   /> */}
                   <Route path="/pms-vendor-master" element={<VendorMaster />} />
+                  <Route path="/pms-plan-making" element={<PlanMaking />} />
                   <Route
                     path="/pms-vendor-master/:_id"
                     element={<VendorMaster />}
@@ -1447,14 +1456,14 @@ const Admin = () => {
                     path="/pms-purchase-price/:id"
                     element={<PurchasePrice />}
                   />
-                  {/* <Route
-                    path="/pms-page-edit/:pageMast_id"
-                    element={<PageEdit />}
-                  /> */}
                   <Route
                     path="/pms-page-edit/:pageMast_id"
-                    element={<EditPage />}
+                    element={<PageEdit />}
                   />
+                  {/* <Route
+                    path="/pms-page-edit/:pageMast_id"
+                    element={<EditPage />}
+                  /> */}
                   <Route
                     path="/pms-vendor-page-price-overview"
                     element={<VendorPagePriceOverview />}
@@ -1653,6 +1662,36 @@ const Admin = () => {
                     path="/op-plan-overview/:id"
                     element={<CampPlanOverview />}
                   />
+
+                  {/* Community Management */}
+
+                  {contextData &&
+                    contextData[25] &&
+                    contextData[25].view_value === 1 && (
+                      <>
+                        <Route
+                          path="/instaapi/community"
+                          element={<CommunityHome />}
+                        />
+                        <Route
+                          path="/instaapi/community/manager"
+                          element={<CommunityManager />}
+                        />
+
+                        <Route
+                          path="/instaapi/community/manager/:creatorName"
+                          element={<CommunityPageView />}
+                        />
+                       <Route path="/instaapi/community/user"
+                          element={<CommunityUser
+                             />}
+                        />
+                        <Route
+                          path="/instaapi/community/managerView"
+                          element={<CommunityManagerView />}
+                        />
+                      </>
+                    )}
                 </Route>
               </Routes>
             </div>

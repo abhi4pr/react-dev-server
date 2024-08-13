@@ -1155,6 +1155,9 @@ label.checkbox-inline.propscss {
 .timeline_slideItem.completed {
   border-color: var(--success);
 }
+.timeline_slideItem.warning {
+  border-color: var(--warning);
+}
 
 .timeline_slideItem.completed h2,
 .timeline_slideItem.completed h3 {
@@ -1164,6 +1167,15 @@ label.checkbox-inline.propscss {
 .timeline_slideItem.selected {
   border-color: var(--success);
   background-color: var(--success);
+}
+.timeline_slideItem.pending {
+  border-color: var(--warning);
+  background-color: var(--warning);
+}
+
+.timeline_slideItem.pending h2,
+.timeline_slideItem.pending h3 {
+  color: var(--white);
 }
 
 .timeline_slideItem.selected h2,
@@ -1499,3 +1511,52 @@ label.checkbox-inline.propscss {
 .css-o9k5xi-MuiInputBase-root-MuiOutlinedInput-root.Mui-error .MuiOutlinedInput-notchedOutline {
   border-color: rgb(225, 225, 225) !important;
 }
+
+.vendor_threshold{
+  border: 1px solid blue;
+  margin-right: 5px;
+  cursor: pointer;
+}
+
+/* vendor statistics css */
+
+.vendor-container {
+  padding: 10px;
+}
+
+.vendor-heading {
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.vendor-item {
+  margin: 10px 0;
+  cursor: pointer;
+}
+
+.vendor-count {
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  text-align: center;
+  line-height: 24px;
+  margin-left: 8px;
+}
+
+.vendor-bg-orange {
+  background-color: #f0ad4e;
+}
+
+.vendor-bg-red {
+  background-color: #d9534f;
+}
+
+.vendor-bg-blue {
+  background-color: #5bc0de;
+}
+
+.vendor-bg-green {
+  background-color: #5cb85c;
+}
+/* vendor statistics css */

@@ -26,6 +26,7 @@ import DateISOtoNormal from "../../../../utils/DateISOtoNormal";
 import { baseUrl } from "../../../../utils/config";
 import { downloadSelectedInvoices } from "./ZipGenerator";
 import BankExcelConverter from "../../../../utils/BankExcelConverter";
+import { FaEye } from "react-icons/fa6"
 
 const images = [
   { temp_id: 1, image: image1 },
@@ -57,6 +58,7 @@ const SalaryWFH = () => {
   const [templateState, setTemplateState] = useState(null);
 
   const [thisMonthTotalSalary, setThisMonthTotalSalary] = useState(0);
+  const [thisMonthSalary, setThisMonthSalary] = useState(0);
   const [thisMonthTotalBonus, setThisMonthTotalBonus] = useState(0);
   const [thisMonthTotalDeductions, setThisMonthTotalDeductions] = useState(0);
   const [thisMonthTDS, setThisMonthTDS] = useState(0);
@@ -99,6 +101,10 @@ const SalaryWFH = () => {
 
   const [selectedRows, setSelectedRows] = useState([]);
   const [workDaysLastDate , setWorkDaysLastDate] = useState(0)
+
+  const [pendingFinanceCount , setPendingFinanceCount] = useState('')
+
+  
 
   var settings = {
     dots: false,
@@ -167,7 +173,7 @@ const SalaryWFH = () => {
 
         const data = res.data.data;
 
-        setAllWFHUsers(data?.length);
+        setAllWFHUsers(data.filter((d)=>d.att_status == "onboarded" && d.user_status == "Active"));
         const filteredUser = data.filter((d) => d.dept_id === department);
         if (filteredUser?.length > 0) {
           const firstUser = filteredUser[0];
@@ -242,8 +248,13 @@ const SalaryWFH = () => {
 
   //harshal.. calculating monthly salary
   useEffect(() => {
+    
     const sumMonth = data?.reduce(
       (acc, obj) => acc + parseFloat(obj.total_salary),
+      0
+    );
+    const sumSalary = data?.reduce(
+      (acc, obj) => acc + parseFloat(obj.salary),
       0
     );
     const sumBonus = data?.reduce((acc, obj) => acc + parseFloat(obj.bonus), 0);
@@ -256,6 +267,7 @@ const SalaryWFH = () => {
       0
     );
     setThisMonthTotalSalary(sumMonth);
+    setThisMonthSalary(sumSalary)
     setThisMonthTotalBonus(sumBonus);
     setThisMonthTotalDeductions(sumDeductions);
     setThisMonthTDS(sumTDSDeductions);
@@ -278,7 +290,7 @@ const SalaryWFH = () => {
   const currentMonth = new Date().toLocaleString("en-US", { month: "long" });
 
   const monthNameToNumber = (monthName) => {
-    const months = {
+    const months = { 
       January: "01",
       February: "02",
       March: "03",
@@ -347,6 +359,28 @@ const SalaryWFH = () => {
     }
   }
 
+  // const handleCardSelect = (index, data) => {
+  //   const monthMap = {
+  //     January: 'February',
+  //     February: 'March',
+  //     March: 'April',
+  //     April: 'May',
+  //     May: 'June',
+  //     June: 'July',
+  //     July: 'August',
+  //     August: 'September',
+  //     September: 'October',
+  //     October: 'November',
+  //     November: 'December',
+  //     December: 'January'
+  //   };
+    // setSelectedCardIndex(index);
+    // setYear(data.year);
+    // setMonth(data.month);
+    // setMonth(monthMap[data.month]);
+    // setSelectedYear(data.year);
+    // setSelectedMonth(data.month);
+  // };
   const handleCardSelect = (index, data) => {
     setSelectedCardIndex(index);
     setYear(data.year);
@@ -411,7 +445,7 @@ const SalaryWFH = () => {
       gettingDepartmentSalaryExists();
     }
 
-    if (department !== "" && month !== "" && year !== "") {
+    // if (department !== "" && month !== "" && year !== "") {
       axios
         .get(baseUrl + "get_total_salary")
         .then((res) => setCard2Data(res.data.data[0]));
@@ -423,7 +457,7 @@ const SalaryWFH = () => {
           year: year,
         })
         .then((res) => SetEmployeeLeft(res.data));
-    }
+    // }
 
     axios
       .post(baseUrl + "new_joiners", {
@@ -455,27 +489,58 @@ const SalaryWFH = () => {
       .then((res) => setDeptSalary(res.data));
   }
 
+  // const handleAttendance = async () => {
+  //   try {
+  //     await axios.post(baseUrl + "add_attendance", {
+  //       dept: department,
+  //       user_id: userName.user_id,
+  //       noOfabsent: 0,
+  //       month: month,
+  //       year: year,
+  //     });
+  //     await axios.put(baseUrl + "update_attendence_status", {
+  //       month: month,
+  //       year: Number(year),
+  //       dept: department,
+  //     });
+
+  //     setNoOfAbsent("");
+  //     handleSubmit();
+  //     toastAlert("Submitted success");
+  //   } catch (error) {
+  //     toastError("Billing header not set for this department");
+  //   }
+  // };
+
   const handleAttendance = async () => {
     try {
+      const monthNames = ["January", "February", "March", "April", "May", "June","July", "August", "September", "October", "November", "December"];
+  
+      let selectedMonth = monthNames.indexOf(month);
+      let selectedYear = Number(year);
+      let date = new Date(selectedYear, selectedMonth);
+      date.setMonth(date.getMonth() + 1);
+
+      let newMonth = monthNames[date.getMonth()];
+      let newYear = date.getFullYear();
+  
       await axios.post(baseUrl + "add_attendance", {
         dept: department,
         user_id: userName.user_id,
         noOfabsent: 0,
-        month: month,
-        year: year,
+        month: newMonth,
+        year: newYear,
       });
       await axios.put(baseUrl + "update_attendence_status", {
-        month: month,
-        year: Number(year),
+        month: newMonth,
+        year: newYear,
         dept: department,
       });
-
+      
       setNoOfAbsent("");
       handleSubmit();
       toastAlert("Submitted success");
     } catch (error) {
-      // alert('ssssss');
-      // console.error("Error submitting data:", error);
       toastError("Billing header not set for this department");
     }
   };
@@ -516,6 +581,7 @@ const SalaryWFH = () => {
       const response = res.data.data;
       setFilterData(response.filter((option) => option.sendToFinance == 0));
       setData(response);
+      setPendingFinanceCount(response.filter((d)=>d.attendence_status_flow === "Pending From Finance").length)
     } catch (error) {
       console.error("Error submitting data:", error);
     }
@@ -661,7 +727,6 @@ const SalaryWFH = () => {
       });
       handleSubmit();
       toastAlert("Attendence deleted success");
-      console.log(res.data);
     } catch (error) {
       console.log(error);
     }
@@ -889,7 +954,8 @@ const SalaryWFH = () => {
     },
     {
       name: "Work Days",
-      cell: () => workDaysLastDate ,
+      // cell: () => workDaysLastDate ,
+      cell: (row) => row.present_days,
     },
     {
       name: "Month",
@@ -955,6 +1021,23 @@ const SalaryWFH = () => {
       name: "Status",
       cell: (row) => row.attendence_status_flow,
     },
+    {name:"Action",
+      width:"200px",
+      cell:(row)=>(
+        <>
+              {row?.invoice_template_no !== "0" && (
+            <button
+              className="icon-1"
+              title="Download Invoice"
+              type="button"
+              onClick={() =>generatePDF(row)}
+            >
+              <FaEye />
+            </button>
+          )}
+          </>
+      )
+    }
     // {
     //   name: "Action",
     //   width: "200px",
@@ -1086,27 +1169,17 @@ const SalaryWFH = () => {
     XLSX.writeFile(workbook, fileName);
   };
 
-  // const handleBankDepartmentExcel = () => {
-  //   const formattedData = filterData?.map((row, index) => ({
-  //     "S.No": index + 1,
-  //     "Beneficiary Name (Mandatory) Special characters not supported":
-  //       row.user_name,
-  //     "Beneficiary's Account Number (Mandatory) Typically 9-18 digits":
-  //       row.account_no,
-  //     "IFSC Code (Mandatory) 11 digit code of the beneficiary’s bank account. Eg. HDFC0004277":
-  //       row.ifsc_code,
-  //     "Payout Amount (Mandatory) Amount should be in rupees": row.toPay,
-  //     "Phone Number (Optional)": row.user_contact_no,
-  //     "Email ID (Optional)": row.user_email_id,
-  //     "Contact Reference ID (Optional) Eg: Employee ID or Customer ID":
-  //       row?.emp_id,
-  //   }));
-  //   const fileName = "AllSalary.xlsx";
-  //   const worksheet = XLSX.utils.json_to_sheet(formattedData);
-  //   const workbook = XLSX.utils.book_new();
-  //   XLSX.utils.book_append_sheet(workbook, worksheet, "Data");
-  //   XLSX.writeFile(workbook, fileName);
-  // };
+
+  const monthToNumber = (month) => {
+    const months = [
+      "January", "February", "March", "April", "May", "June",
+      "July", "August", "September", "October", "November", "December"
+    ];
+    return months.indexOf(month) + 1;
+  };
+  
+  const currentYearForDis = new Date().getFullYear();
+  const currentMonthForDis = new Date().getMonth() + 1;
 
   return (
     <div style={{ display: "flex", gap: "16px", flexDirection: "column" }}>
@@ -1138,28 +1211,61 @@ const SalaryWFH = () => {
       {/* Cards */}
       <div className="timeline_wrapper mb24">
         <Slider {...settings} className="timeline_slider">
-          {completedYearsMonths.map((data, index) => (
-            <div
-              className={`timeline_slideItem ${
-                data.atdGenerated && "completed"
-              } ${selectedCardIndex === index ? "selected" : ""} ${
-                currentMonth == data.month && "current"
-              }`}
-              onClick={() => handleCardSelect(index, data)}
-              key={index}
-            >
+          {
+            completedYearsMonths?.map((data, index) => {
+            const cardMonth = monthToNumber(data.month);
+            const isFutureCard = data.year > currentYearForDis || (data.year === currentYearForDis && cardMonth >= currentMonthForDis);
+
+            const getClassName = (data, index, selectedCardIndex) => {
+              if (data.card_status === 1) {
+                return "pending";
+              } else if(data.card_status === 0) {
+                return selectedCardIndex === index ? "selected" : "";
+              }
+            };
+            return (
+              <div
+                className={`timeline_slideItem 
+                  ${
+                    data.deptCount == departmentdata?.length && "completed"
+                } 
+                  ${selectedCardIndex === index ? "selected" : ""}
+                ${getClassName(data, index, selectedCardIndex)}
+               ${
+                  currentMonthForDis === cardMonth+1 && "current"  // this code for current month card select blue card
+                } 
+                ${isFutureCard && "disabled"}`
+              }
+                onClick={() => {
+                  if (!isFutureCard) handleCardSelect(index, data);
+                }}
+                key={index}
+              >
+              
               <h2>
-                {data.month} <span>{data.year}</span>
+                {data.month} <span>{data.year} </span>
               </h2>
               <h4>
                 {data.deptCount}/{departmentdata?.length}
               </h4>
               <h3>
+                Total Amount:- {data.totalAmount}
+              </h3>
+              <h3>
+                Total Bonus:- {data.totalBonus}
+              </h3>
+              <h3>
+                Total Deduction:- {0}
+              </h3>
+              <h3>
+                Total Pay:- {data.totalSalary}
+              </h3>
+              <h3>
                 {data?.atdGenerated == 1 ? (
                   <span>
                     <i className="bi bi-check2-circle" />
                   </span>
-                ) : currentMonthNumber - 4 - index < 0 ? (
+                ) : currentMonthNumber - 5 - index < 0 ? (
                   <span>
                     <i className="bi bi-clock-history" />
                   </span>
@@ -1168,22 +1274,28 @@ const SalaryWFH = () => {
                     <i className="bi bi-hourglass-top" />
                   </span>
                 )}
-                {data.atdGenerated == 1
+                {data.deptCount == departmentdata?.length
+                  ? "Completed"
+                  : currentMonthNumber - 5 - index < 0
+                  ? "Upcoming"
+                  : "Pending"}
+                {/* {data.atdGenerated == 1
                   ? "Completed"
                   : currentMonthNumber - 4 - index < 0
                   ? "Upcoming"
-                  : "Pending"}
+                  : "Pending"} */}
               </h3>
             </div>
-          ))}
+          )})}
         </Slider>
       </div>
+      <h5>Verification Pending From Finance :{pendingFinanceCount}</h5>
 
       <div className="card mb24">
         <div className="card-header d-flex justify-content-between">
           <h4>Department</h4>
           <span className="d-flex gap4">
-            {data?.length == 0 &&
+            {/* {data?.length == 0 &&
               department &&
               selectedMonth &&
               selectedYear && (
@@ -1201,7 +1313,7 @@ const SalaryWFH = () => {
                   No Absents, Create Attendance{" "}
                   <i className="bi bi-arrow-right"></i>
                 </button>
-              )}
+              )} */}
             {contextData &&
               contextData[38] &&
               contextData[38].view_value === 1 && (
@@ -1219,7 +1331,7 @@ const SalaryWFH = () => {
                   </button>
                 </Link>
               )}
-            <button
+            {/* <button
               className="btn cmnbtn btn_sm btn-outline-primary "
               style={{
                 display: "flex",
@@ -1247,7 +1359,7 @@ const SalaryWFH = () => {
                   Create All Department Salary{" "}
                   <i className="bi bi-check-all"></i>
                 </button>
-              )}
+              )} */}
           </span>
         </div>
         <div className="card-body">
@@ -1297,6 +1409,7 @@ const SalaryWFH = () => {
                       <i class="bi bi-bounding-box"></i>
                     </div>
                     {option.dept_name}
+                    <h3>{option.user_count}</h3>
                   </div>
                 </div>
               );
@@ -1316,7 +1429,7 @@ const SalaryWFH = () => {
       >
         <div className="card-body p-0">
           <div className="row gap_24_0">
-            <div className="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-12">
+            {/* <div className="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-12">
               <div className="salary_dtlCard">
                 <div className="salary_dtlCard_head">
                   <h2>Current Month All Dept</h2>
@@ -1343,15 +1456,12 @@ const SalaryWFH = () => {
                       <span>Total TDS Deducted</span>
                       {showAlldeptMonthWiseData[0]?.totalSalaryDeduction}
                     </li>
-                    {/* <li>
-                      <span>Total Payroll Cost</span>
-                      {thisMonthTotalBonus - thisMonthTotalDeductions}
-                    </li> */}
+                    
                   </ul>
                 </div>
               </div>
-            </div>
-            <div className="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-12">
+            </div> */}
+            {/* <div className="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-12">
               <div className="salary_dtlCard">
                 <div className="salary_dtlCard_head">
                   <h2>This Year Selected Dept</h2>
@@ -1377,23 +1487,28 @@ const SalaryWFH = () => {
                   </ul>
                 </div>
               </div>
-            </div>
+            </div> */}
             <div className="col-xl-4 col-lg-4 col-md-6 col-sm-12 col-12">
               <div className="salary_dtlCard">
                 <div className="salary_dtlCard_head">
-                  <h2>Current Month Selected Dept</h2>
+                  <h2 className="bold">Current Month ({selectedMonth})</h2>
                 </div>
                 <div className="salary_dtlCard_info">
                   <ul>
-                    <li>
-                      <span>Total Payout Incurred :</span>
+                  <li>
+                      <span>Total Amount</span>
+                      {thisMonthSalary}
+                    </li>
+                    <li className="bold">
+                      <span>Total Payout :</span>
                       {thisMonthTotalSalary}
                     </li>
-                    <li>
+                    {/* <li>
                       <span>Total Bonus</span>
                       {thisMonthTotalBonus}
-                    </li>
-                    <li>
+                    </li> */}
+
+                    {/* <li>
                       <span>Total Deductions</span>
 
                       {thisMonthTotalDeductions}
@@ -1401,11 +1516,12 @@ const SalaryWFH = () => {
                     <li>
                       <span>Total TDS Deducted</span>
                       {thisMonthTDS}
-                    </li>
-                    <li>
-                      <span>Total Payroll Cost</span>
-                      {thisMonthTotalBonus - thisMonthTotalDeductions}
-                    </li>
+                    </li> */}
+                    {/* <hr /> */}
+                    {/* <li className="bold">
+                      <span >Total Payroll Cost</span>
+                      {thisMonthTotalSalary + thisMonthTotalBonus}
+                    </li> */}
                   </ul>
                 </div>
               </div>
@@ -1413,26 +1529,31 @@ const SalaryWFH = () => {
             <div className="col-xl-4 col-lg-4 col-md-6 col-sm-12 col-12">
               <div className="salary_dtlCard">
                 <div className="salary_dtlCard_head">
-                  <h2>This Year All Dept</h2>
+                  <h2 className="bold">This Year All Dept ({selectedYear})</h2>
                 </div>
                 <div className="salary_dtlCard_info">
                   <ul>
                     <li>
-                      <span>Total Payout :</span>
+                      <span>Total Amount :</span>
                       {card2Data?.totalsalary}
                     </li>
                     <li>
                       <span>Total Bonus</span>
                       {card2Data?.totalBonus}
                     </li>
-                    <li>
+                    {/* <li className="bold">
+                      <span >Total Payout :</span>
+                      {card2Data?.totalToPay}
+                    </li> */}
+                    
+                    {/* <li>
                       <span>Total Deductions</span>
                       {card2Data?.totalsalarydeduction}
                     </li>
                     <li>
                       <span>Total TDS Deducted</span>
                       {card2Data?.totaltdsdeduction}
-                    </li>
+                    </li> */}
                   </ul>
                 </div>
               </div>
@@ -1446,16 +1567,16 @@ const SalaryWFH = () => {
                   <ul>
                     <li>
                       <span>Total Employees:</span>
-                      {allWFHUsers}
+                      {allWFHUsers.length}
                     </li>
-                    <li>
-                      <span>Active Mark :</span>
+                    {/* <li>
+                      <span className="bold">Active Mark :</span>
                       {activeusers?.length}
-                    </li>
-                    <li>
+                    </li> */}
+                    {/* <li>
                       <span>Calander Days</span>
                       30
-                    </li>
+                    </li> */}
                     <li
                       className="color_primary"
                       data-toggle="modal"
@@ -1499,7 +1620,8 @@ const SalaryWFH = () => {
                 FilterTabData("Verification Pending"), setActiveTab(1);
               }}
             >
-              Verification Pending
+              Disbursement Pending
+              {/* Verification Pending */}
             </button>
             <button
               className={`named-tab ${activeTab == 2 ? "active-tab" : ""}`}
@@ -1507,7 +1629,8 @@ const SalaryWFH = () => {
                 FilterTabData("Verified"), setActiveTab(2);
               }}
             >
-              Verified
+              Paid
+              {/* Verified */}
             </button>
           </div>
           <div className="card">
@@ -1600,6 +1723,7 @@ const SalaryWFH = () => {
                 highlightOnHover
                 pagination
                 exportToCSV
+                paginationPerPage={100} 
                 // subHeader
                 conditionalRowStyles={conditionalRowStyles}
                 selectableRows={activeTab == 0 ? true : false}

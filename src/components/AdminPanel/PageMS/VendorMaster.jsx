@@ -5,7 +5,7 @@ import FieldContainer from "../FieldContainer";
 import FormContainer from "../FormContainer";
 import { baseUrl } from "../../../utils/config";
 import jwtDecode from "jwt-decode";
-import { Navigate } from "react-router";
+import { Navigate, useNavigate } from "react-router";
 import Select from "react-select";
 import {
   Autocomplete,
@@ -51,6 +51,7 @@ import { useGstDetailsMutation } from "../../Store/API/Sales/GetGstDetailApi";
 import formatString from "../Operation/CampaignMaster/WordCapital";
 
 const VendorMaster = () => {
+  const navigate = useNavigate();
   const { data: countries, isLoading: isCountriesLoading } =
     useGetCountryCodeQuery();
 
@@ -94,7 +95,7 @@ const VendorMaster = () => {
   const [sameAsPrevious, setSameAsPrevious] = useState(false);
   const [mobileValid, setMobileValid] = useState(false);
   const [userData, setUserData] = useState([]);
-  const [userId, setUserId] = useState("");
+  const [userId, setUserId] = useState(230);
   const [company_id, setCompany_id] = useState("");
 
   const [getGstDetails] = useGstDetailsMutation();
@@ -357,7 +358,7 @@ const VendorMaster = () => {
         .then((res) => {
           const data = res.data.data;
           setCompany_id(data?._id);
-          console.log(data, "data");
+          // console.log(data, "data");
           setCompName(data?.company_name);
           setCompAddress(data?.address);
           setCompCity(data?.city);
@@ -377,7 +378,7 @@ const VendorMaster = () => {
           docImage: doc.document_image_upload,
         };
       });
-      console.log(doc, "doc");
+      // console.log(doc, "doc");
       setDocDetails(doc);
     }
   }, [venodrDocuments]);
@@ -409,15 +410,25 @@ const VendorMaster = () => {
   };
 
   const handleDocNumberChange = (i, value) => {
-    if (value.length > 12) {
-      alert("Document Number cannot exceed 12 digits");
-      return;
-    }
-
     let doc = [...docDetails];
+    let docName = doc[i].docName;
+    let maxLength = 12;
+  
+    if (docName === 'Pan card') {
+      maxLength = 11;
+    } else if (docName === 'GST') {
+      maxLength = 15;
+    } else if (docName === 'Aadhar Card'){
+      maxLength = 16;
+    }
+    if (value.length > maxLength) {
+      alert(`Document Number for ${docName} cannot exceed ${maxLength} digits`);
+      return;
+    }  
     doc[i].docNumber = value;
     setDocDetails(doc);
   };
+
   const handleDocImageChange = (i, e) => {
     const file = e.target.files[0];
 
@@ -528,6 +539,14 @@ const VendorMaster = () => {
     return setEmailIsInvalid(true);
   };
 
+  const redirectAfterVendor = (resID) =>{
+    const sendingId = {
+      _id: resID
+    };
+    const queryParams = new URLSearchParams(sendingId).toString();
+    navigate(`/admin/pms-page-master?${queryParams}`)
+  }
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -540,9 +559,9 @@ const VendorMaster = () => {
     if (!mobile) {
       setValidator((prev) => ({ ...prev, mobile: true }));
     }
-    if (!email) {
-      setValidator((prev) => ({ ...prev, email: true }));
-    }
+    // if (!email) {
+    //   setValidator((prev) => ({ ...prev, email: true }));
+    // }
 
     if (!typeId) {
       setValidator((prev) => ({ ...prev, typeId: true }));
@@ -554,15 +573,15 @@ const VendorMaster = () => {
       setValidator((prev) => ({ ...prev, cycleId: true }));
     }
 
-    if (emailIsInvalid) {
-      toastError("Please enter a valid email");
-      return;
-    }
+    // if (emailIsInvalid) {
+    //   toastError("Please enter a valid email");
+    //   return;
+    // }
     if (
       !vendorName ||
       // !countryCode ||
       !mobile ||
-      !email ||
+      // !email ||
       !typeId ||
       !platformId ||
       !cycleId
@@ -607,10 +626,11 @@ const VendorMaster = () => {
       //   })
       addVendor(formData)
         .then((res) => {
-          setIsFormSubmitted(true);
+          // setIsFormSubmitted(true);
           toastAlert("Data Submitted Successfully");
-          setIsFormSubmitting(false);
+          // setIsFormSubmitting(false);
           const resID = res.data.data._id;
+          redirectAfterVendor(resID)
           // axios.post(
           //   baseUrl + "v1/company_name",
           //   {
@@ -639,7 +659,7 @@ const VendorMaster = () => {
             created_by: userID,
           }).then((res) => {  
             // console.log(res.data, "res");
-            toastAlert("company name added successfully")
+            // toastAlert("company name added successfully")
           }).catch((err) => {
             toastError(err.message);
           });
@@ -662,7 +682,7 @@ const VendorMaster = () => {
             //     toastError(err.message);
             //   });
             addVendorDocument(formData).then((res) => {
-              toastAlert("Document added successfully")
+              // toastAlert("Document added successfully")
             }
             ).catch((err) => {
               toastError(err.message);
@@ -688,7 +708,7 @@ const VendorMaster = () => {
         .then(() => {
 
           toastAlert("Data Updated Successfully");
-          console.log("Vendor updated")
+          // console.log("Vendor updated")
           for (let i = 0; i < docDetails?.length; i++) {
             const formData = new FormData();
 
@@ -763,7 +783,7 @@ const VendorMaster = () => {
     }
   };
 
-  const docOptions = ["Pan card", "GST"];
+  const docOptions = ["Pan card", "GST", "Aadhar Card", "Driving License"];
   // const copyOptions= docOptions;
   const [copyOptions, setCopyOptions] = useState(docOptions);
 
@@ -773,6 +793,26 @@ const VendorMaster = () => {
     });
     setCopyOptions(data);
   }, [docDetails.map((e) => e.docName)]);
+
+  const handlepincode = async(event) => {
+    const newValue = event.target.value;
+    setHomePincode(newValue);
+
+    try {
+      const response = await axios.get(`https://api.postalpincode.in/pincode/${newValue}`);
+      const data = response.data;
+
+      if (data[0].Status === 'Success') {
+        const postOffice = data[0].PostOffice[0];
+        setHomeState(postOffice.State);
+        setHomeCity(postOffice.District);
+      } else {
+        console.log('Invalid Pincode')
+      }
+    } catch (error) {
+      console.log('Error fetching details.');
+    }
+  };
 
   if (isFormSubmitted) {
     return <Navigate to="/admin/pms-vendor-overview" />;
@@ -940,13 +980,13 @@ const VendorMaster = () => {
               <FieldContainer
                 label="Email"
                 fieldGrid={12}
-                astric
+                // astric
                 value={email}
                 required={true}
                 type="email"
                 onChange={(e) => handleEmailSet(e, setEmail)}
               />
-              {emailIsInvalid && (
+              {/* {emailIsInvalid && (
                 <span style={{ color: "red", fontSize: "12px" }}>
                   Please enter a valid email
                 </span>
@@ -955,7 +995,7 @@ const VendorMaster = () => {
                 <span style={{ color: "red", fontSize: "12px" }}>
                   Please enter email
                 </span>
-              )}
+              )} */}
             </div>
             {/* <FieldContainer
           label="Personal Address"
@@ -1248,6 +1288,7 @@ const VendorMaster = () => {
                     />
                     <FieldContainer
                       required={false}
+                      maxLength={11}
                       label="IFSC "
                       value={bankRows[i].ifcs}
                       onChange={(e) => handleIFSCChange(e, i)}
@@ -1290,7 +1331,8 @@ const VendorMaster = () => {
                 variant="contained"
                 color="primary"
               >
-                <AddCircleTwoToneIcon />
+                {/* <AddCircleTwoToneIcon /> */}
+                <h5>Add Another Bank Details</h5>
               </IconButton>
               {/* {bankRows.length > 1 && (
             <IconButton
@@ -1305,13 +1347,15 @@ const VendorMaster = () => {
 
             <div className="form-group col-6">
               <label className="form-label">
-                Pay Cycle <sup style={{ color: "red" }}>*</sup>
+                PayCycle <sup style={{ color: "red" }}>*</sup>
               </label>
               <Select
                 options={cycleData?.map((option) => ({
                   value: option._id,
                   label: option.cycle_name,
-                }))}
+                  createdAt: option.createdAt,
+                }))
+                .sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt))}
                 required={true}
                 value={{
                   value: cycleId,
@@ -1365,10 +1409,23 @@ const VendorMaster = () => {
                 }}
                 onChange={(e) => {
                   setUserId(e.value);
-                  console.log(e.value, "e.value");
+                  // console.log(e.value, "e.value");
                 }}
                 required={false}
               />
+            </div>
+
+            <FieldContainer
+                label="Threshold Limit"
+                value={limit}
+                type="number"
+                required={false}
+                onChange={(e) => setLimit(e.target.value)}
+            />
+            <div style={{display: "flex"}}>
+                <p className="vendor_threshold" onClick={() => setLimit(100)}>100</p>
+                <p className="vendor_threshold" onClick={() => setLimit(500)}>500</p>
+                <p className="vendor_threshold" onClick={() => setLimit(1000)}>1000</p>
             </div>
 
             {/* <FieldContainer
@@ -1464,12 +1521,6 @@ const VendorMaster = () => {
 
             <div className="card-header">Personal Details</div>
             <div className="card-body row">
-              <FieldContainer
-                label="Home Address"
-                value={homeAddress}
-                required={false}
-                onChange={(e) => setHomeAddress(e.target.value)}
-              />
               <div className="form-group col-6">
                 <label className="form-label">
                   Country Code
@@ -1538,6 +1589,20 @@ const VendorMaster = () => {
                   </span>
                 )} */}
               </div>
+              <FieldContainer
+                label="PinCode"
+                value={homePincode}
+                maxLength={6}
+                required={false}
+                // onChange={(e) => {
+                //   const value = e.target.value;
+                //   if (/^\d{0,6}$/.test(value)) {
+                //     setHomePincode(value);
+                //   }
+                // }}
+                // setHomePincode(e.target.value)}
+                onChange={handlepincode}
+              />
               {countryCode == "91" ? (
                 <div className=" row">
                   <div className="form-group col-6">
@@ -1557,7 +1622,7 @@ const VendorMaster = () => {
                       value={homeCity}
                       onChange={(option) => {
                         setHomeCity(option ? option : null);
-                        console.log(option);
+                        // console.log(option);
                       }}
                     />
                   </div>
@@ -1571,18 +1636,12 @@ const VendorMaster = () => {
                 />
               )}
               <FieldContainer
-                label="PinCode"
-                value={homePincode}
-                maxLength={6}
+                label="Home Address"
+                value={homeAddress}
                 required={false}
-                onChange={(e) => {
-                  const value = e.target.value;
-                  if (/^\d{0,6}$/.test(value)) {
-                    setHomePincode(value);
-                  }
-                }}
-                // setHomePincode(e.target.value)}
+                onChange={(e) => setHomeAddress(e.target.value)}
               />
+              
               <FormControlLabel
                 control={
                   <Checkbox
@@ -1643,15 +1702,89 @@ const VendorMaster = () => {
                 />
               </div>
 
-              <FieldContainer
-                label="Threshold Limit"
-                value={limit}
-                type="number"
-                required={false}
-                onChange={(e) => setLimit(e.target.value)}
-              />
             </div>
-            {whatsappLink?.map((link, index) => (
+
+          {docDetails?.map((link, index) => (
+            <div className="row" key={index}>
+              {/* <FieldContainer
+                key={index}
+                fieldGrid={4}
+                label={`Document Name`}
+                value={link.docName}
+                // required={true}
+                onChange={(e) => handleDocNameChange(index, e.target.value)}
+              /> */}
+              <div className="col-md-3">
+                <label className="form-label">Document Name</label>
+                <Select
+                  className=""
+                  options={copyOptions.map((option) => ({
+                    value: option,
+                    label: option,
+                  }))}
+                  value={{
+                    value: link.docName,
+                    label: link.docName,
+                  }}
+                  onChange={(selectedOption) => {
+                    handleDocNameChange(index, selectedOption.value);
+                  }}
+                  required
+                />
+              </div>
+              <FieldContainer
+                key={index.docNumber}
+                label={`Document Number`}
+                fieldGrid={4}
+                value={link.docNumber}
+                // required={false}
+                onChange={(e) => handleDocNumberChange(index, e.target.value)}
+              />
+              <FieldContainer
+                key={index.docImage}
+                label={`Document Image`}
+                type="file"
+                accept={"image/*"}
+                fieldGrid={4}
+                // value={link.docImage}
+                onChange={(e) => handleDocImageChange(index, e)}
+              />
+              {/* {docDetails[index]?.docImage && (
+                <img
+                  className="profile-holder-1 mt-4"
+                  src={URL?.createObjectURL(docDetails[index]?.docImage)}
+                  alt="Selected"
+                  style={{ maxWidth: "50px", maxHeight: "50px" }}
+                />
+              )} */}
+              <div className="row">
+                <div className="col-12">
+                  <div className="addBankRow">
+                    <Button onClick={removedocLink(index)}>
+                      <IconButton variant="contained" color="error">
+                        <RemoveCircleTwoToneIcon />
+                      </IconButton>
+                    </Button>
+                  </div>
+                </div>
+              </div>
+              <div className="row thm_form"></div>
+            </div>
+          ))}
+          <div className="row">
+            <div className="col-12">
+              <div className="addBankRow">
+                <Button onClick={addDocDetails}>
+                  <IconButton variant="contained" color="primary">
+                    <AddCircleTwoToneIcon />
+                  </IconButton>
+                  Add Document
+                </Button>
+              </div>
+            </div>
+          </div>
+
+          {whatsappLink?.map((link, index) => (
               <>
                 <div className="col-6">
                   <FieldContainer
@@ -1749,85 +1882,6 @@ const VendorMaster = () => {
             </div>
           </div>
 
-          {docDetails?.map((link, index) => (
-            <div className="row" key={index}>
-              {/* <FieldContainer
-                key={index}
-                fieldGrid={4}
-                label={`Document Name`}
-                value={link.docName}
-                // required={true}
-                onChange={(e) => handleDocNameChange(index, e.target.value)}
-              /> */}
-              <div className="col-md-3">
-                <label className="form-label">Document Name</label>
-                <Select
-                  className=""
-                  options={copyOptions.map((option) => ({
-                    value: option,
-                    label: option,
-                  }))}
-                  value={{
-                    value: link.docName,
-                    label: link.docName,
-                  }}
-                  onChange={(selectedOption) => {
-                    handleDocNameChange(index, selectedOption.value);
-                  }}
-                  required
-                />
-              </div>
-              <FieldContainer
-                key={index.docNumber}
-                label={`Document Number`}
-                fieldGrid={4}
-                value={link.docNumber}
-                // required={false}
-                onChange={(e) => handleDocNumberChange(index, e.target.value)}
-              />
-              <FieldContainer
-                key={index.docImage}
-                label={`Document Image`}
-                type="file"
-                accept={"image/*"}
-                fieldGrid={4}
-                // value={link.docImage}
-                onChange={(e) => handleDocImageChange(index, e)}
-              />
-              {/* {docDetails[index]?.docImage && (
-                <img
-                  className="profile-holder-1 mt-4"
-                  src={URL?.createObjectURL(docDetails[index]?.docImage)}
-                  alt="Selected"
-                  style={{ maxWidth: "50px", maxHeight: "50px" }}
-                />
-              )} */}
-              <div className="row">
-                <div className="col-12">
-                  <div className="addBankRow">
-                    <Button onClick={removedocLink(index)}>
-                      <IconButton variant="contained" color="error">
-                        <RemoveCircleTwoToneIcon />
-                      </IconButton>
-                    </Button>
-                  </div>
-                </div>
-              </div>
-              <div className="row thm_form"></div>
-            </div>
-          ))}
-          <div className="row">
-            <div className="col-12">
-              <div className="addBankRow">
-                <Button onClick={addDocDetails}>
-                  <IconButton variant="contained" color="primary">
-                    <AddCircleTwoToneIcon />
-                  </IconButton>
-                  Add Document
-                </Button>
-              </div>
-            </div>
-          </div>
           <div className="row thm_form"></div>
         </div>
         <div className="card-footer">

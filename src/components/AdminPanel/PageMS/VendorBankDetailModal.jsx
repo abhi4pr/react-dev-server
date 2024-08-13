@@ -13,8 +13,10 @@ import {
   useGetSingleBankDetailQuery,
 } from "../../Store/reduxBaseURL";
 import { DataGrid } from "@mui/x-data-grid";
+import { useGlobalContext } from "../../../Context/Context";
 
 export default function VendorBankDetailModal() {
+  const { toastAlert } = useGlobalContext();
   const { data: payData } = useGetPmsPaymentMethodQuery();
   const { data: bankNameData } = useGetBankNameDetailQuery();
   const bankName = bankNameData?.data;
@@ -34,20 +36,33 @@ export default function VendorBankDetailModal() {
     }
   );
 
+  const handleCopyToClipboard = () => {
+    if (data && data.length > 0) {
+      const rows = data.map(row => {
+        return columns.map(col => col.valueGetter({ row })).join("\t");
+      }).join("\n");
+
+      navigator.clipboard.writeText(rows).then(() => {
+        toastAlert("Data Copied");
+      }).catch(err => {
+        console.error('Could not copy text: ', err);
+      });
+    }
+  };
+
   const columns = [
     {
       field: "payment_method",
       headerName: "Payment Method",
       width: 200,
-      valueGetter: ({ row }) =>
-        row.payment_method ? payData?.find(ele=>ele._id== row.payment_method)?.payMethod_name : "NA",
+      valueGetter: ({ row }) => (row.payment_method ? payData?.find(ele=>ele._id== row.payment_method)?.payMethod_name : "NA"),
     },
     {
       field: "bank_name",
       headerName: "Bank Name",
       width: 200,
-      valueGetter: (params) =>
-        params.row.bank_name?   bankName?.find((item) => item._id === params.row.bank_name)?.bank_name:"NA",
+      // valueGetter: (params) => params.row.bank_name?   bankName?.find((item) => item._id === params.row.bank_name)?.bank_name:"NA",
+      valueGetter: ({row}) => (row.bank_name ? row.bank_name : 'NA'),
     },
     {
       field: "account_type",
@@ -81,6 +96,12 @@ export default function VendorBankDetailModal() {
       width: 200,
       valueGetter: ({ row }) => (row.upi_id ? row.upi_id : "NA"),
     },
+    {
+      field: "description",
+      headerName: "Description",
+      width: 200,
+      valueGetter: ({ row }) => (row.description ? row.description : "NA"),
+    }
     
   ];
 
@@ -111,6 +132,9 @@ export default function VendorBankDetailModal() {
           )}
         </DialogContent>
         <DialogActions>
+          <Button onClick={handleCopyToClipboard}>
+            Copy Details
+          </Button>
           <Button onClick={handleClose} autoFocus>
             Close
           </Button>

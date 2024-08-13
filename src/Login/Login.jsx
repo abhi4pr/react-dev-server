@@ -29,6 +29,7 @@ const Login = () => {
           const token = res.data.token;
           const decodedToken = jwtDecode(token);
           const status = decodedToken.user_status;
+         
           if (status == "Active") {
             navigate("/");
             sessionStorage.setItem("token", token);

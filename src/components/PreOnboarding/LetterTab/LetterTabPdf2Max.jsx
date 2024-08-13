@@ -20,6 +20,7 @@ const LetterTabPdf2Max = ({ UserDetails }) => {
   //     ? 208
   //     : 0;
   const TotalCTC = salary;
+
   return (
     <>
       <div className="ol-table">
@@ -56,7 +57,6 @@ const LetterTabPdf2Max = ({ UserDetails }) => {
             </tr>
 
             <tr>
-              {/* <td>Special Allowance</td> */}
               <td>Special Allowance</td>
               <td>INR {specialAllowance}</td>
               <td>INR {specialAllowance * 12}</td>

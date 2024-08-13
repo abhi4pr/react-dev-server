@@ -13,6 +13,7 @@ import * as XLSX from "xlsx";
 import DataGridDialog from "../DataGridDialog/DataGridDialog";
 import FieldContainer from "../AdminPanel/FieldContainer";
 import BankExcelConverter from "../../utils/BankExcelConverter";
+import { FaEye } from "react-icons/fa6";
 
 const accordionButtons = [
   "Pending Verify",
@@ -65,27 +66,27 @@ export default function FinanceWFHDashboard() {
   ];
 
   const yearOptions = [
-    { value: "2010", label: "2010" },
-    { value: "2011", label: "2011" },
-    { value: "2012", label: "2012" },
-    { value: "2013", label: "2013" },
-    { value: "2014", label: "2014" },
-    { value: "2015", label: "2015" },
-    { value: "2016", label: "2016" },
-    { value: "2017", label: "2017" },
-    { value: "2018", label: "2018" },
-    { value: "2019", label: "2019" },
-    { value: "2020", label: "2020" },
-    { value: "2021", label: "2021" },
-    { value: "2022", label: "2022" },
+    // { value: "2010", label: "2010" },
+    // { value: "2011", label: "2011" },
+    // { value: "2012", label: "2012" },
+    // { value: "2013", label: "2013" },
+    // { value: "2014", label: "2014" },
+    // { value: "2015", label: "2015" },
+    // { value: "2016", label: "2016" },
+    // { value: "2017", label: "2017" },
+    // { value: "2018", label: "2018" },
+    // { value: "2019", label: "2019" },
+    // { value: "2020", label: "2020" },
+    // { value: "2021", label: "2021" },
+    // { value: "2022", label: "2022" },
     { value: "2023", label: "2023" },
     { value: "2024", label: "2024" },
     { value: "2025", label: "2025" },
     { value: "2026", label: "2026" },
-    { value: "2027", label: "2027" },
-    { value: "2028", label: "2028" },
-    { value: "2029", label: "2029" },
-    { value: "2030", label: "2030" },
+    // { value: "2027", label: "2027" },
+    // { value: "2028", label: "2028" },
+    // { value: "2029", label: "2029" },
+    // { value: "2030", label: "2030" },
   ];
 
   const handSearchleClick = () => {
@@ -104,8 +105,8 @@ export default function FinanceWFHDashboard() {
     }
   };
   const departmentAPI = () => {
-    axios.get(baseUrl + "get_all_departments").then((res) => {
-      setDepartmentData(res.data);
+    axios.get(baseUrl + "get_wfh_users_with_dept").then((res) => {
+      setDepartmentData(res.data.data);
     });
   };
 
@@ -141,20 +142,19 @@ export default function FinanceWFHDashboard() {
     const handleError = (error) => {
       var err = error.toString();
       if (err === "RangeError: Array buffer allocation failed")
-        toastError("Please select only 40 invoices at a time")
+        toastError("Please select only 40 invoices at a time");
     };
     try {
       await downloadSelectedInvoices(rowForPayment, handleError);
     } catch (error) {
       console.error("Error downloading invoices:", error);
     }
-
   };
 
   const handleDownloadIPayoutReleased = async () => {
     try {
       await downloadSelectedInvoices(rowForPayment);
-    } catch (error) { }
+    } catch (error) {}
   };
 
   const handleUTRupload = async (e, row) => {
@@ -392,7 +392,6 @@ export default function FinanceWFHDashboard() {
             columnMenuColumnsItem: null,
           }}
         />
-
       </>
     );
   }
@@ -514,13 +513,13 @@ export default function FinanceWFHDashboard() {
         const rowIndex =
           activeAccordionIndex == 0
             ? filterData
-              .filter((item) => item.status_ === 0)
-              .indexOf(params.row)
+                .filter((item) => item.status_ === 0)
+                .indexOf(params.row)
             : activeAccordionIndex == 1
-              ? filterData
+            ? filterData
                 .filter((item) => item.status_ === 1)
                 .indexOf(params.row)
-              : filterData
+            : filterData
                 .filter((item) => item.status_ === 2)
                 .indexOf(params.row);
         return <div>{rowIndex + 1}</div>;
@@ -576,13 +575,13 @@ export default function FinanceWFHDashboard() {
         const rowIndex =
           activeAccordionIndex == 0
             ? filterData
-              .filter((item) => item.status_ === 0)
-              .indexOf(params.row)
+                .filter((item) => item.status_ === 0)
+                .indexOf(params.row)
             : activeAccordionIndex == 1
-              ? filterData
+            ? filterData
                 .filter((item) => item.status_ === 1)
                 .indexOf(params.row)
-              : filterData
+            : filterData
                 ?.filter(
                   (item) => item.attendence_status_flow == "Payment Failed"
                 )
@@ -592,11 +591,11 @@ export default function FinanceWFHDashboard() {
     },
     {
       headerName: "Name",
-      field: "name",
+      field: "user_name",
       width: 150,
-      renderCell: (params) => {
-        return <div>{params.row.user_name}</div>;
-      },
+      // renderCell: (params) => {
+      //   return <div>{params.row.user_name}</div>;
+      // },
     },
     {
       headerName: "Department",
@@ -722,7 +721,7 @@ export default function FinanceWFHDashboard() {
     // },
   ];
 
-  if (activeAccordionIndex === 1 || activeAccordionIndex === 2 ) {
+  if (activeAccordionIndex === 1 || activeAccordionIndex === 2) {
     pendingColumns.push({
       headerName: "UTR",
       width: 350,
@@ -741,8 +740,8 @@ export default function FinanceWFHDashboard() {
                   params.row.utr
                     ? params.row.utr
                     : params.row.utr || rowUTR.row?.id === params.row.id
-                      ? rowUTR.value
-                      : ""
+                    ? rowUTR.value
+                    : ""
                 }
                 disabled={params.row.utr}
                 type="text"
@@ -784,22 +783,18 @@ export default function FinanceWFHDashboard() {
       renderCell: (params) => {
         return (
           <>
-            {activeAccordionIndex != 2 && (
+            {/* {activeAccordionIndex != 2 && (
               <button
                 className="btn cmnbtn btn_sm btn-outline-primary"
                 data-toggle="modal"
                 data-target="#exampleModal"
-                onClick={(e) =>
-                  activeAccordionIndex == 0
-                    ? handlePay(params.row, e)
-                    : handlePayVerify(params.row, e)
-                }
+                onClick={(e) => console.log(params.row.image_url)}
               >
-                Verify
+                view
               </button>
-            )}
+            )} */}
 
-            {params.row?.invoice_template_no !== "0" && (
+            {/* {params.row?.invoice_template_no !== "0" && (
               <button
                 className="btn cmnbtn btn_sm btn-outline-primary tableIconBtn ml8"
                 title="Download Invoice"
@@ -809,6 +804,18 @@ export default function FinanceWFHDashboard() {
                 }}
               >
                 <CloudDownloadIcon />
+              </button>
+            )} */}
+            {params.row?.invoice_template_no !== "0" && (
+              <button
+                className="btn cmnbtn btn_sm btn-outline-primary tableIconBtn ml8"
+                title="View Invoice"
+                type="button"
+                onClick={() => {
+                  generatePDF(params.row);
+                }}
+              >
+                <FaEye />
               </button>
             )}
           </>
@@ -862,7 +869,7 @@ export default function FinanceWFHDashboard() {
       <div className="thm_table">
         <DataGrid
           rows={filterData?.filter((item) => item.status_ === 0)}
-          columns={pendingColumns}
+          columns={pendingColumns} 
           getRowId={(row) => row.id}
           initialState={{
             pagination: {
@@ -992,7 +999,6 @@ export default function FinanceWFHDashboard() {
               className="btn cmnbtn btn_sm btn-outline-primary ml-3 \"
               onClick={handleDownloadExcel}
             >
-              
               Export Bank Excel
             </button>
             <button
@@ -1008,8 +1014,6 @@ export default function FinanceWFHDashboard() {
           </>
         </div>
       )}
-
-
 
       <div className="thm_table card-body">
         <DataGrid
@@ -1029,7 +1033,6 @@ export default function FinanceWFHDashboard() {
           // disableRowSelectionOnClick
           onRowSelectionModelChange={(rowIds) => {
             handleRowSelectionModelChange(rowIds);
-            // console.log(rowIds);
           }}
           rowSelectionModel={rowSelectionModel}
           slotProps={{
@@ -1134,7 +1137,9 @@ export default function FinanceWFHDashboard() {
         <div className="card-body thm_table">
           <DataGrid
             // rows={filterData?.filter((item) => item.status_ === 1 || item.attendence_status_flow == "Payment Released")}
-            rows={filterData?.filter((item) => item.attendence_status_flow == "Proceeded to bank")}
+            rows={filterData?.filter(
+              (item) => item.attendence_status_flow == "Proceeded to bank"
+            )}
             columns={pendingColumns}
             getRowId={(row) => row.id}
             initialState={{
@@ -1351,14 +1356,13 @@ export default function FinanceWFHDashboard() {
                     ]}
                     value={
                       departmentFilter === ""
-                        ? { value: "", label: "" }
+                        ? { value: "", label: "All" }
                         : {
-                          value: departmentFilter,
-                          label:
-                            departmentData.find(
+                            value: departmentFilter,
+                            label: departmentData.find(
                               (dept) => dept.dept_id === departmentFilter
-                            )?.dept_name || "Select...",
-                        }
+                            )?.dept_name,
+                          }
                     }
                     onChange={(selectedOption) => {
                       const selectedValue = selectedOption
@@ -1366,7 +1370,7 @@ export default function FinanceWFHDashboard() {
                         : "";
                       setDepartmentFilter(selectedValue);
                       if (selectedValue === "") {
-                        getData();
+                        departmentAPI();
                       }
                     }}
                     required
@@ -1407,19 +1411,6 @@ export default function FinanceWFHDashboard() {
                     required
                   />
                 </div> */}
-
-                <div className="form-group col-3">
-                  <label className="form-label">
-                    Years<sup style={{ color: "red" }}>*</sup>
-                  </label>
-                  <Select
-                    value={yearOptions.find((option) => option.value === years)}
-                    onChange={(selectedOption) => {
-                      setYears(selectedOption.value);
-                    }}
-                    options={yearOptions}
-                  />
-                </div>
                 <div className="form-group col-3">
                   <label className="form-label">
                     Months<sup style={{ color: "red" }}>*</sup>
@@ -1434,7 +1425,21 @@ export default function FinanceWFHDashboard() {
                     options={monthOptions}
                   />
                 </div>
+
                 <div className="form-group col-3">
+                  <label className="form-label">
+                    Years<sup style={{ color: "red" }}>*</sup>
+                  </label>
+                  <Select
+                    value={yearOptions.find((option) => option.value === years)}
+                    onChange={(selectedOption) => {
+                      setYears(selectedOption.value);
+                    }}
+                    options={yearOptions}
+                  />
+                </div>
+
+                {/* <div className="form-group col-3">
                   <button
                     onClick={handSearchleClick}
                     disabled={!years || !months || !departmentFilter}
@@ -1442,7 +1447,7 @@ export default function FinanceWFHDashboard() {
                   >
                     Show TDS Users
                   </button>
-                </div>
+                </div> */}
               </div>
             </div>
           </div>
@@ -1452,8 +1457,9 @@ export default function FinanceWFHDashboard() {
       <div className="tab">
         {accordionButtons.map((button, index) => (
           <div
-            className={`named-tab ${activeAccordionIndex === index ? "active-tab" : ""
-              }`}
+            className={`named-tab ${
+              activeAccordionIndex === index ? "active-tab" : ""
+            }`}
             onClick={() => {
               handleAccordionButtonClick(index);
             }}
@@ -1465,8 +1471,9 @@ export default function FinanceWFHDashboard() {
 
       <div className="card">
         <div
-          className={`${(activeAccordionIndex === 1 || activeAccordionIndex === 0) ? "" : ""
-            }`}
+          className={`${
+            activeAccordionIndex === 1 || activeAccordionIndex === 0 ? "" : ""
+          }`}
         >
           {activeAccordionIndex === 1 && (
             <div className="card-header">
@@ -1475,7 +1482,6 @@ export default function FinanceWFHDashboard() {
                   type="file"
                   accept=".xls,.xlsx"
                   fieldGrid={6}
-
                   onChange={(e) => setCSVFile(e.target.files[0])}
                 />
                 <input
@@ -1490,9 +1496,7 @@ export default function FinanceWFHDashboard() {
           )}
         </div>
 
-        <div
-
-        >
+        <div>
           {invoice}
 
           {activeAccordionIndex === 0 && pending}
@@ -1578,7 +1582,7 @@ export default function FinanceWFHDashboard() {
                     <button
                       type="submit"
                       className="btn btn-primary"
-                    // onClick={handlePayOut}
+                      // onClick={handlePayOut}
                     >
                       Pay
                     </button>

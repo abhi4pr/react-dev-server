@@ -24,6 +24,7 @@ import IndianBankList from "../../../assets/js/IndianBankList";
 import IndianStatesMui from "../../ReusableComponents/IndianStatesMui";
 import IndianCitiesMui from "../../ReusableComponents/IndianCitiesMui";
 import { Line, Circle } from "rc-progress";
+import { constant } from "../../../utils/constants";
 
 const castOption = ["General", "OBC", "SC", "ST"];
 const colourOptions = [
@@ -179,7 +180,8 @@ const UserUpdate = () => {
   const [lastUpdated, setLastUpdated] = useState("");
 
   const [isApplicable, setIsApplicable] = useState("");
-  console.log(isApplicable, "Is Applicable");
+  const [creditLimit, setCreditLimit] = useState(0);
+
   const IsApplicableData = [
     // { label: "PF", value: "pf" },
     { label: "PF & ESIC", value: "pf_and_esic" },
@@ -632,6 +634,7 @@ const UserUpdate = () => {
         current_pin_code,
         cast_type,
         alternate_contact,
+        user_credit_limit,
         ctc,
         emergency_contact_person_name2,
       } = fetchedData;
@@ -679,6 +682,7 @@ const UserUpdate = () => {
         return years + " years " + remainingDays + " days";
       }
       setAge(agesCalculate);
+      setCreditLimit(user_credit_limit);
 
       setHobbies(Hobbies);
       setBloodGroup(BloodGroup);
@@ -830,6 +834,7 @@ const UserUpdate = () => {
     );
     formData.append("salary", monthlyGrossSalary);
     formData.append("ctc", ctc);
+    formData.append("user_credit_limit", creditLimit);
 
     formData.append("sitting_id", jobType === "WFH" ? 0 : Number(sitting));
     formData.append(
@@ -1916,6 +1921,17 @@ const UserUpdate = () => {
             />
           </div>
 
+          {department == constant.CONST_SALES_DEPT_ID && (
+            <FieldContainer
+              label="Credit Limit"
+              type="number"
+              fieldGrid={3}
+              value={creditLimit}
+              required={true}
+              onChange={(e) => setCreditLimit(e.target.value)}
+            />
+           )}
+
           <div className="form-group col-3">
             <label className="form-label">Custom Rang</label>
             <Select
@@ -2469,7 +2485,7 @@ const UserUpdate = () => {
                     type="date"
                     name={key}
                     label={educationFieldLabels[key]}
-                    value={detail[key].split("T")[0]}
+                    value={detail[key]?.split("T")[0]}
                     onChange={(e) => handleEducationDetailsChange(index, e)}
                   />
                 ) : (

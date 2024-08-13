@@ -11,8 +11,18 @@ import Modal from "react-modal";
 import WhatsappAPI from "../../WhatsappAPI/WhatsappAPI";
 import { useGlobalContext } from "../../../Context/Context";
 import Loader from "../Finance/Loader/Loader";
+import Select from "react-select";
 import ReportL1Component from "./ReportL1Component";
+import WFHDExcelConverter from "./WFHDExcelConverter";
 
+const customStyles = {
+  headCells: {
+    style: {
+      fontWeight: 'bold',
+      fontSize: '12px',
+    },
+  },
+};
 const WFHDOverview = () => {
   const whatsappApi = WhatsappAPI();
   const { toastAlert } = useGlobalContext();
@@ -26,7 +36,7 @@ const WFHDOverview = () => {
   const [statusCounts, setStatusCounts] = useState({
     registered: 0,
     document_upload: 0,
-    training: 0,
+    // training: 0,
     onboarded: 0,
   });
   const [trainingDate, setTrainingDate] = useState("");
@@ -38,7 +48,7 @@ const WFHDOverview = () => {
   const [usercontact, setUserContact] = useState("");
   const [separationReasonGet, setSeparationReasonGet] = useState([]);
   const [separationUserID, setSeparationUserID] = useState(null);
-  const [separationStatus, setSeparationStatus] = useState("");
+  const [separationStatus, setSeparationStatus] = useState("Resigned");
   const [separationReason, setSeparationReason] = useState("");
   const [separationRemark, setSeparationRemark] = useState("");
   const [separationReinstateDate, setSeparationReinstateDate] = useState("");
@@ -67,7 +77,7 @@ const WFHDOverview = () => {
     setLoading(true);
     const response = await axios.get(baseUrl + "get_all_wfh_users");
     // if (RoleIDContext == 1 || RoleIDContext == 5 || RoleIDContext == 2) {
-    if (RoleIDContext == 1 || RoleIDContext == 5 ) {
+    if (RoleIDContext == 1 || RoleIDContext == 5) {
       setAllWFHDData(
         response.data.data.filter((item) => item.user_status === "Active")
       );
@@ -110,13 +120,13 @@ const WFHDOverview = () => {
 
       setFilteredDatas(filterTabWise);
       setSearchFilter(filterTabWise);
-    // } else {
-    } else if(RoleIDContext == 2){
+      // } else {
+    } else if (RoleIDContext == 2) {
       const deptWiseData = response.data.data?.filter(
         (d) => d.dept_id == ContextDept
       );
       setAllWFHDData(deptWiseData);
-      setLoading(false)
+      setLoading(false);
 
       let filterTabWise = [];
       switch (activeTab) {
@@ -192,9 +202,10 @@ const WFHDOverview = () => {
       training_date: trainingDate,
     };
     await axios.post(baseUrl + "add_user_training", payload);
-    await axios.put(baseUrl + "update_user", {
+    await axios.put(baseUrl + "update_training", {
       user_id: rowData.user_id,
-      att_status: "training",
+      // att_status: "training",
+      att_status: "onboarded",
     });
     setRemark("");
     setTrainingDate("");
@@ -233,7 +244,7 @@ const WFHDOverview = () => {
         user_id: separationUserID,
         status: separationStatus,
         created_by: userID,
-        resignation_date: separationResignationDate,
+        releaving_date: separationResignationDate,
         last_working_day: separationLWD,
         remark: separationRemark,
         reason: separationReason,
@@ -242,12 +253,11 @@ const WFHDOverview = () => {
         const formData = new FormData();
         formData.append("user_id", separationUserID);
         formData.append("user_status", "Exit");
-        axios
-          .put(baseUrl + "update_user", formData, {
-            headers: {
-              "Content-Type": "multipart/form-data",
-            },
-          })
+        axios.put(baseUrl + "update_user", formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        });
         getData();
         setSeparationReason("");
         setSeparationStatus("");
@@ -534,12 +544,29 @@ const WFHDOverview = () => {
     },
   ];
 
+  const [departmentData, setDepartmentData] = useState([]);
+  const [deptData, setDeptData] = useState("");
+
+  useEffect(() => {
+    const deptWiseDesi = allWFHDData.filter((d) => d.dept_id == deptData);
+    setFilteredDatas(deptWiseDesi);
+  }, [deptData]);
+
+  const getWFHDWithCount = async () => {
+    const res = await axios.get(baseUrl + "get_wfh_users_with_dept");
+    setDepartmentData(res.data.data);
+  };
+  useEffect(() => {
+    getWFHDWithCount();
+  }, []);
+
+  const handleExportClick = () => {
+    WFHDExcelConverter(filterDataS, "WFHD Users");
+  };
+
   return (
     <>
-      {loading ? (
-        <Loader />
-      ) : (
-        <>
+      <>
           <Modal
             className="Ready to Onboard"
             isOpen={showOnBoardModal}
@@ -620,15 +647,15 @@ const WFHDOverview = () => {
             style={{ display: "flex", flexDirection: "column", gap: "16px" }}
           >
             <FormContainer mainTitle="My Team" link={"/admin/"} />
-
             <div className="tab">
+              
               <div
                 className={` named-tab  ${activeTab == 3 ? "active-tab" : ""}`}
                 onClick={() => {
                   FilterTabData("registered"), setActiveTab(3);
                 }}
               >
-                Registered (
+                Pending Document (
                 {statusCounts?.registered ? statusCounts?.registered : 0})
               </div>
               <div
@@ -637,22 +664,22 @@ const WFHDOverview = () => {
                   FilterTabData("document_upload"), setActiveTab(1);
                 }}
               >
-                Upload Document (
+                Pending Training (
                 {statusCounts?.document_upload
                   ? statusCounts?.document_upload
                   : 0}
                 )
+
+                
               </div>
-              <div
+              {/* <div
                 className={`named-tab  ${activeTab == 2 ? "active-tab" : ""}`}
                 onClick={() => {
                   FilterTabData("training"), setActiveTab(2);
                 }}
               >
                 Training ({statusCounts?.training ? statusCounts?.training : 0})
-              </div>
-            </div>
-            <div className="tab">
+              </div> */}
               <div
                 className={`named-tab  ${activeTab == 0 ? "active-tab" : ""}`}
                 onClick={() => {
@@ -661,6 +688,49 @@ const WFHDOverview = () => {
               >
                 Onboarded (
                 {statusCounts?.onboarded ? statusCounts?.onboarded : 0})
+              </div>
+            </div>
+            <div className="tab">
+              <div className="form-group col-3">
+                <label className="form-label">Department</label>
+                <Select
+                  className=""
+                  options={[
+                    { value: "", label: "All" },
+                    ...departmentData.map((option) => ({
+                      value: option.dept_id,
+                      label: `${option.dept_name} (${option.user_count})`,
+                    })),
+                  ]}
+                  value={
+                    deptData === ""
+                      ? { value: "", label: "All" }
+                      : {
+                          value: deptData,
+                          label: departmentData.find(
+                            (user) => user.dept_id === deptData
+                          )
+                            ? `${
+                                departmentData.find(
+                                  (user) => user.dept_id === deptData
+                                ).dept_name
+                              } (${
+                                departmentData.find(
+                                  (user) => user.dept_id === deptData
+                                ).user_count
+                              })`
+                            : "",
+                        }
+                  }
+                  onChange={(e) => {
+                    const val = e.value;
+                    setDeptData(val);
+                    if (val === "") {
+                      getData();
+                    }
+                  }}
+                  required
+                />
               </div>
               <div className="Tab">
                 <button
@@ -683,9 +753,17 @@ const WFHDOverview = () => {
                   placeholder="Search Here"
                   className="form-control"
                   value={search}
-                  style={{ width: "300px" }}
+                  style={{ width: "600px" }}
                   onChange={(e) => setSearch(e.target.value)}
                 />
+                <button
+              onClick={handleExportClick}
+              className="btn cmnbtn btn_sm btn-success"
+              variant="text"
+              color="success"
+              sx={{ fontSize: "30px" }}
+              title="Download Excel"
+            >Export Excel</button>
               </div>
               <div className="card-body body-padding">
                 <DataTable
@@ -698,6 +776,7 @@ const WFHDOverview = () => {
                   highlightOnHover
                   paginationResetDefaultPage={true}
                   striped="true"
+                  customStyles={customStyles}
                 />
               </div>
             </div>
@@ -802,31 +881,28 @@ const WFHDOverview = () => {
                     astric
                     onChange={(e) => setSeparationStatus(e.target.value)}
                   >
-                    <option value="" >
-                      Choose...
-                    </option>
-                    <option value="Resigned">Resigned</option>
+                    {/* <option value="">Choose...</option> */}
+                    <option value="Resigned">Exit</option>
                     {/* <option value="Resign Accepted">Resign Accepted</option>
                     <option value="On Long Leave">On Long Leave</option>
                     <option value="Subatical">Subatical</option>
                     <option value="Suspended">Suspended</option> */}
                   </FieldContainer>
-                  <FieldContainer
+                  {/* <FieldContainer
                     label="Reason"
                     Tag="select"
                     value={separationReason}
                     astric
                     onChange={(e) => setSeparationReason(e.target.value)}
-                  ><option value="" >
-                  Choose...
-                </option>
+                  >
+                    <option value="">Choose...</option>
                     {separationReasonGet.map((option) => (
                       <option value={option.id} key={option.id}>
                         {" "}
                         {option.reason}
                       </option>
                     ))}
-                  </FieldContainer>
+                  </FieldContainer> */}
                   <FieldContainer
                     label="Remark"
                     value={separationRemark}
@@ -856,7 +932,7 @@ const WFHDOverview = () => {
                       onChange={(e) => setSeparationLWD(e.target.value)}
                     />
                   )}
-                  {separationStatus == "Resigned" && (
+                  {/* {separationStatus == "Resigned" && ( */}
                     <FieldContainer
                       label="Resignation Date"
                       type="date"
@@ -866,7 +942,7 @@ const WFHDOverview = () => {
                         setSeparationResignationDate(e.target.value)
                       }
                     />
-                  )}
+                  {/* )} */}
                 </div>
                 <div className="modal-footer">
                   <button
@@ -884,7 +960,6 @@ const WFHDOverview = () => {
                     disabled={
                       !separationRemark ||
                       !separationStatus ||
-                      !separationReason ||
                       !separationResignationDate
                     }
                   >
@@ -901,7 +976,8 @@ const WFHDOverview = () => {
             rowData={currentRow}
           />
         </>
-      )}
+      {/* ) */}
+      {/* } */}
     </>
   );
 };

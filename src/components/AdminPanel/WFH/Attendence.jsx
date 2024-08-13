@@ -15,6 +15,7 @@ import SaveAsIcon from "@mui/icons-material/SaveAs";
 import ClearIcon from "@mui/icons-material/Clear";
 import { baseUrl } from "../../../utils/config";
 import FormContainer from "../FormContainer";
+import { constant } from "../../../utils/constants";
 
 const Attendence = () => {
   const { toastAlert, toastError } = useGlobalContext();
@@ -42,6 +43,7 @@ const Attendence = () => {
   const userID = decodedToken.id;
   
   const [workDaysLastDate , setWorkDaysLastDate] = useState()
+
   
   var settings = {
     dots: false,
@@ -156,6 +158,16 @@ const Attendence = () => {
 
   const handleAttendence = async () => {
     try {
+      // const monthNames = ["January", "February", "March", "April", "May", "June","July", "August", "September", "October", "November", "December"];
+  
+      // let selectedMonth = monthNames.indexOf(month);
+      // let selectedYear = Number(year);
+      // let date = new Date(selectedYear, selectedMonth);
+      // date.setMonth(date.getMonth() + 1);
+
+      // let newMonth = monthNames[date.getMonth()];
+      // let newYear = date.getFullYear();
+
       await axios.post(baseUrl + "add_attendance", {
         dept: department,
         user_id: userName.user_id,
@@ -438,8 +450,9 @@ const Attendence = () => {
       type: "Number",
       editable: true,
     },
-    filterData?.length !== 0 &&
-      filterData[0]?.attendence_generated == 0 && {
+    // filterData?.length !== 0 &&
+    //   filterData[0]?.attendence_generated == 0 && 
+      {
         field: "actions",
         type: "actions",
         headerName: "Actions",
@@ -479,19 +492,49 @@ const Attendence = () => {
         },
       },
   ];
+
+  const monthToNumber = (month) => {
+    const months = [
+      "January", "February", "March", "April", "May", "June",
+      "July", "August", "September", "October", "November", "December"
+    ];
+    return months.indexOf(month) + 1;
+  };
+  
+  const currentYearForDis = new Date().getFullYear();
+  const currentMonthForDis = new Date().getMonth() + 1;
   return (
     <>
       {/* Cards */}
       <FormContainer mainTitle="Create Attendance" link="true"></FormContainer>
       <div className="timeline_wrapper mb24">
         <Slider {...settings} className="timeline_slider">
-          {completedYearsMonths.map((data, index) => (
+          {completedYearsMonths.map((data, index) => {
+            const cardMonth = monthToNumber(data.month);
+            const isFutureCard = data.year > currentYearForDis || (data.year === currentYearForDis && cardMonth >= currentMonthForDis);
+            return(
             <div
-              className={`timeline_slideItem ${
-                data.atdGenerated && "completed"
-              } ${selectedCardIndex === index ? "selected" : ""} ${
-                currentMonth == data.month && "current"
-              }`}
+              className={`timeline_slideItem
+                  ${
+                    // data.deptCount == departmentdata?.length && "completed"
+                  // data.atdGenerated && "completed"
+                // }
+                RoleIDContext === constant.CONST_MANAGER_ROLE  
+                ? data.atdGenerated && "completed" 
+                : data.deptCount == departmentdata?.length && "completed"
+            } 
+
+                ${selectedCardIndex === index ? "selected" : ""} ${
+                  currentMonthForDis === cardMonth+1 && "current"
+                  // currentMonthForDis === cardMonth && "current"
+                } 
+                ${isFutureCard && "disabled"}`
+              //    ${
+              //   data.atdGenerated && "completed"
+              // } ${selectedCardIndex === index ? "selected" : ""} ${
+              //   currentMonth == data.month && "current"
+              // }`
+            }
               onClick={() => handleCardSelect(index, data)}
               key={index}
             >
@@ -503,7 +546,7 @@ const Attendence = () => {
                   <span>
                     <i className="bi bi-check2-circle" />
                   </span>
-                ) : currentMonthNumber - 4 - index < 0 ? (
+                ) : currentMonthNumber - 5 - index < 0 ? (
                   <span>
                     <i className="bi bi-clock-history" />
                   </span>
@@ -512,14 +555,20 @@ const Attendence = () => {
                     <i className="bi bi-hourglass-top" />
                   </span>
                 )}
-                {data.atdGenerated == 1
+                { RoleIDContext === constant.CONST_MANAGER_ROLE ?
+                 data.atdGenerated == 1
                   ? "Completed"
-                  : currentMonthNumber - 4 - index < 0
+                  : currentMonthNumber - 5 - index < 0
+                  ? "Upcoming"
+                  : "Pending"
+                  : data.deptCount == departmentdata?.length
+                  ? "Completed"
+                  : currentMonthNumber - 5 - index < 0
                   ? "Upcoming"
                   : "Pending"}
               </h3>
-            </div>
-          ))}
+            </div>)
+})}
         </Slider>
       </div>
       <div className="card">

@@ -90,6 +90,39 @@ const UserSingleTab2 = ({ user, hobbiesData }) => {
             </div>
           </div>
         </div>
+        <hr />
+        <div className="row profileInfo_row">
+          <div className="col-xl-4 col-lg-4 col-md-6 col-sm-12">
+            <div className="profileInfo_box">
+              <h3>Bank Name</h3>
+              <h4>{user.bank_name ? user.bank_name : "NA"}</h4>
+            </div>
+          </div>
+          <div className="col-xl-4 col-lg-4 col-md-6 col-sm-12">
+            <div className="profileInfo_box">
+              <h3>IFSC</h3>
+              <h4>{user.ifsc_code ? user.ifsc_code : "NA"}</h4>
+            </div>
+          </div>
+        <div className="col-xl-4 col-lg-4 col-md-6 col-sm-12">
+          <div className="profileInfo_box">
+            <h3>Account Number</h3>
+            <h4>{user.account_no ? user.account_no : "NA"}</h4>
+          </div>
+        </div>
+        <div className="col-xl-4 col-lg-4 col-md-6 col-sm-12">
+          <div className="profileInfo_box">
+            <h3>Beneficiary</h3>
+            <h4>{user.beneficiary ? user.beneficiary : "NA"}</h4>
+          </div>
+        </div>
+        <div className="col-xl-4 col-lg-4 col-md-6 col-sm-12">
+          <div className="profileInfo_box">
+            <h3>Pan Number</h3>
+            <h4>{user.pan_no ? user.pan_no : "NA"}</h4>
+          </div>
+        </div>
+        </div>
       </div>
     </>
   );

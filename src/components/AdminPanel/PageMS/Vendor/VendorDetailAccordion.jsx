@@ -62,10 +62,6 @@ export default function VendorDetailAccordion({ vendorDetails, bankRows }) {
     vendorDetails?._id
   );
   const states = State.getStatesOfCountry("IN"); // Array of state objects
-
-  console.log( states.find((ele) => ele.isoCode == vendorDetails?.home_state)?.name);
-
-
   const { data: paltform } = useGetPmsPlatformQuery();
   const platformData = paltform?.data || [];
 
@@ -531,12 +527,14 @@ const gstData =
               <ListItemButton>
                 <ListItemText primary="PAN Image" />
                 {/* {imagePreview && ( */}
-                <img
-                  // src={`https://storage.googleapis.com/insights_backend_bucket/p/CyKeZQToTkx.jpeg`}
-                  src={panData?.document_image_upload_url}
-                  alt="Image Preview"
-                  style={{ width: "50%", height: "50%", marginTop: "1px" }}
-                />
+                <a href={panData?.document_image_upload_url} target="blank">
+                  <img
+                    // src={`https://storage.googleapis.com/insights_backend_bucket/p/CyKeZQToTkx.jpeg`}
+                    src={panData?.document_image_upload_url}
+                    alt="Image Preview"
+                    style={{ width: "25%", height: "25%", marginLeft: "35%" }}
+                  />
+                </a>
                 {/* )} */}
               </ListItemButton>
             </List>

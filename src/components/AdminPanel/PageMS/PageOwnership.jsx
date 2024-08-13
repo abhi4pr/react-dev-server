@@ -35,7 +35,7 @@ const PageOwnership = () => {
       .then((res) => {
         setFilterData(res.data.data);
         setData(res.data.data);
-        console.log("dddddddd",res.data.data)
+        // console.log("dddddddd",res.data.data)
       });
   };
 

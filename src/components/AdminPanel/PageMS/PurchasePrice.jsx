@@ -134,7 +134,7 @@ export default function PurchasePrice() {
 
   const handlePriceClick = (row) => {
     return function () {
-      console.log(row.purchase_price, "row._id by Manoj");
+      // console.log(row.purchase_price, "row._id by Manoj");
       setPriceData(row.purchase_price);
       setShowPriceModal(true);
     };

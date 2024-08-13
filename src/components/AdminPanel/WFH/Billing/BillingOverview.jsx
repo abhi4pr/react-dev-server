@@ -22,20 +22,16 @@ const BillingOverview = () => {
   //get_wfh_users/${dept_id}
 
   const getData = () => {
-    axios
-      .get(baseUrl + "get_all_billingheaders")
-      .then((res) => {
-        setBillData(res.data.result);
-        setFilterData(res.data.result);
-      });
+    axios.get(baseUrl + "get_all_billingheaders").then((res) => {
+      setBillData(res.data.result);
+      setFilterData(res.data.result);
+    });
   };
   useEffect(() => {
     getData();
     if (userID && contextData?.length === 0) {
       axios
-        .get(
-          `${baseUrl}` + `get_single_user_auth_detail/${userID}`
-        )
+        .get(`${baseUrl}` + `get_single_user_auth_detail/${userID}`)
         .then((res) => {
           setDatas(res.data);
         });
@@ -117,7 +113,7 @@ const BillingOverview = () => {
       />
       <div className="card">
         <div className="card-header sb">
-          <h4>Billing Overview</h4>
+          <h5 className="card-title">Billing Overview</h5>
           <input
             type="text"
             placeholder="Search Here"
@@ -127,7 +123,7 @@ const BillingOverview = () => {
           />
         </div>
 
-        <div className="card-body">
+        <div className="card-body p8">
           <DataTable
             // title="Billing Overview"
             columns={columns}
@@ -135,9 +131,7 @@ const BillingOverview = () => {
             fixedHeader
             fixedHeaderScrollHeight="64vh"
             highlightOnHover
-
             pagination
-
           />
         </div>
       </div>

@@ -130,7 +130,7 @@ export default function PageStats() {
     for (const key in errors) {
       if (Object.hasOwnProperty.call(errors, key)) {
         const element = errors[key];
-        console.log(element.message);
+        // console.log(element.message);
 
         // toastError(element.message)
         err = true;
@@ -180,7 +180,7 @@ export default function PageStats() {
   const [updatePageState] = useUpdatePageStateMutation();
 
   useEffect(() => {
-    console.log("come here");
+    // console.log("come here");
     if (pageStateData) {
       setReachImageURL(pageStateData?.reach_image_url);
       setImpressionImageURL(pageStateData?.impression_image_url);

@@ -18,6 +18,7 @@ import { Button } from "@mui/material";
 import Swal from "sweetalert2";
 import { baseUrl } from "../../../utils/config";
 import Loader from "../Finance/Loader/Loader";
+import ReJoinReusable from "./ReJoinReusable";
 
 const UserOverview = () => {
   const { id } = useParams();
@@ -108,7 +109,6 @@ const UserOverview = () => {
     SummaryData(userId);
   };
   const [reJoinModalOpen, setRejoinModalOpen] = useState(false);
-  const [reJoinDate, setReJoinDate] = useState("");
   const [rejoinID, setRejoinID] = useState("");
   const reJoinClose = () => {
     setRejoinModalOpen(false);
@@ -116,21 +116,6 @@ const UserOverview = () => {
   const handleReJoin = (id) => {
     setRejoinModalOpen(true);
     setRejoinID(id);
-  };
-  const handleSubmitReJoin = async () => {
-    if (!reJoinDate || reJoinDate == "") {
-      toastAlert("ReJoin Date is Required");
-    }
-    try {
-      await axios.put(`${baseUrl}` + `rejoin_user`, {
-        user_id: rejoinID,
-        joining_date: reJoinDate,
-      });
-      reJoinClose();
-      setReJoinDate("")
-      getData();
-      toastAlert("Re-Join Successfully")
-    } catch {}
   };
 
   const SummaryData = (userId) => {
@@ -156,6 +141,7 @@ const UserOverview = () => {
   const today = new Date().toISOString().split("T")[0];
 
   function handleSeparationDataPost() {
+    console.log(separationUserID , 'sepration user id')
     axios.post(baseUrl + "add_separation", {
       user_id: separationUserID,
       status: separationStatus,
@@ -165,12 +151,22 @@ const UserOverview = () => {
       remark: separationRemark,
       reason: separationReason,
     });
+    const formData = new FormData();
+    formData.append("user_id", separationUserID);
+    formData.append("user_status", "Exit");
+    axios
+      .put(baseUrl + "update_user", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      })
     whatsappApi.callWhatsAPI(
       "CF_Separation",
       JSON.stringify(usercontact),
       username,
       [username, separationStatus]
     );
+    getData()
   }
 
   useEffect(() => {
@@ -348,6 +344,12 @@ const UserOverview = () => {
     }
   }
 
+
+  // Function to capitalize the first letter of a string
+const capitalizeFirstLetter = (string) => {
+  return string.charAt(0).toUpperCase() + string.slice(1);
+};
+
   const columns = [
     {
       field: "id",
@@ -376,10 +378,13 @@ const UserOverview = () => {
       sortable: true,
     },
     {
-      field: "user_login_id",
-      headerName: "Login ID",
+      field: 'user_login_id',
+      headerName: 'Login ID',
       width: 190,
       sortable: true,
+      renderCell: (params) => (
+        <span>{capitalizeFirstLetter(params.value)}</span>
+      ),
     },
     {
       field: "Role_name",
@@ -572,7 +577,7 @@ const UserOverview = () => {
                 </div>
               </Link>
             )}
-          {/* {contextData &&
+          {contextData &&
             contextData[0] &&
             contextData[0].delete_flag_value === 1 && (
               <div
@@ -581,7 +586,7 @@ const UserOverview = () => {
               >
                 <i className="bi bi-trash" />
               </div>
-            )} */}
+            )}
         </>
       ),
     },
@@ -732,11 +737,11 @@ const UserOverview = () => {
               Job Type
             </button>
           </Link>
-          <Link to="/admin/billing-overview">
+          {/* <Link to="/admin/billing-overview">
             <button type="button" className="btn btn-outline-primary btn-sm">
               Billing{" "}
             </button>
-          </Link>
+          </Link> */}
           <Link to="/admin/hobbies-overview">
             <button type="button" className="btn btn-outline-primary btn-sm">
               Hobbies
@@ -769,6 +774,21 @@ const UserOverview = () => {
                   className="btn btn-outline-primary btn-sm"
                 >
                   Designation
+                </button>
+              </Link>
+            )}
+
+
+
+          {contextData &&
+            contextData[18] &&
+            contextData[18].insert_value === 1 && (
+              <Link to="/admin/pre-onboarding">
+                <button
+                  type="button"
+                  className="btn btn-warning btn-sm"
+                >
+                  Add Pre Onboarding
                 </button>
               </Link>
             )}
@@ -1171,6 +1191,7 @@ const UserOverview = () => {
                 value={separationReason}
                 onChange={(e) => setSeparationReason(e.target.value)}
               >
+                <option value="" disabled selected hidden>Choose...</option>
                 {separationReasonGet.map((option) => (
                   <option value={option.id} key={option.id}>
                     {" "}
@@ -1225,6 +1246,7 @@ const UserOverview = () => {
                 type="button"
                 className="btn btn-primary"
                 onClick={() => handleSeparationDataPost()}
+                disabled={!separationRemark || !separationStatus || !separationReason || !separationResignationDate}
                 data-dismiss="modal"
               >
                 Save changes
@@ -1339,53 +1361,13 @@ const UserOverview = () => {
       </Modal>
 
       {/* Re-Join Modal here  */}
-      <Modal
-        isOpen={reJoinModalOpen}
-        onRequestClose={reJoinClose}
-        style={{
-          content: {
-            width: "30%",
-            height: "40%",
-            top: "50%",
-            left: "50%",
-            right: "auto",
-            bottom: "auto",
-            marginRight: "-50%",
-            transform: "translate(-50%, -50%)",
-          },
-        }}
-      >
-        {/* {selectedRow && ( */}
+      <ReJoinReusable
+        getData={getData}
+        reJoinModalOpen={reJoinModalOpen}
+        reJoinClose={reJoinClose}
+        id={rejoinID}
+      />
 
-        <div>
-          <div className="d-flex justify-content-between mb-2">
-            <h3>Re-Join</h3>
-            <div className="d-flex">
-              <button className="btn btn-danger" onClick={reJoinClose}>
-                X
-              </button>
-            </div>
-          </div>
-          <div>
-            <FieldContainer
-              label="Re-Join Date"
-              type="date"
-              astric
-              value={reJoinDate}
-              onChange={(e) => setReJoinDate(e.target.value)}
-              fieldGrid={12}
-            />
-          </div>
-          <button
-            className="btn btn-success ml-3 mt-3"
-            disabled={!reJoinDate}
-            onClick={handleSubmitReJoin}
-          >
-            Submit
-          </button>
-        </div>
-        {/* )} */}
-      </Modal>
     </div>
   );
 };

@@ -179,6 +179,7 @@ const PageEdit = () => {
   const [allUsers, setAllUsers] = useState([]);
   const [stateUpdate, setStateUpdate] = useState(false);
   const [data, setData] = useState([]);
+  const token = sessionStorage.getItem("token");
 
   const handlePercentageChange = (value, setter) => {
     const newValue = parseFloat(value);
@@ -611,7 +612,12 @@ const PageEdit = () => {
   }, [priceData]);
 
   useEffect(() => {
-    axios.get(baseUrl + `v1/pageMaster/${pageMast_id}`).then((res) => {
+    axios.get(baseUrl + `v1/pageMaster/${pageMast_id}`,{
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      }
+    }).then((res) => {
       const data = [res.data.data];
       setData(data);
       setLatestEntry(res.data.latestEntry);
@@ -1021,8 +1027,8 @@ const PageEdit = () => {
           onChange={(e) => setDescription(e.target.value)}
         />
 
-<div className="col-12 row">
-          {rowCount.map((row, index) => (
+        <div className="col-12 row">
+          {/* {rowCount.map((row, index) => (
             <>
               {" "}
               <div className="form-group col-5 row">
@@ -1043,22 +1049,7 @@ const PageEdit = () => {
                   }}
                   onChange={(e) => handlePriceTypeChange(e, index)}
                 />
-                {/* <IconButton
-                  onClick={handleOpenPageModal("Price Type")}
-                  variant="contained"
-                  color="primary"
-                  aria-label="Add Price Type.."
-                >
-                  <AddIcon />
-                </IconButton>
-                <IconButton
-                  onClick={handleOpenInfoModal("Price Type Info")}
-                  variant="contained"
-                  color="primary"
-                  aria-label="Price Type Info.."
-                >
-                  <InfoIcon />
-                </IconButton> */}
+                
               </div>
               <FieldContainer
                 label=" Price *"
@@ -1082,7 +1073,7 @@ const PageEdit = () => {
                 </button>
               )}
             </>
-          ))}
+          ))} */}
           <div className="text-center">
             <button
               type="button"
@@ -2077,7 +2068,10 @@ const PageEdit = () => {
         submitButton={false}
       >
         {activeAccordionIndex === 0 && <Page />}
-        {activeAccordionIndex === 1 && <PageHealth />}
+        {/* {activeAccordionIndex === 1 && <PageHealth />} */}
+        {activeAccordionIndex === 1 && 
+          navigate(`/admin/exe-history/${pageMast_id}`)
+        }
         {activeAccordionIndex === 2 && <PerformanceDashboard />}
       </FormContainer>
 

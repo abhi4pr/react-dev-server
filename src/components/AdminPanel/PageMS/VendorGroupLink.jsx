@@ -160,7 +160,7 @@ const VendorGroupLink = () => {
   ];
 
   const handleRowData = (row) =>{
-    console.log(row.PMS_VendorMasts_data.PMSGroupLinks_data.group_link_type_id," row.PMSGroupLinks_data.link_type")
+    // console.log(row.PMS_VendorMasts_data.PMSGroupLinks_data.group_link_type_id," row.PMSGroupLinks_data.link_type")
     setRowData(row);
     setGroupLinkUpdate(row.group_link);
     setDescriptionUpdate(row.description);
@@ -260,7 +260,7 @@ const VendorGroupLink = () => {
                 "",
             }}
             onChange={(e) => {
-              console.log(vendorData[0])
+              // console.log(vendorData[0])
               setVendorId(e.value);
             }}
           ></Select>
@@ -332,7 +332,7 @@ const VendorGroupLink = () => {
                     "",
                 }}
                 onChange={(e) => {
-                  console.log(e.value," e.value")
+                  // console.log(e.value," e.value")
                   setVendorIdUpdate(e.value);
                 }}
               ></Select>

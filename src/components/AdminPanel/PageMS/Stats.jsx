@@ -144,7 +144,7 @@ const navigation = useNavigate();
 
   const cityCopyValidation = (selectedCity) => {
     setTimeout(() => {
-        console.log(selectedCity,"selectedCity, city")
+        // console.log(selectedCity,"selectedCity, city")
       if (selectedCity === null || selectedCity == "") {
         let temp = cityListTemp.filter(
           (city) => ![city1, city2, city3, city4, city5].includes(city)
@@ -218,8 +218,8 @@ const navigation = useNavigate();
     const svDate = preSVDate != "Invalid Date" ? preSVDate?.toISOString() : "";
 
     const formData = new FormData();
-    console.log(rowData[0], "rowdata")
-    console.log(rowData[0].pageMast_id, "rowdata")
+    // console.log(rowData[0], "rowdata")
+    // console.log(rowData[0].pageMast_id, "rowdata")
     // formData.append("p_id", rowData[0].exepurchasemodel.p_id);
     formData.append("pageMast_id", rowData[0]?.pageMast_id);
     formData.append("reach", reach);

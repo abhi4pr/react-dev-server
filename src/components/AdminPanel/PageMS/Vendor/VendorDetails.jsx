@@ -10,7 +10,7 @@ import { useEffect,useState } from 'react';
 import axios from 'axios';
 import { baseUrl } from "../../../../utils/config";
 import { useGetVendorCompanyDetailQuery } from '../../../Store/PageBaseURL';
-
+import { Link } from "react-router-dom";
 
 export default function VendorDetails({vendorDetails,setVendorDetails}) {
   const [open, setOpen] = React.useState(true);
@@ -21,6 +21,11 @@ export default function VendorDetails({vendorDetails,setVendorDetails}) {
     setOpen(true);
     // setScroll(scrollType);
   };
+
+  const sendingId = {
+    _id: vendorDetails._id
+  }
+  const queryParams = new URLSearchParams(sendingId).toString();
 
   const handleClose = () => {
     setOpen(false);
@@ -61,6 +66,8 @@ export default function VendorDetails({vendorDetails,setVendorDetails}) {
           </DialogContentText>
         </DialogContent>
         <DialogActions>
+          <Link to={`/admin/pms-page-master?${queryParams}`}><Button>Add Page</Button></Link>
+          <Link to={`/admin/pms-vendor-master/${vendorDetails._id}`}><Button onClick={handleClose}>Edit</Button></Link>
           <Button onClick={handleClose}>Cancel</Button>
           {/* <Button onClick={handleClose}>Subscribe</Button> */}
         </DialogActions>

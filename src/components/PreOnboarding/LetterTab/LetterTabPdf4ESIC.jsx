@@ -1,4 +1,5 @@
 import React from "react";
+import { Text, View, StyleSheet } from "@react-pdf/renderer";
 
 const LetterTabPdf4ESIC = ({ UserDetails }) => {
   const salary = UserDetails?.ctc;
@@ -43,6 +44,7 @@ const LetterTabPdf4ESIC = ({ UserDetails }) => {
     salary >= 20500
       ? Number(salary) + Number(EmployeePF)
       : Number(salary) + Number(EmployeePF) + Number(EmployeerESIC);
+
   return (
     <>
       <div className="ol-table">

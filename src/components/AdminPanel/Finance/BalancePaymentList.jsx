@@ -1860,6 +1860,32 @@ const BalancePaymentList = () => {
       />
     );
   }
+
+  const doPayment = async() =>{
+    const getTokenResponse = await axios.get(baseUrl + 'generate_plural_payment_jwt_token');
+    var token = getTokenResponse.data.data;
+
+    const payResponse = await axios.post('https://api-staging.pluralonline.com/v2/payments/banks', {
+      clientReferenceId: 'abcd1234',
+      payeeName: 'abhishek',
+      accountNumber: 'string',
+      branchCode: 'string',
+      email: 'ascs739@gmail.com',
+      phone: '7000436496',
+      amount: { currency: 'INR', value: 3000 },
+      remarks: 'string',
+      mode: 'IMPS', //IMPS, NEFT, RTGS, or UPI
+      // vpa: 'string',
+      // scheduleAt: 'string',
+      // payeeId: 'string'
+    }, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      }
+    });
+  }
+
   return (
     <div>
       {activeAccordionIndex === 2 ? (
@@ -2720,6 +2746,7 @@ const BalancePaymentList = () => {
         activeTabindex={activeAccordionIndex}
         onTabClick={handleAccordionButtonClick}
       />
+      <button className="btn btn-success" onClick={doPayment} style={{display:'none'}}>Do Payment</button>
       <div className="card">
         <div className="pack w-75">
           {rowSelectionModel.length > 0 && (

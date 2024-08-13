@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import "../../AdminPanel/User/Showdata.css";
+import "../../AdminPanel/User/ShowData.css";
 import { Link } from "react-router-dom";
 import FormContainer from "../FormContainer";
 import jwtDecode from "jwt-decode";

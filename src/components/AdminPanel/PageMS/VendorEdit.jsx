@@ -74,13 +74,10 @@ const VendorEdit = () => {
   const { _id } = useParams();
   const getData = () => {
     axios.get(baseUrl + "vendorAllData").then((res) => {
-      console.log(_id, "id");
-      console.log(
-        res.data.tmsVendorkMastList.filter((e) => e._id === _id),
-        "data"
-      );
+      // console.log(_id, "id");
+      // console.log(res.data.tmsVendorkMastList.filter((e) => e._id === _id), "data");
       const data = res.data.tmsVendorkMastList.filter((e) => e._id === _id);
-      console.log(data, "data");
+      // console.log(data, "data");
       setVendorName(data[0].vendorMast_name);
       setCountryCode(data[0].country_code);
       setMobile(data[0].mobile);
@@ -121,11 +118,8 @@ const VendorEdit = () => {
 
     axios.get(baseUrl + "getAllPlatform").then((res) => {
       setPlatformData(res.data.data);
-      console.log(platformId, "platformId");
-      console.log(
-        res.data.data.filter((e) => e._id),
-        "platform"
-      );
+      // console.log(platformId, "platformId");
+      // console.log( res.data.data.filter((e) => e._id), "platform" );
     });
 
     axios.get(baseUrl + "getAllPay").then((res) => {

@@ -9,10 +9,6 @@ import FormContainer from "../../FormContainer";
 import FieldContainer from "../../FieldContainer";
 import WhatsappAPI from "../../../WhatsappAPI/WhatsappAPI";
 import { baseUrl } from "../../../../utils/config";
-import { LocalizationProvider } from "@mui/x-date-pickers";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import { TextField } from "@mui/material";
 import dayjs from "dayjs";
 import IndianStatesMui from "../../../ReusableComponents/IndianStatesMui";
 import IndianCitiesMui from "../../../ReusableComponents/IndianCitiesMui";
@@ -49,8 +45,10 @@ const WFHDRegister = ({ userUpdateID }) => {
   const [email, setEmail] = useState("");
   const [validEmail, setValidEmail] = useState(true);
 
+  const [address, setAddress] = useState("");
   const [city, setCity] = useState("");
   const [currentState, setcurrentState] = useState("");
+  const [pincode, setPincode] = useState("");
   const [cityData, setCityData] = useState([]);
 
   const [personalEmail, setPersonalEmail] = useState("");
@@ -119,7 +117,6 @@ const WFHDRegister = ({ userUpdateID }) => {
     personalEmail: false,
     subDepartment: false,
     designation: false,
-    city: false,
     salary: false,
     personalContact: false,
     contact: false,
@@ -128,6 +125,10 @@ const WFHDRegister = ({ userUpdateID }) => {
     joiningDate: false,
     gender: false,
     dateOfBirth: false,
+    city: false,
+    currentState:false,
+    address:false,
+    pincode:false
   });
   const statusData = ["Active", "Exit", "PreOnboard"];
 
@@ -145,6 +146,7 @@ const WFHDRegister = ({ userUpdateID }) => {
             user_designation,
             sitting_id,
             permanent_city,
+            permanent_pin_code,
             ctc,
             room_id,
             dept_id,
@@ -164,7 +166,8 @@ const WFHDRegister = ({ userUpdateID }) => {
             sub_dept_id,
             user_status,
             PersonalEmail,
-            permanent_state
+            permanent_state,
+            permanent_address
           } = fetchedData;
 
           setUserName(user_name);
@@ -172,7 +175,9 @@ const WFHDRegister = ({ userUpdateID }) => {
           setSubDeparment(sub_dept_id);
           setDesignation(user_designation);
           setCity(permanent_city);
+          setAddress(permanent_address)
           setcurrentState(permanent_state)
+          setPincode(permanent_pin_code,)
           setReportL1(Report_L1);
           setSalary(salary);
           setLoginId(user_login_id);
@@ -342,9 +347,12 @@ const WFHDRegister = ({ userUpdateID }) => {
     if (personalEmail == "") {
       setIsRequired((perv) => ({ ...perv, personalEmail: true }));
     }
-    // if (city == "") {
-    //   setIsRequired((perv) => ({ ...perv, city: true }));
-    // }
+    if (city == "") {
+      setIsRequired((perv) => ({ ...perv, city: true }));
+    }
+    if (currentState == "") {
+      setIsRequired((perv) => ({ ...perv, currentState: true }));
+    }
     if (salary == "") {
       setIsRequired((perv) => ({ ...perv, salary: true }));
     }
@@ -378,6 +386,12 @@ const WFHDRegister = ({ userUpdateID }) => {
     if (subDepartment == "") {
       setIsRequired((perv) => ({ ...perv, subDepartment: true }));
     }
+    if (address == "") {
+      setIsRequired((perv) => ({ ...perv, address: true }));
+    }
+    if (pincode == "") {
+      setIsRequired((perv) => ({ ...perv, pincode: true }));
+    }
 
     if (!jobType) {
       return toastError("Fill Required Field");
@@ -409,7 +423,20 @@ const WFHDRegister = ({ userUpdateID }) => {
       return toastError("Fill Required Field");
     } else if (!reportL1 || reportL1 == "") {
       return toastError("Fill Required Field");
-    } else if (!personalContact || personalContact=="") {
+    }
+    else if (!address || address == "") {
+      return toastError("Fill Required Field");
+    }
+    else if (!city || city == "") {
+      return toastError("Fill Required Field");
+    }
+    else if (!currentState || currentState == "") {
+      return toastError("Fill Required Field");
+    }
+     else if (!pincode || pincode == "") {
+      return toastError("Please fill all Required field");
+    }
+     else if (!personalContact || personalContact=="") {
       return toastError(
         "Personal Contact Is Required and should be equal to 10"
       );
@@ -426,6 +453,8 @@ const WFHDRegister = ({ userUpdateID }) => {
       sub_dept_id: subDepartment,
       permanent_city: city,
       permanent_state: currentState,
+      permanent_address: address,
+      permanent_pin_code: Number(pincode),
       created_by: loginUserId,
       user_name: validateAndCorrectUserName(username),
       role_id: 4,
@@ -468,6 +497,7 @@ const WFHDRegister = ({ userUpdateID }) => {
     formData.append("sub_dept_id", subDepartment);
     formData.append("permanent_city", city);
     formData.append("permanent_state", currentState );
+    formData.append("permanent_address", address );
     formData.append("created_by", loginUserId);
     formData.append("user_name", validateAndCorrectUserName(username));
     formData.append("role_id", 4);
@@ -493,6 +523,7 @@ const WFHDRegister = ({ userUpdateID }) => {
     // formData.append("personal_number", personalContact);
     formData.append("alternate_contact", contact); //contact all replace to alternate contact
     formData.append("personal_number", personalContact);
+    formData.append("permanent_pin_code", pincode);
     formData.append("user_contact_no", personalContact);
     formData.append("user_status", status);
 
@@ -1592,23 +1623,103 @@ const WFHDRegister = ({ userUpdateID }) => {
               />
             </div>
 
+            <div className="col-3 mt-3">
+                <FieldContainer
+                  label="Address"
+                  astric
+                  fieldGrid={3}
+                  value={address}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    setAddress(value);
+
+                    if (value === "") {
+                      setIsRequired((prev) => ({
+                        ...prev,
+                        address: true,
+                      }));
+                    } else {
+                      setIsRequired((prev) => ({
+                        ...prev,
+                        address: false,
+                      }));
+                    }
+                  }}
+                />
+                {isRequired.address && (
+                  <p className="form-error">Please Enter Address</p>
+                )}
+              </div>
+
             <div className="form-group col-3 mt-3">
-              <label htmlFor=""> State</label>
+              <label htmlFor=""> State <span style={{color:"red"}}>*</span></label>
               <IndianStatesMui
                 selectedState={currentState}
-                onChange={(option) => setcurrentState(option ? option : null)}
+                // onChange={(option) => setcurrentState(option ? option : null)}
+                onChange={(option) => {
+                  const value = option;
+                  setcurrentState(option ? option : null);
+                  setIsRequired((prev) => ({
+                    ...prev,
+                    currentState: value === null || value === "",
+                  }));
+                }}
               />
+              {isRequired.currentState && (
+                  <p className="form-error">Please Enter State</p>
+                )}
             </div>
 
             <div className="form-group col-3 mt-3">
-              <label htmlFor=""> City</label>
+              <label htmlFor=""> City <span style={{color:"red"}}>*</span></label>
 
               <IndianCitiesMui
                 selectedState={currentState}
                 selectedCity={city}
-                onChange={(option) => setCity(option ? option : null)}
+                // onChange={(option) => setCity(option ? option : null)}
+                onChange={(option) => {
+                  const value = option;
+                  setCity(option ? option : null);
+                  setIsRequired((prev) => ({
+                    ...prev,
+                    city: value === null || value === "",
+                  }));
+                }}
               />
+              {isRequired.city && (
+                  <p className="form-error">Please Enter City</p>
+                )}
             </div>
+            <div className="col-3 mt-3">
+                <FieldContainer
+                  label="Pincode"
+                  type="number"
+                  astric={true}
+                  fieldGrid={3}
+                  maxLength={6}
+                  value={pincode}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    if (/^\d{0,6}$/.test(value)) {
+                      setPincode(value);
+                    }
+                    if (e.target.value === "") {
+                      setIsRequired((prev) => ({
+                        ...prev,
+                        pincode: true,
+                      }));
+                    } else {
+                      setIsRequired((prev) => ({
+                        ...prev,
+                        pincode: false,
+                      }));
+                    }
+                  }}
+                />
+                {isRequired.pincode && (
+                  <p className="form-error">Please Enter Pincode</p>
+                )}
+              </div>
           </div>
         </div>
         <div className="card-footer">

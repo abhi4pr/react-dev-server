@@ -2,7 +2,7 @@ import  { useEffect, useState } from "react";
 import FormContainer from "../AdminPanel/FormContainer";
 import { DataGrid } from "@mui/x-data-grid";
 import axios from "axios";
-import { useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import { Button } from "@mui/material";
 import DeleteHistoryConfirmation from "./DeleteHistoryConfirmation";
 import InsertPhotoTwoToneIcon from "@mui/icons-material/InsertPhotoTwoTone";
@@ -36,7 +36,7 @@ export default function ExeHistory({ pageRow }) {
       })
       .then((res) => {
         const data = res.data.data;
-        console.log(data, "data");
+        // console.log(data, "data");
         if (!data) return;
         setData(data);
       });
@@ -447,13 +447,21 @@ export default function ExeHistory({ pageRow }) {
       width: 150,
       renderCell: (params) => {
         return (
+          <>
           <Button
-            onClick={() => handleDeleteRowData(params.row)}
             variant="contained"
             color="primary"
           >
+          <Link to={`/admin/pageStats/${params.row._id}`}>Edit</Link>
+          </Button>
+          <Button
+            onClick={() => handleDeleteRowData(params.row)}
+            variant="contained"
+            color="error"
+          >
             Delete
           </Button>
+          </>
         );
       },
     },
