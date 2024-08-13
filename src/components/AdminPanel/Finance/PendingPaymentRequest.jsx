@@ -43,6 +43,7 @@ import TableData from "./TableData";
 import { Link } from "react-router-dom";
 import CommonDialogBox from "./CommonDialog/CommonDialogBox";
 import BankDetailPendingPaymentDialog from "./CommonDialog/BankDetailPendingPaymentDialog";
+import PayThroughVendorDialog from "./PayThroughVendor/PayThroughVendorDialog";
 
 export default function PendingPaymentRequest() {
   const whatsappApi = WhatsappAPI();
@@ -107,6 +108,7 @@ export default function PendingPaymentRequest() {
   const [netAmount, setNetAmount] = useState("");
   const [tdsDeductedCount, setTdsDeductedCount] = useState(0);
   const accordionButtons = ["All", "Partial", "Instant"];
+  const [payThroughVendor, setPayThroughVendor] = useState(false);
 
   var handleAcknowledgeClick = () => {
     setAknowledgementDialog(true);
@@ -1713,6 +1715,9 @@ export default function PendingPaymentRequest() {
   const openImgDialog = () => {
     setOpenDialog(true);
   };
+  const handleOpenPayThroughVendor = () => {
+    setPayThroughVendor(true);
+  };
 
   useEffect(() => {
     const initialAdjustmentAmt = netAmount - paymentAmout;
@@ -2395,6 +2400,16 @@ export default function PendingPaymentRequest() {
                   Download PDF Zip
                 </Button>
               )}
+
+              <Button
+                className="btn btn-success cmnbtn btn_sm"
+                variant="contained"
+                color="primary"
+                size="small"
+                onClick={handleOpenPayThroughVendor}
+              >
+                Pay Through Vendor
+              </Button>
             </div>
           </div>
           <div className="card-body thm_table fx-head">
@@ -2517,7 +2532,11 @@ export default function PendingPaymentRequest() {
             )}
           </div>
         </div>
-
+        <PayThroughVendorDialog
+          setPayThroughVendor={setPayThroughVendor}
+          payThroughVendor={payThroughVendor}
+          rowSelectionModel={rowSelectionModel}
+        />
         {/*Dialog Box */}
         {/* {loading ? (
           <div
