@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
 import { Box, Button, IconButton, Modal } from '@mui/material';
 import axios from 'axios';
-import FormContainer from '../../AdminPanel/FormContainer';
-import FieldContainer from '../../AdminPanel/FieldContainer';
 import { DataGrid } from '@mui/x-data-grid';
-import { useGlobalContext } from '../../../Context/Context';
+import FormContainer from '../../../AdminPanel/FormContainer';
+import FieldContainer from '../../../AdminPanel/FieldContainer';
+import { useGlobalContext } from '../../../../Context/Context';
 
 const OverviewMeetingVia = () => {
     const { toastAlert, toastError } = useGlobalContext();
