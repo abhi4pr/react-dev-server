@@ -585,6 +585,17 @@ const PageOverview = () => {
     },
   ];
 
+  // convert follower count in millions
+  function formatNumber(num) {
+    if (num >= 1000000) {
+        return (num / 1000000).toFixed(1) + 'M';
+    } else if (num >= 1000) {
+        return (num / 1000).toFixed(1) + 'K';
+    } else {
+        return num.toString();
+    }
+  }
+
   const pageDetailColumn = [
     { field: "preference_level", headerName: "Level", width: 200 },
     { field: "page_status", headerName: "Status", width: 200 },
@@ -647,6 +658,9 @@ const PageOverview = () => {
       field: "followers_count",
       headerName: "Followers",
       width: 200,
+      renderCell: (params) => {
+        return <div>{formatNumber(params.row.followers_count)}</div>
+      }
     },
     {
       field: "vendor_id",

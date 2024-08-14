@@ -1768,9 +1768,9 @@ const SidebarLinks = () => {
               <NavLink className="collapse-item" to="/admin/pms-page-overview">
                 <i className="bi bi-dot"></i>Page
               </NavLink>
-              <NavLink className="collapse-item" to="/admin/pms-plan-making">
+              {/* <NavLink className="collapse-item" to="/admin/pms-plan-making">
                 <i className="bi bi-dot"></i>Plan Making
-              </NavLink>
+              </NavLink> */}
               {/* )}
               {/* {contextData &&
               contextData[0] &&

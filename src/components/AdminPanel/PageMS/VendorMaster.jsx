@@ -102,7 +102,8 @@ const VendorMaster = () => {
 
   const [bankRows, setBankRows] = useState([
     {
-      payment_method: "",
+      payment_method: "666856874366007df1dfacde", // setting bank default to dropdown
+      // payment_method: "",
       bank_name: "",
       account_type: "",
       account_number: "",
@@ -626,11 +627,11 @@ const VendorMaster = () => {
       //   })
       addVendor(formData)
         .then((res) => {
-          // setIsFormSubmitted(true);
+          setIsFormSubmitted(true);
           toastAlert("Data Submitted Successfully");
-          // setIsFormSubmitting(false);
+          setIsFormSubmitting(false);
           const resID = res.data.data._id;
-          redirectAfterVendor(resID)
+          // redirectAfterVendor(resID)
           // axios.post(
           //   baseUrl + "v1/company_name",
           //   {
@@ -709,6 +710,170 @@ const VendorMaster = () => {
 
           toastAlert("Data Updated Successfully");
           // console.log("Vendor updated")
+          for (let i = 0; i < docDetails?.length; i++) {
+            const formData = new FormData();
+
+            formData.append("document_name", docDetails[i].docName);
+            formData.append("document_no", docDetails[i].docNumber);
+            formData.append("document_image_upload", docDetails[i].docImage);
+            axios
+              .put(
+                baseUrl + `v1/document_detail/${venodrDocuments[i]?._id}`,
+                formData,
+                {
+                  headers: {
+                    "Content-Type": "multipart/form-data",
+                    Authorization: `Bearer ${token}`,
+                  },
+                }
+              )
+              .catch((err) => {
+                toastError(err.message);
+              });
+          }
+          if (company_id) {
+          axios
+            .put(
+              baseUrl + `v1/company_name/${company_id}`,
+              {
+                company_name: compName,
+                address: compAddress,
+                city: compCity,
+                pincode: compPin,
+                state: compState,
+                threshold_limit: limit,
+                created_by: userID,
+              },
+              {
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                },
+              }
+            )
+            .then((res) => {
+            })
+            .catch((err) => {
+              toastError(err.message);
+            });
+          }
+          setIsFormSubmitted(true);
+          setIsFormSubmitting(false);
+        })
+        .catch((err) => {
+          toastError(err.message);
+          setIsFormSubmitting(false);
+          console.log(err, "err");
+        });
+    }
+  };
+
+  const handleSubmitNew = async (e) => {
+    e.preventDefault();
+
+    if (!vendorName || vendorName == "" || vendorName == null) {
+      setValidator((prev) => ({ ...prev, vendorName: true }));
+    }
+    if (!mobile) {
+      setValidator((prev) => ({ ...prev, mobile: true }));
+    }
+    if (!typeId) {
+      setValidator((prev) => ({ ...prev, typeId: true }));
+    }
+    if (!platformId) {
+      setValidator((prev) => ({ ...prev, platformId: true }));
+    }
+    if (!cycleId) {
+      setValidator((prev) => ({ ...prev, cycleId: true }));
+    }
+    if (
+      !vendorName ||
+      // !countryCode ||
+      !mobile ||
+      // !email ||
+      !typeId ||
+      !platformId ||
+      !cycleId
+    ) {
+      toastError("Please fill all the mandatory fields");
+      return;
+    }
+    const formData = {
+      vendor_name: vendorName.toLowerCase().trim(),
+      country_code: countryCode,
+      mobile: mobile,
+      alternate_mobile: altMobile,
+      email: email,
+      vendor_type: typeId,
+      vendor_platform: platformId,
+      pay_cycle: cycleId,
+      company_name: compName,
+      company_address: compAddress,
+      company_city: compCity,
+      company_pincode: compPin,
+      company_state: compState,
+      threshold_limit: limit,
+      home_address: homeAddress,
+      home_city: homeCity,
+      home_state: homeState,
+      home_pincode: homePincode,
+      created_by: userID,
+      vendor_category: vendorCategory,
+      bank_details: bankRows,
+      vendorLinks: whatsappLink,
+      closed_by: userId,
+    };
+
+    if (!_id) {
+      setIsFormSubmitting(true);
+
+      addVendor(formData)
+        .then((res) => {
+          toastAlert("Data Submitted Successfully");
+          const resID = res.data.data._id;
+          redirectAfterVendor(resID)
+          
+          addCompanyData(  {   vendor_id: resID,
+            company_name: compName,
+            address: compAddress,
+            city: compCity,
+            pincode: compPin,
+            state: compState,
+            threshold_limit: limit,
+            created_by: userID,
+          }).then((res) => {  
+            // console.log(res.data, "res");
+          }).catch((err) => {
+            toastError(err.message);
+          });
+
+          for (let i = 0; i < docDetails.length; i++) {
+            const formData = new FormData();
+            formData.append("vendor_id", resID);
+            formData.append("document_name", docDetails[i].docName);
+            formData.append("document_no", docDetails[i].docNumber);
+            formData.append("document_image_upload", docDetails[i].docImage);
+            
+            addVendorDocument(formData).then((res) => {
+              // toastAlert("Document added successfully")
+            }
+            ).catch((err) => {
+              toastError(err.message);
+            }
+            );
+          }
+        })
+        .catch((err) => {
+          toastError(err.message);
+          setIsFormSubmitting(false);
+        });
+    } else {
+      setIsFormSubmitting(true);
+
+      formData._id=_id
+      updateVendor(formData).unwrap()
+        .then(() => {
+
+          toastAlert("Data Updated Successfully");
           for (let i = 0; i < docDetails?.length; i++) {
             const formData = new FormData();
 
@@ -1886,6 +2051,7 @@ const VendorMaster = () => {
           <div className="row thm_form"></div>
         </div>
         <div className="card-footer">
+          <div style={{display:'flex'}}>
           <Stack direction="row" spacing={2}>
             <Button
               className="btn cmnbtn btn-primary"
@@ -1896,6 +2062,17 @@ const VendorMaster = () => {
               {isFormSubmitting ? "Submitting..." : _id ? "Update" : "Submit"}
             </Button>
           </Stack>
+          <Stack direction="row" spacing={2} style={{marginLeft:'5px'}}>
+            <Button
+              className="btn cmnbtn btn-info"
+              onClick={handleSubmitNew}
+              variant="contained"
+              disabled={isFormSubmitting}
+            >
+              {isFormSubmitting ? "Submitting..." : _id ? "Update" : "Add New Profile"}
+            </Button>
+          </Stack>
+          </div>
         </div>
       </div>
       <AddVendorModal />
