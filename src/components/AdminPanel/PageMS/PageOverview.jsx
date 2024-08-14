@@ -1972,9 +1972,9 @@ const PageOverview = () => {
                       // onCellEditStop={handleEditCellChange}
                       // onCellEditStart={handleEditCellChange}
                       // onEditCellChange={handleEditCellChange}
-                      onRowDoubleClick={(params) => {
-                        navigate(`/admin/pms-page-edit/${params.row._id}`);
-                      }}
+                      // onRowDoubleClick={(params) => {
+                      //   navigate(`/admin/pms-page-edit/${params.row._id}`);
+                      // }}
                       // onCellEditStop={(params) =>
                       //   setTimeout(() => handleEditCellChange(params), 1000)
                       // }

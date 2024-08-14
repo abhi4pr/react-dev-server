@@ -38,11 +38,13 @@ import {
   useGetAllVendorQuery,
   useGetPmsPlatformQuery,
 } from "../../Store/reduxBaseURL";
-import { useParams } from "react-router";
+import { useParams, useNavigate } from "react-router";
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 const PageMaster = () => {
   const location = useLocation();
-
+  const navigate = useNavigate();
+  
   const queryParams = new URLSearchParams(location.search);
   const vendorDetails = {
     _id: queryParams.get('_id'),
@@ -619,6 +621,10 @@ const PageMaster = () => {
     fetchData();
   }, [vendorId]);
 
+  const goBack = () => {
+    navigate(-1);
+  }
+
   return (
     <>
       <FormContainer
@@ -627,7 +633,9 @@ const PageMaster = () => {
         // handleSubmit={handleSubmit}
         submitButton={false}
       />
-
+      <div style={{backgroundColor:'#52b2d6',width:'3%',padding:'7px',marginBottom:'10px',cursor:'pointer'}}>
+        <ArrowBackIcon onClick={goBack} />
+      </div>
       <div className="parent_of_tab" style={{display:'flex'}}>
         {
           platformData?.map((item)=>(

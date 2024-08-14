@@ -37,6 +37,7 @@ import {
 import AddIcon from "@mui/icons-material/Add";
 import { setModalType, setOpenShowAddModal } from "../../Store/PageMaster";
 import { useDispatch } from "react-redux";
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",
@@ -782,6 +783,10 @@ const PageEdit = () => {
     { label: "Last one year", value: 10 },
     { label: "All Data", value: 2 },
   ];
+
+  const goBack = () => {
+    navigate(-1);
+  }
 
   const Page = () => {
     return (
@@ -2058,6 +2063,9 @@ const PageEdit = () => {
 
   return (
     <>
+      <div style={{backgroundColor:'#52b2d6',width:'3%',padding:'7px',marginBottom:'10px',cursor:'pointer'}}>
+        <ArrowBackIcon onClick={goBack} />
+      </div>
       <FormContainer
         mainTitle="Page Edit"
         title="Page Edit"

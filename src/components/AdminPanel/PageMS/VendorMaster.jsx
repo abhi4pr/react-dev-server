@@ -49,6 +49,7 @@ import IndianStatesMui from "../../ReusableComponents/IndianStatesMui";
 import IndianCitiesMui from "../../ReusableComponents/IndianCitiesMui";
 import { useGstDetailsMutation } from "../../Store/API/Sales/GetGstDetailApi";
 import formatString from "../Operation/CampaignMaster/WordCapital";
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 const VendorMaster = () => {
   const navigate = useNavigate();
@@ -982,6 +983,11 @@ const VendorMaster = () => {
   if (isFormSubmitted) {
     return <Navigate to="/admin/pms-vendor-overview" />;
   }
+
+  const goBack = () => {
+    navigate(-1);
+  }
+
   return (
     <>
       <FormContainer
@@ -991,6 +997,9 @@ const VendorMaster = () => {
         // handleSubmit={handleSubmit}
         submitButton={false}
       ></FormContainer>
+      <div style={{backgroundColor:'#52b2d6',width:'3%',padding:'7px',marginBottom:'10px',cursor:'pointer'}}>
+        <ArrowBackIcon onClick={goBack} />
+      </div>
       <div className="card">
         <div className="card-header">
           <h5 className="card-title">Add Vendor Master</h5>
