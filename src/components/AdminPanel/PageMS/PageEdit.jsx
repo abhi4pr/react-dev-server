@@ -38,6 +38,7 @@ import AddIcon from "@mui/icons-material/Add";
 import { setModalType, setOpenShowAddModal } from "../../Store/PageMaster";
 import { useDispatch } from "react-redux";
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import { useGetOwnershipTypeQuery } from "../../Store/PageBaseURL";
 
 const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",
@@ -52,6 +53,7 @@ const VisuallyHiddenInput = styled("input")({
 });
 
 const PageEdit = () => {
+  const { data: ownerShipData } = useGetOwnershipTypeQuery();
   const navigate = useNavigate();
   const dispatch = useDispatch()
   const { toastAlert } = useGlobalContext();
@@ -137,6 +139,7 @@ const PageEdit = () => {
   const [country4Percentage, setCountry4Percentage] = useState();
   const [country5Percentage, setCountry5Percentage] = useState();
   const [countryImg, setCountryImg] = useState();
+  const [priceDataNew, setPriceDataNew] = useState([]);
 
   const [profileVisitError, setProfileVisitError] = useState(false);
   // const [reachAndImpressionimgSrc, setReachAndImpressionimgSrc] =
@@ -461,8 +464,9 @@ const PageEdit = () => {
   };
 
   const PageLevels = [
-    { value: "English", label: "English" },
-    { value: "Hindi", label: "Hindi" },
+    { value: "Level 1 (High)", label: "Level 1 (High)" },
+    { value: "Level 2 (Medium)", label: "Level 2 (Medium)" },
+    { value: "Level 3 (Low)", label: "Level 3 (Low)" }
   ];
 
   const PageStatus = [
@@ -471,13 +475,14 @@ const PageEdit = () => {
   ];
 
   const PageTypes = [
-    { value: "Clear", label: "Clear" },
-    { value: "Shreddy", label: "Shreddy" },
+    { value: "Non Adult", label: "Non Adult" },
+    { value: "Adult", label: "Adult" },
   ];
 
   const Contents = [
-    { value: "Own", label: "Own" },
-    { value: "CF", label: "CF" },
+    { value: "By Vendor", label: "By Vendor" },
+    { value: "By CF", label: "By CF" },
+    { value: "Both", label: "Both" },
   ];
 
   const handleUpdateRowClick = async () => {
@@ -494,6 +499,15 @@ const PageEdit = () => {
   const getData = () => {
     axios.get(baseUrl + "get_all_users").then((res) => {
       setUserData(res.data.data);
+    });
+
+    axios.get(baseUrl + `v1/pagePriceMultipleByPageId/${pageMast_id}`,{
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      }
+    }).then((res) => {
+      setPriceDataNew(res.data.data);
     });
 
     // axios.get(baseUrl + "vendorAllData").then((res) => {
@@ -638,7 +652,8 @@ const PageEdit = () => {
         })
       );
       setPageLevel(data[0].page_level);
-      setPageStatus(data[0].status == 0 ? "Active" : "Inactive");
+      // setPageStatus(data[0].status == 0 ? "Active" : "Inactive");
+      setPageStatus(data[0].page_status);
       setCloseBy(data[0].page_closed_by);
       setPageType(data[0].page_name_type);
       setContent(data[0].content_creation);
@@ -733,10 +748,11 @@ const PageEdit = () => {
     } else if (!platformActive) {
       toastAlert("Platform active on is required");
       return;
-    } else if (!rate) {
-      toastAlert("Engagement Rate is required");
-      return;
-    }
+    } 
+    // else if (!rate) {
+    //   toastAlert("Engagement Rate is required");
+    //   return;
+    // }
 
     const payload = {
       page_name: pageName,
@@ -745,7 +761,8 @@ const PageEdit = () => {
       page_category_id: categoryId,
       tags_page_category: tag.map((e) => e.value),
       preference_level: pageLevel,
-      status: pageStatus == "Active" ? 1 : 0,
+      // status: pageStatus == "Active" ? 1 : 0,
+      status: pageStatus,
       page_closed_by: closeBy,
       page_name_type: pageType,
       content_creation: content,
@@ -943,12 +960,34 @@ const PageEdit = () => {
           />
         </div>
 
-        <FieldContainer
+        {/* <FieldContainer
           label="Ownership type *"
           value={ownerType}
           required={true}
           onChange={(e) => setOwnerType(e.target.value)}
-        />
+        /> */}
+        <div className="form-group col-6">
+          <label className="form-label">
+            Ownership Type <sup style={{ color: "red" }}>*</sup>
+          </label>
+          <Select
+            className="w-100"
+            options={ownerShipData?.map((option) => ({
+              value: option._id,
+              label: option.company_type_name,
+            }))}
+            required={true}
+            value={{
+              value: ownerType,
+              label:
+                ownerShipData?.find((role) => role.company_type_name === ownerType)
+                  ?.company_type_name || "",
+            }}
+            onChange={(e) => {
+              setOwnerType(e.value);
+            }}
+          />
+        </div>
 
         <div className="form-group col-6">
           <label className="form-label">
@@ -1018,7 +1057,7 @@ const PageEdit = () => {
         </div>
 
         <FieldContainer
-          label="Engagement Rate *"
+          label="Engagement Rate"
           type="number"
           value={rate}
           required={true}
@@ -1031,6 +1070,17 @@ const PageEdit = () => {
           required={false}
           onChange={(e) => setDescription(e.target.value)}
         />
+
+        {/* {
+          priceDataNew?.map((item)=>(
+            <>
+              <div style={{display:'flex'}}>
+                <h4>{'item'}</h4>
+                <input type="number" value={item.price} />
+              </div>
+            </>
+          ))
+        } */}
 
         <div className="col-12 row">
           {/* {rowCount.map((row, index) => (
