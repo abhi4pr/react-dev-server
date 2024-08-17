@@ -62,7 +62,18 @@ export default function VendorBankDetailModal() {
       headerName: "Bank Name",
       width: 200,
       // valueGetter: (params) => params.row.bank_name?   bankName?.find((item) => item._id === params.row.bank_name)?.bank_name:"NA",
-      valueGetter: ({row}) => (row.bank_name ? row.bank_name : 'NA'),
+      // valueGetter: ({row}) => (row.bank_name ? row.bank_name : 'NA'),
+      valueGetter: (params) => {
+        const bankNameValue = params.row.bank_name;
+        const isIdFormat = /^[a-fA-F0-9]{24}$/.test(bankNameValue);
+    
+        if (isIdFormat) {
+          const bank = bankName?.find((item) => item._id === bankNameValue);
+          return bank ? bank.bank_name : "NA";
+        } else {
+          return bankNameValue ? bankNameValue : 'NA';
+        }
+      }
     },
     {
       field: "account_type",

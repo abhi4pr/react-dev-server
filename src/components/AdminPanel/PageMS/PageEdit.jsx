@@ -598,12 +598,12 @@ const PageEdit = () => {
   useEffect(() => {
     if (platformId) {
       setPriceTypeList([]);
-      let priceData = platformData.find((role) => role._id == platformId)?._id;
+      let priceData = platformData?.find((role) => role?._id == platformId)?._id;
       axios
         .get(baseUrl + `v1/pagePriceTypesForPlatformId/${priceData}`)
         .then((res) => {
-          setPriceTypeList(res.data.data);
-          setFilterPriceTypeList(res.data.data);
+          setPriceTypeList(res?.data?.data);
+          setFilterPriceTypeList(res?.data?.data);
         });
     }
   }, [platformId]);
@@ -651,8 +651,9 @@ const PageEdit = () => {
           return { value: e._id, label: e.page_category };
         })
       );
-      setPageLevel(data[0].page_level);
+      // setPageLevel(data[0].page_level);
       // setPageStatus(data[0].status == 0 ? "Active" : "Inactive");
+      setPageLevel(data[0].preference_level);
       setPageStatus(data[0].page_status);
       setCloseBy(data[0].page_closed_by);
       setPageType(data[0].page_name_type);
@@ -973,7 +974,7 @@ const PageEdit = () => {
           <Select
             className="w-100"
             options={ownerShipData?.map((option) => ({
-              value: option._id,
+              value: option.company_type_name,
               label: option.company_type_name,
             }))}
             required={true}
