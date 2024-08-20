@@ -89,6 +89,7 @@ const PageMaster = () => {
   const [filterPriceTypeList, setFilterPriceTypeList] = useState([]);
   const [activeTab, setActiveTab] = useState('666818824366007df1df1319');
   const [singleVendor, setSingleVendor] = useState({});
+  const [verified, setVerified] = useState(null);
 
   const [rateType, setRateType] = useState({ value: "Fixed", label: "Fixed" });
   const [variableType, setVariableType] = useState({
@@ -742,6 +743,27 @@ const PageMaster = () => {
                 )}
               </div>
             </div>
+
+            <div className="col-md-6 mb16">
+              <div className="form-group m0">
+                <label className="form-label">
+                  Is Profile Verified ? <sup style={{ color: "red" }}>*</sup>
+                </label>
+                <div className="input-group inputAddGroup">
+                  <div className="form-check-inline">
+                    <label className="form-check-label">
+                      <input type="radio" className="form-check-input" name="verified" value="" />Yes
+                    </label>
+                  </div>
+                  <div className="form-check-inline">
+                    <label className="form-check-label">
+                      <input type="radio" className="form-check-input" name="verified" value="" />No
+                    </label>
+                  </div>
+                </div>
+              </div>
+            </div>
+
             <div className="col-md-6 mb16">
               <div className="form-group m0">
                 <label className="form-label">

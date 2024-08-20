@@ -772,7 +772,7 @@ const PageEdit = () => {
       followers_count: followCount,
       page_profile_type_id: profileId,
       platform_active_on: platformActive.map((e) => e.value),
-      rate_type: rate,
+      rate_type: rate || 0,
       description: description,
       updated_by: userID,
     };
@@ -1061,7 +1061,7 @@ const PageEdit = () => {
           label="Engagement Rate"
           type="number"
           value={rate}
-          required={true}
+          required={false}
           onChange={(e) => setRate(e.target.value)}
         />
 

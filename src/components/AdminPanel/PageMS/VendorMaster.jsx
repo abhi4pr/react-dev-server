@@ -68,6 +68,7 @@ const VendorMaster = () => {
 
   const { toastAlert, toastError } = useGlobalContext();
   const [isFormSubmitting, setIsFormSubmitting] = useState(false);
+  const [isFormSubmitting2, setIsFormSubmitting2] = useState(false);
   const [vendorName, setVendorName] = useState("");
   const [countryCode, setCountryCode] = useState("91");
   const [isFormSubmitted, setIsFormSubmitted] = useState(false);
@@ -825,7 +826,7 @@ const VendorMaster = () => {
     };
 
     if (!_id) {
-      setIsFormSubmitting(true);
+      setIsFormSubmitting2(true);
 
       addVendor(formData)
         .then((res) => {
@@ -865,10 +866,10 @@ const VendorMaster = () => {
         })
         .catch((err) => {
           toastError(err.message);
-          setIsFormSubmitting(false);
+          setIsFormSubmitting2(false);
         });
     } else {
-      setIsFormSubmitting(true);
+      setIsFormSubmitting2(true);
 
       formData._id=_id
       updateVendor(formData).unwrap()
@@ -922,11 +923,11 @@ const VendorMaster = () => {
             });
           }
           setIsFormSubmitted(true);
-          setIsFormSubmitting(false);
+          setIsFormSubmitting2(false);
         })
         .catch((err) => {
           toastError(err.message);
-          setIsFormSubmitting(false);
+          setIsFormSubmitting2(false);
           console.log(err, "err");
         });
     }
@@ -2076,9 +2077,9 @@ const VendorMaster = () => {
               className="btn cmnbtn btn-info"
               onClick={handleSubmitNew}
               variant="contained"
-              disabled={isFormSubmitting}
+              disabled={isFormSubmitting2}
             >
-              {isFormSubmitting ? "Submitting..." : _id ? "Update" : "Add New Profile"}
+              {isFormSubmitting2 ? "Submitting..." : _id ? "Update" : "Add New Profile"}
             </Button>
           </Stack>
           </div>
