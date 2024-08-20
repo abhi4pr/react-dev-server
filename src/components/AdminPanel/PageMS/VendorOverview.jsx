@@ -4,6 +4,7 @@ import DeleteButton from "../DeleteButton";
 import { Link } from "react-router-dom";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { Box, Grid, Skeleton } from "@mui/material";
+import DataTable from "react-data-table-component";
 
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 
@@ -111,8 +112,8 @@ const VendorOverview = () => {
     setVendorDetails(params.row);
   };
 
-  const showPagesOfVendor = (data) => {
-    const result = axios.get(`${baseUrl}v1/vendor_wise_page_master_data/${data._id}`,{
+  const showPagesOfVendor = async(data) => {
+    const result = await axios.get(`${baseUrl}v1/vendor_wise_page_master_data/${data._id}`,{
       headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json", 
@@ -122,6 +123,33 @@ const VendorOverview = () => {
         setPageData(res.data.data)
       });
   }
+
+  const columns = [
+    {
+      name: "S.No",
+      cell: (row, index) => <div>{index + 1}</div>,
+      width: "10%",
+      sortable: true,
+    },
+    {
+      name: "Page Name",
+      selector: (row) => (
+        <a href={row.page_link} target="blank">{row.page_name}</a>
+      ),
+      width: "30%",
+      sortable: true,
+    },
+    {
+      name: "followers",
+      selector: (row) => row.followers_count,
+      width: "20%",
+    },
+    {
+      name: "Ownership Type",
+      selector: (row) => row.ownership_type,
+      width: "20%",
+    }
+  ];
 
   const dataGridcolumns = [
     {
@@ -465,14 +493,14 @@ const VendorOverview = () => {
   return (
     <>
       <div className="modal fade" id="myModal" role="dialog">
-        <div className="modal-dialog">
+        <div className="modal-dialog" style={{maxWidth:'40%'}}>
           <div className="modal-content">
             <div className="modal-header">
               <button type="button" className="close" data-dismiss="modal">&times;</button>
               <h4 className="modal-title"></h4>
             </div>
             <div className="modal-body">
-            <table className="table table-bordered">
+            {/* <table className="table table-bordered">
               <thead>
                 <tr>
                   <th>Page name</th>
@@ -489,7 +517,16 @@ const VendorOverview = () => {
                 </tr>
               ))}
               </tbody>
-            </table>  
+            </table>   */}
+            <DataTable
+              // title="Role Overview"
+              columns={columns}
+              data={pageData}
+              fixedHeader
+              pagination
+              fixedHeaderScrollHeight="62vh"
+              highlightOnHover
+            />
             </div>
             <div className="modal-footer">
               <button type="button" className="btn btn-default" data-dismiss="modal">Close</button>
