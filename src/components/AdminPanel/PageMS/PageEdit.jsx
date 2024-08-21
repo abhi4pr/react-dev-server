@@ -777,7 +777,7 @@ const PageEdit = () => {
       updated_by: userID,
     };
 
-    axios.put(baseUrl + `pageMaster/${pageMast_id}`, payload).then(() => {
+    axios.put(baseUrl + `v1/pageMaster/${pageMast_id}`, payload).then(() => {
       setIsFormSubmitted(true);
       toastAlert("Submitted");
     });

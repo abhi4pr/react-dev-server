@@ -774,16 +774,6 @@ const PageOverview = () => {
     { field: "rate_type", headerName: "Rate Type", width: 200 },
     { field: "variable_type", headerName: "Variable Type", width: 200 },
     {
-      field: "m_post_price",
-      headerName: "Post Price",
-      width: 200,
-      valueGetter: ({ row }) => {
-        let mPostPrice = row.m_post_price;
-        let postPrice = row.post;
-        return postPrice ?? mPostPrice;
-      },
-    },
-    {
       field: "m_story_price",
       headerName: "Story Price",
       width: 200,
@@ -791,6 +781,16 @@ const PageOverview = () => {
         let mStoryPrice = row.m_story_price;
         let storyPrice = row.story;
         return storyPrice ?? mStoryPrice;
+      },
+    },
+    {
+      field: "m_post_price",
+      headerName: "Post Price",
+      width: 200,
+      valueGetter: ({ row }) => {
+        let mPostPrice = row.m_post_price;
+        let postPrice = row.post;
+        return postPrice ?? mPostPrice;
       },
     },
     {
@@ -1742,7 +1742,7 @@ const PageOverview = () => {
                   /> */}
                   <Autocomplete
                     id="ownership-type-autocomplete"
-                    options={['Solo', 'PartnerShip', 'Vendor']}
+                    options={['Own', 'PartnerShip', 'Vendor']}
                     style={{ width: 270 }}
                     renderInput={(params) => (
                       <TextField

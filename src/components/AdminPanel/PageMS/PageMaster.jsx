@@ -615,6 +615,10 @@ const PageMaster = () => {
           },
         });
         setSingleVendor(getData?.data?.data)
+        setCloseBy(getData?.data?.data?.closed_by)
+
+        const matchedProfile = profileData?.data.find(profile => profile?.profile_type == getData?.data?.data?.vendor_category);
+        setProfileId(matchedProfile?._id)
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -770,7 +774,7 @@ const PageMaster = () => {
                   Profile Type <sup style={{ color: "red" }}>*</sup>
                 </label>
                 <div className="input-group inputAddGroup">
-                  {/* <Select
+                  <Select
                     className="w-100"
                     options={profileData?.data.map((option) => ({
                       value: option._id,
@@ -781,7 +785,7 @@ const PageMaster = () => {
                       value: profileId,
                       label:
                         profileData?.data.find((role) => role._id === profileId)
-                          ?.profile_type || "",
+                          ?.profile_type || singleVendor.vendor_category,
                     }}
                     onChange={(e) => {
                       setProfileId(e.value);
@@ -792,8 +796,8 @@ const PageMaster = () => {
                         }));
                       }
                     }}
-                  /> */}
-                  <Select
+                  />
+                  {/* <Select
                     className="w-100"
                     options={['Theme','Influencer'].map((option) => ({
                       value: option,
@@ -813,7 +817,7 @@ const PageMaster = () => {
                         }));
                       }
                     }}
-                  />
+                  /> */}
                   <IconButton
                     onClick={handleAddProfileTypeClick}
                     variant="contained"
