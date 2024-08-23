@@ -576,7 +576,7 @@ const capitalizeFirstLetter = (string) => {
                 </div>
               </Link>
             )}
-          {/* {contextData &&
+          {contextData &&
             contextData[0] &&
             contextData[0].delete_flag_value === 1 && (
               <div
@@ -585,7 +585,7 @@ const capitalizeFirstLetter = (string) => {
               >
                 <i className="bi bi-trash" />
               </div>
-            )} */}
+            )}
         </>
       ),
     },

@@ -2031,4 +2031,3 @@ export const generatePDF = async (rowData) => {
 
   // document.body.removeChild(element);
 
- 

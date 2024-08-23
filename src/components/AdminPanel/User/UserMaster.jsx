@@ -2678,7 +2678,7 @@ const UserMaster = () => {
                 <p className="form-error">Please Enter Pincode</p>
               )} */}
             </div>
-            {/*  Parmanent Address here------------ */}
+            {/*  Permanent Address here------------ */}
             <div className="">
               <label className="cstm_check form-error">
                 Same as Current Address
@@ -2707,7 +2707,7 @@ const UserMaster = () => {
         <p  className="form-error">Please Enter Address</p>
       )} */}
             {/* <div className="form-group col-4">
-        <label className="form-label">Parmanent City</label>
+        <label className="form-label">Permanent City</label>
         <Select
           options={cityData.map((city) => ({
             value: city.city_name,

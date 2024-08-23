@@ -66,7 +66,7 @@ const ImageSelector = ({
       <div className="alert_text">
         <button
           type="button"
-          className="btn cmnbtn btn_success"
+          className="cmnbtn btn btn-success"
           onClick={handleSubmitProfile}
         >
           Upload

@@ -265,7 +265,7 @@ const OnboardExtendDateOverview = () => {
             data={filterdata}
 
             pagination
-            selectableRows
+            // selectableRows
             highlightOnHover
 
 

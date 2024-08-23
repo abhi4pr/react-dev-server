@@ -169,7 +169,6 @@ const WFHDRegister = ({ userUpdateID }) => {
             PersonalEmail,
             permanent_state,
             permanent_address,
-            image_url,
           } = fetchedData;
 
           setUserName(user_name);
@@ -273,8 +272,9 @@ const WFHDRegister = ({ userUpdateID }) => {
   }, [yearlySalary, lastUpdated]);
 
   useEffect(() => {
-    axios.get(baseUrl + "get_all_departments").then((res) => {
-      getDepartmentData(res.data);
+    axios.get(baseUrl + "get_wfh_users_with_dept").then((res) => {
+      getDepartmentData(res.data.data);
+      console.log(res.data.data , 'deparmetn data')
     });
 
     axios.get(baseUrl + "get_all_users").then((res) => {
@@ -439,6 +439,10 @@ const WFHDRegister = ({ userUpdateID }) => {
       );
     } else if (!personalEmail || personalEmail == "") {
       return toastError("Fill Required Field");
+    } else if (!contact || contact == "") {
+      return toastError(
+        "Alternate Contact Is Required and should be equal to 10"
+      );
     }
 
     const payload = {
@@ -951,36 +955,15 @@ const WFHDRegister = ({ userUpdateID }) => {
       />
       <div className="card">
         <div className="card-header">
-          {/* <h5 className="card-title">WFHD Registration</h5> */}
+          <h5 className="card-title">Add User</h5>
         </div>
         <div className="card-body">
           <div className="row">
-            <div className="col-md-3">
-              <FieldContainer
-                label="Profile"
-                astric
-                type="file"
-                fieldGrid={3}
-                required
-                // value={selectedImage}
-                onChange={(e) => setSelectedImage(e.target.files[0])}
-              />
-              {userUpdateID && (
-                <img
-                  src={imagePreview}
-                  alt="Profile"
-                  style={{ height: "40px", width: "40px" }}
-                />
-              )}
-              {isRequired.username && (
-                <p className="form-error">Please Enter Full Name</p>
-              )}
-            </div>
-            <div className="col-md-3">
+            <div className="col-md-3 p0">
               <FieldContainer
                 label="Full Name"
                 astric
-                fieldGrid={3}
+                fieldGrid={12}
                 required
                 value={username}
                 onChange={handleFullNameChange}
@@ -989,243 +972,251 @@ const WFHDRegister = ({ userUpdateID }) => {
                 <p className="form-error">Please Enter Full Name</p>
               )}
             </div>
-
-            <div className="form-group col-3">
-              <label className="form-label">
-                Job Type <sup className="form-error">*</sup>
-              </label>
-              <Select
-                className=""
-                options={jobTypeData.map((option) => ({
-                  value: `${option}`,
-                  label: `${option}`,
-                }))}
-                value={{
-                  value: jobType,
-                  label: `${jobType}`,
-                }}
-                onChange={(e) => {
-                  setJobType(e.value);
-                }}
-                isDisabled={true}
-                required
-              />
+            <div className="col-md-3">
+              <div className="form-group">
+                <label className="form-label">
+                  Job Type <sup className="form-error">*</sup>
+                </label>
+                <Select
+                  className=""
+                  options={jobTypeData.map((option) => ({
+                    value: `${option}`,
+                    label: `${option}`,
+                  }))}
+                  value={{
+                    value: jobType,
+                    label: `${jobType}`,
+                  }}
+                  onChange={(e) => {
+                    setJobType(e.value);
+                  }}
+                  isDisabled={true}
+                  required
+                />
+              </div>
             </div>
-
-            <div className="form-group col-3">
-              <label className="form-label">
-                Department Name <sup className="form-error">*</sup>
-              </label>
-              <Select
-                className=""
-                options={departmentdata.map((option) => ({
-                  value: option.dept_id,
-                  label: `${option.dept_name}`,
-                }))}
-                value={{
-                  value: department,
-                  label:
-                    departmentdata.find((user) => user.dept_id === department)
-                      ?.dept_name || "",
-                }}
-                onChange={(e) => {
-                  setDepartment(e.value);
-                  const selectedDepartment = e.value;
-                  if (selectedDepartment === "") {
-                    setIsRequired((prev) => ({
-                      ...prev,
-                      department: true,
-                    }));
-                  } else {
-                    setIsRequired((prev) => ({
-                      ...prev,
-                      department: false,
-                    }));
-                  }
-                }}
-                required
-                isDisabled={loginRole == 2}
-              />
-              {isRequired.department && (
-                <p className="form-error">Please Enter Department</p>
-              )}
-            </div>
-
-            <div className="form-group col-3">
-              <label className="form-label">
-                Sub Department <sup className="form-error">*</sup>
-              </label>
-              <Select
-                className=""
-                options={subDepartmentData.map((option) => ({
-                  value: option.sub_dept_id,
-                  label: `${option.sub_dept_name}`,
-                }))}
-                value={{
-                  value: subDepartmentData,
-                  label:
-                    subDepartmentData.find(
-                      (user) => user.sub_dept_id === subDepartment
-                    )?.sub_dept_name || "",
-                }}
-                onChange={(e) => {
-                  setSubDeparment(e.value);
-                  if (e.value === "") {
-                    setIsRequired((prev) => ({
-                      ...prev,
-                      subDepartment: true,
-                    }));
-                  } else {
-                    setIsRequired((prev) => ({
-                      ...prev,
-                      subDepartment: false,
-                    }));
-                  }
-                }}
-                required
-              />
-              <div className="">
-                {isRequired.subDepartment && (
-                  <p className="form-error">Please Select Sub Department</p>
+            <div className="col-md-3">
+              <div className="form-group">
+                <label className="form-label">
+                  Department Name <sup className="form-error">*</sup>
+                </label>
+                <Select
+                  className=""
+                  options={departmentdata.map((option) => ({
+                    value: option.dept_id,
+                    label: `${option.dept_name}`,
+                  }))}
+                  value={{
+                    value: department,
+                    label:
+                      departmentdata.find((user) => user.dept_id === department)
+                        ?.dept_name || "",
+                  }}
+                  onChange={(e) => {
+                    setDepartment(e.value);
+                    const selectedDepartment = e.value;
+                    if (selectedDepartment === "") {
+                      setIsRequired((prev) => ({
+                        ...prev,
+                        department: true,
+                      }));
+                    } else {
+                      setIsRequired((prev) => ({
+                        ...prev,
+                        department: false,
+                      }));
+                    }
+                  }}
+                  required
+                  isDisabled={loginRole == 2}
+                />
+                {isRequired.department && (
+                  <p className="form-error">Please Enter Department</p>
                 )}
               </div>
             </div>
-
-            <div className="form-group col-3">
-              <label className="form-label">
-                Designation <sup className="form-error">*</sup>
-              </label>
-              <Select
-                className=""
-                options={designationData?.map((option) => ({
-                  value: option.desi_id,
-                  label: `${option.desi_name}`,
-                }))}
-                value={{
-                  value: designation,
-                  label:
-                    designationData?.find(
-                      (user) => user.desi_id === designation
-                    )?.desi_name || "",
-                }}
-                onChange={(e) => {
-                  setDesignation(e.value);
-                  if (e.value === "") {
-                    setIsRequired((prev) => ({
-                      ...prev,
-                      designation: true,
-                    }));
-                  } else {
-                    setIsRequired((prev) => ({
-                      ...prev,
-                      designation: false,
-                    }));
-                  }
-                }}
-                required
-              />
-              {isRequired.designation && (
-                <p className="form-error">Please Select Designation</p>
-              )}
-            </div>
-
-            <div className="form-group col-3">
-              <label className="form-label">
-                Report L1 <sup className="form-error">*</sup>
-              </label>
-              <Select
-                required={true}
-                className=""
-                options={usersData.map((option) => ({
-                  value: option.user_id,
-                  label: `${option.user_name}`,
-                }))}
-                value={{
-                  value: reportL1,
-                  label:
-                    usersData.find((user) => user.user_id === reportL1)
-                      ?.user_name || "",
-                }}
-                onChange={(e) => {
-                  setReportL1(e.value);
-                  const selectedReport = e.value;
-                  if (selectedReport === "") {
-                    setIsRequired((prev) => ({
-                      ...prev,
-                      reportL1: true,
-                    }));
-                  } else {
-                    setIsRequired((prev) => ({
-                      ...prev,
-                      reportL1: false,
-                    }));
-                  }
-                }}
-              />
-              {isRequired.reportL1 && (
-                <p className="form-error">Please select Report L1</p>
-              )}
-            </div>
-
-            <div className="form-group col-3">
-              <label className="form-label">Report L2</label>
-              <Select
-                className=""
-                options={usersData.map((option) => ({
-                  value: option.user_id,
-                  label: `${option.user_name}`,
-                }))}
-                value={{
-                  value: reportL2,
-                  label:
-                    usersData.find((user) => user.user_id === reportL2)
-                      ?.user_name || "",
-                }}
-                onChange={(e) => {
-                  setReportL2(e.value);
-                }}
-                required={false}
-              />
-            </div>
-
-            <div className="form-group col-3">
-              <label className="form-label">Report L3</label>
-              <Select
-                className=""
-                options={usersData.map((option) => ({
-                  value: option.user_id,
-                  label: `${option.user_name}`,
-                }))}
-                value={{
-                  value: reportL3,
-                  label:
-                    usersData.find((user) => user.user_id === reportL3)
-                      ?.user_name || "",
-                }}
-                onChange={(e) => {
-                  setReportL3(e.value);
-                }}
-                required={false}
-              />
-            </div>
-
-            {/* <FieldContainer
-          label="Email"
-          type="email"
-          fieldGrid={3}
-          required
-          value={email}
-          onChange={handleEmailChange}
-        />
-        {!validEmail && (
-          <p  className="form-error">*Please enter valid email</p>
-        )} */}
             <div className="col-md-3">
+              <div className="form-group">
+                <label className="form-label">
+                  Sub Department <sup className="form-error">*</sup>
+                </label>
+                <Select
+                  className=""
+                  options={subDepartmentData.map((option) => ({
+                    value: option.sub_dept_id,
+                    label: `${option.sub_dept_name}`,
+                  }))}
+                  value={{
+                    value: subDepartmentData,
+                    label:
+                      subDepartmentData.find(
+                        (user) => user.sub_dept_id === subDepartment
+                      )?.sub_dept_name || "",
+                  }}
+                  onChange={(e) => {
+                    setSubDeparment(e.value);
+                    if (e.value === "") {
+                      setIsRequired((prev) => ({
+                        ...prev,
+                        subDepartment: true,
+                      }));
+                    } else {
+                      setIsRequired((prev) => ({
+                        ...prev,
+                        subDepartment: false,
+                      }));
+                    }
+                  }}
+                  required
+                />
+                <div className="">
+                  {isRequired.subDepartment && (
+                    <p className="form-error">Please Select Sub Department</p>
+                  )}
+                </div>
+              </div>
+            </div>
+            <div className="col-md-3">
+              <div className="form-group">
+                <label className="form-label">
+                  Designation <sup className="form-error">*</sup>
+                </label>
+                <Select
+                  className=""
+                  options={designationData?.map((option) => ({
+                    value: option.desi_id,
+                    label: `${option.desi_name}`,
+                  }))}
+                  value={{
+                    value: designation,
+                    label:
+                      designationData?.find(
+                        (user) => user.desi_id === designation
+                      )?.desi_name || "",
+                  }}
+                  onChange={(e) => {
+                    setDesignation(e.value);
+                    if (e.value === "") {
+                      setIsRequired((prev) => ({
+                        ...prev,
+                        designation: true,
+                      }));
+                    } else {
+                      setIsRequired((prev) => ({
+                        ...prev,
+                        designation: false,
+                      }));
+                    }
+                  }}
+                  required
+                />
+                {isRequired.designation && (
+                  <p className="form-error">Please Select Designation</p>
+                )}
+              </div>
+            </div>
+            <div className="col-md-3">
+              <div className="form-group">
+                <label className="form-label">
+                  Report L1 <sup className="form-error">*</sup>
+                </label>
+                <Select
+                  required={true}
+                  className=""
+                  options={usersData.map((option) => ({
+                    value: option.user_id,
+                    label: `${option.user_name}`,
+                  }))}
+                  value={{
+                    value: reportL1,
+                    label:
+                      usersData.find((user) => user.user_id === reportL1)
+                        ?.user_name || "",
+                  }}
+                  onChange={(e) => {
+                    setReportL1(e.value);
+                    const selectedReport = e.value;
+                    if (selectedReport === "") {
+                      setIsRequired((prev) => ({
+                        ...prev,
+                        reportL1: true,
+                      }));
+                    } else {
+                      setIsRequired((prev) => ({
+                        ...prev,
+                        reportL1: false,
+                      }));
+                    }
+                  }}
+                />
+                {isRequired.reportL1 && (
+                  <p className="form-error">Please select Report L1</p>
+                )}
+              </div>
+            </div>
+            <div className="col-md-3">
+              <div className="form-group">
+                <label className="form-label">Report L2</label>
+                <Select
+                  className=""
+                  options={usersData.map((option) => ({
+                    value: option.user_id,
+                    label: `${option.user_name}`,
+                  }))}
+                  value={{
+                    value: reportL2,
+                    label:
+                      usersData.find((user) => user.user_id === reportL2)
+                        ?.user_name || "",
+                  }}
+                  onChange={(e) => {
+                    setReportL2(e.value);
+                  }}
+                  required={false}
+                />
+              </div>
+            </div>
+            <div className="col-md-3">
+              <div className="form-group ">
+                <label className="form-label">Report L3</label>
+                <Select
+                  className=""
+                  options={usersData.map((option) => ({
+                    value: option.user_id,
+                    label: `${option.user_name}`,
+                  }))}
+                  value={{
+                    value: reportL3,
+                    label:
+                      usersData.find((user) => user.user_id === reportL3)
+                        ?.user_name || "",
+                  }}
+                  onChange={(e) => {
+                    setReportL3(e.value);
+                  }}
+                  required={false}
+                />
+              </div>
+            </div>
+            {/* <div className="col-md-3 p0">
+              <FieldContainer
+                label="Email"
+                type="email"
+                fieldGrid={12}
+                required
+                value={email}
+                onChange={handleEmailChange}
+              />
+              {!validEmail && (
+                <p className="form-error">*Please enter valid email</p>
+              )}
+            </div> */}
+            <div className="col-md-3 p0">
               <FieldContainer
                 label="Personal Email"
                 type="email"
                 astric
-                fieldGrid={3}
+                fieldGrid={12}
                 required={false}
                 value={personalEmail}
                 onChange={handlePersonalEmailChange}
@@ -1237,86 +1228,89 @@ const WFHDRegister = ({ userUpdateID }) => {
                 <p className="form-error">Please select Personal Email</p>
               )}
             </div>
-            {/* <FieldContainer
-          label=" City"
-          type="text"
-          fieldGrid={3}
-          required={false}
-          value={city}
-          onChange={(e) => setCity(e.target.value)}
-        /> */}
-            {/* <div className="form-group col-3">
-              <label className="form-label">
-                City <sup className="form-error">*</sup>
-              </label>
-              <Select
-                options={cityData.map((city) => ({
-                  value: city.city_name,
-                  label: city.city_name,
-                }))}
-                onChange={(e) => {
-                  setCity(e ? e.value : "");
-
-                  const selectCity = e.value;
-                  if (selectCity === "") {
-                    setIsRequired((prev) => ({
-                      ...prev,
-                      city: true,
-                    }));
-                  } else {
-                    setIsRequired((prev) => ({
-                      ...prev,
-                      city: false,
-                    }));
-                  }
-                }}
-                required={true}
-                // value={city}
-                value={{
-                  value: city,
-                  label:
-                    cityData.find((gotCity) => gotCity.city_name == city)
-                      ?.city_name || "",
-                }}
-                placeholder="Select a city..."
-                isClearable
+            {/* <div className="col-md-3 p0">
+              <FieldContainer
+                label=" City"
+                type="text"
+                fieldGrid={12}
+                required={false}
+                value={city}
+                onChange={(e) => setCity(e.target.value)}
               />
-              {isRequired.city && (
-                <p className="form-error">Please select City</p>
-              )}
+            </div> */}
+
+            {/* <div className="col-md-3">
+              <div className="form-group">
+                <label className="form-label">
+                  City <sup className="form-error">*</sup>
+                </label>
+                <Select
+                  options={cityData.map((city) => ({
+                    value: city.city_name,
+                    label: city.city_name,
+                  }))}
+                  onChange={(e) => {
+                    setCity(e ? e.value : "");
+
+                    const selectCity = e.value;
+                    if (selectCity === "") {
+                      setIsRequired((prev) => ({
+                        ...prev,
+                        city: true,
+                      }));
+                    } else {
+                      setIsRequired((prev) => ({
+                        ...prev,
+                        city: false,
+                      }));
+                    }
+                  }}
+                  required={true}
+                  // value={city}
+                  value={{
+                    value: city,
+                    label:
+                      cityData.find((gotCity) => gotCity.city_name == city)
+                        ?.city_name || "",
+                  }}
+                  placeholder="Select a city..."
+                  isClearable
+                />
+                {isRequired.city && (
+                  <p className="form-error">Please select City</p>
+                )}
+              </div>
             </div> */}
 
             {/* {jobType === "WFH" && ( */}
-            <>
-              <div className="form-group col-3">
-                <FieldContainer
-                  label="Monthly Salary"
-                  astric
-                  type="number"
-                  fieldGrid={3}
-                  value={salary}
-                  onChange={handleMonthlySalaryChange}
-                />
-                {isRequired.salary && (
-                  <p className="form-error">Please Enter Monthly Salary</p>
-                )}
-              </div>
-
-              <div className="form-group col-3">
-                <FieldContainer
-                  label="CTC"
-                  astric
-                  type="number"
-                  fieldGrid={3}
-                  value={yearlySalary}
-                  onChange={handleYearlySalaryChange}
-                />
-                {isRequired.salary && (
-                  <p className="form-error">Please Enter CTC</p>
-                )}
-              </div>
-
-              <div className="form-group col-3">
+            <div className="col-md-3 p0">
+              <FieldContainer
+                label="Monthly Salary"
+                astric
+                type="number"
+                fieldGrid={12}
+                value={salary}
+                onChange={handleMonthlySalaryChange}
+              />
+              {isRequired.salary && (
+                <p className="form-error">Please Enter Monthly Salary</p>
+              )}
+            </div>
+            <div className="col-md-3 p0">
+              <FieldContainer
+                label="CTC"
+                astric
+                type="number"
+                fieldGrid={12}
+                value={yearlySalary}
+                onChange={handleYearlySalaryChange}
+              />
+              {isRequired.salary && (
+                <p className="form-error">Please Enter CTC</p>
+              )}
+            </div>
+            <div className="col-md-3">
+              <div className="form-group">
                 <label className="form-label">
                   TDS Applicable<sup className="form-error">*</sup>
                 </label>
@@ -1339,67 +1333,78 @@ const WFHDRegister = ({ userUpdateID }) => {
                   required={false}
                 />
               </div>
-              {showTdsPercentage && (
+            </div>
+
+            {showTdsPercentage && (
+              <div className="col-md-3 p0">
                 <FieldContainer
                   label="TDS Percentage"
-                  fieldGrid={3}
+                  fieldGrid={12}
                   type="number"
                   value={tdsPercentage}
                   onChange={(e) => setTdsPercentage(e.target.value)}
                   required={false}
                 />
-              )}
-            </>
+              </div>
+            )}
+
             {/* )} */}
 
             {/* {jobType == "WFHD" && ( */}
-            {/* <FieldContainer
-          label=" CTC *"
-          type="number"
-          fieldGrid={3}
-          required={true}
-          value={userCtc}
-          onChange={(e) => setUserCtc(e.target.value)}
-        /> */}
+            {/* <div className="col-md-3 p0">
+              <FieldContainer
+                label=" CTC *"
+                type="number"
+                fieldGrid={12}
+                required={true}
+                value={userCtc}
+                onChange={(e) => setUserCtc(e.target.value)}
+              />
+            </div> */}
             {/* )} */}
 
             {/* {jobType == "WFO" && (
-          <div className="form-group col-3">
-            <label className="form-label">
-              Letter send <sup  className="form-error">*</sup>
-            </label>
-            <Select
-              options={offerLetter.map((option) => ({
-                value: `${option.value}`,
-                label: `${option.label}`,
-              }))}
-              value={{
-                value: sendLetter.value,
-                label: sendLetter.label || "", // Fallback to empty string if label is undefined
-              }}
-              onChange={(e) => {
-                setSendLetter(e);
-              }}
-              required
-            />
-          </div>
-        )} */}
+              <div className="col-md-3">
+                <div className="form-group">
+                  <label className="form-label">
+                    Letter send <sup className="form-error">*</sup>
+                  </label>
+                  <Select
+                    options={offerLetter.map((option) => ({
+                      value: `${option.value}`,
+                      label: `${option.label}`,
+                    }))}
+                    value={{
+                      value: sendLetter.value,
+                      label: sendLetter.label || "", // Fallback to empty string if label is undefined
+                    }}
+                    onChange={(e) => {
+                      setSendLetter(e);
+                    }}
+                    required
+                  />
+                </div>
+              </div>
+            )} */}
 
             {/* {sendLetter.label == "Yes" && (
-          <FieldContainer
-            label="Annexure pdf"
-            fieldGrid={3}
-            type="file"
-            onChange={(e) => setAnnexurePdf(e.target.files[0])}
-            required={false}
-          />
-        )} */}
-            <div className="col-md-3">
+              <div className="col-md-3 p0">
+                <FieldContainer
+                  label="Annexure pdf"
+                  fieldGrid={12}
+                  type="file"
+                  onChange={(e) => setAnnexurePdf(e.target.files[0])}
+                  required={false}
+                />
+              </div>
+            )} */}
+
+            <div className="col-md-3 p0">
               <FieldContainer
                 label="Personal Contact"
                 astric
                 type="number"
-                fieldGrid={3}
+                fieldGrid={12}
                 value={personalContact}
                 required={false}
                 onChange={handlePersonalContactChange}
@@ -1414,12 +1419,12 @@ const WFHDRegister = ({ userUpdateID }) => {
               )}
             </div>
 
-            <div className="form-group col-3">
+            <div className="col-md-3 p0">
               <FieldContainer
                 label="Alternate Contact "
                 type="number"
-                // astric
-                fieldGrid={3}
+                astric
+                fieldGrid={12}
                 value={contact}
                 required={false}
                 onChange={handleContactChange}
@@ -1434,8 +1439,8 @@ const WFHDRegister = ({ userUpdateID }) => {
               )} */}
             </div>
 
-            <div className="col-xl-3 col-lg-3 col-md-3 col-sm-12">
-              <div className="form-group">
+            <div className="col-md-3">
+              <div className="form-group m0">
                 {/* <p
                   className={
                     loginResponse === "login id available"
@@ -1479,7 +1484,7 @@ const WFHDRegister = ({ userUpdateID }) => {
                   />
                   <div className="input-group-append">
                     <button
-                      className="btn btn-outline-primary"
+                      className="btn iconBtn btn-outline-border"
                       onClick={generateLoginId}
                       type="button"
                     >
@@ -1493,8 +1498,8 @@ const WFHDRegister = ({ userUpdateID }) => {
               </div>
             </div>
 
-            <div className="col-xl-3 col-lg-3 col-md-3 col-sm-12">
-              <div className="form-group">
+            <div className="col-md-3">
+              <div className="form-group m0">
                 <label>
                   Generate Password <sup className="form-error">*</sup>
                 </label>
@@ -1508,7 +1513,7 @@ const WFHDRegister = ({ userUpdateID }) => {
                   />
                   <div className="input-group-append">
                     <button
-                      className="btn btn-outline-primary"
+                      className="btn iconBtn btn-outline-border"
                       onClick={generatePassword}
                       type="button"
                     >
@@ -1522,33 +1527,35 @@ const WFHDRegister = ({ userUpdateID }) => {
               )}
             </div>
 
-            {/* <div className="form-group col-3">
-          <label className="form-label">
-            Role <sup  className="form-error">*</sup>
-          </label>
-          <Select
-            options={roledata.map((option) => ({
-              value: option.role_id,
-              label: option.Role_name,
-            }))}
-            value={{
-              value: roles,
-              label:
-                roledata.find((role) => role.role_id === roles)?.Role_name ||
-                "",
-            }}
-            onChange={(e) => {
-              setRoles(e.value);
-            }}
-          ></Select>
-        </div> */}
+            {/* <div className="col-md-3">
+              <div className="form-group">
+                <label className="form-label">
+                  Role <sup className="form-error">*</sup>
+                </label>
+                <Select
+                  options={roledata.map((option) => ({
+                    value: option.role_id,
+                    label: option.Role_name,
+                  }))}
+                  value={{
+                    value: roles,
+                    label:
+                      roledata.find((role) => role.role_id === roles)
+                        ?.Role_name || "",
+                  }}
+                  onChange={(e) => {
+                    setRoles(e.value);
+                  }}
+                ></Select>
+              </div>
+            </div> */}
 
-            <div className="col-3">
+            <div className="col-md-3 p0">
               <FieldContainer
                 type="date"
                 label="Joining Date "
                 astric
-                fieldGrid={3}
+                fieldGrid={12}
                 value={joiningDate}
                 onChange={(e) => {
                   setJoiningDate(e.target.value);
@@ -1570,11 +1577,11 @@ const WFHDRegister = ({ userUpdateID }) => {
               )}
             </div>
 
-            <div className="col-3">
+            <div className="col-md-3 p0">
               <FieldContainer
                 label="DOB "
                 astric
-                fieldGrid={3}
+                fieldGrid={12}
                 type="date"
                 value={dateOfBirth}
                 onChange={handleDateChange}
@@ -1584,68 +1591,72 @@ const WFHDRegister = ({ userUpdateID }) => {
               )}
             </div>
 
-            <div className="form-group col-3">
-              <label className="form-label">
-                Gender <sup className="form-error">*</sup>
-              </label>
-              <Select
-                className=""
-                options={genderData.map((option) => ({
-                  value: `${option}`,
-                  label: `${option}`,
-                }))}
-                value={{
-                  value: gender,
-                  label: `${gender}`,
-                }}
-                onChange={(e) => {
-                  setGender(e.value);
-                  const selectGender = e.value;
-                  if (selectGender === "") {
-                    setIsRequired((prev) => ({
-                      ...prev,
-                      gender: true,
-                    }));
-                  } else {
-                    setIsRequired((prev) => ({
-                      ...prev,
-                      gender: false,
-                    }));
-                  }
-                }}
-                required
-              />
-              {isRequired.gender && (
-                <p className="form-error">Please Enter Gender</p>
-              )}
+            <div className="col-md-3">
+              <div className="form-group m0">
+                <label className="form-label">
+                  Gender <sup className="form-error">*</sup>
+                </label>
+                <Select
+                  className=""
+                  options={genderData.map((option) => ({
+                    value: `${option}`,
+                    label: `${option}`,
+                  }))}
+                  value={{
+                    value: gender,
+                    label: `${gender}`,
+                  }}
+                  onChange={(e) => {
+                    setGender(e.value);
+                    const selectGender = e.value;
+                    if (selectGender === "") {
+                      setIsRequired((prev) => ({
+                        ...prev,
+                        gender: true,
+                      }));
+                    } else {
+                      setIsRequired((prev) => ({
+                        ...prev,
+                        gender: false,
+                      }));
+                    }
+                  }}
+                  required
+                />
+                {isRequired.gender && (
+                  <p className="form-error">Please Enter Gender</p>
+                )}
+              </div>
             </div>
 
-            <div className="form-group col-3">
-              <label className="form-label">
-                Status <sup className="form-error">*</sup>
-              </label>
-              <Select
-                className=""
-                options={statusData.map((option) => ({
-                  value: `${option}`,
-                  label: `${option}`,
-                }))}
-                value={{
-                  value: status,
-                  label: `${status}`,
-                }}
-                onChange={(e) => {
-                  setStatus(e.value);
-                }}
-                required
-              />
+            <div className="col-md-3">
+              <div className="form-group m0">
+                <label className="form-label">
+                  Status <sup className="form-error">*</sup>
+                </label>
+                <Select
+                  className=""
+                  options={statusData.map((option) => ({
+                    value: `${option}`,
+                    label: `${option}`,
+                  }))}
+                  value={{
+                    value: status,
+                    label: `${status}`,
+                  }}
+                  onChange={(e) => {
+                    setStatus(e.value);
+                  }}
+                  required
+                />
+              </div>
             </div>
 
-            <div className="col-3 mt-3">
+            <div className="col-md-3">
               <FieldContainer
                 label="Address"
                 astric
-                fieldGrid={3}
+                fieldGrid={12}
                 value={address}
                 onChange={(e) => {
                   const value = e.target.value;
@@ -1669,57 +1680,60 @@ const WFHDRegister = ({ userUpdateID }) => {
               )}
             </div>
 
-            <div className="form-group col-3 mt-3">
-              <label htmlFor="">
-                {" "}
-                State <span style={{ color: "red" }}>*</span>
-              </label>
-              <IndianStatesMui
-                selectedState={currentState}
-                // onChange={(option) => setcurrentState(option ? option : null)}
-                onChange={(option) => {
-                  const value = option;
-                  setcurrentState(option ? option : null);
-                  setIsRequired((prev) => ({
-                    ...prev,
-                    currentState: value === null || value === "",
-                  }));
-                }}
-              />
-              {isRequired.currentState && (
-                <p className="form-error">Please Enter State</p>
-              )}
+            <div className="col-md-3">
+              <div className="form-group m0">
+                <label htmlFor="">
+                  State <span style={{ color: "red" }}>*</span>
+                </label>
+                <IndianStatesMui
+                  selectedState={currentState}
+                  // onChange={(option) => setcurrentState(option ? option : null)}
+                  onChange={(option) => {
+                    const value = option;
+                    setcurrentState(option ? option : null);
+                    setIsRequired((prev) => ({
+                      ...prev,
+                      currentState: value === null || value === "",
+                    }));
+                  }}
+                />
+                {isRequired.currentState && (
+                  <p className="form-error">Please Enter State</p>
+                )}
+              </div>
             </div>
 
-            <div className="form-group col-3 mt-3">
-              <label htmlFor="">
-                {" "}
-                City <span style={{ color: "red" }}>*</span>
-              </label>
+            <div className="col-md-3">
+              <div className="form-group m0">
+                <label htmlFor="">
+                  City <span style={{ color: "red" }}>*</span>
+                </label>
 
-              <IndianCitiesMui
-                selectedState={currentState}
-                selectedCity={city}
-                // onChange={(option) => setCity(option ? option : null)}
-                onChange={(option) => {
-                  const value = option;
-                  setCity(option ? option : null);
-                  setIsRequired((prev) => ({
-                    ...prev,
-                    city: value === null || value === "",
-                  }));
-                }}
-              />
-              {isRequired.city && (
-                <p className="form-error">Please Enter City</p>
-              )}
+                <IndianCitiesMui
+                  selectedState={currentState}
+                  selectedCity={city}
+                  // onChange={(option) => setCity(option ? option : null)}
+                  onChange={(option) => {
+                    const value = option;
+                    setCity(option ? option : null);
+                    setIsRequired((prev) => ({
+                      ...prev,
+                      city: value === null || value === "",
+                    }));
+                  }}
+                />
+                {isRequired.city && (
+                  <p className="form-error">Please Enter City</p>
+                )}
+              </div>
             </div>
-            <div className="col-3 mt-3">
+
+            <div className="col-md-3">
               <FieldContainer
                 label="Pincode"
                 type="number"
                 astric={true}
-                fieldGrid={3}
+                fieldGrid={12}
                 maxLength={6}
                 value={pincode}
                 onChange={(e) => {
