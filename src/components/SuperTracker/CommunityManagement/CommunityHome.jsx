@@ -149,9 +149,7 @@ function CommunityHome() {
   const token = sessionStorage.getItem("token");
   const decodedToken = jwtDecode(token);
   const loginUserId = decodedToken.id;
-  console.log(loginUserId, 'kl');
-  const { contextData } = useAPIGlobalContext()
-
+    const { contextData } = useAPIGlobalContext()
   const navigate = useNavigate();
   const { userContextData } = useContext(ApiContextData);
   const [filterButtonEl, setFilterButtonEl] = useState(null);
@@ -188,10 +186,7 @@ function CommunityHome() {
       );
   
       if (res.status === 200) {
-        console.log(res.data.data); 
-  
         let filteredData;
-  
         if (loginUserId === 926) {
           filteredData = res.data.data.filter(item => {
             return item.projectxRecord &&
@@ -199,20 +194,16 @@ function CommunityHome() {
                     item.projectxRecord.pageCategoryId === 14 ||
                     item.projectxRecord.pageCategoryId === 1008);
           });
-          console.log(filteredData, 'filteredData');
         } else {
           filteredData = res.data.data;
         }
         setRows(filteredData);
         setAllRows(res.data.data);
-        console.log(res.data.data, "res.data.data");
       }
     } catch (error) {
       console.error("Error fetching data: ", error);
     }
   };
-  
-
 
   const fetchCategory = async () => {
     try {
@@ -284,6 +275,13 @@ function CommunityHome() {
           </Link>
         );
       },
+    },
+    {
+      field:" new feilds",
+      headerName:" LogoDownload ",
+      renderCell : ()=>{
+
+      }
     },
     {
       field: "creatorName",

@@ -201,6 +201,7 @@ const CreateMeetingPages = ({ open, onClose, onCreate, creatorDetail }) => {
                     boxShadow: 24,
                     p: 4
                 }}>
+                  <Button variant="outlined" color='error' sx={{ float:'right'}} onClick={() => setOpenMeetingModeCreate(false)}>X</Button>
                     <FormContainer
                         mainTitle="Create Meeting Mode"
                         handleSubmit={handleSubmitMeetingMode}
@@ -214,7 +215,6 @@ const CreateMeetingPages = ({ open, onClose, onCreate, creatorDetail }) => {
                             onChange={(e) => setViaMeetingMode(e.target.value)}
                         />
                     </FormContainer>
-                    <Button variant="outlined" color='error' onClick={() => setOpenMeetingModeCreate(false)}>Close</Button>
                 </Box>
             </Modal>
         </div>

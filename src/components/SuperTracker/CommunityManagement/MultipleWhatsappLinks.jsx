@@ -5,7 +5,7 @@ import FieldContainer from "../../AdminPanel/FieldContainer";
 import FormContainer from "../../AdminPanel/FormContainer";
 import axios from "axios";
 import { useGlobalContext } from "../../../Context/Context";
-import {  useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const style = {
     position: 'absolute',
@@ -20,7 +20,8 @@ const style = {
     px: 4,
     pb: 3,
 };
-const MultipleWhatsappLinks = ({creatorDetail}) => {
+const MultipleWhatsappLinks = ({ creatorDetail }) => {
+
     const { toastAlert, toastError } = useGlobalContext();
     const navigate = useNavigate()
     const [open, setOpen] = useState(false);
@@ -28,7 +29,7 @@ const MultipleWhatsappLinks = ({creatorDetail}) => {
     const [heading, setHeading] = useState("");
     const [link, setLink] = useState("");
     const [description, setDescription] = useState("");
-    const [pages, setPages] = useState("");
+    // const [pages, setPages] = useState("");
     const [editHeading, setEditHeading] = useState("");
     const [editLink, setEditLink] = useState("");
     const [editDescription, setEditDescription] = useState("");
@@ -51,13 +52,13 @@ const MultipleWhatsappLinks = ({creatorDetail}) => {
             link: link,
             header: heading,
             description: description,
-            page_name: pages
+            page_name: creatorDetail?.creatorName
         })
         console.log(res);
         setHeading('')
         setLink('')
         setDescription('')
-        setPages('')
+        // setPages('')
         setOpen(false);
         getAllinks()
         toastAlert('Link Create SuccessFully')
@@ -124,6 +125,7 @@ const MultipleWhatsappLinks = ({creatorDetail}) => {
                 aria-describedby="child-modal-description"
             >
                 <Box sx={{ ...style }}>
+                    <Button onClick={handleClose} variant="outlined" sx={{ float:'right'}} color='error'> X </Button>
                     <FormContainer
                         mainTitle="Add Link"
                         handleSubmit={handleSubmit}
@@ -153,18 +155,18 @@ const MultipleWhatsappLinks = ({creatorDetail}) => {
                             required={false}
                             onChange={(e) => setDescription(e.target.value)}
                         />
-                        <FieldContainer
+                        {/* <FieldContainer
                             label="Page Name"
                             type="text"
                             fieldGrid={4}
                             value={pages}
                             required={false}
                             onChange={(e) => setPages(e.target.value)}
-                        />
+                        /> */}
                     </FormContainer>
-                    <Button onClick={handleClose} variant="outlined" color='error'>Close </Button>
                 </Box>
             </Modal>
+
             <table className="table table-primary table-striped table-bordered rounded">
                 <thead>
                     <tr>
@@ -177,28 +179,37 @@ const MultipleWhatsappLinks = ({creatorDetail}) => {
                     </tr>
                 </thead>
                 <tbody>
-                    {linkData.length > 0 ? (linkData.map((item, index) => (
-                        <tr key={index}>
-                            <th >{index + 1}</th>
-                            <td>{item.header}</td>
-                            <td style={{ color: '#050cc1' }}>
-                                <a href={item.link} target="_blank" rel="noopener noreferrer">
-                                    {item.link}
-                                </a>
-                            </td>
-                            <td>{item.description}</td>
-                            <td>{item.page_name}</td>
-                            <td>
-                                <IconButton onClick={() => handleEdit(item)} color="primary">
-                                    <i className="bi bi-pencil-square"></i>
-                                </IconButton>
-                                <IconButton onClick={() => handleDelete(item._id)} color="error">
-                                    <i className="bi bi-trash3"></i>
-                                </IconButton>
-                            </td>
-                        </tr>
-                    ))) : <div style={{ color: 'red', fontSize: "20px", alignItems: "center" }}>No Data here</div>
-                    }
+
+                    {linkData.length > 0 ? (
+                        linkData.map((item, index) => (
+                            creatorDetail?.creatorName === item.page_name && (
+                                <tr key={index}>
+                                    <th>{index + 1}</th>
+                                    <td>{item.header}</td>
+                                    <td style={{ color: '#050cc1' }}>
+                                        <a href={item.link} target="_blank" rel="noopener noreferrer">
+                                            {item.link}
+                                        </a>
+                                    </td>
+                                    <td>{item.description}</td>
+                                    <td>{item.page_name}</td>
+                                    <td>
+                                        <IconButton onClick={() => handleEdit(item)} color="primary">
+                                            <i className="bi bi-pencil-square"></i>
+                                        </IconButton>
+                                        <IconButton onClick={() => handleDelete(item._id)} color="error">
+                                            <i className="bi bi-trash3"></i>
+                                        </IconButton>
+                                    </td>
+                                </tr>
+                            )
+                        ))
+                    ) : (
+                        <div style={{ color: 'red', fontSize: "20px", textAlign: "center" }}>
+                            No Data here
+                        </div>
+                    )}
+
                 </tbody>
             </table>
             <>
@@ -209,6 +220,7 @@ const MultipleWhatsappLinks = ({creatorDetail}) => {
                     aria-describedby="child-modal-description"
                 >
                     <Box sx={{ ...style }}>
+                    <Button onClick={handleEditClose} sx={{ float:'right'}} variant="outlined" color='error'>X </Button>
                         <FormContainer
                             mainTitle="Update Link"
                             handleSubmit={handleEditSubmit}
@@ -247,7 +259,6 @@ const MultipleWhatsappLinks = ({creatorDetail}) => {
                                 onChange={(e) => setEditPages(e.target.value)}
                             />
                         </FormContainer>
-                        <Button onClick={handleEditClose} variant="outlined" color='error'>Close </Button>
                     </Box>
                 </Modal>
             </>

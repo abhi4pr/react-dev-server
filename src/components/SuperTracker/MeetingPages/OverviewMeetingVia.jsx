@@ -132,6 +132,7 @@ const OverviewMeetingVia = () => {
                     boxShadow: 24,
                     p: 4
                 }}>
+                                        <Button sx={{float:'right'}}variant="outlined" color='error' onClick={() => setModalOpen(false)}> X </Button>
                     <FormContainer
                         mainTitle="Update Meeting Page"
                         handleSubmit={handleSubmitMeetingMode}
@@ -146,7 +147,6 @@ const OverviewMeetingVia = () => {
                             onChange={(e) => setviaMeetingModeEdit(e.target.value)}
                         />
                     </FormContainer>
-                    <Button variant="outlined" color='error' onClick={() => setModalOpen(false)}>Close</Button>
                 </Box>
             </Modal>
         </div>
