@@ -415,6 +415,7 @@ const CommunityPageView = () => {
               </div>
             </div> */}
           </div>
+          <PageGrowthGraph creatorProgress={creatorProgress} />
 
           <CommunityManagerPostTabs
             rows={rows}
@@ -428,7 +429,6 @@ const CommunityPageView = () => {
             startDate={startDate}
             setStartDate={setStartDate}
           />
-          <PageGrowthGraph creatorProgress={creatorProgress} />
           <PageDateWiseStatus
             startDate={startDate}
             endDate={endDate}

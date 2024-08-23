@@ -104,11 +104,11 @@ function PageGrowthViewAll({
       width: 150,
     },
 
-    {
-      field: "todayVsYesterdayMediaCountDiff",
-      headerName: "Media",
-      width: 150,
-    },
+    // {
+    //   field: "todayVsYesterdayMediaCountDiff",
+    //   headerName: "Media",
+    //   width: 150,
+    // },
     {
       field: "todayPostCount",
       headerName: "Posted",
@@ -139,7 +139,6 @@ function PageGrowthViewAll({
       day: "2-digit",
     });
   };
-console.log(creatorProgress,"creatorProgress")
   const handleCheckBox = (e) => {};
   function CustomToolbar() {
     return (

@@ -222,7 +222,7 @@ export default function CommunityManagerPostTabs({
         <div className="card">
           <div className="card-header">
             <h5 className="cardHeaderTitle">
-              Separate Stats - {engagementArray?.count}
+              Separate Stats   - {engagementArray?.count}
             </h5>
           </div>
           <div className="card-body pl0 pr0">

@@ -96,30 +96,26 @@ function CommunityHeader({
   };
 
   const handleCategoryChange = (event, value) => {
-    
-    const selectedCategoryObject = pagecategory.find(
-      (category) =>
-        (`${category.category_name} - ( ${
-          filteredPageCategory[category.category_id] || 0
-        })` == value )|| (category.category_name.toLowerCase() == value?.toLowerCase())
-      );
-     
-    if (selectedCategoryObject) {
-      const filteredRows = allRows.filter(
-        (record) =>
-          record.projectxRecord?.pageCategoryId ===
-          selectedCategoryObject.category_id
+    if (value) {
+      const selectedCategoryObject = pagecategory.find(
+        (category) =>
+          `${category.category_name} - (${filteredPageCategory[category.category_id] || 0})` === value ||
+          category.category_name.toLowerCase() === value.toLowerCase()
       );
 
-      // Only set filtered rows if rowSelectionModel is empty
-      if (rowSelectionModel.length === 0) {
-        setRows(filteredRows);
+      if (selectedCategoryObject) {
+        const filteredRows = allRows.filter(
+          (record) =>
+            record.projectxRecord?.pageCategoryId === selectedCategoryObject.category_id
+        );
+
+        // Only set filtered rows if rowSelectionModel is empty
+        if (rowSelectionModel.length === 0) {
+          setRows(filteredRows);
+        }
+        setSelectedCategory(selectedCategoryObject);
       }
-      setSelectedCategory(selectedCategoryObject);
-    }
-
-    // Clear category filter if the value is null or empty
-    if (!value) {
+    } else {
       handleCategoryClear();
     }
   };

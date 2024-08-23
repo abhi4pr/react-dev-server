@@ -4,10 +4,8 @@ import React, { useState, useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
 
 function PageDetails({ creatorDetail, setCreatorDetail }) {
-  console.log(creatorDetail,'creatorDetail');
   const { creatorName } = useParams();
   const [pages, setPages] = useState([]);
-  console.log(pages,'kkkk new data');
 
   const getDatapages = async () => {
     try {
@@ -62,14 +60,15 @@ function PageDetails({ creatorDetail, setCreatorDetail }) {
 
   return (
     <div className="card">
-     <Box sx={{ display: 'flex', width: '300px', mt: 2, ml: 2, justifyContent: 'flex-start', alignItems: 'flex-start' }}>
-  <Autocomplete
-    disablePortal
-    options={pages.map((ele) => ele.page_name)}
-    renderInput={(params) => <TextField {...params} label="Select Page" />}
-    onChange={handlePageChange}
-  />
-</Box>
+      <Box sx={{ display: 'flex', mt: 2, ml: 2, justifyContent: 'flex-start', alignItems: 'flex-start' }}>
+        <Autocomplete
+          disablePortal
+          sx={{ width: 300 }}
+          options={pages.map((ele) => ele.page_name)}
+          renderInput={(params) => <TextField {...params} label="Select Page" />}
+          onChange={handlePageChange}
+        />
+      </Box>
 
 
       <div className="card-body">
@@ -93,26 +92,30 @@ function PageDetails({ creatorDetail, setCreatorDetail }) {
                     <p>{creatorDetail?.biography}</p>
                   </div>
                   <ul className="pgAccountSocial">
-                    <li>
+                    {/* <li>
                       <a href="#">
                         <i className="bi bi-twitter"></i>
                       </a>
-                    </li>
+                    </li> */}
                     <li>
-                      <a href="#">
+                      <Link
+                        to={`https://www.instagram.com/${creatorName}/`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
                         <i className="bi bi-instagram"></i>
-                      </a>
+                      </Link>
                     </li>
-                    <li>
+                    {/* <li>
                       <a href="#">
                         <i className="bi bi-youtube"></i>
                       </a>
-                    </li>
-                    <li>
+                    </li> */}
+                    {/* <li>
                       <a href="#">
                         <i className="bi bi-facebook"></i>
                       </a>
-                    </li>
+                    </li> */}
                   </ul>
                 </div>
               </div>

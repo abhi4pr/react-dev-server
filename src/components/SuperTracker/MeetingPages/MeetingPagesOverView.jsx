@@ -245,6 +245,7 @@ const MeetingPagesOverView = () => {
                         boxShadow: 24,
                         p: 4
                     }}>
+                            <Button sx={{ float:'right'}} variant="outlined" color='error' onClick={handleClose}> X </Button>
                         <Box>
                             <FormContainer
                                 mainTitle="Update Meeting Page "
@@ -301,7 +302,6 @@ const MeetingPagesOverView = () => {
                                     />
                                 </div>
                             </FormContainer>
-                            <Button variant="outlined" color='error' onClick={handleClose}>Close</Button>
                         </Box>
                     </Box>
                 </Modal>
