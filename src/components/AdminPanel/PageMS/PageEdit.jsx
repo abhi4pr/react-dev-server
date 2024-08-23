@@ -140,6 +140,7 @@ const PageEdit = () => {
   const [country5Percentage, setCountry5Percentage] = useState();
   const [countryImg, setCountryImg] = useState();
   const [priceDataNew, setPriceDataNew] = useState([]);
+  const [rateType, setRateType] = useState({ value: "Fixed", label: "Fixed" });
 
   const [profileVisitError, setProfileVisitError] = useState(false);
   // const [reachAndImpressionimgSrc, setReachAndImpressionimgSrc] =
@@ -161,6 +162,7 @@ const PageEdit = () => {
   const [reach, setReach] = useState();
   const [impression, setImpression] = useState();
   const [engagement, setEngagement] = useState();
+  const [engagment, setEngagment] = useState(0);
   const [storyView, setStoryView] = useState();
   const [rowData, setRowData] = useState({});
   const [stateForIsNotQuater, setStateForIsNotQuater] = useState(false);
@@ -574,17 +576,32 @@ const PageEdit = () => {
     handleFilterPriceType();
   };
 
-  const handlePriceChange = (e, index) => {
-    rowCount[index].price = e.target.value;
-  };
+  // const handlePriceChange = (e, index) => {
+  //   rowCount[index].price = e.target.value;
+  // };
 
-  const handleFilterPriceType = () => {
+  const handlePriceChange = (e, index) => {
+    const updatedRowCount = [...rowCount];
+    updatedRowCount[index] = {
+      ...updatedRowCount[index],
+      price: e.target.value,
+    };
+    setRowCount(updatedRowCount);
+  };
+  
+  const handleFilterPriceType = (_id) => {
     let filteredData = priceTypeList.filter((row) => {
       // Check if row's page_price_type_id exists in priceTypeList
       return !rowCount.some(
         (e) => e.page_price_type_id == row.page_price_type_id
       );
     });
+    axios.delete(baseUrl + `v1/pagePriceMultiple/${_id}`,{
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      }
+    })
     setFilterPriceTypeList(filteredData);
   };
 
@@ -600,19 +617,28 @@ const PageEdit = () => {
       setPriceTypeList([]);
       let priceData = platformData?.find((role) => role?._id == platformId)?._id;
       axios
-        .get(baseUrl + `v1/pagePriceTypesForPlatformId/${priceData}`)
+        .get(baseUrl + `v1/pagePriceTypesForPlatformId/${platformId}`,{
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          }
+        })
         .then((res) => {
           setPriceTypeList(res?.data?.data);
-          setFilterPriceTypeList(res?.data?.data);
+          // setFilterPriceTypeList(res?.data?.data);
         });
     }
   }, [platformId]);
 
   const addPriceRow = () => {
-    setRowCount((rowCount) => [
-      ...rowCount,
-      { page_price_type_id: "", price: "" },
-    ]);
+    if(rowCount.length > 0){
+      setRowCount((rowCount) => [
+        ...rowCount,
+        { page_price_type_id: "", price: "" },
+      ]);
+    }else{
+      setRowCount([{ page_price_type_id: "", price: "" }]);
+    }
   };
 
   const { data: priceData,  } =
@@ -670,7 +696,8 @@ const PageEdit = () => {
           return { value: e._id, label: e.platform_name };
         })
       );
-      setRate(data[0].engagment_rate);
+      setRate(data[0].rate_type);
+      setEngagment(data[0]?.engagment_rate);
       setDescription(data[0].description);
       setP_id(data[0].pageMast_id);
       const { execounthismodels } = data[0];
@@ -762,8 +789,8 @@ const PageEdit = () => {
       page_category_id: categoryId,
       tags_page_category: tag.map((e) => e.value),
       preference_level: pageLevel,
-      // status: pageStatus == "Active" ? 1 : 0,
-      status: pageStatus,
+      status: pageStatus == "Active" ? 1 : 0,
+      // status: pageStatus,
       page_closed_by: closeBy,
       page_name_type: pageType,
       content_creation: content,
@@ -772,15 +799,64 @@ const PageEdit = () => {
       followers_count: followCount,
       page_profile_type_id: profileId,
       platform_active_on: platformActive.map((e) => e.value),
-      rate_type: rate || 0,
+      rate_type: rate || '',
       description: description,
       updated_by: userID,
+      engagment_rate: engagment || 0
     };
 
-    axios.put(baseUrl + `v1/pageMaster/${pageMast_id}`, payload).then(() => {
+    axios.put(baseUrl + `v1/pageMaster/${pageMast_id}`, payload,{
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      }
+    }).then(() => {
       setIsFormSubmitted(true);
       toastAlert("Submitted");
     });
+
+    for (let i = 0; i < rowCount.length; i++) {
+      rowCount[i].created_by = 229;
+      rowCount[i].page_master_id = pageMast_id;
+      rowCount[i].price = Number(rowCount[i].price);
+    }
+    
+    for (let i = 0; i < rowCount.length; i++) {
+
+      // checking if price updated
+      // let matchingObject = priceDataNew.find(obj => obj.page_price_type_id === rowCount[i].page_price_type_id);
+      // if (matchingObject) {
+      //   if (matchingObject.price !== rowCount[i].price) {
+      //       axios.put(baseUrl + `v1/pagePriceMultiple/${matchingObject._id}`, {
+      //           price: rowCount[i].price, 
+      //       }, {
+      //           headers: {
+      //               "Content-Type": "application/json",
+      //               Authorization: `Bearer ${token}`,
+      //           }
+      //       })
+      //       .then(response => {
+      //           console.log(`Updated object ${i} with _id ${matchingObject._id}:`, response.data);
+      //       })
+      //       .catch(error => {
+      //           console.error(`Error updating object ${i} with _id ${matchingObject._id}:`, error);
+      //       });
+      //   }
+      // }
+
+      axios.post(baseUrl + `v1/pagePriceMultiple`, rowCount[i], {
+          headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+          }
+      })
+      .then(response => {
+          console.log(`Response for object ${i}:`, response.data);
+      })
+      .catch(error => {
+          console.error(`Error for object ${i}:`, error);
+      });
+    }
   };
 
   if (isFormSubmitted) {
@@ -1057,13 +1133,33 @@ const PageEdit = () => {
           ></Select>
         </div>
 
-        <FieldContainer
+        {/* <FieldContainer
           label="Engagement Rate"
           type="number"
           value={rate}
           required={false}
           onChange={(e) => setRate(e.target.value)}
-        />
+        /> */}
+
+        <div className="col-md-6 mb16">
+          <div className="form-group m0">
+            <label className="form-label">
+              Rate Type <sup style={{ color: "red" }}>*</sup>
+            </label>
+            <Select
+              options={["Fixed", "Variable"].map((option) => ({
+                value: option,
+                label: option,
+              }))}
+              required={true}
+              value={{
+                value: rateType.value,
+                label: rateType.label,
+              }}
+              onChange={(e)=> setRateType(e.target.value)}
+            />
+          </div>
+        </div>
 
         <FieldContainer
           label="Description"
@@ -1071,6 +1167,25 @@ const PageEdit = () => {
           required={false}
           onChange={(e) => setDescription(e.target.value)}
         />
+
+        <div className="col-md-6 p0 mb16">
+          <FieldContainer
+            label="Engagement Rate"
+            type="text"
+            fieldGrid={12}
+            value={engagment}
+            required={true}
+            onChange={(e) => {
+              if (
+                e.target.value !== "" &&
+                (e.target.value < 0 || isNaN(e.target.value))
+              ) {
+                return;
+              }
+              setEngagment(e.target.value);
+            }}
+          />
+        </div>
 
         {/* {
           priceDataNew?.map((item)=>(
@@ -1084,28 +1199,26 @@ const PageEdit = () => {
         } */}
 
         <div className="col-12 row">
-          {/* {rowCount.map((row, index) => (
+          {rowCount && rowCount.length > 0 && rowCount.map((row, index) => (
             <>
-              {" "}
               <div className="form-group col-5 row">
                 <label className="form-label">
                   Price Type <sup style={{ color: "red" }}>*</sup>
                 </label>
                 <Select
-                  options={filterPriceTypeList.map((option) => ({
-                    value: option._id,
-                    label: option.name,
+                  options={priceTypeList?.map((option) => ({
+                    value: option?._id,
+                    label: option?.name,
                   }))}
                   required={true}
                   value={{
-                    label: priceTypeList.find(
-                      (role) => role._id === rowCount[index].page_price_type_id
+                    label: priceTypeList?.find(
+                      (role) => role?._id === rowCount[index]?.page_price_type_id
                     )?.name,
-                    value: rowCount[index].page_price_type_id,
+                    value: rowCount[index]?.page_price_type_id,
                   }}
                   onChange={(e) => handlePriceTypeChange(e, index)}
                 />
-                
               </div>
               <FieldContainer
                 label=" Price *"
@@ -1114,14 +1227,14 @@ const PageEdit = () => {
                 onChange={(e) => handlePriceChange(e, index)}
                 value={rowCount[index].price}
               />
-              {index != 0 && (
+              {index !== 0 && (
                 <button
-                  className="btn btn-sm btn-danger mt-4 ml-2  col-1 mb-3"
+                  className="btn btn-sm btn-danger mt-4 ml-2 col-1 mb-3"
                   type="button"
                   onClick={() => {
                     setRowCount(
                       (prev) => prev.filter((e, i) => i !== index),
-                      handleFilterPriceType()
+                      handleFilterPriceType(rowCount[index]._id)
                     );
                   }}
                 >
@@ -1129,7 +1242,7 @@ const PageEdit = () => {
                 </button>
               )}
             </>
-          ))} */}
+          ))}
           <div className="text-center">
             <button
               type="button"
