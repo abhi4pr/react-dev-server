@@ -90,7 +90,7 @@ const FAQTab = ({ username, designation }) => {
                 <div className="thm_textbx">
                   <h3>7.What are the standard working hours of the company?</h3>
                   <p>
-                    <span className="bold">Ans:- </span>9 Hours including lunch
+                    <span className="bold">Ans:- </span> 8+1 Hours including lunch
                     break.
                   </p>
                 </div>
@@ -138,7 +138,7 @@ const FAQTab = ({ username, designation }) => {
                       {" "}
                       fabhr@creativefuel.io
                     </a>
-                    . Please ensure that every email is ccd to{" "}
+                    . Please ensure that every email is cc-{" "}
                     <a
                       style={{ color: "blue" }}
                       href="https://mail.google.com/mail/?view=cm&fs=1&tf=1&to=nikhil@creativefuel.io"

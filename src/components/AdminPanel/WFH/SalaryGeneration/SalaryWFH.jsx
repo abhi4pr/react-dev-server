@@ -26,7 +26,7 @@ import DateISOtoNormal from "../../../../utils/DateISOtoNormal";
 import { baseUrl } from "../../../../utils/config";
 import { downloadSelectedInvoices } from "./ZipGenerator";
 import BankExcelConverter from "../../../../utils/BankExcelConverter";
-import { FaEye } from "react-icons/fa6";
+import { FaEye } from "react-icons/fa6"
 
 const images = [
   { temp_id: 1, image: image1 },
@@ -100,9 +100,11 @@ const SalaryWFH = () => {
   const [activeTab, setActiveTab] = useState(0);
 
   const [selectedRows, setSelectedRows] = useState([]);
-  const [workDaysLastDate, setWorkDaysLastDate] = useState(0);
+  const [workDaysLastDate , setWorkDaysLastDate] = useState(0)
 
-  const [pendingFinanceCount, setPendingFinanceCount] = useState("");
+  const [pendingFinanceCount , setPendingFinanceCount] = useState('')
+
+  
 
   var settings = {
     dots: false,
@@ -116,12 +118,12 @@ const SalaryWFH = () => {
   };
 
   useEffect(() => {
-    if (new Date().getMonth() > 3) {
-      settings.initialSlide = new Date().getMonth - 4;
-    } else {
-      settings.initialSlide = new Date().getMonth() + 8;
-    }
-  }, []);
+  if (new Date().getMonth() > 3) {
+    settings.initialSlide = new Date().getMonth - 4;
+  } else {
+    settings.initialSlide = new Date().getMonth() + 8;
+  }
+}, []);
 
   useEffect(() => {
     if (location.state) {
@@ -171,11 +173,7 @@ const SalaryWFH = () => {
 
         const data = res.data.data;
 
-        setAllWFHUsers(
-          data.filter(
-            (d) => d.att_status == "onboarded" && d.user_status == "Active"
-          )
-        );
+        setAllWFHUsers(data.filter((d)=>d.att_status == "onboarded" && d.user_status == "Active"));
         const filteredUser = data.filter((d) => d.dept_id === department);
         if (filteredUser?.length > 0) {
           const firstUser = filteredUser[0];
@@ -250,6 +248,7 @@ const SalaryWFH = () => {
 
   //harshal.. calculating monthly salary
   useEffect(() => {
+    
     const sumMonth = data?.reduce(
       (acc, obj) => acc + parseFloat(obj.total_salary),
       0
@@ -268,7 +267,7 @@ const SalaryWFH = () => {
       0
     );
     setThisMonthTotalSalary(sumMonth);
-    setThisMonthSalary(sumSalary);
+    setThisMonthSalary(sumSalary)
     setThisMonthTotalBonus(sumBonus);
     setThisMonthTotalDeductions(sumDeductions);
     setThisMonthTDS(sumTDSDeductions);
@@ -291,7 +290,7 @@ const SalaryWFH = () => {
   const currentMonth = new Date().toLocaleString("en-US", { month: "long" });
 
   const monthNameToNumber = (monthName) => {
-    const months = {
+    const months = { 
       January: "01",
       February: "02",
       March: "03",
@@ -375,12 +374,12 @@ const SalaryWFH = () => {
   //     November: 'December',
   //     December: 'January'
   //   };
-  // setSelectedCardIndex(index);
-  // setYear(data.year);
-  // setMonth(data.month);
-  // setMonth(monthMap[data.month]);
-  // setSelectedYear(data.year);
-  // setSelectedMonth(data.month);
+    // setSelectedCardIndex(index);
+    // setYear(data.year);
+    // setMonth(data.month);
+    // setMonth(monthMap[data.month]);
+    // setSelectedYear(data.year);
+    // setSelectedMonth(data.month);
   // };
   const handleCardSelect = (index, data) => {
     setSelectedCardIndex(index);
@@ -447,17 +446,17 @@ const SalaryWFH = () => {
     }
 
     // if (department !== "" && month !== "" && year !== "") {
-    axios
-      .get(baseUrl + "get_total_salary")
-      .then((res) => setCard2Data(res.data.data[0]));
+      axios
+        .get(baseUrl + "get_total_salary")
+        .then((res) => setCard2Data(res.data.data[0]));
 
-    axios
-      .post(baseUrl + "left_employees", {
-        dept_id: department,
-        month: month,
-        year: year,
-      })
-      .then((res) => SetEmployeeLeft(res.data));
+      axios
+        .post(baseUrl + "left_employees", {
+          dept_id: department,
+          month: month,
+          year: year,
+        })
+        .then((res) => SetEmployeeLeft(res.data));
     // }
 
     axios
@@ -515,21 +514,8 @@ const SalaryWFH = () => {
 
   const handleAttendance = async () => {
     try {
-      const monthNames = [
-        "January",
-        "February",
-        "March",
-        "April",
-        "May",
-        "June",
-        "July",
-        "August",
-        "September",
-        "October",
-        "November",
-        "December",
-      ];
-
+      const monthNames = ["January", "February", "March", "April", "May", "June","July", "August", "September", "October", "November", "December"];
+  
       let selectedMonth = monthNames.indexOf(month);
       let selectedYear = Number(year);
       let date = new Date(selectedYear, selectedMonth);
@@ -537,7 +523,7 @@ const SalaryWFH = () => {
 
       let newMonth = monthNames[date.getMonth()];
       let newYear = date.getFullYear();
-
+  
       await axios.post(baseUrl + "add_attendance", {
         dept: department,
         user_id: userName.user_id,
@@ -550,7 +536,7 @@ const SalaryWFH = () => {
         year: newYear,
         dept: department,
       });
-
+      
       setNoOfAbsent("");
       handleSubmit();
       toastAlert("Submitted success");
@@ -595,11 +581,7 @@ const SalaryWFH = () => {
       const response = res.data.data;
       setFilterData(response.filter((option) => option.sendToFinance == 0));
       setData(response);
-      setPendingFinanceCount(
-        response.filter(
-          (d) => d.attendence_status_flow === "Pending From Finance"
-        ).length
-      );
+      setPendingFinanceCount(response.filter((d)=>d.attendence_status_flow === "Pending From Finance").length)
     } catch (error) {
       console.error("Error submitting data:", error);
     }
@@ -791,39 +773,40 @@ const SalaryWFH = () => {
   //     });
   // }
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
-  async function handleBulkSendToFinance() {
-    setIsButtonDisabled(true);
+async function handleBulkSendToFinance() {
+    setIsButtonDisabled(true); 
 
     try {
-      const sendToFinancePromises = selectedRows.map(async (row) => {
-        console.log(row, "row is here ok");
+        const sendToFinancePromises = selectedRows.map(async (row) => {
+            console.log(row, 'row is here ok');
 
-        // Post request to add to finance
-        await axios.post(`${baseUrl}add_finance`, {
-          attendence_id: row.attendence_id,
+            // Post request to add to finance
+            await axios.post(`${baseUrl}add_finance`, {
+                attendence_id: row.attendence_id,
+            });
+
+            // Put request to update salary
+            await axios.put(`${baseUrl}update_salary`, {
+                attendence_id: row.attendence_id,
+                sendToFinance: 1,
+                month: row.month,
+            });
         });
 
-        // Put request to update salary
-        await axios.put(`${baseUrl}update_salary`, {
-          attendence_id: row.attendence_id,
-          sendToFinance: 1,
-          month: row.month,
-        });
-      });
+        // Wait for all promises to be resolved
+        await Promise.all(sendToFinancePromises);
 
-      // Wait for all promises to be resolved
-      await Promise.all(sendToFinancePromises);
-
-      handleSubmit();
-      setSelectedRows([]);
-      toastAlert("All selected rows have been sent to Finance successfully.");
+        handleSubmit();
+        setSelectedRows([]);
+        toastAlert("All selected rows have been sent to Finance successfully.");
     } catch (error) {
-      console.error("Error sending data to finance:", error);
-      toastAlert("An error occurred while sending data to Finance."); // Show error message
+        console.error("Error sending data to finance:", error);
+        toastAlert("An error occurred while sending data to Finance."); // Show error message
     } finally {
-      setIsButtonDisabled(false); // Optionally, re-enable the button after all operations are complete
+        setIsButtonDisabled(false);  // Optionally, re-enable the button after all operations are complete
     }
-  }
+}
+
 
   const pdfTemplate = () => (
     <Document>
@@ -962,32 +945,19 @@ const SalaryWFH = () => {
   }
 
   function getLastDateOfMonth(month, year) {
-    const monthNames = [
-      "January",
-      "February",
-      "March",
-      "April",
-      "May",
-      "June",
-      "July",
-      "August",
-      "September",
-      "October",
-      "November",
-      "December",
-    ];
+    const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
     const monthIndex = monthNames.indexOf(month);
     if (monthIndex === -1) {
-      throw new Error("Invalid month name");
+      throw new Error('Invalid month name');
     }
     let nextMonth = new Date(year, monthIndex + 1, 1);
     let lastDateOfMonth = new Date(nextMonth - 1);
-    return setWorkDaysLastDate(lastDateOfMonth.getDate());
+    return setWorkDaysLastDate(lastDateOfMonth.getDate())
   }
 
-  useEffect(() => {
-    getLastDateOfMonth(selectedMonth, selectedYear);
-  }, [selectedMonth, selectedYear]);
+  useEffect(()=>{
+    getLastDateOfMonth(selectedMonth,selectedYear)
+  },[selectedMonth,selectedYear])
 
   const columns = [
     {
@@ -1013,8 +983,10 @@ const SalaryWFH = () => {
     },
     {
       name: "DOJ",
-      cell: (row) => DateISOtoNormal(row.joining_date),
-      width: "130px",
+      cell: (row) => 
+        DateISOtoNormal(
+          row.joining_date),
+          width:"130px",
     },
     {
       name: "Work Days",
@@ -1085,24 +1057,23 @@ const SalaryWFH = () => {
       name: "Status",
       cell: (row) => row.attendence_status_flow,
     },
-    {
-      name: "Action",
-      width: "200px",
-      cell: (row) => (
+    {name:"Action",
+      width:"200px",
+      cell:(row)=>(
         <>
-          {row?.invoice_template_no !== "0" && (
+              {row?.invoice_template_no !== "0" && (
             <button
               className="icon-1"
               title="Download Invoice"
               type="button"
-              onClick={() => generatePDF(row)}
+              onClick={() =>generatePDF(row)}
             >
               <FaEye />
             </button>
           )}
-        </>
-      ),
-    },
+          </>
+      )
+    }
     // {
     //   name: "Action",
     //   width: "200px",
@@ -1234,43 +1205,34 @@ const SalaryWFH = () => {
     XLSX.writeFile(workbook, fileName);
   };
 
+
   const monthToNumber = (month) => {
     const months = [
-      "January",
-      "February",
-      "March",
-      "April",
-      "May",
-      "June",
-      "July",
-      "August",
-      "September",
-      "October",
-      "November",
-      "December",
+      "January", "February", "March", "April", "May", "June",
+      "July", "August", "September", "October", "November", "December"
     ];
     return months.indexOf(month) + 1;
   };
-
+  
   const currentYearForDis = new Date().getFullYear();
   const currentMonthForDis = new Date().getMonth() + 1;
 
   return (
     // <div style={{ display: "flex", gap: "16px", flexDirection: "column" }}>
-    <div className="action_heading mb12">
+      <div className="action_heading mb12">
       <div className="action_title">
-        <FormContainer mainTitle="Payout Summary" link="/admin" />
+      <FormContainer mainTitle="Payout Summary" link="/admin" />
       </div>
       <div className="action_btns">
-        <Link to="/admin/attendence-mast">
-          <button
-            type="button"
-            className="btn cmnbtn btn_sm btn-outline-primary"
-          >
-            Create Attendance
-          </button>
-        </Link>
-      </div>
+      <Link to="/admin/attendence-mast">
+            <button
+              type="button"
+              className="btn cmnbtn btn_sm btn-outline-primary"
+            >
+              Create Attendance
+            </button>
+          </Link>
+          </div>
       <div className="modal fade" id="myModal" role="dialog">
         <div className="modal-dialog">
           <div className="modal-content">
@@ -1298,73 +1260,82 @@ const SalaryWFH = () => {
       {/* Cards */}
       <div className="timeline_wrapper mb24">
         <Slider {...settings} className="timeline_slider">
-          {completedYearsMonths?.map((data, index) => {
+          {
+            completedYearsMonths?.map((data, index) => {
             const cardMonth = monthToNumber(data.month);
-            const isFutureCard =
-              data.year > currentYearForDis ||
-              (data.year === currentYearForDis &&
-                cardMonth >= currentMonthForDis);
+            const isFutureCard = data.year > currentYearForDis || (data.year === currentYearForDis && cardMonth >= currentMonthForDis);
 
             const getClassName = (data, index, selectedCardIndex) => {
               if (data.card_status === 1) {
                 return "pending";
-              } else if (data.card_status === 0) {
+              } else if(data.card_status === 0) {
                 return selectedCardIndex === index ? "selected" : "";
               }
             };
             return (
               <div
                 className={`timeline_slideItem 
-                  ${data.deptCount == departmentdata?.length && "completed"} 
+                  ${
+                    data.deptCount == departmentdata?.length && "completed"
+                } 
                   ${selectedCardIndex === index ? "selected" : ""}
                 ${getClassName(data, index, selectedCardIndex)}
                ${
-                 currentMonthForDis === cardMonth + 1 && "current" // this code for current month card select blue card
-               } 
-                ${isFutureCard && "disabled"}`}
+                  currentMonthForDis === cardMonth+1 && "current"  // this code for current month card select blue card
+                } 
+                ${isFutureCard && "disabled"}`
+              }
                 onClick={() => {
                   if (!isFutureCard) handleCardSelect(index, data);
                 }}
                 key={index}
               >
-                <h2>
-                  {data.month} <span>{data.year} </span>
-                </h2>
-                <h4>
-                  {data.deptCount}/{departmentdata?.length}
-                </h4>
-                <h3>Total Amount:- {data.totalAmount}</h3>
-                <h3>Total Bonus:- {data.totalBonus}</h3>
-                <h3>Total Deduction:- {0}</h3>
-                <h3>Total Pay:- {data.totalSalary?.toFixed(2)}</h3>
-                <h3>
-                  {data?.atdGenerated == 1 ? (
-                    <span>
-                      <i className="bi bi-check2-circle" />
-                    </span>
-                  ) : currentMonthNumber - 5 - index < 0 ? (
-                    <span>
-                      <i className="bi bi-clock-history" />
-                    </span>
-                  ) : (
-                    <span>
-                      <i className="bi bi-hourglass-top" />
-                    </span>
-                  )}
-                  {data.deptCount == departmentdata?.length
-                    ? "Completed"
-                    : currentMonthNumber - 5 - index < 0
-                    ? "Upcoming"
-                    : "Pending"}
-                  {/* {data.atdGenerated == 1
+              
+              <h2>
+                {data.month} <span>{data.year} </span>
+              </h2>
+              <h4>
+                {data.deptCount}/{departmentdata?.length}
+              </h4>
+              <h3>
+                Total Amount:- {data.totalAmount}
+              </h3>
+              <h3>
+                Total Bonus:- {data.totalBonus}
+              </h3>
+              <h3>
+                Total Deduction:- {0}
+              </h3>
+              <h3>
+                Total Pay:- {data.totalSalary?.toFixed(2)}
+              </h3>
+              <h3>
+                {data?.atdGenerated == 1 ? (
+                  <span>
+                    <i className="bi bi-check2-circle" />
+                  </span>
+                ) : currentMonthNumber - 5 - index < 0 ? (
+                  <span>
+                    <i className="bi bi-clock-history" />
+                  </span>
+                ) : (
+                  <span>
+                    <i className="bi bi-hourglass-top" />
+                  </span>
+                )}
+                {data.deptCount == departmentdata?.length
+                  ? "Completed"
+                  : currentMonthNumber - 5 - index < 0
+                  ? "Upcoming"
+                  : "Pending"}
+                {/* {data.atdGenerated == 1
                   ? "Completed"
                   : currentMonthNumber - 4 - index < 0
                   ? "Upcoming"
                   : "Pending"} */}
-                </h3>
-              </div>
-            );
-          })}
+              </h3>
+            </div>
+          )})}
         </Slider>
       </div>
       <h5>Verification Pending From Finance :{pendingFinanceCount}</h5>
@@ -1573,7 +1544,7 @@ const SalaryWFH = () => {
                 </div>
                 <div className="salary_dtlCard_info">
                   <ul>
-                    <li>
+                  <li>
                       <span>Total Amount</span>
                       {thisMonthSalary}
                     </li>
@@ -1623,7 +1594,7 @@ const SalaryWFH = () => {
                       <span >Total Payout :</span>
                       {card2Data?.totalToPay}
                     </li> */}
-
+                    
                     {/* <li>
                       <span>Total Deductions</span>
                       {card2Data?.totalsalarydeduction}
@@ -1802,7 +1773,7 @@ const SalaryWFH = () => {
                 highlightOnHover
                 pagination
                 exportToCSV
-                paginationPerPage={100}
+                paginationPerPage={100} 
                 // subHeader
                 conditionalRowStyles={conditionalRowStyles}
                 selectableRows={activeTab == 0 ? true : false}

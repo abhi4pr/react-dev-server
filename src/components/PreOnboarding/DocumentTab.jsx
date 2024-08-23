@@ -225,7 +225,6 @@ const DocumentTab = ({
   };
 
   const handleDeleteDocument = async (ids) => {
-    console.log(ids, "ids h");
     try {
       await axios.delete(baseUrl + `delete_user_doc/${ids}`);
       toastAlert("Document Deleted Successfully");
@@ -336,7 +335,7 @@ const DocumentTab = ({
                         <td>
                           <div className="uploadDocBtn">
                             <span>
-                              <i className="bi bi-cloud-arrow-up" /> Upload
+                              <i style={{fontSize:'35px'}} className="bi bi-cloud-arrow-up" /> 
                             </span>
                             <input
                               type="file"

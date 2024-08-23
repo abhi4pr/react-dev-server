@@ -101,7 +101,7 @@ const PreOnboardingOverview = () => {
     {
       name: "Role",
       selector: (row) => row.Role_name,
-      width: "5%",
+      width: "100px",
       sortable: true,
       reorder: true,
     },

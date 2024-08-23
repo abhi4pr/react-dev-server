@@ -833,7 +833,7 @@ const UserUpdate = () => {
     );
     formData.append("salary", monthlyGrossSalary);
     formData.append("ctc", ctc);
-    formData.append("user_credit_limit", creditLimit);
+    formData.append("user_credit_limit", Number(creditLimit));
 
     formData.append("sitting_id", jobType === "WFH" ? 0 : Number(sitting));
     formData.append(
@@ -2035,7 +2035,7 @@ const UserUpdate = () => {
             />
           </div>
 
-          {/*  Parmanent Address here------------ */}
+          {/*  Permanent Address here------------ */}
           <div className="form_checkbox">
             <label className="cstm_check">
               Same as Current Addresss
@@ -2052,7 +2052,7 @@ const UserUpdate = () => {
         <hr className="mb-3" />
         <div className=" body-padding row">
           <FieldContainer
-            label="Parmanent Address"
+            label="Permanent Address"
             fieldGrid={12}
             value={address}
             onChange={(e) => setAddress(e.target.value)}
@@ -2079,7 +2079,7 @@ const UserUpdate = () => {
           </div>
           <div className="col-3 mt-3">
             <FieldContainer
-              label="Parmanent Pincode"
+              label="Permanent Pincode"
               type="number"
               value={pincode}
               fieldGrid={3}

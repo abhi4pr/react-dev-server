@@ -189,22 +189,20 @@ const AnalyticDashboard = () => {
           },
         }}
       >
-        <button
-          className="btn btn-danger mb-3 float-right"
-          onClick={handleCloseExitUser}
-        >
+        <button className="btn modalCloseBtn" onClick={handleCloseExitUser}>
           x
         </button>
-
         {/* All Exit User List  */}
-        <DataGrid
-          rows={allExitUserData}
-          columns={ExitUserColumns}
-          getRowId={(row) => row?.user_id}
-          slots={{
-            toolbar: GridToolbar,
-          }}
-        />
+        <div className="thm_table">
+          <DataGrid
+            rows={allExitUserData}
+            columns={ExitUserColumns}
+            getRowId={(row) => row?.user_id}
+            slots={{
+              toolbar: GridToolbar,
+            }}
+          />
+        </div>
       </Modal>
     </>
   );

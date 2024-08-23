@@ -21,16 +21,17 @@ import dayjs from "dayjs";
 const onBoardStatus = 2;
 
 const AdminPreOnboarding = () => {
+  
+  const [loading, setLoading] = useState(false);   
+
+
+  const jobTypeData = ["WFO", "WFH"];
+  // const tdsApplicableData = ["Yes", "No"];
+  const genderData = ["Male", "Female", "Other"];
   const offerLetter = [
     { label: "Yes", value: true },
     { label: "No", value: false },
   ];
-
-  const [loading, setLoading] = useState(false);
-
-  const jobTypeData = ["WFO", "WFH"];
-  const tdsApplicableData = ["Yes", "No"];
-  const genderData = ["Male", "Female", "Other"];
 
   const whatsappApi = WhatsappAPI();
   const { toastAlert, toastError } = useGlobalContext();
@@ -38,6 +39,8 @@ const AdminPreOnboarding = () => {
   const token = sessionStorage.getItem("token");
   const decodedToken = jwtDecode(token);
   const loginUserId = decodedToken.id;
+  const ROLEID = decodedToken.role_id;
+
   const [username, setUserName] = useState("");
   const [jobType, setJobType] = useState("WFO");
   const [roles, setRoles] = useState(constant.CONST_USER_ROLE);
@@ -91,6 +94,8 @@ const AdminPreOnboarding = () => {
   const [joiningDate, setJoiningDate] = useState("");
   const [releavingDate, setReleavingDate] = useState("");
   const [salary, setSalary] = useState("");
+  const [lastUpdated, setLastUpdated] = useState("");
+
   const [designation, setDesignation] = useState("");
   const [designationData, setDesignationData] = useState([]);
 
@@ -111,6 +116,8 @@ const AdminPreOnboarding = () => {
     { label: "IN Hand", value: "in_hand" },
   ];
 
+  const [subDepartmentData, setSubDepartmentData] = useState([]);
+  const [subDepartment, setSubDeparment] = useState([]);
   const [isRequired, setIsRequired] = useState({
     username: false,
     reportL1: false,
@@ -153,8 +160,7 @@ const AdminPreOnboarding = () => {
     }
   }, [department]);
 
-  const [subDepartmentData, setSubDepartmentData] = useState([]);
-  const [subDepartment, setSubDeparment] = useState([]);
+  
   useEffect(() => {
     if (subDepartment) {
       axios
@@ -187,7 +193,6 @@ const AdminPreOnboarding = () => {
     return correctedUserName.replace(/\s+/g, " ").trim();
   }
 
-  console.log(isApplicable.value, "vlaue");
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -275,6 +280,7 @@ const AdminPreOnboarding = () => {
       role_id: roles,
       image: selectedImage,
       ctc: userCtc,
+      salary: Number(salary),
       Age: Number(age),
       offer_letter_send: true,
       tds_applicable: tdsApplicable,
@@ -302,7 +308,7 @@ const AdminPreOnboarding = () => {
       other_upload: otherUpload,
       joining_date: joiningDate,
       releaving_date: releavingDate,
-      salary: Number(salary),
+
       onboard_status: onBoardStatus,
       Nationality: "Indian",
       emergency_contact_person_name2: isApplicable.value, //This Payload use for Is Applicable Conditon
@@ -669,6 +675,72 @@ const AdminPreOnboarding = () => {
     setUserName(correctedNameParts.join(" "));
   };
 
+  // to disable admin and super admin in role dropdown start
+  const modifiedRoleData = roledata.map((option) => ({
+    value: option.role_id,
+    label: option.Role_name,
+    isDisabled: ROLEID === 1 && (option.role_id === 1 || option.role_id === 6),
+  }));
+  const selectedRole = roledata.find((role) => role.role_id === roles);
+  // to disable admin and super admin in role dropdown end
+
+  // Update Yearly Salary when Monthly Salary changes
+  useEffect(() => {
+    if (lastUpdated === "monthly") {
+      const yearly = salary * 12;
+      setUserCtc(yearly.toString());
+    }
+  }, [salary, lastUpdated]);
+
+  // Update Monthly Salary when Yearly Salary changes
+  useEffect(() => {
+    if (lastUpdated === "yearly") {
+      const monthly = userCtc / 12;
+      setSalary(monthly.toString());
+    }
+  }, [userCtc, lastUpdated]);
+
+  useEffect(() => {
+    if (lastUpdated === "yearly") {
+      const monthly = Math.round(userCtc / 12);
+      setSalary(monthly.toString()); // Now sets the salary to a rounded figure
+    }
+  }, [userCtc, lastUpdated]);
+
+  const handleMonthlySalaryChange = (e) => {
+    const monthlySalary = e.target.value;
+
+    // if (monthlySalary === "") {
+    //   setIsRequired((prev) => ({
+    //     ...prev,
+    //     salary: true,
+    //   }));
+    // } else {
+    //   setIsRequired((prev) => ({
+    //     ...prev,
+    //     salary: false,
+    //   }));
+    // }
+
+    setSalary(monthlySalary);
+    setLastUpdated("monthly");
+  };
+
+  const handleYearlySalaryChange = (e) => {
+    const yearlySalaryValue = e.target.value;
+    setUserCtc(yearlySalaryValue);
+    setLastUpdated("yearly");
+
+    userCtc !== "" &&
+      setIsRequired((prev) => {
+        return { ...prev, userCtc: true };
+      });
+    userCtc &&
+      setIsRequired((prev) => {
+        return { ...prev, userCtc: false };
+      });
+  };
+
   return (
     <div>
       <FormContainer
@@ -926,16 +998,17 @@ const AdminPreOnboarding = () => {
           onChange={(e) => setCity(e.target.value)}
         /> */}
 
-        {jobType === "WFH" && (
-          <>
-            <FieldContainer
-              label="Salary"
-              type="number"
-              fieldGrid={3}
-              value={salary}
-              onChange={(e) => setSalary(e.target.value)}
-            />
-            <div className="form-group col-3">
+        {/* {jobType === "WFH" && ( */}
+        <>
+          <FieldContainer
+            label="Monthly CTC"
+            type="number"
+            fieldGrid={3}
+            value={salary}
+            // onChange={(e) => setSalary(e.target.value)}
+            onChange={handleMonthlySalaryChange}
+          />
+          {/* <div className="form-group col-3">
               <label className="form-label">
                 TDS Applicable<sup className="form-error">*</sup>
               </label>
@@ -956,8 +1029,8 @@ const AdminPreOnboarding = () => {
                 }}
                 required={false}
               />
-            </div>
-            {showTdsPercentage && (
+            </div> */}
+          {/* {showTdsPercentage && (
               <FieldContainer
                 label="TDS Percentage"
                 fieldGrid={3}
@@ -966,45 +1039,47 @@ const AdminPreOnboarding = () => {
                 onChange={(e) => setTdsPercentage(e.target.value)}
                 required={false}
               />
-            )}
-          </>
-        )}
+            )} */}
+        </>
+        {/* )} */}
 
         {/* {jobType == "WFO" && ( */}
-        <div className="col-3">
+        <div className="col-md-3">
           <FieldContainer
-            label="Gross Salary"
+            label="Yearly CTC"
             astric
             type="number"
             fieldGrid={3}
             required={false}
             value={userCtc}
-            onChange={(e) => {
-              // setUserCtc(e.target.value);
-              const value = e.target.value;
-              // Limit input to 6 digits
-              if (/^\d{0,7}$/.test(value)) {
-                setUserCtc(value);
-              }
+            onChange={handleYearlySalaryChange}
+            // onChange={(e) => {
+            //   // setUserCtc(e.target.value);
+            //   const value = e.target.value;
+            //   // Limit input to 6 digits
+            //   if (/^\d{0,7}$/.test(value)) {
+            //     setUserCtc(value);
+            //   }
 
-              userCtc !== "" &&
-                setIsRequired((prev) => {
-                  return { ...prev, userCtc: true };
-                });
-              userCtc &&
-                setIsRequired((prev) => {
-                  return { ...prev, userCtc: false };
-                });
-            }}
-          />
-          {isRequired.userCtc && <p className="form-error">Please Enter CTC</p>}
+            //   userCtc !== "" &&
+            //     setIsRequired((prev) => {
+            //       return { ...prev, userCtc: true };
+            //     });
+            //   userCtc &&
+            //     setIsRequired((prev) => {
+            //       return { ...prev, userCtc: false };
+            //     });
+            // }}
+            />
+            
+            {isRequired.userCtc && <p className="form-error">Please Enter CTC</p>}
         </div>
 
         {/* )} */}
 
         <div className="form-group col-3">
           <label className="form-label">
-            Custom Rang <sup className="form-error">*</sup>
+            Custom Range <sup className="form-error">*</sup>
           </label>
           <Select
             options={IsApplicableData.map((option) => ({
@@ -1146,6 +1221,20 @@ const AdminPreOnboarding = () => {
             Role <sup className="form-error">*</sup>
           </label>
           <Select
+            options={modifiedRoleData}
+            value={
+              selectedRole
+                ? {
+                    value: selectedRole.role_id,
+                    label: selectedRole.Role_name,
+                  }
+                : null
+            }
+            onChange={(e) => {
+              setRoles(e.value);
+            }}
+          />
+          {/* <Select
             options={roledata.map((option) => ({
               value: option.role_id,
               label: option.Role_name,
@@ -1172,7 +1261,7 @@ const AdminPreOnboarding = () => {
                 }));
               }
             }}
-          />
+          /> */}
           {isRequired.roles && (
             <p className="form-error">Please select a Role</p>
           )}
@@ -1225,15 +1314,12 @@ const AdminPreOnboarding = () => {
           )}
           {<p className="form-error">{dobError}</p>}
         </div>
-        {/* <FieldContainer
-          astric
-          label="DOB"
+        <FieldContainer
+          label="Age"
           required={false}
           fieldGrid={3}
-          type="date"
-          value={dateOfBirth}
-          onChange={handleDateChange}
-        /> */}
+          value={age}
+        />
 
         <div className="form-group col-3">
           <label className="form-label">

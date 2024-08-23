@@ -96,6 +96,12 @@ const Navbar = () => {
             </label>
           </li>
           <li className="nav-item">
+            <div className="navBadge">
+              <div className="navBadgeImg"></div>
+              <div className="navBadgeTxt"></div>
+            </div>
+          </li>
+          <li className="nav-item">
             <div className="theme-switch">
               <input type="checkbox" id="theme-toggle" />
 
@@ -296,7 +302,7 @@ const Navbar = () => {
                   />
                 </div>
                 <div className="profile-name">
-                  <p>Lalit Gour</p>
+                  <p>{userName}</p>
                   <span>{user_role()}</span>
                 </div>
               </div>

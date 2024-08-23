@@ -5,6 +5,7 @@ import TextField from "@mui/material/TextField";
 import Autocomplete from "@mui/material/Autocomplete";
 import IconButton from "@mui/material/IconButton";
 import DeleteIcon from "@mui/icons-material/Delete";
+import IncomeList from "../../assets/js/incomeList";
 
 const FamilyFields = ({
   familyDetails,
@@ -125,21 +126,48 @@ const FamilyFields = ({
                   </>
                 );
 
-              // case "annual_income":
-              //   return (
-              //     <div className="form-group">
-              //       <TextField
-              //         key={key}
-              //         name={key}
-              //         type="number"
-              //         label={familyFieldLabels[key]}
-              //         variant="outlined"
-              //         fullWidth
-              //         value={detail[key]}
-              //         onChange={(e) => handleFamilyDetailsChange(index, e)}
-              //       />
-              //     </div>
-              //   );
+              case "annual_income":
+                return (
+                  // <div className="form-group">
+                  //   <TextField
+                  //     key={key}
+                  //     name={key}
+                  //     type="number"
+                  //     label={familyFieldLabels[key]}
+                  //     variant="outlined"
+                  //     fullWidth
+                  //     value={detail[key]}
+                  //     onChange={(e) => handleFamilyDetailsChange(index, e)}
+                  //   />
+                  // </div>
+                  <div className="form-group form_select">
+                    <Autocomplete
+                      key={key}
+                      name={key}
+                      options={IncomeList}
+                      getOptionLabel={(option) => option.label}
+                      value={IncomeList.find(
+                        (option) => option.value === detail[key]
+                      )}
+                      onChange={(event, newValue) => {
+                        handleFamilyDetailsChange(index, {
+                          target: {
+                            name: key,
+                            value: newValue ? newValue.value : "",
+                          },
+                        });
+                      }}
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          label="Family Income"
+                          variant="outlined"
+                          fullWidth
+                        />
+                      )}
+                    />
+                  </div>
+                );
 
               default:
                 if (familyDisplayFields.includes(key)) {

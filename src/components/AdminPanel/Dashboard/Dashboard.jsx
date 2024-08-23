@@ -290,6 +290,7 @@ function Dashboard() {
         </div>
 
         {RoleIDContext == constant.CONST_MANAGER_ROLE && <OrgTree />}
+        {/* <OrgTree /> */}
         {/* {contextData && contextData[55] && contextData[55].view_value === 1 && (
           <WFHDDahboard />
         )} */}

@@ -4,7 +4,7 @@ import FormContainer from "../FormContainer";
 import DataTable from "react-data-table-component";
 import { useAPIGlobalContext } from "../APIContext/APIContext";
 import { baseUrl } from "../../../utils/config";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import FieldContainer from "../FieldContainer";
 import jwtDecode from "jwt-decode";
 import Modal from "react-modal";
@@ -18,12 +18,13 @@ import WFHDExcelConverter from "./WFHDExcelConverter";
 const customStyles = {
   headCells: {
     style: {
-      fontWeight: 'bold',
-      fontSize: '12px',
+      fontWeight: "bold",
+      fontSize: "12px",
     },
   },
 };
 const WFHDOverview = () => {
+  // const id = useParams()
   const whatsappApi = WhatsappAPI();
   const { toastAlert } = useGlobalContext();
   const { ContextDept, RoleIDContext } = useAPIGlobalContext();
@@ -75,15 +76,19 @@ const WFHDOverview = () => {
 
   const getData = async () => {
     setLoading(true);
+  
     const response = await axios.get(baseUrl + "get_all_wfh_users");
+    // const deptres = await axios.get(baseUrl + `get_wfh_user/${id.id}`);
     // if (RoleIDContext == 1 || RoleIDContext == 5 || RoleIDContext == 2) {
     if (RoleIDContext == 1 || RoleIDContext == 5) {
       setAllWFHDData(
         response.data.data.filter((item) => item.user_status === "Active")
       );
+    
       const FinalResonse = response.data.data.filter(
         (item) => item.user_status === "Active"
       );
+    
       setLoading(false);
 
       let filterTabWise = [];
@@ -247,7 +252,8 @@ const WFHDOverview = () => {
         releaving_date: separationResignationDate,
         last_working_day: separationLWD,
         remark: separationRemark,
-        reason: separationReason,
+        reason: "Exit User",
+        // reason: separationReason,
       })
       .then(() => {
         const formData = new FormData();
@@ -361,8 +367,8 @@ const WFHDOverview = () => {
           <div className="eventListBox w-100 avatarBox">
             <div className="avatarImgBox">
               {imageUrl && imageUrl !== baseUrl ? (
-                <a href={imageUrl} target="_blank">
-                <img src={imageUrl} alt={capitalizeName(row.user_name)} />
+                <a href={imageUrl} target="_blank" style={{height:'100%' , width:'100%'}}>
+                <img height={40} width={40} src={imageUrl} alt={capitalizeName(row.user_name)} />
                 </a>
               ) : (
                 <h2>{capitalizeName(row.user_name)}</h2>
@@ -595,35 +601,230 @@ const WFHDOverview = () => {
   return (
     <>
       <>
-          <Modal
-            className="Ready to Onboard"
-            isOpen={showOnBoardModal}
-            onRequestClose={() => setShowOnBoardModal(false)}
-            contentLabel="Preview Modal"
-            appElement={document.getElementById("root")}
-            style={{
-              overlay: {
-                position: "fixed",
-                backgroundColor: "rgba(255, 255, 255, 0.75)",
-              },
-              content: {
-                position: "absolute",
+        <Modal
+          className="Ready to Onboard"
+          isOpen={showOnBoardModal}
+          onRequestClose={() => setShowOnBoardModal(false)}
+          contentLabel="Preview Modal"
+          appElement={document.getElementById("root")}
+          style={{
+            overlay: {
+              position: "fixed",
+              backgroundColor: "rgba(255, 255, 255, 0.75)",
+            },
+            content: {
+              position: "absolute",
 
-                width: "500px",
-                height: "max-content",
-                border: "1px solid #ccc",
-                background: "#fff",
+              width: "500px",
+              height: "max-content",
+              border: "1px solid #ccc",
+              background: "#fff",
 
-                borderRadius: "4px",
-                outline: "none",
-              },
-            }}
+              borderRadius: "4px",
+              outline: "none",
+            },
+          }}
+        >
+          <div className="" role="document">
+            <div className="">
+              <div className="modal-header">
+                <h5 className="modal-title" id="exampleModalLabel2">
+                  Onboard user
+                </h5>
+                <button
+                  type="button"
+                  className="close"
+                  data-dismiss="modal"
+                  aria-label="Close"
+                >
+                  <span
+                    aria-hidden="true"
+                    onClick={() => setShowOnBoardModal(false)}
+                  >
+                    ×
+                  </span>
+                </button>
+              </div>
+              <div className="modal-body">
+                <FieldContainer
+                  label="Remark"
+                  fieldGrid={12}
+                  astric
+                  value={remark}
+                  onChange={(e) => setRemark(e.target.value)}
+                  required={true}
+                ></FieldContainer>
+              </div>
+              <div className="modal-footer">
+                <button
+                  type="button"
+                  className="btn cmnbtn btn_sm btn-secondary"
+                  // data-dismiss="modal"
+                  onClick={() => setShowOnBoardModal(false)}
+                >
+                  Close
+                </button>
+                <button
+                  type="button"
+                  className="btn cmnbtn btn_sm btn-primary"
+                  onClick={onboardingFunc}
+                  // data-dismiss="modal"
+                  disabled={!remark}
+                >
+                  Save
+                </button>
+              </div>
+            </div>
+          </div>
+        </Modal>
+        <div>
+          <FormContainer mainTitle="My Team" link={"/admin/"} />
+          <div className="tab">
+            <div
+              className={` named-tab  ${activeTab == 3 ? "active-tab" : ""}`}
+              onClick={() => {
+                FilterTabData("registered"), setActiveTab(3);
+              }}
+            >
+              Pending Document (
+              {statusCounts?.registered ? statusCounts?.registered : 0})
+            </div>
+            <div
+              className={`named-tab  ${activeTab == 1 ? "active-tab" : ""}`}
+              onClick={() => {
+                FilterTabData("document_upload"), setActiveTab(1);
+              }}
+            >
+              Pending Training (
+              {statusCounts?.document_upload
+                ? statusCounts?.document_upload
+                : 0}
+              )
+            </div>
+            {/* <div
+                className={`named-tab  ${activeTab == 2 ? "active-tab" : ""}`}
+                onClick={() => {
+                  FilterTabData("training"), setActiveTab(2);
+                }}
+              >
+                Training ({statusCounts?.training ? statusCounts?.training : 0})
+              </div> */}
+            <div
+              className={`named-tab  ${activeTab == 0 ? "active-tab" : ""}`}
+              onClick={() => {
+                FilterTabData("onboarded"), setActiveTab(0);
+              }}
+            >
+              Onboarded ({statusCounts?.onboarded ? statusCounts?.onboarded : 0}
+              )
+            </div>
+          </div>
+          <div className="tab">
+            <div className="form-group col-3">
+              <label className="form-label">Department</label>
+              <Select
+                className=""
+                options={[
+                  { value: "", label: "All" },
+                  ...departmentData.map((option) => ({
+                    value: option.dept_id,
+                    label: `${option.dept_name} (${option.user_count})`,
+                  })),
+                ]}
+                value={
+                  deptData === ""
+                    ? { value: "", label: "All" }
+                    : {
+                        value: deptData,
+                        label: departmentData.find(
+                          (user) => user.dept_id === deptData
+                        )
+                          ? `${
+                              departmentData.find(
+                                (user) => user.dept_id === deptData
+                              ).dept_name
+                            } (${
+                              departmentData.find(
+                                (user) => user.dept_id === deptData
+                              ).user_count
+                            })`
+                          : "",
+                      }
+                }
+                onChange={(e) => {
+                  const val = e.value;
+                  setDeptData(val);
+                  if (val === "") {
+                    getData();
+                  }
+                }}
+                required
+              />
+            </div>
+            <div className="Tab">
+              <button
+                onClick={handleScrap}
+                className="ml-2 btn btn-warning btn-sm rounded-pill"
+              >
+                Change Report L1
+              </button>
+            </div>
+          </div>
+
+          <div className="card">
+            <div
+              className="card-header"
+              style={{ justifyContent: "space-between" }}
+            >
+              Payout User
+              <input
+                type="text"
+                placeholder="Search Here"
+                className="form-control"
+                value={search}
+                style={{ width: "600px" }}
+                onChange={(e) => setSearch(e.target.value)}
+              />
+              <button
+                onClick={handleExportClick}
+                className="btn cmnbtn btn_sm btn-success"
+                variant="text"
+                color="success"
+                sx={{ fontSize: "30px" }}
+                title="Download Excel"
+              >
+                Export Excel
+              </button>
+            </div>
+            <div className="card-body body-padding">
+              <DataTable
+                columns={columns}
+                data={filterDataS}
+                pagination
+                paginationPerPage={100}
+                //  selectableRows={true}
+                paginationDefaultPage={1}
+                highlightOnHover
+                paginationResetDefaultPage={true}
+                striped="true"
+                customStyles={customStyles}
+              />
+            </div>
+          </div>
+
+          <div
+            className="modal fade"
+            id="exampleModal"
+            tabIndex={-1}
+            role="dialog"
+            aria-labelledby="exampleModalLabel"
+            aria-hidden="true"
           >
-            <div className="" role="document">
-              <div className="">
+            <div className="modal-dialog" role="document">
+              <div className="modal-content">
                 <div className="modal-header">
-                  <h5 className="modal-title" id="exampleModalLabel2">
-                    Onboard user
+                  <h5 className="modal-title" id="exampleModalLabel">
+                    Training Done
                   </h5>
                   <button
                     type="button"
@@ -631,15 +832,22 @@ const WFHDOverview = () => {
                     data-dismiss="modal"
                     aria-label="Close"
                   >
-                    <span
-                      aria-hidden="true"
-                      onClick={() => setShowOnBoardModal(false)}
-                    >
-                      ×
-                    </span>
+                    <span aria-hidden="true">×</span>
                   </button>
                 </div>
                 <div className="modal-body">
+                  <FieldContainer
+                    type="date"
+                    label="Training Date "
+                    astric
+                    fieldGrid={12}
+                    min={
+                      rowData?.joining_date &&
+                      rowData?.joining_date.split("T")[0]
+                    }
+                    value={trainingDate}
+                    onChange={(e) => setTrainingDate(e.target.value)}
+                  />
                   <FieldContainer
                     label="Remark"
                     fieldGrid={12}
@@ -653,270 +861,65 @@ const WFHDOverview = () => {
                   <button
                     type="button"
                     className="btn cmnbtn btn_sm btn-secondary"
-                    // data-dismiss="modal"
-                    onClick={() => setShowOnBoardModal(false)}
+                    data-dismiss="modal"
                   >
                     Close
                   </button>
                   <button
                     type="button"
-                    className="btn cmnbtn btn_sm btn-primary"
-                    onClick={onboardingFunc}
-                    // data-dismiss="modal"
-                    disabled={!remark}
+                    className="btn cmnbtn sm_btn btn-primary"
+                    onClick={trainingFunc}
+                    data-dismiss="modal"
+                    disabled={!remark || !trainingDate}
                   >
-                    Save
+                    Save changes
                   </button>
-                </div>
-              </div>
-            </div>
-          </Modal>
-          <div
-            style={{ display: "flex", flexDirection: "column", gap: "16px" }}
-          >
-            <FormContainer mainTitle="My Team" link={"/admin/"} />
-            <div className="tab">
-              
-              <div
-                className={` named-tab  ${activeTab == 3 ? "active-tab" : ""}`}
-                onClick={() => {
-                  FilterTabData("registered"), setActiveTab(3);
-                }}
-              >
-                Pending Document (
-                {statusCounts?.registered ? statusCounts?.registered : 0})
-              </div>
-              <div
-                className={`named-tab  ${activeTab == 1 ? "active-tab" : ""}`}
-                onClick={() => {
-                  FilterTabData("document_upload"), setActiveTab(1);
-                }}
-              >
-                Pending Training (
-                {statusCounts?.document_upload
-                  ? statusCounts?.document_upload
-                  : 0}
-                )
-
-                
-              </div>
-              {/* <div
-                className={`named-tab  ${activeTab == 2 ? "active-tab" : ""}`}
-                onClick={() => {
-                  FilterTabData("training"), setActiveTab(2);
-                }}
-              >
-                Training ({statusCounts?.training ? statusCounts?.training : 0})
-              </div> */}
-              <div
-                className={`named-tab  ${activeTab == 0 ? "active-tab" : ""}`}
-                onClick={() => {
-                  FilterTabData("onboarded"), setActiveTab(0);
-                }}
-              >
-                Onboarded (
-                {statusCounts?.onboarded ? statusCounts?.onboarded : 0})
-              </div>
-            </div>
-            <div className="tab">
-              <div className="form-group col-3">
-                <label className="form-label">Department</label>
-                <Select
-                  className=""
-                  options={[
-                    { value: "", label: "All" },
-                    ...departmentData.map((option) => ({
-                      value: option.dept_id,
-                      label: `${option.dept_name} (${option.user_count})`,
-                    })),
-                  ]}
-                  value={
-                    deptData === ""
-                      ? { value: "", label: "All" }
-                      : {
-                          value: deptData,
-                          label: departmentData.find(
-                            (user) => user.dept_id === deptData
-                          )
-                            ? `${
-                                departmentData.find(
-                                  (user) => user.dept_id === deptData
-                                ).dept_name
-                              } (${
-                                departmentData.find(
-                                  (user) => user.dept_id === deptData
-                                ).user_count
-                              })`
-                            : "",
-                        }
-                  }
-                  onChange={(e) => {
-                    const val = e.value;
-                    setDeptData(val);
-                    if (val === "") {
-                      getData();
-                    }
-                  }}
-                  required
-                />
-              </div>
-              <div className="Tab">
-                <button
-                  onClick={handleScrap}
-                  className="ml-2 btn btn-warning btn-sm rounded-pill"
-                >
-                  Change Report L1
-                </button>
-              </div>
-            </div>
-
-            <div className="card">
-              <div
-                className="card-header"
-                style={{ justifyContent: "space-between" }}
-              >
-                Payout User
-                <input
-                  type="text"
-                  placeholder="Search Here"
-                  className="form-control"
-                  value={search}
-                  style={{ width: "600px" }}
-                  onChange={(e) => setSearch(e.target.value)}
-                />
-                <button
-              onClick={handleExportClick}
-              className="btn cmnbtn btn_sm btn-success"
-              variant="text"
-              color="success"
-              sx={{ fontSize: "30px" }}
-              title="Download Excel"
-            >Export Excel</button>
-              </div>
-              <div className="card-body body-padding">
-                <DataTable
-                  columns={columns}
-                  data={filterDataS}
-                  pagination
-                  paginationPerPage={100}
-                  //  selectableRows={true}
-                  paginationDefaultPage={1}
-                  highlightOnHover
-                  paginationResetDefaultPage={true}
-                  striped="true"
-                  customStyles={customStyles}
-                />
-              </div>
-            </div>
-
-            <div
-              className="modal fade"
-              id="exampleModal"
-              tabIndex={-1}
-              role="dialog"
-              aria-labelledby="exampleModalLabel"
-              aria-hidden="true"
-            >
-              <div className="modal-dialog" role="document">
-                <div className="modal-content">
-                  <div className="modal-header">
-                    <h5 className="modal-title" id="exampleModalLabel">
-                      Training Done
-                    </h5>
-                    <button
-                      type="button"
-                      className="close"
-                      data-dismiss="modal"
-                      aria-label="Close"
-                    >
-                      <span aria-hidden="true">×</span>
-                    </button>
-                  </div>
-                  <div className="modal-body">
-                    <FieldContainer
-                      type="date"
-                      label="Training Date "
-                      astric
-                      fieldGrid={12}
-                      min={
-                        rowData?.joining_date &&
-                        rowData?.joining_date.split("T")[0]
-                      }
-                      value={trainingDate}
-                      onChange={(e) => setTrainingDate(e.target.value)}
-                    />
-                    <FieldContainer
-                      label="Remark"
-                      fieldGrid={12}
-                      astric
-                      value={remark}
-                      onChange={(e) => setRemark(e.target.value)}
-                      required={true}
-                    ></FieldContainer>
-                  </div>
-                  <div className="modal-footer">
-                    <button
-                      type="button"
-                      className="btn cmnbtn btn_sm btn-secondary"
-                      data-dismiss="modal"
-                    >
-                      Close
-                    </button>
-                    <button
-                      type="button"
-                      className="btn cmnbtn sm_btn btn-primary"
-                      onClick={trainingFunc}
-                      data-dismiss="modal"
-                      disabled={!remark || !trainingDate}
-                    >
-                      Save changes
-                    </button>
-                  </div>
                 </div>
               </div>
             </div>
           </div>
+        </div>
 
-          {/* SEP Modal */}
-          <div
-            className="modal fade"
-            id="sepmodal"
-            tabIndex={-1}
-            role="dialog"
-            aria-labelledby="exampleModalLabel"
-            aria-hidden="true"
-          >
-            <div className="modal-dialog" role="document">
-              <div className="modal-content">
-                <div className="modal-header">
-                  <h5 className="modal-title" id="exampleModalLabel">
-                    Separation
-                  </h5>
-                  <button
-                    type="button"
-                    className="close"
-                    data-dismiss="modal"
-                    aria-label="Close"
-                  >
-                    <span aria-hidden="true">×</span>
-                  </button>
-                </div>
-                <div className="modal-body">
-                  <FieldContainer
-                    label="Status"
-                    Tag="select"
-                    value={separationStatus}
-                    astric
-                    onChange={(e) => setSeparationStatus(e.target.value)}
-                  >
-                    {/* <option value="">Choose...</option> */}
-                    <option value="Resigned">Exit</option>
-                    {/* <option value="Resign Accepted">Resign Accepted</option>
+        {/* SEP Modal */}
+        <div
+          className="modal fade"
+          id="sepmodal"
+          tabIndex={-1}
+          role="dialog"
+          aria-labelledby="exampleModalLabel"
+          aria-hidden="true"
+        >
+          <div className="modal-dialog" role="document">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h5 className="modal-title" id="exampleModalLabel">
+                  Separation
+                </h5>
+                <button
+                  type="button"
+                  className="close"
+                  data-dismiss="modal"
+                  aria-label="Close"
+                >
+                  <span aria-hidden="true">×</span>
+                </button>
+              </div>
+              <div className="modal-body">
+                <FieldContainer
+                  label="Status"
+                  Tag="select"
+                  value={separationStatus}
+                  astric
+                  onChange={(e) => setSeparationStatus(e.target.value)}
+                >
+                  {/* <option value="">Choose...</option> */}
+                  <option value="Resigned">Exit</option>
+                  {/* <option value="Resign Accepted">Resign Accepted</option>
                     <option value="On Long Leave">On Long Leave</option>
                     <option value="Subatical">Subatical</option>
                     <option value="Suspended">Suspended</option> */}
-                  </FieldContainer>
-                  {/* <FieldContainer
+                </FieldContainer>
+                {/* <FieldContainer
                     label="Reason"
                     Tag="select"
                     value={separationReason}
@@ -931,79 +934,75 @@ const WFHDOverview = () => {
                       </option>
                     ))}
                   </FieldContainer> */}
+                <FieldContainer
+                  label="Remark"
+                  value={separationRemark}
+                  astric
+                  onChange={(e) => setSeparationRemark(e.target.value)}
+                />
+                {(separationStatus === "On Long Leave" ||
+                  separationStatus === "Subatical" ||
+                  separationStatus === "Suspended") && (
                   <FieldContainer
-                    label="Remark"
-                    value={separationRemark}
-                    astric
-                    onChange={(e) => setSeparationRemark(e.target.value)}
+                    label="Reinstated Date"
+                    type="date"
+                    value={separationReinstateDate}
+                    onChange={(e) => setSeparationReinstateDate(e.target.value)}
                   />
-                  {(separationStatus === "On Long Leave" ||
-                    separationStatus === "Subatical" ||
-                    separationStatus === "Suspended") && (
-                    <FieldContainer
-                      label="Reinstated Date"
-                      type="date"
-                      value={separationReinstateDate}
-                      onChange={(e) =>
-                        setSeparationReinstateDate(e.target.value)
-                      }
-                    />
-                  )}
-                  {separationStatus == "Resign Accepted" && (
-                    <input
-                      label="Last Working Day"
-                      className="form-control"
-                      style={{ width: "220px" }}
-                      type="date"
-                      value={separationLWD}
-                      max={today}
-                      onChange={(e) => setSeparationLWD(e.target.value)}
-                    />
-                  )}
-                  {/* {separationStatus == "Resigned" && ( */}
-                    <FieldContainer
-                      label="Resignation Date"
-                      type="date"
-                      value={separationResignationDate}
-                      astric
-                      onChange={(e) =>
-                        setSeparationResignationDate(e.target.value)
-                      }
-                    />
-                  {/* )} */}
-                </div>
-                <div className="modal-footer">
-                  <button
-                    type="button"
-                    className="btn btn-secondary"
-                    data-dismiss="modal"
-                  >
-                    Close
-                  </button>
-                  <button
-                    type="button"
-                    className="btn btn-primary"
-                    onClick={() => handleSeparationDataPost()}
-                    data-dismiss="modal"
-                    disabled={
-                      !separationRemark ||
-                      !separationStatus ||
-                      !separationResignationDate
-                    }
-                  >
-                    Save changes
-                  </button>
-                </div>
+                )}
+                {separationStatus == "Resign Accepted" && (
+                  <input
+                    label="Last Working Day"
+                    className="form-control"
+                    style={{ width: "220px" }}
+                    type="date"
+                    value={separationLWD}
+                    max={today}
+                    onChange={(e) => setSeparationLWD(e.target.value)}
+                  />
+                )}
+                {/* {separationStatus == "Resigned" && ( */}
+                <FieldContainer
+                  label="Resignation Date"
+                  type="date"
+                  value={separationResignationDate}
+                  astric
+                  onChange={(e) => setSeparationResignationDate(e.target.value)}
+                />
+                {/* )} */}
+              </div>
+              <div className="modal-footer">
+                <button
+                  type="button"
+                  className="btn btn-secondary"
+                  data-dismiss="modal"
+                >
+                  Close
+                </button>
+                <button
+                  type="button"
+                  className="btn btn-primary"
+                  onClick={() => handleSeparationDataPost()}
+                  data-dismiss="modal"
+                  disabled={
+                    !separationRemark ||
+                    !separationStatus ||
+                    !separationResignationDate
+                  }
+                >
+                  Save changes
+                </button>
               </div>
             </div>
           </div>
-          <ReportL1Component
-            getData={getData}
-            isModalOpenSend={ReportL1ModalOpen}
-            onClose={handleReportL1Close}
-            rowData={currentRow}
-          />
-        </>
+        </div>
+        <ReportL1Component
+          getData={getData}
+          isModalOpenSend={ReportL1ModalOpen}
+          onClose={handleReportL1Close}
+          rowData={currentRow}
+        />
+      </>
       {/* ) */}
       {/* } */}
     </>

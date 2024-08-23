@@ -15,6 +15,7 @@ import { TextField } from "@mui/material";
 import Autocomplete from "@mui/material/Autocomplete";
 import WhatsappAPI from "../WhatsappAPI/WhatsappAPI";
 import Tour from "reactour";
+import Swal from "sweetalert2";
 
 import imageTest1 from "../../assets/img/product/Avtrar1.png";
 import imageTest2 from "../../assets/img/product/Avtrar2.png";
@@ -138,7 +139,7 @@ const initialFamilyDetailsGroup = {
   // DOB: "",
   contact: "",
   occupation: "",
-  // annual_income: "",
+  annual_income: "",
   relation: "",
 };
 
@@ -148,7 +149,7 @@ const familyDisplayFields = [
   "contact",
   "occupation",
   "relation",
-  // "annual_income",
+  "annual_income",
 ];
 
 const familyFieldLabels = {
@@ -156,7 +157,7 @@ const familyFieldLabels = {
   // DOB: "Date of Birth",
   contact: "Contact Number",
   occupation: "Occupation",
-  // annual_income: "Annual Income",
+  annual_income: "Annual Income",
   relation: "Relationship",
 };
 
@@ -294,6 +295,7 @@ const PreOnboardingUserMaster = () => {
 
   //contact
   const [emergencyContact, setEmergencyContact] = useState(null);
+  const [emergencyContact2, setEmergencyContact2] = useState(null);
 
   //New Guardian Fields
   const [guardianDetails, setGuardianDetails] = useState([
@@ -629,6 +631,7 @@ const PreOnboardingUserMaster = () => {
         current_state,
         current_pin_code,
         emergency_contact1,
+        alternate_contact,
         image_url,
         nick_name,
         showOnboardingModal,
@@ -708,7 +711,8 @@ const PreOnboardingUserMaster = () => {
       setcurrentCity(current_city);
       setcurrentState(current_state);
       setcurrentPincode(current_pin_code);
-      setEmergencyContact(emergency_contact1);
+      setEmergencyContact(alternate_contact);
+      setEmergencyContact2(emergency_contact1);
       setGetProfile(image_url);
       setGetNickName(nick_name);
       setProfileImage(image);
@@ -756,9 +760,25 @@ const PreOnboardingUserMaster = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!FatherName) {
+      return toastError("Father Name is Required");
+    } else if (!motherName || motherName == "") {
+      return toastError("Mother Name is Required");
+    }else if (!currentAddress || currentAddress == "") {
+      return toastError("Current address is Required");
+    }
+    else if (!currentState || currentState == "") {
+      return toastError("Current State is Required");
+    }
+    else if (!currentCity || currentCity == "") {
+      return toastError("Current City is Required");
+    }
+    else if (!currentPincode || currentPincode == "") {
+      return toastError("Current Pincode is Required");
+    }
 
     setIsSubmitting(true);
-
+  
     const formData = new FormData();
     formData.append("user_id", id);
     formData.append("user_name", validateAndCorrectUserName(username));
@@ -768,7 +788,8 @@ const PreOnboardingUserMaster = () => {
     formData.append("user_contact_no", Number(contact));
     formData.append("personal_number", personalContact);
     formData.append("Personal_email", personalEmail);
-    formData.append("emergency_contact1", Number(emergencyContact));
+    formData.append("alternate_contact", Number(emergencyContact));
+    formData.append("emergency_contact1", Number(emergencyContact2));
 
     // document open ---------->
     formData.append("tenth_marksheet", XMarksheet);
@@ -946,7 +967,12 @@ const PreOnboardingUserMaster = () => {
       username,
     ]);
 
-    toastAlert("User Update");
+    Swal.fire({
+      title: "Good job!",
+      text: "Details Submitted Successfully!",
+      icon: "success",
+    });
+    // toastAlert("User Update");
     // gettingData();
   };
 
@@ -1192,6 +1218,7 @@ const PreOnboardingUserMaster = () => {
     dateOfBirth,
     nationality,
     emergencyContact,
+    emergencyContact2,
     permanentAddress,
     permanentCity,
     permanentState,
@@ -1323,21 +1350,21 @@ const PreOnboardingUserMaster = () => {
       content: "From here you can submit your documents.",
     },
     {
-      selector: "#sidebarPolicyBox",
-      content: "From here you can see company policies.",
-    },
-    {
       selector: "#sidebarLetterBox",
       content: "From here you can see your offer letter.",
+    },
+    {
+      selector: "#sidebarPolicyBox",
+      content: "From here you can see company policies.",
     },
     {
       selector: "#sidebarFaqBox",
       content: "Here you can look for FAQ's",
     },
-    {
-      selector: ".user_logout",
-      content: "From here you can logout",
-    },
+    // {
+    //   selector: ".user_logout",
+    //   content: "From here you can logout",
+    // },
   ];
 
   const today = new Date();
@@ -1381,6 +1408,7 @@ const PreOnboardingUserMaster = () => {
         shouldCloseOnOverlayClick={false}
       >
         <ReadyToOnboardContent
+          username={username}
           handleIamReady={handleIamReady}
           closeModal={closeReadyToOnboardModal}
         />
@@ -1461,7 +1489,7 @@ const PreOnboardingUserMaster = () => {
               <div className="user_box">
                 <div className="user_name">
                   <h3>
-                    <span>Welcome </span>
+                    <span>{username}</span>
                     {getNickName}
                   </h3>
                 </div>
@@ -1889,33 +1917,6 @@ const PreOnboardingUserMaster = () => {
                                 />
                               </div>
 
-                              <div className="form-group">
-                                <TextField
-                                  id="outlined-basic"
-                                  label="Father Name"
-                                  variant="outlined"
-                                  type="text"
-                                  name="father Name"
-                                  value={FatherName}
-                                  onChange={(e) =>
-                                    setFatherName(FormatName(e.target.value))
-                                  }
-                                />
-                              </div>
-
-                              <div className="form-group">
-                                <TextField
-                                  id="outlined-basic"
-                                  label="Mother Name"
-                                  variant="outlined"
-                                  type="text"
-                                  value={motherName}
-                                  onChange={(e) => {
-                                    setMotherName(FormatName(e.target.value));
-                                  }}
-                                />
-                              </div>
-
                               <div className="form-group form_select">
                                 <Autocomplete
                                   disablePortal
@@ -1930,6 +1931,41 @@ const PreOnboardingUserMaster = () => {
                                   renderInput={(params) => (
                                     <TextField {...params} label="Gender" />
                                   )}
+                                />
+                              </div>
+
+                              <div className="form-group">
+                                <TextField
+                                  id="outlined-basic"
+                                  label={
+                                    <span>
+                                      Father Name<span style={{ color: "red" }}> *</span>
+                                    </span>
+                                  }
+                                  variant="outlined"
+                                  type="text"
+                                  name="father Name"
+                                  value={FatherName}
+                                  onChange={(e) =>
+                                    setFatherName(FormatName(e.target.value))
+                                  }
+                                />
+                              </div>
+
+                              <div className="form-group">
+                                <TextField
+                                  id="outlined-basic"
+                                  label={
+                                    <span>
+                                      Mother Name<span style={{ color: "red" }}> *</span>
+                                    </span>
+                                  }
+                                  variant="outlined"
+                                  type="text"
+                                  value={motherName}
+                                  onChange={(e) => {
+                                    setMotherName(FormatName(e.target.value));
+                                  }}
                                 />
                               </div>
 
@@ -2019,7 +2055,7 @@ const PreOnboardingUserMaster = () => {
                                   renderInput={(params) => (
                                     <TextField
                                       {...params}
-                                      label="Speaking Languages"
+                                      label="Spoken Languages"
                                     />
                                   )}
                                 />
@@ -2071,10 +2107,19 @@ const PreOnboardingUserMaster = () => {
 
                               <div className="form-group">
                                 <ContactNumber
-                                  label="Emergency Contact"
+                                  label="Emergency Contact 1"
                                   parentComponentContact={emergencyContact}
                                   setParentComponentContact={
                                     setEmergencyContact
+                                  }
+                                />
+                              </div>
+                              <div className="form-group">
+                                <ContactNumber
+                                  label="Emergency Contact 2"
+                                  parentComponentContact={emergencyContact2}
+                                  setParentComponentContact={
+                                    setEmergencyContact2
                                   }
                                 />
                               </div>
@@ -2094,6 +2139,7 @@ const PreOnboardingUserMaster = () => {
                                   handleRemoveGuardianDetails
                                 }
                               /> */}
+                              <hr />
 
                               <FamilyFields
                                 familyDetails={familyDetails}
@@ -2108,7 +2154,7 @@ const PreOnboardingUserMaster = () => {
                                   handleRemoveFamilyDetails
                                 }
                               />
-
+                              <hr />
                               <EducationFields
                                 educationDetails={educationDetails}
                                 educationDispalyFields={educationDispalyFields}
@@ -2132,7 +2178,11 @@ const PreOnboardingUserMaster = () => {
                               <div className="form-group">
                                 <TextField
                                   id="outlined-basic"
-                                  label="Current Address"
+                                  label={
+                                    <span>
+                                      Current Address<span style={{ color: "red" }}> *</span>
+                                    </span>
+                                  }
                                   variant="outlined"
                                   type="text"
                                   value={currentAddress}

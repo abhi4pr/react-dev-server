@@ -2,7 +2,6 @@ import React from "react";
 
 const LetterTablePreviewMaxSalaryInHand = ({ UserDetails }) => {
   const salary = UserDetails?.ctc;
-  console.log(salary, "sakary");
   // const basicSalary = salary > 21000 ? salary * 0.6 : "";
   const basicSalary = salary < 20500 ? salary * 0.8 : salary * 0.6;
   const HRA = basicSalary * 0.3;
