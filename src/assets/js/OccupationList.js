@@ -1,9 +1,10 @@
 const OccupationList = [
-  { value: "Govt Job", label: "Govt Job" },
+  { value: "Govt Job", label: "Government Job" },
   { value: "Private Job", label: "Private Job" },
-  { value: "Business", label: "Business" },
+  { value: "Business", label: "Businessman/Bussinesswoman" },
   { value: "Home Maker", label: "Home Maker" },
-  { value: "Studying", label: "Studying" },
+  { value: "Student", label: "Student" },
+  { value: "Other", label: "Other" },
 ];
 
 export default OccupationList;
