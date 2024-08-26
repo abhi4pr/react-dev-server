@@ -296,7 +296,7 @@ const DocumentTab = ({
                         <td style={{ width: "20%" }}>
                           {item.document.doc_name}
                           {item.document.isRequired && (
-                            <span style={{ color: "red" }}> </span>
+                            <span style={{ color: "red" }}> *</span>
                           )}
                         </td>
                         <td scope="row">{item.document.doc_type}</td>

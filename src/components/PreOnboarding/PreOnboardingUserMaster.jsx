@@ -174,12 +174,12 @@ const initialEducationDetailsGroup = {
 
 const educationDispalyFields = [
   "title",
+  "stream",
+  "specialization",
   "institute_name",
   "from_year",
   "to_year",
   "percentage",
-  "stream",
-  "specialization",
 ];
 
 const educationFieldLabels = {

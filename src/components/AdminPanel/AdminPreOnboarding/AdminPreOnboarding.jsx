@@ -351,8 +351,8 @@ const AdminPreOnboarding = () => {
         axios
           .post(baseUrl + "add_send_user_mail", {
             email: personalEmail,
-            subject: "User Registration",
-            text: "A new user has been onboard.",
+            subject: "Welcome To Creativefuel",
+            text: "",
             attachment: selectedImage,
             login_id: loginId,
             name: username,

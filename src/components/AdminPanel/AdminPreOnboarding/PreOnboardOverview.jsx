@@ -6,8 +6,10 @@ import FormContainer from "../FormContainer";
 import { Button } from "@mui/material";
 import { baseUrl } from "../../../utils/config";
 import Loader from "../Finance/Loader/Loader";
+import { useGlobalContext } from "../../../Context/Context";
 
 const PreOnboardingOverview = () => {
+  const { toastAlert, toastError } = useGlobalContext();
   const [search, setSearch] = useState("");
   const [datas, setDatas] = useState([]);
   const [filterdata, setFilterData] = useState([]);
@@ -42,6 +44,7 @@ const PreOnboardingOverview = () => {
         },
       })
       .then(() => getData());
+      toastAlert("User Onboarded Successfully")
   };
 
   useEffect(() => {
@@ -148,7 +151,7 @@ const PreOnboardingOverview = () => {
         <>
           <Button
             sx={{ marginRight: "10px" }}
-            className="btn btn-outline-secondary cmnbtn btn_sm"
+            className=" cmnbtn btn_sm"
             size="small"
             // disabled={
             //   row.document_percentage_mandatory < 100 ||
